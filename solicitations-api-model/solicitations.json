@@ -1,0 +1,542 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Selling Partner API for Solicitations",
+    "description": "With the Solicitations API you can build applications that send non-critical solicitations to buyers. You can get a list of solicitation types that are available for an order that you specify, then call an operation that sends a solicitation to the buyer for that order. Buyers cannot respond to solicitations sent by this API, and these solicitations do not appear in the Messaging section of Seller Central or in the recipient's Message Center. The Solicitations API returns responses that are formed according to the <a href=https://tools.ietf.org/html/draft-kelly-json-hal-08>JSON Hypertext Application Language</a> (HAL) standard.",
+    "version": "v1",
+    "contact": {
+      "name": "Selling Partner Developer Support",
+      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/hal+json"
+  ],
+  "paths": {
+    "/solicitations/v1/orders/{amazonOrderId}": {
+      "get": {
+        "description": "Returns a list of solicitation types that are available for an order that you specify. A solicitation type is represented by an actions object, which contains a path and query parameter(s). You can use the path and parameter(s) to call an operation that sends a solicitation. Currently only the productReviewAndSellerFeedbackSolicitation solicitation type is available.",
+        "operationId": "getSolicitationActionsForOrder",
+        "tags": ["solicitations"],
+        "responses": {
+          "200": {
+            "description": "Returns hypermedia links under the _links.actions key that specify which solicitation actions are allowed for the order.",
+            "headers": {
+              "x-amzn-requestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "amazonOrderId": {
+                      "value": "123-1234567-1234567"
+                    },
+                    "marketplaceIds": {
+                      "value": ["ATVPDKIKX0DER"]
+                    }
+                  }
+                },
+                "response": {
+                  "_links": {
+                    "actions": [
+                      {
+                        "href": "/solicitations/v1/orders/123-1234567-1234567/solicitations/productReviewAndSellerFeedback?marketplaceIds=ATVPDKIKX0DER",
+                        "name": "productReviewAndSellerFeedback"
+                      }
+                    ],
+                    "self": {
+                      "href": "/solicitations/v1/orders/123-1234567-1234567?marketplaceIds=ATVPDKIKX0DER"
+                    }
+                  }
+                }
+              }
+            ],
+            "examples": {
+              "application/hal+json": {
+                "_links": {
+                  "actions": [
+                    {
+                      "href": "/solicitations/v1/orders/903-1671087-0812628/solicitations/productReviewAndSellerFeedback?marketplaceIds=ATVPDKIKX0DER",
+                      "name": "productReviewAndSellerFeedback"
+                    }
+                  ],
+                  "self": {
+                    "href": "/solicitations/v1/orders/903-1671087-0812628?marketplaceIds=ATVPDKIKX0DER"
+                  }
+                },
+                "_embedded": {
+                  "actions": [
+                    {
+                      "_links": {
+                        "schema": {
+                          "href": "/solicitations/v1/orders/903-1671087-0812628/solicitations/productReviewAndSellerFeedback/schema",
+                          "name": "productReviewAndSellerFeedback"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetSolicitationActionsForOrderResponse"
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetSolicitationActionsForOrderResponse"
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetSolicitationActionsForOrderResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetSolicitationActionsForOrderResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetSolicitationActionsForOrderResponse"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetSolicitationActionsForOrderResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetSolicitationActionsForOrderResponse"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetSolicitationActionsForOrderResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetSolicitationActionsForOrderResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "An Amazon order identifier. This specifies the order for which you want a list of available solicitation types."
+          },
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          }
+        ]
+      }
+    },
+    "/solicitations/v1/orders/{amazonOrderId}/solicitations/productReviewAndSellerFeedback": {
+      "post": {
+        "description": "Sends a solicitation to a buyer asking for seller feedback and a product review for the specified order.",
+        "operationId": "createProductReviewAndSellerFeedbackSolicitation",
+        "tags": ["solicitations"],
+        "responses": {
+          "201": {
+            "description": "The message was created for the order.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateProductReviewAndSellerFeedbackSolicitationResponse"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "amazonOrderId": {
+                      "value": "123-1234567-1234567"
+                    }
+                  }
+                },
+                "response": {}
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateProductReviewAndSellerFeedbackSolicitationResponse"
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateProductReviewAndSellerFeedbackSolicitationResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateProductReviewAndSellerFeedbackSolicitationResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateProductReviewAndSellerFeedbackSolicitationResponse"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateProductReviewAndSellerFeedbackSolicitationResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateProductReviewAndSellerFeedbackSolicitationResponse"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateProductReviewAndSellerFeedbackSolicitationResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateProductReviewAndSellerFeedbackSolicitationResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "An Amazon order identifier. This specifies the order for which a solicitation is sent."
+          },
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "LinkObject": {
+    "description": "A Link object.",
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "A URI for this object."
+        },
+        "name": {
+          "type": "string",
+          "description": "An identifier for this object."
+        }
+      },
+      "required": [
+        "href"
+      ]
+    },
+    "SolicitationsAction": {
+      "description": "A simple object containing the name of the template.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "Schema": {
+      "type": "object",
+      "description": "A JSON schema document describing the expected payload of the action. This object can be validated against <a href=http://json-schema.org/draft-04/schema>http://json-schema.org/draft-04/schema</a>.",
+      "additionalProperties": true
+    },
+    "GetSolicitationActionsForOrderResponse": {
+      "description": "The response schema for the getSolicitationActionsForOrder operation.",
+      "type": "object",
+      "properties": {
+        "_links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "$ref": "#/definitions/LinkObject"
+            },
+            "actions": {
+              "description": "Eligible actions for the specified amazonOrderId.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LinkObject"
+              }
+            }
+          },
+          "required": [
+            "self",
+            "actions"
+          ]
+        },
+        "_embedded": {
+          "type": "object",
+          "properties": {
+            "actions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GetSolicitationActionResponse"
+              }
+            }
+          },
+          "required": [
+            "actions"
+          ]
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetSolicitationActionResponse": {
+      "description": "Describes a solicitation action that can be taken for an order. Provides a JSON Hypertext Application Language (HAL) link to the JSON schema document that describes the expected input.",
+      "type": "object",
+      "properties": {
+        "_links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "$ref": "#/definitions/LinkObject"
+            },
+            "schema": {
+              "$ref": "#/definitions/LinkObject"
+            }
+          },
+          "required": [
+            "self",
+            "schema"
+          ]
+        },
+        "_embedded": {
+          "type": "object",
+          "properties": {
+            "schema": {
+              "$ref": "#/definitions/GetSchemaResponse"
+            }
+          }
+        },
+        "payload": {
+          "$ref": "#/definitions/SolicitationsAction"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetSchemaResponse": {
+      "type": "object",
+      "properties": {
+        "_links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "$ref": "#/definitions/LinkObject"
+            }
+          },
+          "required": [
+            "self"
+          ]
+        },
+        "payload": {
+          "$ref": "#/definitions/Schema"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "CreateProductReviewAndSellerFeedbackSolicitationResponse": {
+      "description": "The response schema for the createProductReviewAndSellerFeedbackSolicitation operation.",
+      "type": "object",
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "ErrorList": {
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occurred.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition in a human-readable form.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    }
+  }
+}

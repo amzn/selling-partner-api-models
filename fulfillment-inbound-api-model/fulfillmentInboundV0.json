@@ -1,0 +1,5233 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Fulfillment Inbound lets you create applications that create and update inbound shipments of inventory to Amazon's fulfillment network.",
+    "version": "v0",
+    "title": "Selling Partner APIs for Fulfillment Inbound",
+    "contact": {
+      "name": "Selling Partner API Test Support",
+      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/fba/inbound/v0/itemsGuidance": {
+      "get": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns information that lets a seller know if Amazon recommends sending an item to a given marketplace. In some cases, Amazon provides guidance for why a given SellerSKU or ASIN is not recommended for shipment to Amazon's fulfillment network. Sellers may still ship items that are not recommended, at their discretion.",
+        "operationId": "getInboundGuidance",
+        "parameters": [
+          {
+            "name": "MarketplaceId",
+            "in": "query",
+            "description": "A marketplace identifier. Specifies the marketplace where the product would be stored.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "SellerSKUList",
+            "in": "query",
+            "description": "A list of SellerSKU values. Used to identify items for which you want inbound guidance for shipment to Amazon's fulfillment network. Note: SellerSKU is qualified by the SellerId, which is included with every Selling Partner API operation that you submit. If you specify a SellerSKU that identifies a variation parent ASIN, this operation returns an error. A variation parent ASIN represents a generic product that cannot be sold. Variation child ASINs represent products that have specific characteristics (such as size and color) and can be sold. ",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50
+          },
+          {
+            "name": "ASINList",
+            "in": "query",
+            "description": "A list of ASIN values. Used to identify items for which you want inbound guidance for shipment to Amazon's fulfillment network. Note: If you specify a ASIN that identifies a variation parent ASIN, this operation returns an error. A variation parent ASIN represents a generic product that cannot be sold. Variation child ASINs represent products that have specific characteristics (such as size and color) and can be sold.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetInboundGuidanceResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "MarketplaceId"
+                    },
+                    "SellerSKUList": {
+                      "value": ["sku1", "sku2"]
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "SKUInboundGuidanceList": [
+                      {
+                        "SellerSKU": "SellerSKU",
+                        "ASIN": "ASIN",
+                        "InboundGuidance": "InboundNotRecommended",
+                        "GuidanceReasonList": [
+                          "SlowMovingASIN"
+                        ]
+                      }
+                    ],
+                    "InvalidSKUList": [
+                      {
+                        "SellerSKU": "SellerSKU",
+                        "ErrorReason": "DoesNotExist"
+                      }
+                    ],
+                    "ASINInboundGuidanceList": [
+                      {
+                        "ASIN": "ASIN",
+                        "InboundGuidance": "InboundNotRecommended",
+                        "GuidanceReasonList": [
+                          "SlowMovingASIN"
+                        ]
+                      }
+                    ],
+                    "InvalidASINList": [
+                      {
+                        "ASIN": "ASIN",
+                        "ErrorReason": "DoesNotExist"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetInboundGuidanceResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "BADVALUE"
+                    },
+                    "SellerSKUList": {
+                      "value": ["sku1", "sku2"]
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "MarketplaceId is incorrect"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetInboundGuidanceResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetInboundGuidanceResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetInboundGuidanceResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetInboundGuidanceResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetInboundGuidanceResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetInboundGuidanceResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/plans": {
+      "post": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns one or more inbound shipment plans, which provide the information you need to create one or more inbound shipments for a set of items that you specify. Multiple inbound shipment plans might be required so that items can be optimally placed in Amazon's fulfillment network—for example, positioning inventory closer to the customer. Alternatively, two inbound shipment plans might be created with the same Amazon fulfillment center destination if the two shipment plans require different processing—for example, items that require labels must be shipped separately from stickerless, commingled inventory.",
+        "operationId": "createInboundShipmentPlan",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateInboundShipmentPlanRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "ShipFromAddress": {
+                          "Name": "Name",
+                          "AddressLine1": "123 any st",
+                          "AddressLine2": "AddressLine2",
+                          "DistrictOrCounty": "Washtenaw",
+                          "City": "Ann Arbor",
+                          "StateOrProvinceCode": "MI",
+                          "CountryCode": "US",
+                          "PostalCode": "48188"
+                        },
+                        "LabelPrepPreference": "SELLER_LABEL",
+                        "ShipToCountryCode": "ShipToCountryCode",
+                        "ShipToCountrySubdivisionCode": "ShipToCountrySubdivisionCode",
+                        "InboundShipmentPlanRequestItems": [
+                          {
+                            "SellerSKU": "SellerSKU",
+                            "ASIN": "ASIN",
+                            "Condition": "NewItem",
+                            "Quantity": 1,
+                            "QuantityInCase": 1,
+                            "PrepDetailsList": [
+                              {
+                                "PrepInstruction": "Polybagging",
+                                "PrepOwner": "AMAZON"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "InboundShipmentPlans": [
+                      {
+                        "ShipmentId": "ShipmentId",
+                        "DestinationFulfillmentCenterId": "ABE2",
+                        "ShipToAddress": {
+                          "Name": "John Doe",
+                          "AddressLine1": "123 any s",
+                          "AddressLine2": "",
+                          "DistrictOrCounty": "Wayne",
+                          "City": "Detroit",
+                          "StateOrProvinceCode": "MI",
+                          "CountryCode": "US",
+                          "PostalCode": "48110"
+                        },
+                        "LabelPrepType": "NO_LABEL",
+                        "Items": [
+                          {
+                            "SellerSKU": "SellerSKU",
+                            "FulfillmentNetworkSKU": "FulfillmentNetworkSKU",
+                            "Quantity": 10,
+                            "PrepDetailsList": [
+                              {
+                                "PrepInstruction": "Polybagging",
+                                "PrepOwner": "AMAZON"
+                              }
+                            ]
+                          }
+                        ],
+                        "EstimatedBoxContentsFee": {
+                          "TotalUnits": 10,
+                          "FeePerUnit": {
+                            "CurrencyCode": "USD",
+                            "Value": 10
+                          },
+                          "TotalFee": {
+                            "CurrencyCode": "USD",
+                            "Value": 10
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "ShipFromAddress": {
+                          "Name": "BADBAD NAME",
+                          "AddressLine1": "BADAddressLine1",
+                          "AddressLine2": "BADAddressLine2",
+                          "DistrictOrCounty": "BADDistrictOrCounty",
+                          "City": "BADCity",
+                          "StateOrProvinceCode": "BADStateOrProvinceCode",
+                          "CountryCode": "BADCountryCode",
+                          "PostalCode": "BADPostalCodeg"
+                        },
+                        "LabelPrepPreference": "BADSELLER_LABEL",
+                        "ShipToCountryCode": "BADShipToCountryCode",
+                        "ShipToCountrySubdivisionCode": "BADShipToCountrySubdivisionCode",
+                        "InboundShipmentPlanRequestItems": [
+                          {
+                            "SellerSKU": "BADSellerSKU",
+                            "ASIN": "BADASIN",
+                            "Condition": "BADNewItem",
+                            "Quantity": 0,
+                            "QuantityInCase": 0,
+                            "PrepDetailsList": [
+                              {
+                                "PrepInstruction": "BADPolybagging",
+                                "PrepOwner": "BADAMAZON"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Invalid data. Please check details"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipments/{shipmentId}": {
+      "post": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns a new inbound shipment based on the specified shipmentId that was returned by the createInboundShipmentPlan operation.",
+        "operationId": "createInboundShipment",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentRequest"
+            }
+          },
+          {
+            "name": "shipmentId",
+            "description":"A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "InboundShipmentHeader": {
+                          "ShipmentName": "43545345",
+                          "ShipFromAddress": {
+                            "Name": "35435345",
+                            "AddressLine1": "123 any st",
+                            "DistrictOrCounty": "Washtenaw",
+                            "City": "Ann Arbor",
+                            "StateOrProvinceCode": "Test",
+                            "CountryCode": "US",
+                            "PostalCode": "48103"
+                          },
+                          "DestinationFulfillmentCenterId": "AEB2",
+                          "AreCasesRequired": true,
+                          "ShipmentStatus": "WORKING",
+                          "LabelPrepPreference": "SELLER_LABEL",
+                          "IntendedBoxContentsSource": "NONE"
+                        },
+                        "InboundShipmentItems": [
+                          {
+                            "ShipmentId": "345453",
+                            "SellerSKU": "34534545",
+                            "FulfillmentNetworkSKU": "435435435",
+                            "QuantityShipped": 0,
+                            "QuantityReceived": 0,
+                            "QuantityInCase": 0,
+                            "ReleaseDate": "2020-04-23",
+                            "PrepDetailsList": [
+                              {
+                                "PrepInstruction": "Polybagging",
+                                "PrepOwner": "AMAZON"
+                              }
+                            ]
+                          }
+                        ],
+                        "MarketplaceId": "MarketplaceId"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "ShipmentId": "ShipmentId"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "MarketplaceId": "BADATVPDKIKX0DER",
+                        "InboundShipmentHeader": {
+                          "ShipmentName": "Shipment for FBA15DJCQ1ZF",
+                          "ShipFromAddress": {
+                            "Name": "Uma Test",
+                            "AddressLine1": "123 any st",
+                            "AddressLine2": "",
+                            "DistrictOrCounty": "Washtenaw",
+                            "City": "Ann Arbor",
+                            "StateOrProvinceCode": "MI",
+                            "CountryCode": "US",
+                            "PostalCode": "48103"
+                          },
+                          "DestinationFulfillmentCenterId": "ABE2",
+                          "ShipmentStatus": "WORKING",
+                          "LabelPrepPreference": "SELLER_LABEL"
+                        },
+                        "InboundShipmentItems": [
+                          {
+                            "ShipmentId": "FBA15DJCQ1ZF",
+                            "SellerSKU": "PSMM-TEST-SKU-Apr-03_21_17_20-0379",
+                            "FulfillmentNetworkSKU": "X0014ENQ7B",
+                            "QuantityShipped": 1,
+                            "QuantityReceived": 1,
+                            "QuantityInCase": 1,
+                            "ReleaseDate": "2020-02-27"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Adds, updates, or removes items from the inbound shipment identified by the specified shipment identifier.",
+        "operationId": "updateInboundShipment",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentRequest"
+            }
+          },
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "MarketplaceId": "ATVPDKIKX0DER",
+                        "InboundShipmentHeader": {
+                          "ShipmentName": "Shipment for FBA15DJCQ1ZF",
+                          "ShipFromAddress": {
+                            "Name": "Uma Test",
+                            "AddressLine1": "123 any st",
+                            "AddressLine2": "",
+                            "DistrictOrCounty": "Washtenaw",
+                            "City": "Ann Arbor",
+                            "StateOrProvinceCode": "CO",
+                            "CountryCode": "US",
+                            "PostalCode": "48104"
+                          },
+                          "DestinationFulfillmentCenterId": "ABE2",
+                          "ShipmentStatus": "WORKING",
+                          "LabelPrepPreference": "SELLER_LABEL"
+                        },
+                        "InboundShipmentItems": [
+                          {
+                            "SellerSKU": "PSMM-TEST-SKU-Apr-03_21_17_20-0379",
+                            "QuantityShipped": 1
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "ShipmentId": "FBA15DJCQ1ZF"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "MarketplaceId": "BADID",
+                        "InboundShipmentHeader": {
+                          "ShipmentName": "Shipment for FBA15DJCQ1ZF",
+                          "ShipFromAddress": {
+                            "Name": "Uma Test",
+                            "AddressLine1": "123 any st",
+                            "AddressLine2": "",
+                            "DistrictOrCounty": "Washtenaw",
+                            "City": "Ann Arbor",
+                            "StateOrProvinceCode": "CO",
+                            "CountryCode": "US",
+                            "PostalCode": "48104"
+                          },
+                          "DestinationFulfillmentCenterId": "ABE2",
+                          "ShipmentStatus": "WORKING",
+                          "LabelPrepPreference": "SELLER_LABEL"
+                        },
+                        "InboundShipmentItems": [
+                          {
+                            "SellerSKU": "PSMM-TEST-SKU-Apr-03_21_17_20-0379",
+                            "QuantityShipped": 1
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/InboundShipmentResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipments/{shipmentId}/preorder": {
+      "get": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns pre-order information, including dates, that a seller needs before confirming a shipment for pre-order.",
+        "operationId": "getPreorderInfo",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "MarketplaceId",
+            "in": "query",
+            "description": "A marketplace identifier. Specifies the marketplace the shipment is tied to.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetPreorderInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    },
+                    "MarketplaceId": {
+                      "value": "MarketplaceId1"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "ShipmentContainsPreorderableItems": true,
+                    "ShipmentConfirmedForPreorder": true,
+                    "NeedByDate": "2020-04-23",
+                    "ConfirmedFulfillableDate": "2020-04-23"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetPreorderInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "BADshipmentId1"
+                    },
+                    "MarketplaceId": {
+                      "value": "BADMarketplaceId1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetPreorderInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetPreorderInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetPreorderInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetPreorderInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetPreorderInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetPreorderInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipments/{shipmentId}/preorder/confirm": {
+      "put": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns information needed to confirm a shipment for pre-order. Call this operation after calling the getPreorderInfo operation to get the NeedByDate value and other pre-order information about the shipment.",
+        "operationId": "confirmPreorder",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "NeedByDate",
+            "description": "Date that the shipment must arrive at the Amazon fulfillment center to avoid delivery promise breaks for pre-ordered items. Must be in YYYY-MM-DD format. The response to the getPreorderInfo operation returns this value.",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "format": "date"
+          },
+          {
+            "name": "MarketplaceId",
+            "in": "query",
+            "description": "A marketplace identifier. Specifies the marketplace the shipment is tied to.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmPreorderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    },
+                    "NeedByDate": {
+                      "value": "2020-10-10"
+                    },
+                    "MarketplaceId": {
+                      "value": "MarketplaceId1"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "ConfirmedNeedByDate": "2020-04-23",
+                    "ConfirmedFulfillableDate": "2020-04-23"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmPreorderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "BADshipmentId1"
+                    },
+                    "NeedByDate": {
+                      "value": "2020-10-10"
+                    },
+                    "MarketplaceId": {
+                      "value": "BADMarketplaceId1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmPreorderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmPreorderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmPreorderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmPreorderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmPreorderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmPreorderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/prepInstructions": {
+      "get": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns labeling requirements and item preparation instructions to help prepare items for shipment to Amazon's fulfillment network.",
+        "operationId": "getPrepInstructions",
+        "parameters": [
+          {
+            "name": "ShipToCountryCode",
+            "description": "The country code of the country to which the items will be shipped. Note that labeling requirements and item preparation instructions can vary by country.",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "format": "[A-Z]{2}"
+          },
+          {
+            "name": "SellerSKUList",
+            "description": "A list of SellerSKU values. Used to identify items for which you want labeling requirements and item preparation instructions for shipment to Amazon's fulfillment network. The SellerSKU is qualified by the Seller ID, which is included with every call to the Seller Partner API.\n\nNote: Include seller SKUs that you have used to list items on Amazon's retail website. If you include a seller SKU that you have never used to list an item on Amazon's retail website, the seller SKU is returned in the InvalidSKUList property in the response.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50
+          },
+          {
+            "name": "ASINList",
+            "description": "A list of ASIN values. Used to identify items for which you want item preparation instructions to help with item sourcing decisions.\n\nNote: ASINs must be included in the product catalog for at least one of the marketplaces that the seller  participates in. Any ASIN that is not included in the product catalog for at least one of the marketplaces that the seller participates in is returned in the InvalidASINList property in the response. You can find out which marketplaces a seller participates in by calling the getMarketplaceParticipations operation in the Selling Partner API for Sellers.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetPrepInstructionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "ShipToCountryCode": {
+                      "value": "US"
+                    },
+                    "ASINList": {
+                      "value": ["ASIN1"]
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "SKUPrepInstructionsList": [
+                      {
+                        "SellerSKU": "SellerSKU",
+                        "ASIN": "ASIN1",
+                        "BarcodeInstruction": "RequiresFNSKULabel",
+                        "PrepGuidance": "ConsultHelpDocuments",
+                        "PrepInstructionList": [
+                          "Polybagging"
+                        ],
+                        "AmazonPrepFeesDetailsList": [
+                          {
+                            "PrepInstruction": "Polybagging",
+                            "FeePerUnit": {
+                              "CurrencyCode": "USD",
+                              "Value": 10
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "InvalidSKUList": [
+                      {
+                        "SellerSKU": "SellerSKU",
+                        "ErrorReason": "DoesNotExist"
+                      }
+                    ],
+                    "ASINPrepInstructionsList": [
+                      {
+                        "ASIN": "ASIN1",
+                        "BarcodeInstruction": "RequiresFNSKULabel",
+                        "PrepGuidance": "ConsultHelpDocuments",
+                        "PrepInstructionList": [
+                          "Polybagging"
+                        ]
+                      }
+                    ],
+                    "InvalidASINList": [
+                      {
+                        "ASIN": "ASIN1",
+                        "ErrorReason": "DoesNotExist"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetPrepInstructionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "ShipToCountryCode": {
+                      "value": "US"
+                    },
+                    "ASINList": {
+                      "value": ["BADASIN"]
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetPrepInstructionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetPrepInstructionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetPrepInstructionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetPrepInstructionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetPrepInstructionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetPrepInstructionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipments/{shipmentId}/transport": {
+      "get": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns current transportation information about an inbound shipment.",
+        "operationId": "getTransportDetails",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "TransportContent": {
+                      "TransportHeader": {
+                        "SellerId": "A3O2V2ZBRHE3NZ",
+                        "ShipmentId": "FBA15DJCPTRK",
+                        "IsPartnered": true,
+                        "ShipmentType": "SP"
+                      },
+                      "TransportDetails": {
+                        "PartneredSmallParcelData": {
+                          "PackageList": [
+                            {
+                              "Dimensions": {
+                                "Length": 11.0,
+                                "Width": 11.0,
+                                "Height": 11.0,
+                                "Unit": "IN"
+                              },
+                              "Weight": {
+                                "Value": 11.0,
+                                "Unit": "pounds"
+                              },
+                              "CarrierName": "UNITED_PARCEL_SERVICE_INC",
+                              "PackageStatus": "SHIPPED"
+                            }
+                          ]
+                        }
+                      },
+                      "TransportResult": {
+                        "TransportStatus": "WORKING"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "BADshipmentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Sends transportation information to Amazon about an inbound shipment.",
+        "operationId": "putTransportDetails",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PutTransportDetailsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/PutTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    },
+                    "body": {
+                      "value": {
+                        "IsPartnered": true,
+                        "ShipmentType": "SP",
+                        "TransportDetails": {
+                          "PartneredSmallParcelData": {
+                            "PackageList": [
+                              {
+                                "Dimensions": {
+                                  "Length": 11,
+                                  "Width": 11,
+                                  "Height": 11,
+                                  "Unit": "inches"
+                                },
+                                "Weight": {
+                                  "Value": 11,
+                                  "Unit": "pounds"
+                                }
+                              }
+                            ],
+                            "CarrierName": "string"
+                          },
+                          "NonPartneredSmallParcelData": {
+                            "CarrierName": "USPS",
+                            "PackageList": [
+                              {
+                                "TrackingId": "werwrwerwrwrer"
+                              }
+                            ]
+                          },
+                          "PartneredLtlData": {
+                            "Contact": {
+                              "Name": "Test1",
+                              "Phone": "234-343-3434",
+                              "Email": "abc@test.com",
+                              "Fax": "234-343-3434"
+                            },
+                            "BoxCount": 1,
+                            "SellerFreightClass": "50",
+                            "FreightReadyDate": "2020-03-27",
+                            "PalletList": [
+                              {
+                                "Dimensions": {
+                                  "Length": 13,
+                                  "Width": 13,
+                                  "Height": 13,
+                                  "Unit": "inches"
+                                },
+                                "Weight": {
+                                  "Value": 13,
+                                  "Unit": "pounds"
+                                },
+                                "IsStacked": true
+                              }
+                            ],
+                            "TotalWeight": {
+                              "Value": 13,
+                              "Unit": "pounds"
+                            },
+                            "SellerDeclaredValue": {
+                              "CurrencyCode": "USD",
+                              "Value": 20
+                            }
+                          },
+                          "NonPartneredLtlData": {
+                            "CarrierName": "USPS",
+                            "ProNumber": "3746274"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "TransportResult": {
+                      "TransportStatus": "WORKING"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/PutTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    },
+                    "body": {
+                      "value": {
+                        "IsPartnered": true,
+                        "ShipmentType": "SP",
+                        "TransportDetails": {
+                          "PartneredSmallParcelData": {
+                            "PackageList": [
+                              {
+                                "Dimensions": {
+                                  "Length": 11,
+                                  "Width": 11,
+                                  "Height": 11,
+                                  "Unit": "inches"
+                                },
+                                "Weight": {
+                                  "Value": 11,
+                                  "Unit": "pounds"
+                                }
+                              }
+                            ],
+                            "CarrierName": "string"
+                          },
+                          "NonPartneredSmallParcelData": {
+                            "CarrierName": "USPS",
+                            "PackageList": [
+                              {
+                                "TrackingId": "werwrwerwrwrer"
+                              }
+                            ]
+                          },
+                          "PartneredLtlData": {
+                            "Contact": {
+                              "Name": "Test1",
+                              "Phone": "234-343-3434",
+                              "Email": "abc@test.com",
+                              "Fax": "234-343-3434"
+                            },
+                            "BoxCount": 1,
+                            "SellerFreightClass": "50",
+                            "FreightReadyDate": "2020-03-27",
+                            "PalletList": [
+                              {
+                                "Dimensions": {
+                                  "Length": 13,
+                                  "Width": 13,
+                                  "Height": 13,
+                                  "Unit": "inches"
+                                },
+                                "Weight": {
+                                  "Value": 13,
+                                  "Unit": "pounds"
+                                },
+                                "IsStacked": true
+                              }
+                            ],
+                            "TotalWeight": {
+                              "Value": 13,
+                              "Unit": "pounds"
+                            },
+                            "SellerDeclaredValue": {
+                              "CurrencyCode": "USD",
+                              "Value": 20
+                            }
+                          },
+                          "NonPartneredLtlData": {
+                            "CarrierName": "USPS",
+                            "ProNumber": "3746274"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/PutTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/PutTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/PutTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/PutTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/PutTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/PutTransportDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipments/{shipmentId}/transport/void": {
+      "post": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Cancels a previously-confirmed request to ship an inbound shipment using an Amazon-partnered carrier.\n\nTo be successful, you must call this operation before the VoidDeadline date that is returned by the getTransportDetails operation.\n\nImportant: The VoidDeadline date is 24 hours after you confirm a Small Parcel shipment transportation request or one hour after you confirm a Less Than Truckload/Full Truckload (LTL/FTL) shipment transportation request. After the void deadline passes, your account will be charged for the shipping cost.",
+        "operationId": "voidTransport",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/VoidTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "TransportResult": {
+                      "TransportStatus": "VOIDING"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/VoidTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "badshipmentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/VoidTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/VoidTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/VoidTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/VoidTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/VoidTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/VoidTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fba/inbound/v0/shipments/{shipmentId}/transport/estimate": {
+      "post": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Initiates the process of estimating the shipping cost for an inbound shipment by an Amazon-partnered carrier.\n\nPrior to calling the estimateTransport operation, you must call the putTransportDetails operation to provide Amazon with the transportation information for the inbound shipment.",
+        "operationId": "estimateTransport",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/EstimateTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "TransportResult": {
+                      "TransportStatus": "ESTIMATING"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/EstimateTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "BadshipmentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/EstimateTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/EstimateTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/EstimateTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/EstimateTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/EstimateTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/EstimateTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipments/{shipmentId}/transport/confirm": {
+      "post": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Confirms that the seller accepts the Amazon-partnered shipping estimate, agrees to allow Amazon to charge their account for the shipping cost, and requests that the Amazon-partnered carrier ship the inbound shipment.\n\nPrior to calling the confirmTransport operation, you should call the getTransportDetails operation to get the Amazon-partnered shipping estimate.\n\nImportant: After confirming the transportation request, if the seller decides that they do not want the Amazon-partnered carrier to ship the inbound shipment, you can call the voidTransport operation to cancel the transportation request. Note that for a Small Parcel shipment, the seller has 24 hours after confirming a transportation request to void the transportation request. For a Less Than Truckload/Full Truckload (LTL/FTL) shipment, the seller has one hour after confirming a transportation request to void it. After the grace period has expired the seller's account will be charged for the shipping cost.",
+        "operationId": "confirmTransport",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "TransportResult": {
+                      "TransportStatus": "CONFIRMING"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ConfirmTransportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipments/{shipmentId}/labels": {
+      "get": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns package/pallet labels for faster and more accurate shipment processing at the Amazon fulfillment center.",
+        "operationId": "getLabels",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "PageType",
+            "description": "The page type to use to print the labels. Possible values: PackageLabel_Letter_2, PackageLabel_Letter_4, PackageLabel_Letter_6, PackageLabel_Letter_6_CarrierLeft, PackageLabel_A4_2, PackageLabel_A4_4, PackageLabel_Plain_Paper, PackageLabel_Plain_Paper_CarrierBottom.",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "PackageLabel_Letter_2",
+              "PackageLabel_Letter_4",
+              "PackageLabel_Letter_6",
+              "PackageLabel_Letter_6_CarrierLeft",
+              "PackageLabel_A4_2",
+              "PackageLabel_A4_4",
+              "PackageLabel_Plain_Paper",
+              "PackageLabel_Plain_Paper_CarrierBottom"
+            ]
+          },
+          {
+            "name": "LabelType",
+            "description": "The type of labels requested. Possible values: DEFAULT, UNIQUE, PALLET.",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "DEFAULT",
+              "UNIQUE",
+              "PALLET"
+            ]
+          },
+          {
+            "name": "NumberOfPackages",
+            "description": "The number of packages in the shipment.",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "PackageLabelsToPrint",
+            "description": "A list of identifiers that specify packages for which you want package labels printed.\n\nMust match CartonId values previously passed using the FBA Inbound Shipment Carton Information Feed. If not, the operation returns the IncorrectPackageIdentifier error code.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 999
+          },
+          {
+            "name": "NumberOfPallets",
+            "description": "The number of pallets in the shipment. This returns four identical labels for each pallet.",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetLabelsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "348975493"
+                    },
+                    "PageType": {
+                      "value": "PackageLabel_Letter_2"
+                    },
+                    "LabelType": {
+                      "value": "DEFAULT"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "DownloadURL": "http://www.labels.url.com"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetLabelsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "BADVALUE"
+                    },
+                    "PageType": {
+                      "value": "PackageLabel_Letter_2"
+                    },
+                    "LabelType": {
+                      "value": "DEFAULT"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetLabelsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetLabelsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetLabelsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetLabelsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetLabelsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetLabelsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipments/{shipmentId}/billOfLading": {
+      "get": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns a bill of lading for a Less Than Truckload/Full Truckload (LTL/FTL) shipment. The getBillOfLading operation returns PDF document data for printing a bill of lading for an Amazon-partnered Less Than Truckload/Full Truckload (LTL/FTL) inbound shipment.",
+        "operationId": "getBillOfLading",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetBillOfLadingResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "DownloadURL": "http://bill-of.lading.url.com"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetBillOfLadingResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "badid1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetBillOfLadingResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetBillOfLadingResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetBillOfLadingResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetBillOfLadingResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetBillOfLadingResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetBillOfLadingResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipments": {
+      "get": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns a list of inbound shipments based on criteria that you specify.",
+        "operationId": "getShipments",
+        "parameters": [
+          {
+            "name": "ShipmentStatusList",
+            "description": "A list of ShipmentStatus values. Used to select shipments with a current status that matches the status values that you specify.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ShipmentStatus"
+            }
+          },
+          {
+            "name": "ShipmentIdList",
+            "description": "A list of shipment IDs used to select the shipments that you want. If both ShipmentStatusList and ShipmentIdList are specified, only shipments that match both parameters are returned.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "LastUpdatedAfter",
+            "description": "A date used for selecting inbound shipments that were last updated after (or at) a specified time. The selection includes updates made by Amazon and by the seller.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "LastUpdatedBefore",
+            "description": "A date used for selecting inbound shipments that were last updated before (or at) a specified time. The selection includes updates made by Amazon and by the seller.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "QueryType",
+            "description": "Indicates whether shipments are returned using shipment information (by providing the ShipmentStatusList or ShipmentIdList parameters), using a date range (by providing the LastUpdatedAfter and LastUpdatedBefore parameters), or by using NextToken to continue returning items specified in a previous request. Possible values: SHIPMENT, DATE_RANGE, NEXT_TOKEN.",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "SHIPMENT",
+              "DATE_RANGE",
+              "NEXT_TOKEN"
+            ]
+          },
+          {
+            "name": "NextToken",
+            "description": "A string token returned in the response to your previous request.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MarketplaceId",
+            "in": "query",
+            "description": "A marketplace identifier. Specifies the marketplace where the product would be stored.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "ATVPDKIKX0DER"
+                    },
+                    "QueryType": {
+                      "value": "SHIPMENT"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "ShipmentData": [
+                      {
+                        "ShipmentId": "FBA15DJ9S3J5",
+                        "ShipmentName": "FBA (2/11/20, 11:18 AM) - 1",
+                        "ShipFromAddress": {
+                          "Name": "vungu+naperfectUS",
+                          "AddressLine1": "501 Fairview Ave N",
+                          "City": "Seattle",
+                          "StateOrProvinceCode": "WA",
+                          "CountryCode": "US",
+                          "PostalCode": "98109"
+                        },
+                        "DestinationFulfillmentCenterId": "MKC6",
+                        "ShipmentStatus": "SHIPPED",
+                        "LabelPrepType": "SELLER_LABEL",
+                        "BoxContentsSource": "INTERACTIVE"
+                      }
+                    ],
+                    "NextToken": "AAAAAAAAAADwtRhfSFJXzbRgKc+wYysmXwEAAAAAAACLuoztkDYG/ClQt9ELs4kYW6MrmpJdFf1QQYk6hSIZSsy5ipek26YvTwmkD9i4cbQny1EWwuuU88wghPxa7770q5R+YYCuP4pYWVy3AVAzWzAib6BRlDr4B0msx6sOKcYCy6ms4J021964JOS9nZhRBGfJ86d96S91rhJPli55+r7Jp+VHPly2FCJ2mAuC53sGTsNP108IUuPdbZqq2myWZ5U+EggLjhRBvXhHFFxRclETG7XfyX46A9nCKKhJYEjDFmMPQoQPtqSuxtMAUMDLPs4MttashstL96Oiu79VYhjV84L13mdMNZS6g21HKgU5E6CDivHvsgS5kC7joXHrXGjwpXMeLcfJqwg+DocBFiU2NELMEbfksrIGXVVjFqiLxHtTiDBsuDxDLbYeVepW0E9oA/ppbZJK4c0nDbgT3WSxxfsgpmAZ42O6iVMhW/KVlJZFDjKsmmHATcq5S5c="
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "BADATVPDKIKX0DER"
+                    },
+                    "QueryType": {
+                      "value": "BADSHIPMENT"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipments/{shipmentId}/items": {
+      "get": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns a list of items in a specified inbound shipment.",
+        "operationId": "getShipmentItemsByShipmentId",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "description": "A shipment identifier used for selecting items in a specific inbound shipment.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "MarketplaceId",
+            "in": "query",
+            "description": "A marketplace identifier. Specifies the marketplace where the product would be stored.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "ATVPDKIKX0DER"
+                    },
+                    "shipmentId": {
+                      "value": "FBA15DJ9SVVD"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "ItemData": [
+                      {
+                        "ShipmentId": "FBA15DF2763D",
+                        "SellerSKU": "CR-47K6-H6QN",
+                        "FulfillmentNetworkSKU": "X0014BIZ8T",
+                        "QuantityShipped": 4,
+                        "QuantityReceived": 0,
+                        "QuantityInCase": 0,
+                        "ReleaseDate": "2013-05-29",
+                        "PrepDetailsList": [
+                          {
+                            "PrepInstruction": "Labeling",
+                            "PrepOwner": "SELLER"
+                          },
+                          {
+                            "PrepInstruction": "Polybagging",
+                            "PrepOwner": "SELLER"
+                          }
+                        ]
+                      }
+                    ],
+                    "NextToken": "AAAAAAAAAABtqoY6CcWi1L8mJB7Nnt2gaQEAAAAAAAD6ehPTas9PliWJK6+QPwRpOgJJTgQphGOQ+9o1k7PBrBe5GrNyGDQYBmz2D4yDT4FVSHVhpbKi8Mgrw3tfRTLrkcMQOn5CvEySS5ePVzv8WhjCDxM9FGwBzoeDWLKx9OEy29XlAFkeBdwaxOAxEMF97uQkxGhUQS5sGeXdSAXNXMgCoOXMgw+JlsgzIq3Byt/yObIt8z9T0GPk440bqiQZl3ceVEiLX2g2LAa5qNwJBtCgYtizJsYSu/tX9zbR0Fe13bSqTOUEAXykYvQSTYCbuEPC3UFukVLobuP0lW+WZzZxcbWRxEzBTHnlgorzdsCc4cBnWVhTdp5nxTPeiYGbda9KilRFXtVl1vgXCHq5npDNV9yULsgjAqFPDBaz8YMlKoJgCe2E1GmbHzenJW21IHcIo3gtmujx+ib3Y9j23SwCfEbsUR9OrFNvGxiZ0VS7qYzm+fvElsU9jBx1PFrOigHnGD71Yq+y"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "BADATVPDKIKX0DER"
+                    },
+                    "shipmentId": {
+                      "value": "BADFBA15DJ9SVVD"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/inbound/v0/shipmentItems": {
+      "get": {
+        "tags": [
+          "fbaInbound"
+        ],
+        "description": "Returns a list of items in a specified inbound shipment, or a list of items that were updated within a specified time frame.",
+        "operationId": "getShipmentItems",
+        "parameters": [
+          {
+            "name": "LastUpdatedAfter",
+            "description": "A date used for selecting inbound shipment items that were last updated after (or at) a specified time. The selection includes updates made by Amazon and by the seller.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "LastUpdatedBefore",
+            "description": "A date used for selecting inbound shipment items that were last updated before (or at) a specified time. The selection includes updates made by Amazon and by the seller.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "QueryType",
+            "description": "Indicates whether items are returned using a date range (by providing the LastUpdatedAfter and LastUpdatedBefore parameters), or using NextToken, which continues returning items specified in a previous request. Possible values: DATE_RANGE, NEXT_TOKEN.",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "DATE_RANGE",
+              "NEXT_TOKEN"
+            ]
+          },
+          {
+            "name": "NextToken",
+            "description": "A string token returned in the response to your previous request.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MarketplaceId",
+            "in": "query",
+            "description": "A marketplace identifier. Specifies the marketplace where the product would be stored.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "ATVPDKIKX0DER"
+                    },
+                    "QueryType": {
+                      "value": "SHIPMENT"
+                    },
+                    "NextToken": {
+                      "value": "NextToken"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "ItemData": [
+                      {
+                        "ShipmentId": "FBA15DF2763D",
+                        "SellerSKU": "CR-47K6-H6QN",
+                        "FulfillmentNetworkSKU": "X0014BIZ8T",
+                        "QuantityShipped": 4,
+                        "QuantityReceived": 0,
+                        "QuantityInCase": 0,
+                        "ReleaseDate": "2013-05-29",
+                        "PrepDetailsList": [
+                          {
+                            "PrepInstruction": "Labeling",
+                            "PrepOwner": "SELLER"
+                          },
+                          {
+                            "PrepInstruction": "Polybagging",
+                            "PrepOwner": "SELLER"
+                          }
+                        ]
+                      }
+                    ],
+                    "NextToken": "AAAAAAAAAABtqoY6CcWi1L8mJB7Nnt2gaQEAAAAAAAD6ehPTas9PliWJK6+QPwRpOgJJTgQphGOQ+9o1k7PBrBe5GrNyGDQYBmz2D4yDT4FVSHVhpbKi8Mgrw3tfRTLrkcMQOn5CvEySS5ePVzv8WhjCDxM9FGwBzoeDWLKx9OEy29XlAFkeBdwaxOAxEMF97uQkxGhUQS5sGeXdSAXNXMgCoOXMgw+JlsgzIq3Byt/yObIt8z9T0GPk440bqiQZl3ceVEiLX2g2LAa5qNwJBtCgYtizJsYSu/tX9zbR0Fe13bSqTOUEAXykYvQSTYCbuEPC3UFukVLobuP0lW+WZzZxcbWRxEzBTHnlgorzdsCc4cBnWVhTdp5nxTPeiYGbda9KilRFXtVl1vgXCHq5npDNV9yULsgjAqFPDBaz8YMlKoJgCe2E1GmbHzenJW21IHcIo3gtmujx+ib3Y9j23SwCfEbsUR9OrFNvGxiZ0VS7qYzm+fvElsU9jBx1PFrOigHnGD71Yq+y"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "BADATVPDKIKX0DER"
+                    },
+                    "QueryType": {
+                      "value": "BADSHIPMENT"
+                    },
+                    "NextToken": {
+                      "value": "BADNextToken"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "Invalid Input",
+                      "message": "Data is invalid. Please check."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    }
+  },
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occured."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition in a human-readable form."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "ASINInboundGuidance": {
+      "description": "Reasons why a given ASIN is not recommended for shipment to Amazon's fulfillment network.",
+      "type": "object",
+      "required": [
+        "ASIN",
+        "InboundGuidance"
+      ],
+      "properties": {
+        "ASIN": {
+          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+          "type": "string"
+        },
+        "InboundGuidance": {
+          "$ref": "#/definitions/InboundGuidance"
+        },
+        "GuidanceReasonList": {
+          "description": "A list of reasons for the current inbound guidance for this item.",
+          "$ref": "#/definitions/GuidanceReasonList"
+        }
+      }
+    },
+    "ASINInboundGuidanceList": {
+      "description": "A list of ASINs and their associated inbound guidance.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ASINInboundGuidance"
+      }
+    },
+    "ASINPrepInstructions": {
+      "description": "Item preparation instructions to help with item sourcing decisions.",
+      "type": "object",
+      "properties": {
+        "ASIN": {
+          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+          "type": "string"
+        },
+        "BarcodeInstruction": {
+          "$ref": "#/definitions/BarcodeInstruction"
+        },
+        "PrepGuidance": {
+          "$ref": "#/definitions/PrepGuidance"
+        },
+        "PrepInstructionList": {
+          "$ref": "#/definitions/PrepInstructionList"
+        }
+      }
+    },
+    "ASINPrepInstructionsList": {
+      "description": "A list of item preparation instructions.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ASINPrepInstructions"
+      }
+    },
+    "Address": {
+      "type": "object",
+      "required": [
+        "AddressLine1",
+        "City",
+        "CountryCode",
+        "Name",
+        "PostalCode",
+        "StateOrProvinceCode"
+      ],
+      "properties": {
+        "Name": {
+          "description": "Name of the individual or business.",
+          "type": "string",
+          "maxLength": 50
+        },
+        "AddressLine1": {
+          "description": "The street address information.",
+          "type": "string",
+          "maxLength": 180
+        },
+        "AddressLine2": {
+          "description": "Additional street address information, if required.",
+          "type": "string",
+          "maxLength": 60
+        },
+        "DistrictOrCounty": {
+          "description": "The district or county.",
+          "type": "string",
+          "maxLength": 25
+        },
+        "City": {
+          "description": "The city.",
+          "type": "string",
+          "maxLength": 30
+        },
+        "StateOrProvinceCode": {
+          "description": "The state or province code.\n\nIf state or province codes are used in your marketplace, it is recommended that you include one with your request. This helps Amazon to select the most appropriate Amazon fulfillment center for your inbound shipment plan.",
+          "type": "string"
+        },
+        "CountryCode": {
+          "description": "The country code in two-character ISO 3166-1 alpha-2 format.",
+          "type": "string"
+        },
+        "PostalCode": {
+          "description": "The postal code.\n\nIf postal codes are used in your marketplace, we recommended that you include one with your request. This helps Amazon select the most appropriate Amazon fulfillment center for the inbound shipment plan.",
+          "type": "string",
+          "maxLength": 30
+        }
+      }
+    },
+    "AmazonPrepFeesDetails": {
+      "description": "The fees for Amazon to prep goods for shipment.",
+      "type": "object",
+      "properties": {
+        "PrepInstruction": {
+          "$ref": "#/definitions/PrepInstruction"
+        },
+        "FeePerUnit": {
+          "description": "The fee for Amazon to prepare 1 unit.",
+          "$ref": "#/definitions/Amount"
+        }
+      }
+    },
+    "AmazonPrepFeesDetailsList": {
+      "description": "A list of preparation instructions and fees for Amazon to prep goods for shipment.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AmazonPrepFeesDetails"
+      }
+    },
+    "Amount": {
+      "description": "The monetary value.",
+      "type": "object",
+      "required": [
+        "CurrencyCode",
+        "Value"
+      ],
+      "properties": {
+        "CurrencyCode": {
+          "$ref": "#/definitions/CurrencyCode"
+        },
+        "Value": {
+          "description": "The amount.",
+          "$ref": "#/definitions/BigDecimalType"
+        }
+      }
+    },
+    "BarcodeInstruction": {
+      "description": "Labeling requirements for the item. For more information about FBA labeling requirements, see the Seller Central Help for your marketplace.",
+      "type": "string",
+      "enum": [
+        "RequiresFNSKULabel",
+        "CanUseOriginalBarcode",
+        "MustProvideSellerSKU"
+      ]
+    },
+    "BigDecimalType": {
+      "type": "number",
+      "format": "double"
+    },
+    "BoxContentsFeeDetails": {
+      "description": "The manual processing fee per unit and total fee for a shipment.",
+      "type": "object",
+      "properties": {
+        "TotalUnits": {
+    "description": "The number of units to ship.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "FeePerUnit": {
+          "description": "The manual processing fee per unit.",
+          "$ref": "#/definitions/Amount"
+        },
+        "TotalFee": {
+          "description": "The total manual processing fee for the shipment.",
+          "$ref": "#/definitions/Amount"
+        }
+      }
+    },
+    "BoxContentsSource": {
+      "description": "Where the seller provided box contents information for a shipment. \n\nPossible values:\n\n* NONE - There is no box contents information for this shipment. Amazon will manually process the box contents information. This may incur a fee.\n\n* FEED - Box contents information is provided through the _POST_FBA_INBOUND_CARTON_CONTENTS_ feed.\n\n* 2D_BARCODE - Box contents information is provided by a barcode on the shipment. For more information, see Using 2D barcodes for box content information on Seller Central.\n\n* INTERACTIVE - Box contents information is provided by an interactive source, such as a web tool.",
+      "type": "string",
+      "enum": [
+        "NONE",
+        "FEED",
+        "2D_BARCODE",
+        "INTERACTIVE"
+      ]
+    },
+    "Condition": {
+      "description": "The condition of the item.",
+      "type": "string",
+      "enum": [
+        "NewItem",
+        "NewWithWarranty",
+        "NewOEM",
+        "NewOpenBox",
+        "UsedLikeNew",
+        "UsedVeryGood",
+        "UsedGood",
+        "UsedAcceptable",
+        "UsedPoor",
+        "UsedRefurbished",
+        "CollectibleLikeNew",
+        "CollectibleVeryGood",
+        "CollectibleGood",
+        "CollectibleAcceptable",
+        "CollectiblePoor",
+        "RefurbishedWithWarranty",
+        "Refurbished",
+        "Club"
+      ]
+    },
+    "ConfirmPreorderResult": {
+      "type": "object",
+      "properties": {
+        "ConfirmedNeedByDate": {
+          "description": "Date passed in with the NeedByDate parameter. The confirmed shipment must arrive at the Amazon fulfillment center by this date to avoid delivery promise breaks for pre-ordered items. In YYYY-MM-DD format.",
+          "$ref": "#/definitions/DateStringType"
+        },
+        "ConfirmedFulfillableDate": {
+          "description": "Date that determines which pre-order items in the shipment are eligible for pre-order. The pre-order Buy Box will appear for any pre-order item in the shipment with a release date on or after this date. In YYYY-MM-DD format.",
+          "$ref": "#/definitions/DateStringType"
+        }
+      }
+    },
+    "ConfirmPreorderResponse": {
+      "description": "The response schema for the confirmPreorder operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the confirmPreorder operation.",
+          "$ref": "#/definitions/ConfirmPreorderResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "CommonTransportResult": {
+      "type": "object",
+      "properties": {
+        "TransportResult": {
+          "$ref": "#/definitions/TransportResult"
+        }
+      }
+    },
+    "ConfirmTransportResponse": {
+      "description": "The response schema for the confirmTransport operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the confirmTransport operation.",
+          "$ref": "#/definitions/CommonTransportResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "Contact": {
+      "description": "Contact information for the person in the seller's organization who is responsible for a Less Than Truckload/Full Truckload (LTL/FTL) shipment.",
+      "type": "object",
+      "required": [
+        "Email",
+        "Name",
+        "Phone"
+      ],
+      "properties": {
+        "Name": {
+          "description": "The name of the contact person.",
+          "type": "string",
+          "maxLength": 50
+        },
+        "Phone": {
+          "description": "The phone number of the contact person.",
+          "type": "string",
+          "maxLength": 20
+        },
+        "Email": {
+          "description": "The email address of the contact person.",
+          "type": "string",
+          "maxLength": 50
+        },
+        "Fax": {
+          "description": "The fax number of the contact person.",
+          "type": "string",
+          "maxLength": 20
+        }
+      }
+    },
+    "CreateInboundShipmentPlanRequest": {
+      "type": "object",
+      "required": [
+        "InboundShipmentPlanRequestItems",
+        "LabelPrepPreference",
+        "ShipFromAddress"
+      ],
+      "properties": {
+        "ShipFromAddress": {
+          "description": "The address from which the inbound shipment will be sent.",
+          "$ref": "#/definitions/Address"
+        },
+        "LabelPrepPreference": {
+          "description": "The seller's preference for label preparation for an inbound shipment.",
+          "$ref": "#/definitions/LabelPrepPreference"
+        },
+        "ShipToCountryCode": {
+          "description": "The two-character country code for the country where the inbound shipment is to be sent.\n\nNote: Not required. Specifying both ShipToCountryCode and ShipToCountrySubdivisionCode returns an error.\n\n Values:\n\n ShipToCountryCode values for North America:\n * CA – Canada\n * MX - Mexico\n * US - United States\n\nShipToCountryCode values for MCI sellers in Europe:\n * DE – Germany\n * ES – Spain\n * FR – France\n * GB – United Kingdom\n * IT – Italy\n\nDefault: The country code for your home marketplace.",
+          "type": "string"
+        },
+        "ShipToCountrySubdivisionCode": {
+          "description": "The two-character country code, followed by a dash and then up to three characters that represent the subdivision of the country where the inbound shipment is to be sent. For example, \"IN-MH\". In full ISO 3166-2 format.\n\nNote: Not required. Specifying both ShipToCountryCode and ShipToCountrySubdivisionCode returns an error.",
+          "type": "string"
+        },
+        "InboundShipmentPlanRequestItems": {
+          "$ref": "#/definitions/InboundShipmentPlanRequestItemList"
+        }
+      }
+    },
+    "CreateInboundShipmentPlanResult": {
+      "type": "object",
+      "properties": {
+        "InboundShipmentPlans": {
+          "$ref": "#/definitions/InboundShipmentPlanList"
+        }
+      }
+    },
+    "CreateInboundShipmentPlanResponse": {
+      "description": "The response schema for the createInboundShipmentPlan operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the createInboundShipmentPlan operation.",
+          "$ref": "#/definitions/CreateInboundShipmentPlanResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "InboundShipmentRequest": {
+      "type": "object",
+      "required": [
+        "MarkeplaceId",
+        "InboundShipmentHeader",
+        "InboundShipmentItems"
+      ],
+      "properties": {
+        "InboundShipmentHeader": {
+          "$ref": "#/definitions/InboundShipmentHeader"
+        },
+        "InboundShipmentItems": {
+          "$ref": "#/definitions/InboundShipmentItemList"
+        },
+        "MarketplaceId": {
+          "description": "A marketplace identifier. Specifies the marketplace where the product would be stored.",
+          "type": "string"
+        }
+      }
+    },
+    "InboundShipmentResult": {
+      "type": "object",
+      "required": [
+        "ShipmentId"
+      ],
+      "properties": {
+        "ShipmentId": {
+          "description": "The shipment identifier submitted in the request.",
+          "type": "string"
+        }
+      }
+    },
+    "InboundShipmentResponse": {
+      "description": "The response schema for this operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for this operation.",
+          "$ref": "#/definitions/InboundShipmentResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "CurrencyCode": {
+      "description": "The currency code.",
+      "type": "string",
+      "enum": [
+        "USD",
+        "GBP"
+      ]
+    },
+    "DateStringType": {
+      "type": "string",
+      "format": "date"
+    },
+    "Dimensions": {
+      "description": "The dimension values and unit of measurement.",
+      "type": "object",
+      "required": [
+        "Height",
+        "Length",
+        "Unit",
+        "Width"
+      ],
+      "properties": {
+        "Length": {
+          "description": "The length dimension.",
+          "$ref": "#/definitions/BigDecimalType"
+        },
+        "Width": {
+          "description": "The width dimension.",
+          "$ref": "#/definitions/BigDecimalType"
+        },
+        "Height": {
+          "description": "The height dimension.",
+          "$ref": "#/definitions/BigDecimalType"
+        },
+        "Unit": {
+          "description": "The unit of measurement for the dimensions.",
+          "$ref": "#/definitions/UnitOfMeasurement"
+        }
+      }
+    },
+    "ErrorReason": {
+      "description": "The reason that the ASIN is invalid.",
+      "type": "string",
+      "enum": [
+        "DoesNotExist",
+        "InvalidASIN"
+      ]
+    },
+    "EstimateTransportResponse": {
+      "description": "The response schema for the estimateTransport operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the estimateTransport operation.",
+          "$ref": "#/definitions/CommonTransportResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetBillOfLadingResponse": {
+      "description": "The response schema for the getBillOfLading operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getBillOfLading operation.",
+          "$ref": "#/definitions/BillOfLadingDownloadURL"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetInboundGuidanceResult": {
+      "type": "object",
+      "properties": {
+        "SKUInboundGuidanceList": {
+          "$ref": "#/definitions/SKUInboundGuidanceList"
+        },
+        "InvalidSKUList": {
+          "$ref": "#/definitions/InvalidSKUList"
+        },
+        "ASINInboundGuidanceList": {
+          "$ref": "#/definitions/ASINInboundGuidanceList"
+        },
+        "InvalidASINList": {
+          "$ref": "#/definitions/InvalidASINList"
+        }
+      }
+    },
+    "GetInboundGuidanceResponse": {
+      "description": "The response schema for the getInboundGuidance operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getInboundGuidance operation.",
+          "$ref": "#/definitions/GetInboundGuidanceResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "LabelDownloadURL": {
+      "type": "object",
+      "properties": {
+        "DownloadURL": {
+          "description": "URL to download the label for the package. Note: The URL will only be valid for 15 seconds",
+          "type": "string"
+        }
+      }
+    },
+    "BillOfLadingDownloadURL": {
+      "type": "object",
+      "properties": {
+        "DownloadURL": {
+          "description": "URL to download the bill of lading for the package. Note: The URL will only be valid for 15 seconds",
+          "type": "string"
+        }
+      }
+    },
+    "GetLabelsResponse": {
+      "description": "The response schema for the getLabels operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getLabels operation.",
+          "$ref": "#/definitions/LabelDownloadURL"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetPreorderInfoResult": {
+      "type": "object",
+      "properties": {
+        "ShipmentContainsPreorderableItems": {
+          "description": "Indicates whether the shipment contains items that have been enabled for pre-order. For more information about enabling items for pre-order, see the Seller Central Help.",
+          "type": "boolean"
+        },
+        "ShipmentConfirmedForPreorder": {
+          "description": "Indicates whether this shipment has been confirmed for pre-order.",
+          "type": "boolean"
+        },
+        "NeedByDate": {
+          "description": "Date that the shipment would need to arrive at an Amazon fulfillment center to avoid delivery promise breaks for pre-ordered items if this shipment is later confirmed for pre-order. In YYYY-MM-DD format. See also the confirmPreorder operation.",
+          "$ref": "#/definitions/DateStringType"
+        },
+        "ConfirmedFulfillableDate": {
+          "description": "Date in YYYY-MM-DD format that determines which pre-order items in the shipment are eligible for pre-order. If this shipment is confirmed for pre-order with a subsequent call to the confirmPreorder operation, the pre-order Buy Box will appear for any pre-order items in the shipment with a release date on or after this date. Call the getShipmentItems operation to get the release dates for the pre-order items in this shipment.",
+          "$ref": "#/definitions/DateStringType"
+        }
+      }
+    },
+    "GetPreorderInfoResponse": {
+      "description": "The response schema for the getPreorderInfo operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getPreorderInfo operation.",
+          "$ref": "#/definitions/GetPreorderInfoResult"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetPrepInstructionsResult": {
+      "type": "object",
+      "properties": {
+        "SKUPrepInstructionsList": {
+          "$ref": "#/definitions/SKUPrepInstructionsList"
+        },
+        "InvalidSKUList": {
+          "$ref": "#/definitions/InvalidSKUList"
+        },
+        "ASINPrepInstructionsList": {
+          "$ref": "#/definitions/ASINPrepInstructionsList"
+        },
+        "InvalidASINList": {
+          "$ref": "#/definitions/InvalidASINList"
+        }
+      }
+    },
+    "GetPrepInstructionsResponse": {
+      "description": "The response schema for the getPrepInstructions operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getPrepInstructions operation.",
+          "$ref": "#/definitions/GetPrepInstructionsResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetTransportDetailsResult": {
+      "type": "object",
+      "properties": {
+        "TransportContent": {
+          "$ref": "#/definitions/TransportContent"
+        }
+      }
+    },
+    "GetTransportDetailsResponse": {
+      "description": "The response schema for the getTransportDetails operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getTransportDetails operation.",
+          "$ref": "#/definitions/GetTransportDetailsResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GuidanceReason": {
+      "description": "A reason for the current inbound guidance for an item.\n\nPossible values:\n\n* SlowMovingASIN - The ASIN is well stocked and/or not selling quickly.\n\n* NoApplicableGuidance - No applicable guidance.",
+      "type": "string",
+      "enum": [
+        "SlowMovingASIN",
+        "NoApplicableGuidance"
+      ]
+    },
+    "GuidanceReasonList": {
+      "description": "A list of inbound guidance reason information.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/GuidanceReason"
+      }
+    },
+    "InboundGuidance": {
+      "description": "Specific inbound guidance for an item.\n\nPossible values:\n\n* InboundNotRecommended - Shipping this item to Amazon's fulfillment network is not recommended.\n\n* InboundOK - Shipping this item to Amazon's fulfillment network should not cause any problems.",
+      "type": "string",
+      "enum": [
+        "InboundNotRecommended",
+        "InboundOK"
+      ]
+    },
+    "InboundShipmentHeader": {
+      "description": "Inbound shipment information used to create and update inbound shipments.",
+      "type": "object",
+      "required": [
+        "DestinationFulfillmentCenterId",
+        "LabelPrepPreference",
+        "ShipFromAddress",
+        "ShipmentName",
+        "ShipmentStatus"
+      ],
+      "properties": {
+        "ShipmentName": {
+          "description": "The name for the shipment. Use a naming convention that helps distinguish between shipments over time, such as the date the shipment was created.",
+          "type": "string"
+        },
+        "ShipFromAddress": {
+          "description": "The return address.",
+          "$ref": "#/definitions/Address"
+        },
+        "DestinationFulfillmentCenterId": {
+          "description": "The identifier for the fulfillment center to which the shipment will be shipped. Get this value from the InboundShipmentPlan object in the response returned by the createInboundShipmentPlan operation.",
+          "type": "string"
+        },
+        "AreCasesRequired": {
+          "description": "Indicates whether or not an inbound shipment contains case-packed boxes. Note: A shipment must contain either all case-packed boxes or all individually packed boxes.\n\nPossible values:\n\ntrue - All boxes in the shipment must be case packed.\n\nfalse - All boxes in the shipment must be individually packed.\n\nNote: If AreCasesRequired = true for an inbound shipment, then the value of QuantityInCase must be greater than zero for every item in the shipment. Otherwise the service returns an error.",
+          "type": "boolean"
+        },
+        "ShipmentStatus": {
+          "$ref": "#/definitions/ShipmentStatus"
+        },
+        "LabelPrepPreference": {
+          "description": "The preference for label preparation for an inbound shipment.",
+          "$ref": "#/definitions/LabelPrepPreference"
+        },
+        "IntendedBoxContentsSource": {
+          "$ref": "#/definitions/IntendedBoxContentsSource"
+        }
+      }
+    },
+    "InboundShipmentInfo": {
+      "description": "Information about the seller's inbound shipments. Returned by the listInboundShipments operation.",
+      "type": "object",
+      "required": [
+        "AreCasesRequired",
+        "ShipFromAddress"
+      ],
+      "properties": {
+        "ShipmentId": {
+          "description": "The shipment identifier submitted in the request.",
+          "type": "string"
+        },
+        "ShipmentName": {
+          "description": "The name for the inbound shipment.",
+          "type": "string"
+        },
+        "ShipFromAddress": {
+          "description": "The return address.",
+          "$ref": "#/definitions/Address"
+        },
+        "DestinationFulfillmentCenterId": {
+          "description": "An Amazon fulfillment center identifier created by Amazon.",
+          "type": "string"
+        },
+        "ShipmentStatus": {
+          "$ref": "#/definitions/ShipmentStatus"
+        },
+        "LabelPrepType": {
+          "$ref": "#/definitions/LabelPrepType"
+        },
+        "AreCasesRequired": {
+          "description": "Indicates whether or not an inbound shipment contains case-packed boxes. When AreCasesRequired = true for an inbound shipment, all items in the inbound shipment must be case packed.",
+          "type": "boolean"
+        },
+        "ConfirmedNeedByDate": {
+          "description": "Date by which the shipment must arrive at the Amazon fulfillment center to avoid delivery promise breaks for pre-ordered items.",
+          "$ref": "#/definitions/DateStringType"
+        },
+        "BoxContentsSource": {
+          "$ref": "#/definitions/BoxContentsSource"
+        },
+        "EstimatedBoxContentsFee": {
+          "description": "An estimate of the manual processing fee charged by Amazon for boxes without box content information. This is only returned when BoxContentsSource is NONE.",
+          "$ref": "#/definitions/BoxContentsFeeDetails"
+        }
+      }
+    },
+    "InboundShipmentItem": {
+      "description": "Item information for an inbound shipment. Submitted with a call to the createInboundShipment or updateInboundShipment operation.",
+      "type": "object",
+      "required": [
+        "QuantityShipped",
+        "SellerSKU"
+      ],
+      "properties": {
+        "ShipmentId": {
+          "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+          "type": "string"
+        },
+        "SellerSKU": {
+          "description": "The seller SKU of the item.",
+          "type": "string"
+        },
+        "FulfillmentNetworkSKU": {
+          "description": "Amazon's fulfillment network SKU of the item.",
+          "type": "string"
+        },
+        "QuantityShipped": {
+          "description": "The item quantity that you are shipping.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "QuantityReceived": {
+          "description": "The item quantity that has been received at an Amazon fulfillment center.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "QuantityInCase": {
+          "description": "The item quantity in each case, for case-packed items. Note that QuantityInCase multiplied by the number of boxes in the inbound shipment equals QuantityShipped. Also note that all of the boxes of an inbound shipment must either be case packed or individually packed. For that reason, when you submit the createInboundShipment or the updateInboundShipment operation, the value of QuantityInCase must be provided for every item in the shipment or for none of the items in the shipment.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "ReleaseDate": {
+          "description": "The date that a pre-order item will be available for sale.",
+          "$ref": "#/definitions/DateStringType"
+        },
+        "PrepDetailsList": {
+          "$ref": "#/definitions/PrepDetailsList"
+        }
+      }
+    },
+    "InboundShipmentItemList": {
+      "description": "A list of inbound shipment item information.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InboundShipmentItem"
+      }
+    },
+    "InboundShipmentList": {
+      "description": "A list of inbound shipment information.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InboundShipmentInfo"
+      }
+    },
+    "InboundShipmentPlan": {
+      "description": "Inbound shipment information used to create an inbound shipment. Returned by the createInboundShipmentPlan operation.",
+      "type": "object",
+      "required": [
+        "DestinationFulfillmentCenterId",
+        "Items",
+        "LabelPrepType",
+        "ShipToAddress",
+        "ShipmentId"
+      ],
+      "properties": {
+        "ShipmentId": {
+          "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+          "type": "string"
+        },
+        "DestinationFulfillmentCenterId": {
+          "description": "An Amazon fulfillment center identifier created by Amazon.",
+          "type": "string"
+        },
+        "ShipToAddress": {
+          "description": "The address of the Amazon fulfillment center to which to ship the items.",
+          "$ref": "#/definitions/Address"
+        },
+        "LabelPrepType": {
+          "$ref": "#/definitions/LabelPrepType"
+        },
+        "Items": {
+          "description" : "SKU and quantity information for the items in the shipment.",
+          "$ref": "#/definitions/InboundShipmentPlanItemList"
+        },
+        "EstimatedBoxContentsFee": {
+          "$ref": "#/definitions/BoxContentsFeeDetails"
+        }
+      }
+    },
+    "InboundShipmentPlanItem": {
+      "description": "Item information used to create an inbound shipment. Returned by the createInboundShipmentPlan operation.",
+      "type": "object",
+      "required": [
+        "FulfillmentNetworkSKU",
+        "Quantity",
+        "SellerSKU"
+      ],
+      "properties": {
+        "SellerSKU": {
+          "description":"The seller SKU of the item.",
+          "type": "string"
+        },
+        "FulfillmentNetworkSKU": {
+          "description": "Amazon's fulfillment network SKU of the item.",
+          "type": "string"
+        },
+        "Quantity": {
+          "description": "The item quantity that you are shipping.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "PrepDetailsList": {
+          "$ref": "#/definitions/PrepDetailsList"
+        }
+      }
+    },
+    "InboundShipmentPlanItemList": {
+      "description": "A list of inbound shipment plan item information.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InboundShipmentPlanItem"
+      }
+    },
+    "InboundShipmentPlanList": {
+      "description": "A list of inbound shipment plan information",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InboundShipmentPlan"
+      }
+    },
+    "InboundShipmentPlanRequestItem": {
+      "description": "Item information for creating an inbound shipment plan. Submitted with a call to the createInboundShipmentPlan operation.",
+      "type": "object",
+      "required": [
+        "ASIN",
+        "Condition",
+        "Quantity",
+        "SellerSKU"
+      ],
+      "properties": {
+        "SellerSKU": {
+          "description": "The seller SKU of the item.",
+          "type": "string"
+        },
+        "ASIN": {
+          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+          "type": "string"
+        },
+        "Condition": {
+          "$ref": "#/definitions/Condition"
+        },
+        "Quantity": {
+          "$ref": "#/definitions/Quantity"
+        },
+        "QuantityInCase": {
+          "description": "The item quantity in each case, for case-packed items. Note that QuantityInCase multiplied by the number of cases in the inbound shipment equals Quantity. Also note that all of the boxes of an inbound shipment must either be case packed or individually packed. For that reason, when you submit the createInboundShipmentPlan operation, the value of QuantityInCase must be provided for every item in the shipment or for none of the items in the shipment.",
+          "$ref": "#/definitions/Quantity"
+        },
+        "PrepDetailsList": {
+          "$ref": "#/definitions/PrepDetailsList"
+        }
+      }
+    },
+    "InboundShipmentPlanRequestItemList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InboundShipmentPlanRequestItem"
+      }
+    },
+    "IntendedBoxContentsSource": {
+      "description": "How the seller intends to provide box contents information for a shipment.\n\nValid values:\n\n * NONE - There is no box content information for this shipment. Amazon will manually process the box contents. This may incur a fee.\n\n * FEED - Box content information is provided through the _POST_FBA_INBOUND_CARTON_CONTENTS_ feed.\n\n * 2D_BARCODE - Box content information is provided by a barcode on the shipment.",
+      "type": "string",
+      "enum": [
+        "NONE",
+        "FEED",
+        "2D_BARCODE"
+      ]
+    },
+    "InvalidASIN": {
+      "type": "object",
+      "properties": {
+        "ASIN": {
+          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+          "type": "string"
+        },
+        "ErrorReason": {
+          "description": "The reason that the ASIN is invalid.",
+          "$ref": "#/definitions/ErrorReason"
+        }
+      }
+    },
+    "InvalidASINList": {
+      "description": "A list of invalid ASIN values and the reasons they are invalid.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InvalidASIN"
+      }
+    },
+    "InvalidSKU": {
+      "type": "object",
+      "properties": {
+        "SellerSKU": {
+          "description": "The seller SKU of the item.",
+          "type": "string"
+        },
+        "ErrorReason": {
+          "description": "The reason why the seller SKU is invalid.",
+          "$ref": "#/definitions/ErrorReason"
+        }
+      }
+    },
+    "InvalidSKUList": {
+      "description": "A list of invalid SKU values and the reason they are invalid.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InvalidSKU"
+      }
+    },
+    "LabelPrepPreference": {
+      "description": "The preference for label preparation for an inbound shipment.",
+      "type": "string",
+      "enum": [
+        "SELLER_LABEL",
+        "AMAZON_LABEL_ONLY",
+        "AMAZON_LABEL_PREFERRED"
+      ]
+    },
+    "LabelPrepType": {
+      "description": "The type of label preparation that is required for the inbound shipment.\n\n Possible values:\n\n * NO_LABEL - No label preparation is required. All items in this shipment will be handled as stickerless, commingled inventory. Note that stickerless, commingled inventory is not available for India (IN). IN sellers must label their items before shipping them to Amazon's fulfillment network.\n\n * SELLER_LABEL - Label preparation by the seller is required.\n\n * AMAZON_LABEL - Label preparation by Amazon is required.\n\n Note: AMAZON_LABEL is available only if you are enrolled in the FBA Label Service. For more information about the FBA Label Service, see the Seller Central Help for your marketplace.",
+      "type": "string",
+      "enum": [
+        "NO_LABEL",
+        "SELLER_LABEL",
+        "AMAZON_LABEL"
+      ]
+    },
+    "GetShipmentItemsResult": {
+      "type": "object",
+      "properties": {
+        "ItemData": {
+          "description": "A list of item information for an inbound shipment.",
+          "$ref": "#/definitions/InboundShipmentItemList"
+        },
+        "NextToken": {
+          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
+          "type": "string"
+        }
+      }
+    },
+    "GetShipmentItemsResponse": {
+      "description": "The response schema for the getShipmentItems operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getShipmentItems operation.",
+          "$ref": "#/definitions/GetShipmentItemsResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetShipmentsResult": {
+      "type": "object",
+      "properties": {
+        "ShipmentData": {
+          "description": "Information about your inbound shipments.",
+          "$ref": "#/definitions/InboundShipmentList"
+        },
+        "NextToken": {
+          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
+          "type": "string"
+        }
+      }
+    },
+    "GetShipmentsResponse": {
+      "description": "The response schema for the getShipments operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getShipments operation.",
+          "$ref": "#/definitions/GetShipmentsResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "NonPartneredLtlDataInput": {
+      "description" : "Information that you provide to Amazon about a Less Than Truckload/Full Truckload (LTL/FTL) shipment by a carrier that has not partnered with Amazon.",
+      "type": "object",
+      "required": [
+        "CarrierName",
+        "ProNumber"
+      ],
+      "properties": {
+        "CarrierName": {
+          "description": "The carrier that you are using for the inbound shipment.",
+          "type": "string"
+        },
+        "ProNumber": {
+          "$ref": "#/definitions/ProNumber"
+        }
+      }
+    },
+    "NonPartneredLtlDataOutput": {
+      "description": "Information returned by Amazon about a Less Than Truckload/Full Truckload (LTL/FTL) shipment shipped by a carrier that has not partnered with Amazon.",
+      "type": "object",
+      "required": [
+        "CarrierName",
+        "ProNumber"
+      ],
+      "properties": {
+        "CarrierName": {
+          "description": "The carrier that you are using for the inbound shipment.",
+          "type": "string"
+        },
+        "ProNumber": {
+          "$ref": "#/definitions/ProNumber"
+        }
+      }
+    },
+    "NonPartneredSmallParcelDataInput": {
+      "description": "Information that you provide to Amazon about a Small Parcel shipment shipped by a carrier that has not partnered with Amazon.",
+      "type": "object",
+      "required": [
+        "CarrierName",
+        "PackageList"
+      ],
+      "properties": {
+        "CarrierName": {
+          "description": "The carrier that you are using for the inbound shipment.",
+          "type": "string"
+        },
+        "PackageList": {
+          "$ref": "#/definitions/NonPartneredSmallParcelPackageInputList"
+        }
+      }
+    },
+    "NonPartneredSmallParcelDataOutput": {
+      "description": "Information returned by Amazon about a Small Parcel shipment by a carrier that has not partnered with Amazon.",
+      "type": "object",
+      "required": [
+        "PackageList"
+      ],
+      "properties": {
+        "PackageList": {
+          "$ref": "#/definitions/NonPartneredSmallParcelPackageOutputList"
+        }
+      }
+    },
+    "NonPartneredSmallParcelPackageInput": {
+      "description": "The tracking number of the package, provided by the carrier.",
+      "type": "object",
+      "required": [
+        "TrackingId"
+      ],
+      "properties": {
+        "TrackingId": {
+          "$ref": "#/definitions/TrackingId"
+        }
+      }
+    },
+    "NonPartneredSmallParcelPackageInputList": {
+      "description": "A list of package tracking information.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/NonPartneredSmallParcelPackageInput"
+      }
+    },
+    "NonPartneredSmallParcelPackageOutput": {
+      "description": "Carrier, tracking number, and status information for the package.",
+      "type": "object",
+      "required": [
+        "CarrierName",
+        "PackageStatus",
+        "TrackingId"
+      ],
+      "properties": {
+        "CarrierName": {
+          "description": "The carrier that you are using for the inbound shipment.",
+          "type": "string"
+        },
+        "TrackingId": {
+          "$ref": "#/definitions/TrackingId"
+        },
+        "PackageStatus": {
+          "$ref": "#/definitions/PackageStatus"
+        }
+      }
+    },
+    "NonPartneredSmallParcelPackageOutputList": {
+      "description": "A list of packages, including carrier, tracking number, and status information for each package.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/NonPartneredSmallParcelPackageOutput"
+      }
+    },
+    "PackageStatus": {
+      "description": "The shipment status of the package.",
+      "type": "string",
+      "enum": [
+        "SHIPPED",
+        "IN_TRANSIT",
+        "DELIVERED",
+        "CHECKED_IN",
+        "RECEIVING",
+        "CLOSED",
+        "DELETED"
+      ]
+    },
+    "Pallet": {
+      "description": "Pallet information.",
+      "type": "object",
+      "required": [
+        "Dimensions",
+        "IsStacked"
+      ],
+      "properties": {
+        "Dimensions": {
+          "description": "The dimensions of the pallet. Length and width must be 40 inches by 48 inches. Height must be less than or equal to 60 inches.",
+          "$ref": "#/definitions/Dimensions"
+        },
+        "Weight": {
+          "description": "The weight of the pallet.",
+          "$ref": "#/definitions/Weight"
+        },
+        "IsStacked": {
+          "description": "Indicates whether pallets will be stacked when carrier arrives for pick-up.",
+          "type": "boolean"
+        }
+      }
+    },
+    "PalletList": {
+      "description": "A list of pallet information.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Pallet"
+      }
+    },
+    "PartneredEstimate": {
+      "description": "The estimated shipping cost for a shipment using an Amazon-partnered carrier.",
+      "type": "object",
+      "required": [
+        "Amount"
+      ],
+      "properties": {
+        "Amount": {
+          "description": "The amount that the Amazon-partnered carrier will charge to ship the inbound shipment.",
+          "$ref": "#/definitions/Amount"
+        },
+        "ConfirmDeadline": {
+          "description": "The date in ISO 8601 date time format by which this estimate must be confirmed. After this date the estimate is no longer valid and cannot be confirmed.\n\nReturned only if the TransportStatus value of the inbound shipment is ESTIMATED.",
+          "$ref": "#/definitions/TimeStampStringType"
+        },
+        "VoidDeadline": {
+          "description": "The date in ISO 8601 date time format after which a confirmed transportation request can no longer be voided. This date is 24 hours after a Small Parcel shipment transportation request is confirmed or one hour after a Less Than Truckload/Full Truckload (LTL/FTL) shipment transportation request is confirmed. After the void deadline passes the seller's account will be charged for the shipping cost.\n\nReturned only if the TransportStatus value of the inbound shipment is CONFIRMED.",
+          "$ref": "#/definitions/TimeStampStringType"
+        }
+      }
+    },
+    "PartneredLtlDataInput": {
+      "description": "Information that is required by an Amazon-partnered carrier to ship a Less Than Truckload/Full Truckload (LTL/FTL) inbound shipment.",
+      "type": "object",
+      "properties": {
+        "Contact": {
+          "description": "Contact information for the person in the seller's organization who is responsible for the shipment. Used by the carrier if they have questions about the shipment.",
+          "$ref": "#/definitions/Contact"
+        },
+        "BoxCount": {
+          "description": "The number of boxes in the shipment.",
+          "$ref": "#/definitions/UnsignedIntType"
+        },
+        "SellerFreightClass": {
+          "$ref": "#/definitions/SellerFreightClass"
+        },
+        "FreightReadyDate": {
+          "description": "The date that the shipment will be ready to be picked up by the carrier.",
+          "$ref": "#/definitions/DateStringType"
+        },
+        "PalletList": {
+          "$ref": "#/definitions/PalletList"
+        },
+        "TotalWeight": {
+          "description": "The total weight of the shipment.",
+          "$ref": "#/definitions/Weight"
+        },
+        "SellerDeclaredValue": {
+          "description": "The declaration of the total value of the inventory in the shipment.",
+          "$ref": "#/definitions/Amount"
+        }
+      }
+    },
+    "PartneredLtlDataOutput": {
+      "description": "Information returned by Amazon about a Less Than Truckload/Full Truckload (LTL/FTL) shipment by an Amazon-partnered carrier.",
+      "type": "object",
+      "required": [
+        "AmazonReferenceId",
+        "BoxCount",
+        "CarrierName",
+        "Contact",
+        "FreightReadyDate",
+        "IsBillOfLadingAvailable",
+        "PalletList",
+        "PreviewDeliveryDate",
+        "PreviewFreightClass",
+        "PreviewPickupDate",
+        "TotalWeight"
+      ],
+      "properties": {
+        "Contact": {
+          "description": "Contact information for the person in the seller's organization who is responsible for the shipment. Used by the carrier if they have questions about the shipment.",
+          "$ref": "#/definitions/Contact"
+        },
+        "BoxCount": {
+          "description": "The number of boxes in the shipment.",
+          "$ref": "#/definitions/UnsignedIntType"
+        },
+        "SellerFreightClass": {
+          "$ref": "#/definitions/SellerFreightClass"
+        },
+        "FreightReadyDate": {
+          "description": "The date that the shipment will be ready to be picked up by the carrier. Must be in YYYY-MM-DD format.",
+          "$ref": "#/definitions/DateStringType"
+        },
+        "PalletList": {
+          "$ref": "#/definitions/PalletList"
+        },
+        "TotalWeight": {
+          "description": "The total weight of the shipment.",
+          "$ref": "#/definitions/Weight"
+        },
+        "SellerDeclaredValue": {
+          "description": "Your declaration of the total value of the inventory in the shipment.",
+          "$ref": "#/definitions/Amount"
+        },
+        "AmazonCalculatedValue": {
+          "description": "Estimate by Amazon of the total value of the inventory in the shipment.",
+          "$ref": "#/definitions/Amount"
+        },
+        "PreviewPickupDate": {
+          "description": "The estimated date that the shipment will be picked up by the carrier, in YYYY-MM-DD format.",
+          "$ref": "#/definitions/DateStringType"
+        },
+        "PreviewDeliveryDate": {
+          "description": "The estimated date that the shipment will be delivered to an Amazon fulfillment center, in YYYY-MM-DD format.",
+          "$ref": "#/definitions/DateStringType"
+        },
+        "PreviewFreightClass": {
+          "description": "The freight class of the shipment as estimated by Amazon if you did not include a freight class when you called the putTransportDetails operation.",
+          "$ref": "#/definitions/SellerFreightClass"
+        },
+        "AmazonReferenceId": {
+          "description": "A unique identifier created by Amazon that identifies this Amazon-partnered, Less Than Truckload/Full Truckload (LTL/FTL) shipment.",
+          "type": "string"
+        },
+        "IsBillOfLadingAvailable": {
+          "description": "Indicates whether the bill of lading for the shipment is available.",
+          "type": "boolean"
+        },
+        "PartneredEstimate": {
+          "description": "The estimated shipping cost using an Amazon-partnered carrier.",
+          "$ref": "#/definitions/PartneredEstimate"
+        },
+        "CarrierName": {
+          "description": "The carrier for the inbound shipment.",
+          "type": "string"
+        }
+      }
+    },
+    "PartneredSmallParcelDataInput": {
+      "description": "Information that is required by an Amazon-partnered carrier to ship a Small Parcel inbound shipment.",
+      "type": "object",
+      "properties": {
+        "PackageList": {
+          "$ref": "#/definitions/PartneredSmallParcelPackageInputList"
+        },
+        "CarrierName": {
+          "description": "The Amazon-partnered carrier to use for the inbound shipment.",
+          "type": "string"
+        }
+      }
+    },
+    "PartneredSmallParcelDataOutput": {
+      "description": "Information returned by Amazon about a Small Parcel shipment by an Amazon-partnered carrier.",
+      "type": "object",
+      "required": [
+        "PackageList"
+      ],
+      "properties": {
+        "PackageList": {
+          "$ref": "#/definitions/PartneredSmallParcelPackageOutputList"
+        },
+        "PartneredEstimate": {
+          "$ref": "#/definitions/PartneredEstimate"
+        }
+      }
+    },
+    "PartneredSmallParcelPackageInput": {
+      "description": "Dimension and weight information for the package.",
+      "type": "object",
+      "required": [
+        "Dimensions",
+        "Weight"
+      ],
+      "properties": {
+        "Dimensions": {
+          "$ref": "#/definitions/Dimensions"
+        },
+        "Weight": {
+          "$ref": "#/definitions/Weight"
+        }
+      }
+    },
+    "PartneredSmallParcelPackageInputList": {
+      "description": "A list of dimensions and weight information for packages.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PartneredSmallParcelPackageInput"
+      }
+    },
+    "PartneredSmallParcelPackageOutput": {
+      "description": "Dimension, weight, and shipping information for the package.",
+      "type": "object",
+      "required": [
+        "CarrierName",
+        "Dimensions",
+        "PackageStatus",
+        "TrackingId",
+        "Weight"
+      ],
+      "properties": {
+        "Dimensions": {
+          "$ref": "#/definitions/Dimensions"
+        },
+        "Weight": {
+          "$ref": "#/definitions/Weight"
+        },
+        "CarrierName": {
+          "description": "The carrier specified with a previous call to putTransportDetails.",
+          "type": "string"
+        },
+        "TrackingId": {
+          "$ref": "#/definitions/TrackingId"
+        },
+        "PackageStatus": {
+          "$ref": "#/definitions/PackageStatus"
+        }
+      }
+    },
+    "PartneredSmallParcelPackageOutputList": {
+      "description": "A list of packages, including shipping information from the Amazon-partnered carrier.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PartneredSmallParcelPackageOutput"
+      }
+    },
+    "PrepDetails": {
+      "description": "Preparation instructions and who is responsible for the preparation.",
+      "type": "object",
+      "required": [
+        "PrepInstruction",
+        "PrepOwner"
+      ],
+      "properties": {
+        "PrepInstruction": {
+          "$ref": "#/definitions/PrepInstruction"
+        },
+        "PrepOwner": {
+          "$ref": "#/definitions/PrepOwner"
+        }
+      }
+    },
+    "PrepDetailsList": {
+      "description": "A list of preparation instructions and who is responsible for that preparation.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PrepDetails"
+      }
+    },
+    "PrepGuidance": {
+      "description": "Item preparation instructions.",
+      "type": "string",
+      "enum": [
+        "ConsultHelpDocuments",
+        "NoAdditionalPrepRequired",
+        "SeePrepInstructionsList"
+      ]
+    },
+    "PrepInstruction": {
+      "description": "Preparation instructions for shipping an item to Amazon's fulfillment network. For more information about preparing items for shipment to Amazon's fulfillment network, see the Seller Central Help for your marketplace.",
+      "type": "string",
+      "enum": [
+        "Polybagging",
+        "BubbleWrapping",
+        "Taping",
+        "BlackShrinkWrapping",
+        "Labeling",
+        "HangGarment"
+      ]
+    },
+    "PrepInstructionList": {
+      "description": "A list of preparation instructions to help with item sourcing decisions.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PrepInstruction"
+      }
+    },
+    "PrepOwner": {
+      "description": "Indicates who will prepare the item.",
+      "type": "string",
+      "enum": [
+        "AMAZON",
+        "SELLER"
+      ]
+    },
+    "ProNumber": {
+      "description": "The PRO number (\"progressive number\" or \"progressive ID\") assigned to the shipment by the carrier.",
+      "type": "string"
+    },
+    "PutTransportDetailsRequest": {
+      "type": "object",
+      "required": [
+        "IsPartnered",
+        "ShipmentType",
+        "TransportDetails"
+      ],
+      "properties": {
+        "IsPartnered": {
+          "description": "Indicates whether a putTransportDetails request is for an Amazon-partnered carrier.",
+          "type": "boolean"
+        },
+        "ShipmentType": {
+          "$ref": "#/definitions/ShipmentType"
+        },
+        "TransportDetails": {
+          "description": "Information required to create an Amazon-partnered carrier shipping estimate, or to alert the Amazon fulfillment center to the arrival of an inbound shipment by a non-Amazon-partnered carrier.",
+          "$ref": "#/definitions/TransportDetailInput"
+        }
+      }
+    },
+    "PutTransportDetailsResponse": {
+      "description": "Workflow status for a shipment with an Amazon-partnered carrier.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the putTransportDetails operation.",
+          "$ref": "#/definitions/CommonTransportResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "Quantity": {
+      "description": "The item quantity.",
+      "type": "integer",
+      "format": "int32"
+    },
+    "SKUInboundGuidance": {
+      "description": "Reasons why a given seller SKU is not recommended for shipment to Amazon's fulfillment network.",
+      "type": "object",
+      "required": [
+        "ASIN",
+        "InboundGuidance",
+        "SellerSKU"
+      ],
+      "properties": {
+        "SellerSKU": {
+          "description": "The seller SKU of the item.",
+          "type": "string"
+        },
+        "ASIN": {
+          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+          "type": "string"
+        },
+        "InboundGuidance": {
+          "description": "Specific inbound guidance for an item.",
+          "$ref": "#/definitions/InboundGuidance"
+        },
+        "GuidanceReasonList": {
+          "description": "A list of reasons for the current inbound guidance for this item.",
+          "$ref": "#/definitions/GuidanceReasonList"
+        }
+      }
+    },
+    "SKUInboundGuidanceList": {
+      "description": "A list of SKU inbound guidance information.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SKUInboundGuidance"
+      }
+    },
+    "SKUPrepInstructions": {
+      "description": "Labeling requirements and item preparation instructions to help you prepare items for shipment to Amazon's fulfillment network.",
+      "type": "object",
+      "properties": {
+        "SellerSKU": {
+          "description": "The seller SKU of the item.",
+          "type": "string"
+        },
+        "ASIN": {
+          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+          "type": "string"
+        },
+        "BarcodeInstruction": {
+          "$ref": "#/definitions/BarcodeInstruction"
+        },
+        "PrepGuidance": {
+          "$ref": "#/definitions/PrepGuidance"
+        },
+        "PrepInstructionList": {
+          "$ref": "#/definitions/PrepInstructionList"
+        },
+        "AmazonPrepFeesDetailsList": {
+          "$ref": "#/definitions/AmazonPrepFeesDetailsList"
+        }
+      }
+    },
+    "SKUPrepInstructionsList": {
+      "description": "A list of SKU labeling requirements and item preparation instructions.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SKUPrepInstructions"
+      }
+    },
+    "SellerFreightClass": {
+      "description": "The freight class of the shipment. For information about determining the freight class, contact the carrier.",
+      "type": "string",
+      "enum": [
+        "50",
+        "55",
+        "60",
+        "65",
+        "70",
+        "77.5",
+        "85",
+        "92.5",
+        "100",
+        "110",
+        "125",
+        "150",
+        "175",
+        "200",
+        "250",
+        "300",
+        "400",
+        "500"
+      ]
+    },
+    "ShipmentStatus": {
+      "description": "Indicates the status of the inbound shipment. When used with the createInboundShipment operation, WORKING is the only valid value. When used with the updateInboundShipment operation, possible values are WORKING, SHIPPED or CANCELLED.\n\nPossible values:\n\n* WORKING - The shipment was created by the seller, but has not yet shipped.\n\n* SHIPPED - The shipment was picked up by the carrier.\n\n* RECEIVING - The shipment has arrived at the fulfillment center, but not all items have been marked as received.\n\n* CANCELLED - The shipment was cancelled by the seller after the shipment was sent to the fulfillment center.\n\n* DELETED - The shipment was cancelled by the seller before the shipment was sent to the  fulfillment center.\n\n* CLOSED - The shipment has arrived at the fulfillment center and all items have been marked as received.\n\n* ERROR - There was an error with the shipment and it was not processed by Amazon.\n\n* IN_TRANSIT - The carrier has notified the fulfillment center that it is aware of the shipment.\n\n* DELIVERED - The shipment was delivered by the carrier to the fulfillment center.\n\n* CHECKED_IN - The shipment was checked-in at the receiving dock of the fulfillment center.",
+      "type": "string",
+      "enum": [
+        "WORKING",
+        "SHIPPED",
+        "RECEIVING",
+        "CANCELLED",
+        "DELETED",
+        "CLOSED",
+        "ERROR",
+        "IN_TRANSIT",
+        "DELIVERED",
+        "CHECKED_IN"
+      ]
+    },
+    "ShipmentType": {
+      "description" : "Specifies the carrier shipment type in a putTransportDetails request. Possible values: SP - Small Parcel, LTL - Less Than Truckload/Full Truckload (LTL/FTL).",
+      "type": "string",
+      "enum": [
+        "SP",
+        "LTL"
+      ]
+    },
+    "TimeStampStringType": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "TrackingId": {
+      "description": "The tracking number of the package, provided by the carrier.",
+      "type": "string"
+    },
+    "TransportContent": {
+      "description": "Inbound shipment information, including carrier details, shipment status, and the workflow status for a request for shipment with an Amazon-partnered carrier.",
+      "type": "object",
+      "required": [
+        "TransportDetails",
+        "TransportHeader",
+        "TransportResult"
+      ],
+      "properties": {
+        "TransportHeader": {
+          "$ref": "#/definitions/TransportHeader"
+        },
+        "TransportDetails": {
+          "$ref": "#/definitions/TransportDetailOutput"
+        },
+        "TransportResult": {
+          "$ref": "#/definitions/TransportResult"
+        }
+      }
+    },
+    "TransportDetailInput": {
+      "description": "Information required to create an Amazon-partnered carrier shipping estimate, or to alert the Amazon fulfillment center to the arrival of an inbound shipment by a non-Amazon-partnered carrier.",
+      "type": "object",
+      "properties": {
+        "PartneredSmallParcelData": {
+          "$ref": "#/definitions/PartneredSmallParcelDataInput"
+        },
+        "NonPartneredSmallParcelData": {
+          "$ref": "#/definitions/NonPartneredSmallParcelDataInput"
+        },
+        "PartneredLtlData": {
+          "$ref": "#/definitions/PartneredLtlDataInput"
+        },
+        "NonPartneredLtlData": {
+          "$ref": "#/definitions/NonPartneredLtlDataInput"
+        }
+      }
+    },
+    "TransportDetailOutput": {
+      "description": "Inbound shipment information, including carrier details and shipment status.",
+      "type": "object",
+      "properties": {
+        "PartneredSmallParcelData": {
+          "$ref": "#/definitions/PartneredSmallParcelDataOutput"
+        },
+        "NonPartneredSmallParcelData": {
+          "$ref": "#/definitions/NonPartneredSmallParcelDataOutput"
+        },
+        "PartneredLtlData": {
+          "$ref": "#/definitions/PartneredLtlDataOutput"
+        },
+        "NonPartneredLtlData": {
+          "$ref": "#/definitions/NonPartneredLtlDataOutput"
+        }
+      }
+    },
+    "TransportHeader": {
+      "description": "The shipping identifier, information about whether the shipment is by an Amazon-partnered carrier, and information about whether the shipment is Small Parcel or Less Than Truckload/Full Truckload (LTL/FTL).",
+      "type": "object",
+      "required": [
+        "IsPartnered",
+        "SellerId",
+        "ShipmentId",
+        "ShipmentType"
+      ],
+      "properties": {
+        "SellerId": {
+          "description": "The Amazon seller identifier.",
+          "type": "string"
+        },
+        "ShipmentId": {
+          "description": "A shipment identifier originally returned by the createInboundShipmentPlan operation.",
+          "type": "string"
+        },
+        "IsPartnered": {
+          "description": "Indicates whether a putTransportDetails request is for a partnered carrier.\n\nPossible values:\n\n* true – Request is for an Amazon-partnered carrier.\n\n* false – Request is for a non-Amazon-partnered carrier.",
+          "type": "boolean"
+        },
+        "ShipmentType": {
+          "$ref": "#/definitions/ShipmentType"
+        }
+      }
+    },
+    "TransportResult": {
+      "description": "The workflow status for a shipment with an Amazon-partnered carrier.",
+      "type": "object",
+      "required": [
+        "TransportStatus"
+      ],
+      "properties": {
+        "TransportStatus": {
+          "$ref": "#/definitions/TransportStatus"
+        },
+        "ErrorCode": {
+          "description" : "An error code that identifies the type of error that occured.",
+          "type": "string"
+        },
+        "ErrorDescription": {
+          "description" : "A message that describes the error condition.",
+          "type": "string"
+        }
+      }
+    },
+    "TransportStatus": {
+      "description": "Indicates the status of the Amazon-partnered carrier shipment.",
+      "type": "string",
+      "enum": [
+        "WORKING",
+        "ESTIMATING",
+        "ESTIMATED",
+        "ERROR_ON_ESTIMATING",
+        "CONFIRMING",
+        "CONFIRMED",
+        "ERROR_ON_CONFIRMING",
+        "VOIDING",
+        "VOIDED",
+        "ERROR_IN_VOIDING",
+        "ERROR"
+      ]
+    },
+    "UnitOfMeasurement": {
+      "description" : "Indicates the unit of measurement.",
+      "type": "string",
+      "enum": [
+        "inches",
+        "centimeters"
+      ]
+    },
+    "UnitOfWeight": {
+      "description": "Indicates the unit of weight.",
+      "type": "string",
+      "enum": [
+        "pounds",
+        "kilograms"
+      ]
+    },
+    "UnsignedIntType": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "VoidTransportResponse": {
+      "description": "The response schema for the voidTransport operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the voidTransport operation.",
+          "$ref": "#/definitions/CommonTransportResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "Weight": {
+      "description": "The weight of the package.",
+      "type": "object",
+      "required": [
+        "Unit",
+        "Value"
+      ],
+      "properties": {
+        "Value": {
+          "description": "The weight value.",
+          "$ref": "#/definitions/BigDecimalType"
+        },
+        "Unit": {
+          "$ref": "#/definitions/UnitOfWeight"
+        }
+      }
+    }
+  }
+}

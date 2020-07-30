@@ -1,0 +1,1488 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Feeds lets you upload inventory and order data to Amazon, and return information about the result of an upload.",
+    "version": "v0",
+    "title": "Selling Partner API for Feeds",
+    "contact": {
+      "name": "Selling Partner API Test Support",
+      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/feeds/v0/submissions": {
+      "get": {
+        "tags": [
+          "feeds"
+        ],
+        "description": "Returns a list of feed submissions submitted in the previous 90 days that match the query parameters.",
+        "operationId": "getFeedSubmissionList",
+        "parameters": [
+          {
+            "name": "FeedSubmissionIds",
+            "in": "query",
+            "description": "A list of no more than 100 FeedSubmissionId values.",
+            "required": false,
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/parameters/FeedTypeList"
+          },
+          {
+            "name": "MaxCount",
+            "in": "query",
+            "description": "A non-negative integer that indicates the maximum number of feed submissions to return in the list.",
+            "required": false,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          },
+          {
+            "name": "FeedProcessingStatuses",
+            "in": "query",
+            "description": "A list of one or more feed processing statuses by which to filter the list of feed submissions. Possible values: _CANCELLED_,_DONE_,_IN_PROGRESS_,_SUBMITTED_,_AWAITING_ASYNCHRONOUS_REPLY_,_IN_SAFETY_NET_,_UNCONFIRMED_.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "_CANCELLED_",
+                "_DONE_",
+                "_IN_PROGRESS_",
+                "_SUBMITTED_",
+                "_AWAITING_ASYNCHRONOUS_REPLY_",
+                "_IN_SAFETY_NET_",
+                "_UNCONFIRMED_"
+              ]
+            }
+          },
+          {
+            "name": "SubmittedFromDate",
+            "in": "query",
+            "description": "The earliest submission date to include, in ISO8601 date time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "SubmittedToDate",
+            "in": "query",
+            "description": "The latest submission date to include, in ISO8601 date time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "NextToken",
+            "in": "query",
+            "description": "A string token returned in the response to your previous request.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionListResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "FeedSubmissionIds": {
+                      "value": [
+                        "FeedSubmissionId1",
+                        "FeedSubmissionId2"
+                      ]
+                    },
+                    "MaxCount": {
+                      "value": 10
+                    },
+                    "FeedProcessingStatuses": {
+                      "value": [
+                        "_CANCELLED_",
+                        "_DONE_"
+                      ]
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "NextToken": "eukhdkdghdkjsfhjdfhkfjsd",
+                    "HasNext": true,
+                    "FeedSubmissionInfoList": [
+                      {
+                        "FeedSubmissionId": "FeedSubmissionId1",
+                        "FeedType": "_POST_PRODUCT_DATA_",
+                        "SubmittedDate": "2019-12-11T13:16:24.630Z",
+                        "FeedProcessingStatus": "_CANCELLED_",
+                        "StartedProcessingDate": "2019-12-11T13:16:24.630Z",
+                        "CompletedProcessingDate": "2019-12-11T13:16:24.630Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionListResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "FeedSubmissionIds": {
+                      "value": [
+                        "BadID1",
+                        "BadID2"
+                      ]
+                    },
+                    "MaxCount": {
+                      "value": 10
+                    },
+                    "FeedProcessingStatuses": {
+                      "value": [
+                        "_CANCELLED_",
+                        "_DONE_"
+                      ]
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Dates were not provided"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionListResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionListResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionListResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionListResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionListResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionListResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/feeds/v0/submissionCount": {
+      "get": {
+        "tags": [
+          "feeds"
+        ],
+        "description": "Returns a count of the feeds submitted in the previous 90 days.",
+        "operationId": "getFeedSubmissionCount",
+        "parameters": [
+          {
+            "$ref": "#/parameters/FeedTypeList"
+          },
+          {
+            "name": "FeedProcessingStatuses",
+            "in": "query",
+            "description": "A list of one or more feed processing statuses by which to filter the list of feed submissions.\n\nPossible values: _CANCELLED_,_DONE_,_IN_PROGRESS_,_SUBMITTED_,_AWAITING_ASYNCHRONOUS_REPLY_,_IN_SAFETY_NET_,_UNCONFIRMED_",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "_CANCELLED_",
+                "_DONE_",
+                "_IN_PROGRESS_",
+                "_SUBMITTED_",
+                "_AWAITING_ASYNCHRONOUS_REPLY_",
+                "_IN_SAFETY_NET_",
+                "_UNCONFIRMED_"
+              ]
+            }
+          },
+          {
+            "name": "SubmittedFromDate",
+            "in": "query",
+            "description": "The earliest submission date to include, in ISO8601 date time  format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "SubmittedToDate",
+            "in": "query",
+            "description": "The latest submission date to include, in ISO8601 date time  format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionCountResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "FeedProcessingStatuses": {
+                      "value": [
+                        "_CANCELLED_",
+                        "_IN_PROGRESS_"
+                      ]
+                    },
+                    "SubmittedFromDate": {
+                      "value": "2019-11-10T20:11:24.000Z"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "Count": 100
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionCountResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "FeedProcessingStatuses": {
+                      "value": [
+                        "_BAD_VALUE_"
+                      ]
+                    },
+                    "SubmittedFromDate": {
+                      "value": "2019-12-10T20:11:24.000Z"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionCountResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionCountResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionCountResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionCountResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionCountResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionCountResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/feeds/v0/cancel": {
+      "post": {
+        "tags": [
+          "feeds"
+        ],
+        "description": "Cancels one or more feed submissions and returns a count of the feed submissions that were canceled.",
+        "operationId": "cancelFeedSubmissions",
+        "parameters": [
+          {
+            "name": "FeedSubmissionIds",
+            "in": "query",
+            "description": "A list of no more than 100 FeedSubmissionId values.",
+            "required": false,
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/parameters/FeedTypeList"
+          },
+          {
+            "name": "SubmittedFromDate",
+            "in": "query",
+            "description": "The earliest submission date to include, in ISO8601 date time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "SubmittedToDate",
+            "in": "query",
+            "description": "The latest submission date to include, in ISO8601 date time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CancelFeedSubmissionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "FeedSubmissionIds": {
+                      "value": [
+                        "ID1",
+                        "ID2"
+                      ]
+                    },
+                    "SubmittedFromDate": {
+                      "value": "2018-12-10T20:11:24.000Z"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "FeedSubmissionInfoList": [
+                      {
+                        "FeedSubmissionId": "ID1",
+                        "FeedType": "_POST_PRODUCT_DATA_",
+                        "SubmittedDate": "2019-12-11T13:32:30.686Z",
+                        "FeedProcessingStatus": "_DONE_",
+                        "StartedProcessingDate": "2019-12-11T13:32:30.686Z",
+                        "CompletedProcessingDate": "2019-12-11T13:32:30.686Z"
+                      },
+                      {
+                        "FeedSubmissionId": "ID2",
+                        "FeedType": "_POST_INVENTORY_AVAILABILITY_DATA_",
+                        "SubmittedDate": "2019-12-11T13:32:30.686Z",
+                        "FeedProcessingStatus": "_IN_PROGRESS_",
+                        "StartedProcessingDate": "2019-12-11T13:32:30.686Z",
+                        "CompletedProcessingDate": "2019-12-11T13:32:30.686Z"
+                      }
+                    ],
+                    "Count": 10
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/CancelFeedSubmissionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "FeedSubmissionIds": {
+                      "value": [
+                        "BADID1",
+                        "BADID2"
+                      ]
+                    },
+                    "SubmittedFromDate": {
+                      "value": "2018-12-10T20:11:24.000Z"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/CancelFeedSubmissionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/CancelFeedSubmissionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/CancelFeedSubmissionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/CancelFeedSubmissionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/CancelFeedSubmissionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/CancelFeedSubmissionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/feeds/v0/submissions/{feedSubmissionId}/result": {
+      "get": {
+        "tags": [
+          "feeds"
+        ],
+        "description": "Returns the feed processing report for the specified feedSubmissionId.",
+        "operationId": "getFeedSubmissionResult",
+        "parameters": [
+          {
+            "name": "feedSubmissionId",
+            "in": "path",
+            "description": "The identifier of the feed submission for which you are requesting a feed processing report.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionResultResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "feedSubmissionId": {
+                      "value": "feedSubmissionId1"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "destination": {
+                      "channel": "cloudfront",
+                      "url": "https://d34o8swod1owfl.cloudfront.net/SampleResult%2BKey%3DSample%2BINITVEC%3D58+fa+bf+a7+08+11+95+0f+c1+a8+c6+e0+d5+6f+ae+c8"
+                    },
+                    "encryptionDetails": {
+                      "standard": "AES",
+                      "initializationVector": "58 fa bf a7 08 11 95 0f c1 a8 c6 e0 d5 6f ae c8",
+                      "key": "Sample"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionResultResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "feedSubmissionId": {
+                      "value": "badFeedSubmissionId1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionResultResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionResultResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionResultResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionResultResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionResultResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedSubmissionResultResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/feeds/v0/submit/{feedType}": {
+      "post": {
+        "tags": [
+          "feeds"
+        ],
+        "description": "Submits a feed for processing.",
+        "operationId": "submitFeed",
+        "parameters": [
+          {
+            "$ref": "#/parameters/FeedType"
+          },
+          {
+            "in": "body",
+            "name": "feedSubmission",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubmitFeedRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/SubmitFeedResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "MarketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A1F83G8C2ARO7P"
+                        ],
+                        "ContentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                        "UploadDestinationId": "73487458345"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "FeedSubmissionId": "23492394"
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "MarketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A1F83G8C2ARO7P"
+                        ],
+                        "ContentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                        "UploadDestinationId": "3d4e42b5-1d6e-44e8-a89c-2abfca0625bb"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "FeedSubmissionId": "3485934"
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "MarketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A1F83G8C2ARO7P"
+                        ],
+                        "ContentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                        "UploadDestinationId": "4d4e42b5-1d6e-44e8-a89c-2abfca0625bb"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "FeedSubmissionId": "3453453"
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "MarketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A1F83G8C2ARO7P"
+                        ],
+                        "ContentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                        "UploadDestinationId": "5d4e42b5-1d6e-44e8-a89c-2abfca0625bb"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "FeedSubmissionId": "345345345"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/SubmitFeedResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "MarketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A1F83G8C2ARO7P"
+                        ],
+                        "ContentSha256": "badSHA256",
+                        "UploadDestinationId": "546546456456"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/SubmitFeedResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/SubmitFeedResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/SubmitFeedResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/SubmitFeedResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/SubmitFeedResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/SubmitFeedResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    }
+  },
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition in a human-readable form."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "An error response returned when the request is unsuccessful."
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "GetFeedSubmissionCountResult": {
+      "type": "object",
+      "properties": {
+        "Count": {
+          "description": "The total number of feed submissions that match the request parameters.",
+          "type": "integer"
+        }
+      },
+      "description": "The payload for the getFeedSubmissionCount operation."
+    },
+    "GetFeedSubmissionCountResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/GetFeedSubmissionCountResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "Response schema."
+    },
+    "CancelFeedSubmissionsResult": {
+      "type": "object",
+      "properties": {
+        "FeedSubmissionInfoList": {
+          "$ref": "#/definitions/FeedSubmissionInfoList"
+        },
+        "Count": {
+          "description": "The number of canceled feed submissions.",
+          "type": "integer"
+        }
+      },
+      "description": "The payload for the cancelFeedSubmissions operation."
+    },
+    "CancelFeedSubmissionsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/CancelFeedSubmissionsResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "Response schema."
+    },
+    "SubmitFeedInfo": {
+      "type": "object",
+      "required": [
+        "FeedSubmissionId"
+      ],
+      "properties": {
+        "FeedSubmissionId": {
+          "description": "A unique feed submission identifier.",
+          "type": "string"
+        }
+      }
+    },
+    "FeedSubmissionInfo": {
+      "type": "object",
+      "required": [
+        "FeedProcessingStatus",
+        "FeedSubmissionId",
+        "FeedType",
+        "SubmittedDate"
+      ],
+      "properties": {
+        "FeedSubmissionId": {
+          "description": "A unique feed submission identifier.",
+          "type": "string"
+        },
+        "FeedType": {
+          "description": "The type of feed submitted. This is the FeedType value that was provided to the submitFeed operation. For possible values, see the FeedType enumeration in the Swagger model.",
+          "type": "string"
+        },
+        "SubmittedDate": {
+          "type": "string",
+          "description": "The date and time when the feed was submitted, in ISO 8601 date time format.",
+          "format": "date-time"
+        },
+        "FeedProcessingStatus": {
+          "description": "The processing status of the feed submission. Possible values: \\_CANCELLED\\_ - The request has been aborted due to a fatal error. \\_DONE\\_ - The request has been processed. You can call the getFeedSubmissionResult operation to receive a processing report that describes which records in the feed were successful and which records generated errors. \\_IN\\_PROGRESS\\_ - The request is being processed. \\_SUBMITTED\\_ - The request has been received, but has not yet started processing. \\_AWAITING\\_ASYNCHRONOUS\\_REPLY\\_ - The request is being processed, but is waiting for external information before it can complete. \\_IN\\_SAFETY\\_NET\\_ - The request is being processed, but the system has determined that there is a potential error with the feed (for example, the request will remove all inventory from a seller's account.) An Amazon seller support associate will contact the seller to confirm whether the feed should be processed. \\_UNCONFIRMED\\_ - The request is pending.",
+          "type": "string"
+        },
+        "StartedProcessingDate": {
+          "description": "The date and time when the feed processing started, in ISO 8601 date time format.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "CompletedProcessingDate": {
+          "description": "The date and time when the feed processing completed, in ISO 8601 date time format.",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "FeedSubmissionInfoList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FeedSubmissionInfo"
+      }
+    },
+    "GetFeedSubmissionListResult": {
+      "type": "object",
+      "properties": {
+        "NextToken": {
+          "description": "When HasNext is true, pass this string token in the next request to return the next response page.",
+          "type": "string"
+        },
+        "HasNext": {
+          "description": "When true, provide the NextToken value in the next request to return the next response page.",
+          "type": "boolean"
+        },
+        "FeedSubmissionInfoList": {
+          "$ref": "#/definitions/FeedSubmissionInfoList"
+        }
+      }
+    },
+    "GetFeedSubmissionListResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/GetFeedSubmissionListResult"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "Response schema."
+    },
+    "Destination": {
+      "description": "The location of the feed submission result.",
+      "type": "object",
+      "properties": {
+        "channel": {
+          "description": "The distribution channel used to retrieve the feed submission result.",
+          "type": "string"
+        },
+        "url": {
+          "description": "The URL of the feed submission result.",
+          "type": "string"
+        }
+      }
+    },
+    "EncryptionDetails": {
+      "type": "object",
+      "description": "Encryption details for required client-side decryption of feed submission results.",
+      "properties": {
+        "standard": {
+          "description": "The encryption standard required prior to upload.",
+          "type": "string",
+          "enum": [
+            "AES"
+          ]
+        },
+        "initializationVector": {
+          "type": "string",
+          "description": "The vector to decrypt the content using Cipher Block Chaining (CBC)."
+        },
+        "key": {
+          "type": "string",
+          "description": "The encryption key used to decrypt the content."
+        }
+      }
+    },
+    "GetFeedSubmissionResultPayload": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "$ref": "#/definitions/Destination"
+        },
+        "encryptionDetails": {
+          "$ref": "#/definitions/EncryptionDetails"
+        },
+        "isGzipped": {
+          "description": "When true, the feed submission result has been compressed using Gzip compression.",
+          "type": "boolean"
+        }
+      }
+    },
+    "GetFeedSubmissionResultResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/GetFeedSubmissionResultPayload"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "Response schema."
+    },
+    "SubmitFeedResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/SubmitFeedInfo"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "Response schema."
+    },
+    "FeedTypeEnum": {
+      "type": "string",
+      "description": "The feed type enumeration.",
+      "enum": [
+        "_POST_PRODUCT_DATA_",
+        "_POST_INVENTORY_AVAILABILITY_DATA_",
+        "_POST_PRODUCT_OVERRIDES_DATA_",
+        "_POST_PRODUCT_PRICING_DATA_",
+        "_POST_PRODUCT_IMAGE_DATA_",
+        "_POST_PRODUCT_RELATIONSHIP_DATA_",
+        "_POST_FLAT_FILE_INVLOADER_DATA_",
+        "_POST_FLAT_FILE_LISTINGS_DATA_",
+        "_POST_FLAT_FILE_BOOKLOADER_DATA_",
+        "_POST_FLAT_FILE_CONVERGENCE_LISTINGS_DATA_",
+        "_POST_FLAT_FILE_PRICEANDQUANTITYONLY_UPDATE_DATA_",
+        "_POST_UIEE_BOOKLOADER_DATA_",
+        "_POST_STD_ACES_DATA_",
+        "_POST_ORDER_ACKNOWLEDGEMENT_DATA_",
+        "_POST_PAYMENT_ADJUSTMENT_DATA_",
+        "_POST_ORDER_FULFILLMENT_DATA_",
+        "_POST_INVOICE_CONFIRMATION_DATA_",
+        "_POST_EXPECTED_SHIP_DATE_SOD_",
+        "_POST_FLAT_FILE_ORDER_ACKNOWLEDGEMENT_DATA_",
+        "_POST_FLAT_FILE_PAYMENT_ADJUSTMENT_DATA_",
+        "_POST_FLAT_FILE_FULFILLMENT_DATA_",
+        "_POST_EXPECTED_SHIP_DATE_SOD_FLAT_FILE_",
+        "_POST_FULFILLMENT_ORDER_REQUEST_DATA_",
+        "_POST_FULFILLMENT_ORDER_CANCELLATION_REQUEST_DATA_",
+        "_POST_FBA_INBOUND_CARTON_CONTENTS_",
+        "_POST_FLAT_FILE_FULFILLMENT_ORDER_REQUEST_DATA_",
+        "_POST_FLAT_FILE_FULFILLMENT_ORDER_CANCELLATION_REQUEST_DATA_",
+        "_POST_FLAT_FILE_FBA_CREATE_INBOUND_PLAN_",
+        "_POST_FLAT_FILE_FBA_UPDATE_INBOUND_PLAN_",
+        "_POST_FLAT_FILE_FBA_CREATE_REMOVAL_",
+        "_POST_ENHANCED_CONTENT_DATA_",
+        "_RFQ_UPLOAD_FEED_",
+        "_POST_EASYSHIP_DOCUMENTS_"
+      ]
+    },
+    "FeedOptions": {
+      "description": "Additional options to control feed submission.",
+      "type": "object",
+      "properties": {
+        "AmazonOrderId": {
+          "description": "An Amazon-defined order identifier. Used to identify an Easy Ship order for which you want to get PDF documents. This functionality is available only in the India marketplace.",
+          "type": "string"
+        },
+        "DocumentType": {
+          "description": "The type of PDF document that you want to get for the Easy Ship order identified with the AmazonOrderId parameter. This functionality is available only in the India marketplace. Possible values: ShippingLabel, Invoice, Warranty.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "SubmitFeedRequest": {
+      "description": "Request schema for submitting a feed.",
+      "type": "object",
+      "required": [
+        "UploadDestinationId",
+        "ContentSha256"
+      ],
+      "properties": {
+        "MarketplaceIds": {
+          "description": "A list of one or more marketplace IDs that you want the feed to be applied to. The feed will be applied to all the marketplaces you specify. When no marketplaces are specified in the feed request, the request returns all marketplaces where the feed request can be submitted.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "ContentSha256": {
+          "description": "Sha256 hash of the feed content. This value is used to determine if the feed data has been corrupted or tampered with during transit.",
+          "type": "string"
+        },
+        "UploadDestinationId": {
+          "description": "This identifier is included in the UploadReference consumed by other APIs to locate an uploaded file.",
+          "type": "string"
+        },
+        "FeedOptions": {
+          "$ref": "#/definitions/FeedOptions"
+        },
+        "PurgeAndReplace": {
+          "description": "A Boolean value that enables the purge and replace functionality. Set to true to purge and replace the existing data; otherwise false. This value only applies to product-related flat file feed types, which do not have a mechanism for specifying purge and replace in the feed body. Use this parameter only in exceptional cases. Usage is throttled to allow only one purge and replace within a 24-hour period.",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  },
+  "parameters": {
+    "FeedTypeList": {
+      "name": "FeedTypes",
+      "in": "query",
+      "description": "A list of one or more FeedType values by which to filter the list of feed submissions. For possible values, see the FeedType enumeration in the Swagger model.",
+      "required": false,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "_POST_PRODUCT_DATA_",
+          "_POST_INVENTORY_AVAILABILITY_DATA_",
+          "_POST_PRODUCT_OVERRIDES_DATA_",
+          "_POST_PRODUCT_PRICING_DATA_",
+          "_POST_PRODUCT_IMAGE_DATA_",
+          "_POST_PRODUCT_RELATIONSHIP_DATA_",
+          "_POST_FLAT_FILE_INVLOADER_DATA_",
+          "_POST_FLAT_FILE_LISTINGS_DATA_",
+          "_POST_FLAT_FILE_BOOKLOADER_DATA_",
+          "_POST_FLAT_FILE_CONVERGENCE_LISTINGS_DATA_",
+          "_POST_FLAT_FILE_PRICEANDQUANTITYONLY_UPDATE_DATA_",
+          "_POST_UIEE_BOOKLOADER_DATA_",
+          "_POST_STD_ACES_DATA_",
+          "_POST_ORDER_ACKNOWLEDGEMENT_DATA_",
+          "_POST_PAYMENT_ADJUSTMENT_DATA_",
+          "_POST_ORDER_FULFILLMENT_DATA_",
+          "_POST_INVOICE_CONFIRMATION_DATA_",
+          "_POST_EXPECTED_SHIP_DATE_SOD_",
+          "_POST_FLAT_FILE_ORDER_ACKNOWLEDGEMENT_DATA_",
+          "_POST_FLAT_FILE_PAYMENT_ADJUSTMENT_DATA_",
+          "_POST_FLAT_FILE_FULFILLMENT_DATA_",
+          "_POST_EXPECTED_SHIP_DATE_SOD_FLAT_FILE_",
+          "_POST_FULFILLMENT_ORDER_REQUEST_DATA_",
+          "_POST_FULFILLMENT_ORDER_CANCELLATION_REQUEST_DATA_",
+          "_POST_FBA_INBOUND_CARTON_CONTENTS_",
+          "_POST_FLAT_FILE_FULFILLMENT_ORDER_REQUEST_DATA_",
+          "_POST_FLAT_FILE_FULFILLMENT_ORDER_CANCELLATION_REQUEST_DATA_",
+          "_POST_FLAT_FILE_FBA_CREATE_INBOUND_PLAN_",
+          "_POST_FLAT_FILE_FBA_UPDATE_INBOUND_PLAN_",
+          "_POST_FLAT_FILE_FBA_CREATE_REMOVAL_",
+          "_POST_ENHANCED_CONTENT_DATA_",
+          "_RFQ_UPLOAD_FEED_",
+          "_POST_EASYSHIP_DOCUMENTS_"
+        ]
+      }
+    },
+    "FeedType": {
+      "name": "feedType",
+      "in": "path",
+      "description": "For possible values, see the FeedType enumeration in the Swagger model.",
+      "required": true,
+      "type": "string",
+      "enum": [
+        "_POST_PRODUCT_DATA_",
+        "_POST_INVENTORY_AVAILABILITY_DATA_",
+        "_POST_PRODUCT_OVERRIDES_DATA_",
+        "_POST_PRODUCT_PRICING_DATA_",
+        "_POST_PRODUCT_IMAGE_DATA_",
+        "_POST_PRODUCT_RELATIONSHIP_DATA_",
+        "_POST_FLAT_FILE_INVLOADER_DATA_",
+        "_POST_FLAT_FILE_LISTINGS_DATA_",
+        "_POST_FLAT_FILE_BOOKLOADER_DATA_",
+        "_POST_FLAT_FILE_CONVERGENCE_LISTINGS_DATA_",
+        "_POST_FLAT_FILE_PRICEANDQUANTITYONLY_UPDATE_DATA_",
+        "_POST_UIEE_BOOKLOADER_DATA_",
+        "_POST_STD_ACES_DATA_",
+        "_POST_ORDER_ACKNOWLEDGEMENT_DATA_",
+        "_POST_PAYMENT_ADJUSTMENT_DATA_",
+        "_POST_ORDER_FULFILLMENT_DATA_",
+        "_POST_INVOICE_CONFIRMATION_DATA_",
+        "_POST_EXPECTED_SHIP_DATE_SOD_",
+        "_POST_FLAT_FILE_ORDER_ACKNOWLEDGEMENT_DATA_",
+        "_POST_FLAT_FILE_PAYMENT_ADJUSTMENT_DATA_",
+        "_POST_FLAT_FILE_FULFILLMENT_DATA_",
+        "_POST_EXPECTED_SHIP_DATE_SOD_FLAT_FILE_",
+        "_POST_FULFILLMENT_ORDER_REQUEST_DATA_",
+        "_POST_FULFILLMENT_ORDER_CANCELLATION_REQUEST_DATA_",
+        "_POST_FBA_INBOUND_CARTON_CONTENTS_",
+        "_POST_FLAT_FILE_FULFILLMENT_ORDER_REQUEST_DATA_",
+        "_POST_FLAT_FILE_FULFILLMENT_ORDER_CANCELLATION_REQUEST_DATA_",
+        "_POST_FLAT_FILE_FBA_CREATE_INBOUND_PLAN_",
+        "_POST_FLAT_FILE_FBA_UPDATE_INBOUND_PLAN_",
+        "_POST_FLAT_FILE_FBA_CREATE_REMOVAL_",
+        "_POST_ENHANCED_CONTENT_DATA_",
+        "_RFQ_UPLOAD_FEED_",
+        "_POST_EASYSHIP_DOCUMENTS_"
+      ]
+    }
+  }
+}

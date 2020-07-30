@@ -1,0 +1,314 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Selling Partner API for Sellers",
+    "description": "The Selling Partner API for Sellers lets sellers retrieve information about their seller account, such as the marketplaces they participate in. Along with listing the marketplaces that a seller can sell in, the API also provides additional information about the marketplace such as the default language and the default currency. The API also provides seller-specific information such as whether the seller has suspended listings in that marketplace.",
+    "version": "v1",
+    "contact": {
+      "name": "Selling Partner API Test Support",
+      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "definitions": {
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occured.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition in a human-readable form.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "ErrorList": {
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "MarketplaceParticipation": {
+      "type": "object",
+      "properties": {
+        "marketplace": {
+          "$ref": "#/definitions/Marketplace"
+        },
+        "participation": {
+          "$ref": "#/definitions/Participation"
+        }
+      },
+      "required": [
+        "marketplace",
+        "participation"
+      ]
+    },
+    "MarketplaceParticipationList": {
+      "description": "List of marketplace participations.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/MarketplaceParticipation"
+      }
+    },
+    "GetMarketplaceParticipationsResponse": {
+      "description": "The response schema for the getMarketplaceParticipations operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getMarketplaceParticipations operation.",
+          "$ref": "#/definitions/MarketplaceParticipationList"
+        },
+        "errors": {
+          "description": "Encountered errors for the getMarketplaceParticipations operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "Marketplace": {
+      "description": "Detailed information about an Amazon market where a seller can list items for sale and customers can view and purchase items.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The encrypted marketplace value.",
+          "type": "string"
+        },
+        "name": {
+          "description": "Marketplace name.",
+          "type": "string"
+        },
+        "countryCode": {
+          "pattern": "^([A-Z]{2})$",
+          "description": "The ISO 3166-1 alpha-2 format country code of the marketplace.",
+          "type": "string"
+        },
+        "defaultCurrencyCode": {
+          "description": "The ISO 4217 format currency code of the marketplace.",
+          "type": "string"
+        },
+        "defaultLanguageCode": {
+          "description": "The ISO 639-1 format language code of the marketplace.",
+          "type": "string"
+        },
+        "domainName": {
+          "description": "The domain name of the marketplace.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "countryCode",
+        "defaultCurrencyCode",
+        "defaultLanguageCode",
+        "domainName"
+      ]
+    },
+    "Participation": {
+      "description": "Detailed information that is specific to a seller in a Marketplace.",
+      "type": "object",
+      "properties": {
+        "isParticipating": {
+          "type": "boolean"
+        },
+        "hasSuspendedListings": {
+          "description": "Specifies if the seller has suspended listings. True if the seller Listing Status is set to Inactive, otherwise False.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "isParticipating",
+        "hasSuspendedListings"
+      ]
+    }
+  },
+  "paths": {
+    "/sellers/v1/marketplaceParticipations": {
+      "get": {
+        "tags": [
+          "sellers"
+        ],
+        "description": "Returns a list of marketplaces that the seller submitting the request can sell in and information about the seller's participation in those marketplaces.",
+        "operationId": "getMarketplaceParticipations",
+        "responses": {
+          "200": {
+            "description": "Marketplace participations successfully retrieved.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {}
+                },
+                "response": {
+                  "payload": [
+                    {
+                      "marketplace": {
+                        "id": "ATVPDKIKX0DER",
+                        "countryCode": "US",
+                        "name": "Amazon.com",
+                        "defaultCurrencyCode": "USD",
+                        "defaultLanguageCode": "en_US",
+                        "domainName": "www.amazon.com"
+                      },
+                      "participation": {
+                        "isParticipating": true,
+                        "hasSuspendedListings": false
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "unique request reference id.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "payload": [
+                {
+                  "marketplace": {
+                    "id": "ATVPDKIKX0DER",
+                    "name": "Amazon.com",
+                    "countryCode": "US",
+                    "defaultCurrencyCode": "USD",
+                    "defaultLanguageCode": "en_US",
+                    "domainName": "www.amazon.com"
+                  },
+                  "participation": {
+                    "isParticipating": true,
+                    "hasSuspendedListings": false
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMarketplaceParticipationsResponse"
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMarketplaceParticipationsResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMarketplaceParticipationsResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMarketplaceParticipationsResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMarketplaceParticipationsResponse"
+            }
+          },
+          "415": {
+            "description": "The entity of the request is in a format not supported by the requested resource.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMarketplaceParticipationsResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMarketplaceParticipationsResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMarketplaceParticipationsResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMarketplaceParticipationsResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}

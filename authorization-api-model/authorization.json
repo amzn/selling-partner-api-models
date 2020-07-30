@@ -1,0 +1,272 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Authorization helps developers manage authorizations and check the specific permissions associated with a given authorization.",
+    "version": "v1",
+    "title": "Selling Partner API for Authorization",
+    "contact": {
+      "name": "Selling Partner API Test Support",
+      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/authorization/v1/authorizationCode": {
+      "get": {
+        "tags": [
+          "authorization"
+        ],
+        "summary": "Returns the Login with Amazon (LWA) authorization code for an existing Amazon MWS authorization.",
+        "description": "With the getAuthorizationCode operation, you can request a Login With Amazon (LWA) authorization code that will allow you to call a Selling Partner API on behalf of a seller who has already authorized you to call Amazon Marketplace Web Service (Amazon MWS). You specify a developer ID, an MWS auth token, and a seller ID. Taken together, these represent the Amazon MWS authorization that the seller previously granted you. The operation returns an LWA authorization code that can be exchanged for a refresh token and access token representing authorization to call the Selling Partner API on the seller's behalf. By using this API, sellers who have already authorized you for Amazon MWS do not need to re-authorize you for the Selling Partner API.",
+        "operationId": "getAuthorizationCode",
+        "parameters": [
+          {
+            "name": "sellingPartnerId",
+            "in": "query",
+            "description": "The seller ID of the seller for whom you are requesting Selling Partner API authorization. This must be the seller ID of the seller who authorized your application on the Marketplace Appstore.",
+            "required": true,
+            "type": "string",
+            "allowEmptyValue": false
+          },
+          {
+            "name": "developerId",
+            "in": "query",
+            "description": "Your developer ID. This must be one of the developer ID values that you provided when you registered your application in Developer Central.",
+            "required": true,
+            "type": "string",
+            "allowEmptyValue": false
+          },
+          {
+            "name": "mwsAuthToken",
+            "in": "query",
+            "description": "The MWS Auth Token that was generated when the seller authorized your application on the Marketplace Appstore.",
+            "required": true,
+            "type": "string",
+            "allowEmptyValue": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetAuthorizationCodeResponse"
+            },
+            "examples": {
+              "payload": {
+                "authorizationCode": "ANDMxqpCmqWHJeyzdbMH"
+              }
+            },
+            "headers": {
+              "x-amzn-requestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {}
+                },
+                "response": {
+                  "payload": {
+                    "authorizationCode": "ANDMxqpCmqWHJeyzdbMH"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetAuthorizationCodeResponse"
+            },
+            "examples": {
+              "errors": [
+                {
+                  "code": "1001",
+                  "message": "Authorization code you provided is invalid."
+                }
+              ]
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "mwsAuthToken": {
+                      "value": "TEST_CASE_400"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid input."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetAuthorizationCodeResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetAuthorizationCodeResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/GetAuthorizationCodeResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetAuthorizationCodeResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetAuthorizationCodeResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetAuthorizationCodeResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetAuthorizationCodeResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    }
+  },
+  "definitions": {
+    "GetAuthorizationCodeResponse": {
+      "description": "The response schema for the GetAuthorizationCode operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/AuthorizationCode"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "AuthorizationCode": {
+      "type": "object",
+      "properties": {
+        "authorizationCode": {
+          "description": "A Login with Amazon (LWA) authorization code that can be exchanged for a refresh token and access token that authorize you to make calls to a Selling Partner API.",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition in a human-readable form."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      }
+    }
+  }
+}

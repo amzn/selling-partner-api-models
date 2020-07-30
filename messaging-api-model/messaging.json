@@ -1,0 +1,1640 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Amazon Selling Partner API Messaging Model",
+    "description": "With the Messaging API you can build applications that send messages to buyers. You can get a list of message types that are available for an order that you specify, then call an operation that sends a message to the buyer for that order. The Messaging API returns responses that are formed according to the <a href=https://tools.ietf.org/html/draft-kelly-json-hal-08>JSON Hypertext Application Language</a> (HAL) standard.",
+    "version": "v1",
+    "contact": {
+      "name": "Amazon Selling Partner API Test Support",
+      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/hal+json"
+  ],
+  "paths": {
+    "/messaging/v1/orders/{amazonOrderId}": {
+      "get": {
+        "description": "Returns a list of message types that are available for an order that you specify. A message type is represented by an actions object, which contains a path and query parameter(s). You can use the path and parameter(s) to call an operation that sends a message.",
+        "operationId": "getMessagingActionsForOrder",
+        "tags": ["messaging"],
+        "responses": {
+          "200": {
+            "description": "Returns hypermedia links under the _links.actions key that specify which messaging actions are allowed for the order.",
+            "headers": {
+              "x-amzn-requestId": {
+                "description": "unique request reference id.",
+                "type": "string"
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "amazonOrderId": {
+                      "value": "123-1234567-1234567"
+                    },
+                    "marketplaceIds": {
+                      "value": ["ATVPDKIKX0DER"]
+                    }
+                  }
+                },
+                "response": {
+                  "_links": {
+                    "actions": [
+                      {
+                        "href": "/messaging/v1/orders/123-1234567-1234567/messages/amazonPayProblem?marketplaceIds=ATVPDKIKX0DER",
+                        "name": "amazonPayProblem"
+                      },
+                      {
+                        "href": "/messaging/v1/orders/123-1234567-1234567/messages/confirmCustomizationDetails?marketplaceIds=ATVPDKIKX0DER",
+                        "name": "confirmCustomizationDetails"
+                      },
+                      {
+                        "href": "/messaging/v1/orders/123-1234567-1234567/messages/confirmDeliveryDetails?marketplaceIds=ATVPDKIKX0DER",
+                        "name": "confirmDeliveryDetails"
+                      },
+                      {
+                        "href": "/messaging/v1/orders/123-1234567-1234567/messages/legalDisclosure?marketplaceIds=ATVPDKIKX0DER",
+                        "name": "legalDisclosure"
+                      },
+                      {
+                        "href": "/messaging/v1/orders/123-1234567-1234567/messages/negativeFeedbackRemoval?marketplaceIds=ATVPDKIKX0DER",
+                        "name": "negativeFeedbackRemoval"
+                      },
+                      {
+                        "href": "/messaging/v1/orders/123-1234567-1234567/messages/confirmOrderDetails?marketplaceIds=ATVPDKIKX0DER",
+                        "name": "confirmOrderDetails"
+                      },
+                      {
+                        "href": "/messaging/v1/orders/123-1234567-1234567/messages/confirmServiceDetails?marketplaceIds=ATVPDKIKX0DER",
+                        "name": "confirmServiceDetails"
+                      }
+                    ],
+                    "self": {
+                      "href": "/messaging/v1/orders/123-1234567-1234567?marketplaceIds=ATVPDKIKX0DER"
+                    }
+                  }
+                }
+              }
+            ],
+            "examples": {
+              "application/hal+json": {
+                "_links": {
+                  "actions": [
+                    {
+                      "href": "/messaging/v1/orders/903-1671087-0812628/messages/negativeFeedbackRemoval?marketplaceIds=ATVPDKIKX0DER",
+                      "name": "negativeFeedbackRemoval"
+                    }
+                  ],
+                  "self": {
+                    "href": "/messaging/v1/orders/903-1671087-0812628?marketplaceIds=ATVPDKIKX0DER"
+                  }
+                },
+                "_embedded": {
+                  "actions": [
+                    {
+                      "_links": {
+                        "schema": {
+                          "href": "/messaging/v1/orders/903-1671087-0812628/messages/negativeFeedbackRemoval/schema",
+                          "name": "negativeFeedbackRemoval"
+                        },
+                        "self": {
+                          "href": "/messaging/v1/orders/903-1671087-0812628/messages/negativeFeedbackRemoval?marketplaceIds=ATVPDKIKX0DER",
+                          "name": "negativeFeedbackRemoval"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMessagingActionsForOrderResponse"
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMessagingActionsForOrderResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMessagingActionsForOrderResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMessagingActionsForOrderResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMessagingActionsForOrderResponse"
+            }
+          },
+          "415": {
+            "description": "The entity of the request is in a format not supported by the requested resource.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMessagingActionsForOrderResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMessagingActionsForOrderResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMessagingActionsForOrderResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetMessagingActionsForOrderResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "An Amazon order identifier. This specifies the order for which you want a list of available message types."
+          },
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          }
+        ]
+      }
+    },
+    "/messaging/v1/orders/{amazonOrderId}/messages/amazonPayProblem": {
+      "post": {
+        "description": "Sends a message notifying a buyer who used Amazon Pay that the transaction failed.",
+        "operationId": "createAmazonPayProblem",
+        "tags": ["messaging"],
+        "responses": {
+          "201": {
+            "description": "The message was created for the order.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateAmazonPayProblemResponse"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "amazonOrderId": {
+                      "value": "123-1234567-1234567"
+                    }
+                  }
+                },
+                "response": {}
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateAmazonPayProblemResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateAmazonPayProblemResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateAmazonPayProblemResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateAmazonPayProblemResponse"
+            }
+          },
+          "415": {
+            "description": "The entity of the request is in a format not supported by the requested resource.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateAmazonPayProblemResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateAmazonPayProblemResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateAmazonPayProblemResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateAmazonPayProblemResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "An Amazon order identifier. This specifies the order for which a message is sent."
+          },
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          },
+          {
+             "schema": {
+               "$ref": "#/definitions/CreateAmazonPayProblemRequest"
+             },
+             "in": "body",
+             "name": "body",
+             "required": true
+           }
+        ]
+      }
+    },
+    "/messaging/v1/orders/{amazonOrderId}/messages/confirmCustomizationDetails": {
+      "post": {
+        "description": "Sends a message asking a buyer to provide or verify customization details such as name spelling, images, initials, etc.",
+        "operationId": "confirmCustomizationDetails",
+        "tags": ["messaging"],
+        "responses": {
+          "201": {
+            "description": "The message was created for the order.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmCustomizationDetailsResponse"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "amazonOrderId": {
+                      "value": "123-1234567-1234567"
+                    }
+                  }
+                },
+                "response": {}
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmCustomizationDetailsResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmCustomizationDetailsResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmCustomizationDetailsResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmCustomizationDetailsResponse"
+            }
+          },
+          "415": {
+            "description": "The entity of the request is in a format not supported by the requested resource.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmCustomizationDetailsResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmCustomizationDetailsResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmCustomizationDetailsResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmCustomizationDetailsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "An Amazon order identifier. This specifies the order for which a message is sent."
+          },
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          },
+          {
+             "schema": {
+               "$ref": "#/definitions/CreateConfirmCustomizationDetailsRequest"
+             },
+             "in": "body",
+             "name": "body",
+             "required": true
+           }
+        ]
+      }
+    },
+    "/messaging/v1/orders/{amazonOrderId}/messages/confirmDeliveryDetails": {
+      "post": {
+        "description": "Sends a message to a buyer to arrange a delivery or to confirm contact information for making a delivery.",
+        "operationId": "createConfirmDeliveryDetails",
+        "tags": ["messaging"],
+        "responses": {
+          "201": {
+            "description": "The message was created for the order.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmDeliveryDetailsResponse"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "amazonOrderId": {
+                      "value": "123-1234567-1234567"
+                    }
+                  }
+                },
+                "response": {}
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmDeliveryDetailsResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmDeliveryDetailsResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmDeliveryDetailsResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmDeliveryDetailsResponse"
+            }
+          },
+          "415": {
+            "description": "The entity of the request is in a format not supported by the requested resource.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmDeliveryDetailsResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmDeliveryDetailsResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmDeliveryDetailsResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmDeliveryDetailsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "An Amazon order identifier. This specifies the order for which a message is sent."
+          },
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          },
+          {
+             "schema": {
+               "$ref": "#/definitions/CreateConfirmDeliveryDetailsRequest"
+             },
+             "in": "body",
+             "name": "body",
+             "required": true
+           }
+        ]
+      }
+    },
+    "/messaging/v1/orders/{amazonOrderId}/messages/legalDisclosure": {
+      "post": {
+        "description": "Sends a critical message that contains documents that a seller is legally obligated to provide to the buyer. This message should only be used to deliver documents that are required by law.",
+        "operationId": "createLegalDisclosure",
+        "tags": ["messaging"],
+        "responses": {
+          "201": {
+            "description": "The legal disclosure message was created for the order.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateLegalDisclosureResponse"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "amazonOrderId": {
+                      "value": "123-1234567-1234567"
+                    }
+                  }
+                },
+                "response": {}
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateLegalDisclosureResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateLegalDisclosureResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateLegalDisclosureResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateLegalDisclosureResponse"
+            }
+          },
+          "415": {
+            "description": "The entity of the request is in a format not supported by the requested resource.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateLegalDisclosureResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateLegalDisclosureResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateLegalDisclosureResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateLegalDisclosureResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "An Amazon order identifier. This specifies the order for which a message is sent."
+          },
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          }
+        ]
+      }
+    },
+    "/messaging/v1/orders/{amazonOrderId}/messages/negativeFeedbackRemoval": {
+      "post": {
+        "description": "Sends a non-critical message that asks a buyer to remove their negative feedback. This message should only be sent after the seller has resolved the buyer's problem.",
+        "operationId": "createNegativeFeedbackRemoval",
+        "tags": ["messaging"],
+        "responses": {
+          "201": {
+            "description": "The negativeFeedbackRemoval message was created for the order.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateNegativeFeedbackRemovalResponse"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "amazonOrderId": {
+                      "value": "123-1234567-1234567"
+                    }
+                  }
+                },
+                "response": {}
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateNegativeFeedbackRemovalResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateNegativeFeedbackRemovalResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateNegativeFeedbackRemovalResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateNegativeFeedbackRemovalResponse"
+            }
+          },
+          "415": {
+            "description": "The entity of the request is in a format not supported by the requested resource.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateNegativeFeedbackRemovalResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateNegativeFeedbackRemovalResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateNegativeFeedbackRemovalResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateNegativeFeedbackRemovalResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "An Amazon order identifier. This specifies the order for which a message is sent."
+          },
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          }
+        ]
+      }
+    },
+    "/messaging/v1/orders/{amazonOrderId}/messages/confirmOrderDetails": {
+      "post": {
+        "description": "Sends a message to ask a buyer an order-related question prior to shipping their order.",
+        "operationId": "createConfirmOrderDetails",
+        "tags": ["messaging"],
+        "responses": {
+          "201": {
+            "description": "The message was created for the order.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmOrderDetailsResponse"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "amazonOrderId": {
+                      "value": "123-1234567-1234567"
+                    }
+                  }
+                },
+                "response": {}
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmOrderDetailsResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmOrderDetailsResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmOrderDetailsResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmOrderDetailsResponse"
+            }
+          },
+          "415": {
+            "description": "The entity of the request is in a format not supported by the requested resource.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmOrderDetailsResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmOrderDetailsResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmOrderDetailsResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmOrderDetailsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "An Amazon order identifier. This specifies the order for which a message is sent."
+          },
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          },
+          {
+             "schema": {
+               "$ref": "#/definitions/CreateConfirmOrderDetailsRequest"
+             },
+             "in": "body",
+             "name": "body",
+             "required": true
+           }
+        ]
+      }
+    },
+    "/messaging/v1/orders/{amazonOrderId}/messages/confirmServiceDetails": {
+      "post": {
+        "description": "Sends a message to contact a Home Service customer to arrange a service call or to gather information prior to a service call.",
+        "operationId": "createConfirmServiceDetails",
+        "tags": ["messaging"],
+        "responses": {
+          "201": {
+            "description": "The message was created for the order.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmServiceDetailsResponse"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "amazonOrderId": {
+                      "value": "123-1234567-1234567"
+                    }
+                  }
+                },
+                "response": {}
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmServiceDetailsResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmServiceDetailsResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmServiceDetailsResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmServiceDetailsResponse"
+            }
+          },
+          "415": {
+            "description": "The entity of the request is in a format not supported by the requested resource.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmServiceDetailsResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmServiceDetailsResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmServiceDetailsResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateConfirmServiceDetailsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "An Amazon order identifier. This specifies the order for which a message is sent."
+          },
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A marketplace identifier. This specifies the marketplace in which the order was placed. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          },
+          {
+             "schema": {
+               "$ref": "#/definitions/CreateConfirmServiceDetailsRequest"
+             },
+             "in": "body",
+             "name": "body",
+             "required": true
+           }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Attachment": {
+      "description": "Represents a file uploaded to a destination that was created by the /uploads/v1/uploadDestination operation of the Uploads API.",
+      "type": "object",
+      "properties": {
+        "uploadDestinationId": {
+          "description": "The identifier of the upload destination. Get this value by calling the /uploads/v1/uploadDestination operation of the Uploads API.",
+          "type": "string"
+        },
+        "fileName": {
+          "description": "The name of the file, including the extension. This is the file name that will appear in the message. This does not need to match the file name of the file that you uploaded.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "uploadDestinationId",
+        "fileName"
+      ]
+    },
+    "LinkObject": {
+      "description": "A Link Object.",
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "A URI for this object."
+        },
+        "name": {
+          "type": "string",
+          "description": "An identifier for this object."
+        }
+      },
+      "required": [
+        "href"
+      ]
+    },
+    "MessagingAction": {
+      "description": "A simple object containing the name of the template.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "Schema": {
+      "type": "object",
+      "description": "A JSON schema document describing the expected payload of the action. This object can be validated against <a href=http://json-schema.org/draft-04/schema>http://json-schema.org/draft-04/schema</a>.",
+      "additionalProperties": true
+    },
+    "GetMessagingActionsForOrderResponse": {
+      "description": "The response schema for the getMessagingActionsForOrder operation.",
+      "type": "object",
+      "properties": {
+        "_links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "$ref": "#/definitions/LinkObject"
+            },
+            "actions": {
+              "description": "Eligible actions for the specified amazonOrderId.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LinkObject"
+              }
+            }
+          },
+          "required": [
+            "self",
+            "actions"
+          ]
+        },
+        "_embedded": {
+          "type": "object",
+          "properties": {
+            "actions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GetMessagingActionResponse"
+              }
+            }
+          },
+          "required": [
+            "actions"
+          ]
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetMessagingActionResponse": {
+      "description": "Describes a messaging action that can be taken for an order. Provides a JSON Hypertext Application Language (HAL) link to the JSON schema document that describes the expected input.",
+      "type": "object",
+      "properties": {
+        "_links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "$ref": "#/definitions/LinkObject"
+            },
+            "schema": {
+              "$ref": "#/definitions/LinkObject"
+            }
+          },
+          "required": [
+            "self",
+            "schema"
+          ]
+        },
+        "_embedded": {
+          "type": "object",
+          "properties": {
+            "schema": {
+              "$ref": "#/definitions/GetSchemaResponse"
+            }
+          }
+        },
+        "payload": {
+          "$ref": "#/definitions/MessagingAction"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetSchemaResponse": {
+      "description": "The response for the getSchema operation.",
+      "type": "object",
+      "properties": {
+        "_links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "$ref": "#/definitions/LinkObject"
+            }
+          },
+          "required": [
+            "self"
+          ]
+        },
+        "payload": {
+          "$ref": "#/definitions/Schema"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "CreateAmazonPayProblemRequest": {
+      "description": "The request schema for the createAmazonPayProblem operation.",
+      "type": "object",
+      "properties": {
+        "text": {
+          "description": "The text to be sent to the buyer. Only links related to Amazon Pay problems are allowed. Do not include HTML or email addresses.",
+          "type": "string",
+          "maxLength": 800
+        }
+      }
+    },
+    "CreateAmazonPayProblemResponse": {
+      "description": "The response schema for the createAmazonPayProblem operation.",
+      "type": "object",
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "CreateConfirmCustomizationDetailsRequest": {
+      "description": "The request schema for the confirmCustomizationDetails operation.",
+      "type": "object",
+      "properties": {
+        "text": {
+          "description": "The text to be sent to the buyer. Only links related to customization details are allowed. Do not include HTML or email addresses.",
+          "type": "string",
+          "maxLength": 800
+        },
+        "attachments": {
+          "type": "array",
+          "description": "Attachments to include in the message to the buyer.",
+          "maxLength": 5,
+          "items": {
+            "$ref": "#/definitions/Attachment"
+          }
+        }
+      }
+    },
+    "CreateConfirmCustomizationDetailsResponse": {
+      "description": "The response schema for the confirmCustomizationDetails operation.",
+      "type": "object",
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "CreateConfirmDeliveryDetailsRequest": {
+      "description": "The request schema for the createConfirmDeliveryDetails operation.",
+      "type": "object",
+      "properties": {
+        "text": {
+          "description": "The text to be sent to the buyer. Only links related to order delivery are allowed. Do not include HTML or email addresses.",
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    },
+    "CreateConfirmDeliveryDetailsResponse": {
+      "description": "The response schema for the createConfirmDeliveryDetails operation.",
+      "type": "object",
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "CreateNegativeFeedbackRemovalResponse": {
+      "description": "The response schema for the createNegativeFeedbackRemoval operation.",
+      "type": "object",
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "CreateLegalDisclosureResponse": {
+      "description": "The response schema for the createLegalDisclosure operation.",
+      "type": "object",
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "CreateConfirmOrderDetailsRequest": {
+      "description": "The request schema for the createConfirmOrderDetails operation.",
+      "type": "object",
+      "properties": {
+        "text": {
+          "description": "The text to be sent to the buyer. Only links related to order completion are allowed. Do not include HTML or email addresses.",
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    },
+    "CreateConfirmOrderDetailsResponse": {
+      "description": "The response schema for the createConfirmOrderDetails operation.",
+      "type": "object",
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "CreateConfirmServiceDetailsRequest": {
+      "description": "The request schema for the createConfirmServiceDetails operation.",
+      "type": "object",
+      "properties": {
+        "text": {
+          "description": "The text to be sent to the buyer. Only links related to Home Service calls are allowed. Do not include HTML or email addresses.",
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    },
+    "CreateConfirmServiceDetailsResponse": {
+      "description": "The response schema for the createConfirmServiceDetails operation.",
+      "type": "object",
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "ErrorList": {
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occurred.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition in a human-readable form.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    }
+  }
+}

@@ -1,4 +1,5 @@
-## My Project
+## selling-partner-api-models
+ This repository contains Open API models for third party developers to use when developing software to call Selling Partner APIs.
 
 TODO: Fill this README out!
 

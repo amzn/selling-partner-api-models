@@ -1,0 +1,685 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Selling Partner API for Services",
+    "description": "With the Services API, you can build applications that help service providers get and modify their service orders.",
+    "version": "v1",
+    "contact": {
+      "name": "Amazon Selling Partner API Test Support",
+      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "definitions": {
+    "GetServiceJobByServiceJobIdResponse": {
+      "description": "The response schema for the GetServiceJobByServiceJobId operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the GetServiceJobByServiceJobId operation.",
+          "$ref": "#/definitions/ServiceJob"
+        },
+        "errors": {
+          "description": "An unexpected condition occurred during the GetServiceJobByServiceJobId operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "ServiceJob": {
+      "description": "The job details of a service.",
+      "type": "object",
+      "properties": {
+        "createTime": {
+          "description": "The date and time of the creation of the job, in ISO 8601 format.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "serviceJobId": {
+          "description": "The service job identifier.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "serviceJobStatus": {
+          "description": "The status of the service job.",
+          "enum": [
+            "NOT_SERVICED",
+            "CANCELLED",
+            "COMPLETED",
+            "PENDING_SCHEDULE",
+            "NOT_FULFILLABLE",
+            "HOLD",
+            "PAYMENT_DECLINED"
+          ],
+          "type": "string"
+        },
+        "scopeOfWork": {
+          "$ref": "#/definitions/ScopeOfWork"
+        },
+        "seller": {
+          "$ref": "#/definitions/Seller"
+        },
+        "serviceJobProvider": {
+          "$ref": "#/definitions/ServiceJobProvider"
+        },
+        "preferredAppointmentTimes": {
+          "description": "A list of appointment windows preferred by the buyer. Included only if the buyer selected appointment windows when creating the order.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AppointmentTime"
+          }
+        },
+        "appointments": {
+          "description": "A list of appointments.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Appointment"
+          }
+        },
+        "serviceOrderId": {
+          "$ref": "#/definitions/OrderId"
+        },
+        "marketplaceId": {
+          "description": "The marketplace identifier.",
+          "type": "string",
+          "pattern": "^[A-Z0-9]*$"
+        },
+        "buyer": {
+          "$ref": "#/definitions/Buyer"
+        },
+        "associatedItems": {
+          "description": "A list of items associated with the service job.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AssociatedItem"
+          }
+        },
+        "serviceLocation": {
+          "$ref": "#/definitions/ServiceLocation"
+        }
+      }
+    },
+    "OrderId": {
+      "description": "The Amazon-defined identifier for an order placed by the buyer, in 3-7-7 format",
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 20
+    },
+    "ScopeOfWork": {
+      "description": "The scope of work for the order.",
+      "type": "object",
+      "properties": {
+        "asin": {
+          "description": "The Amazon Standard Identification Number (ASIN) of the service job.",
+          "type": "string"
+        },
+        "title": {
+          "description": "The title of the service job.",
+          "type": "string"
+        },
+        "quantity": {
+          "description": "The number of service jobs.",
+          "type": "integer"
+        },
+        "requiredSkills": {
+          "description": "A list of skills required to perform the job.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Seller": {
+      "description": "Information about the seller of the service job.",
+      "type": "object",
+      "properties": {
+        "sellerId": {
+          "description": "The identifier of the seller of the service job.",
+          "type": "string",
+          "pattern": "^[A-Z0-9]*$"
+        }
+      }
+    },
+    "ServiceJobProvider": {
+      "description": "Information about the service job provider.",
+      "type": "object",
+      "properties": {
+        "serviceJobProviderId": {
+          "description": "The identifier of the service job provider",
+          "type": "string",
+          "pattern": "^[A-Z0-9]*$"
+        }
+      }
+    },
+    "Buyer": {
+      "description": "Information about the buyer.",
+      "type": "object",
+      "properties": {
+        "buyerId": {
+          "description": "The identifier of the buyer.",
+          "type": "string",
+          "pattern": "^[A-Z0-9]*$"
+        },
+        "name": {
+          "description": "The name of the buyer.",
+          "type": "string"
+        },
+        "phone": {
+          "description": "The phone number of the buyer.",
+          "type": "string"
+        },
+        "isPrimeMember": {
+          "description": "When true, the service is for an Amazon Prime buyer.",
+          "type": "boolean"
+        }
+      }
+    },
+    "AppointmentTime": {
+      "description": "The time of the appointment window.",
+      "type": "object",
+      "properties": {
+        "startTime": {
+          "description": "The date and time of the start of the appointment window, in ISO 8601 format.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "durationInMinutes": {
+          "description": "The duration of the appointment window, in minutes.",
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "startTime",
+        "durationInMinutes"
+      ]
+    },
+    "AppointmentId": {
+      "description": "The appointment identifier.",
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 100
+    },
+    "Appointment": {
+      "description": "The details of an appointment.",
+      "type": "object",
+      "properties": {
+        "appointmentId": {
+          "$ref": "#/definitions/AppointmentId"
+        },
+        "appointmentStatus": {
+          "description": "The status of the appointment.",
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "CANCELLED",
+            "COMPLETED"
+          ]
+        },
+        "appointmentTime": {
+          "$ref": "#/definitions/AppointmentTime"
+        },
+        "assignedTechnicians": {
+          "description": "A list of technicians assigned to the service job.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Technician"
+          },
+          "minItems": 1
+        },
+        "rescheduledAppointmentId": {
+          "description": "The identifier of a rescheduled appointment.",
+          "$ref": "#/definitions/AppointmentId"
+        },
+        "poa": {
+          "$ref": "#/definitions/Poa"
+        }
+      }
+    },
+    "Technician": {
+      "description": "A technician who is assigned to perform the service job in part or in full.",
+      "type": "object",
+      "properties": {
+        "technicianId": {
+          "description": "The technician identifier.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "name": {
+          "description": "The name of the technician.",
+          "type": "string"
+        }
+      }
+    },
+    "Poa": {
+      "description": "Proof of Appointment (POA) details.",
+      "type": "object",
+      "properties": {
+        "appointmentTime": {
+          "$ref": "#/definitions/AppointmentTime"
+        },
+        "technicians": {
+          "description": "A list of technicians.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Technician"
+          },
+          "minItems": 1
+        },
+        "uploadingTechnician": {
+          "description": "The identifier of the technician who uploaded the POA.",
+          "type": "string",
+          "pattern": "^[A-Z0-9]*$"
+        },
+        "uploadTime": {
+          "description": "The date and time when the POA was uploaded, in ISO 8601 format.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "poaType": {
+          "description": "The type of POA uploaded.",
+          "type": "string",
+          "enum": [
+            "NO_SIGNATURE_DUMMY_POS",
+            "CUSTOMER_SIGNATURE",
+            "DUMMY_RECEIPT",
+            "POA_RECEIPT"
+          ]
+        }
+      }
+    },
+    "AssociatedItem": {
+      "description": "Information about an item associated with the service job.",
+      "type": "object",
+      "properties": {
+        "asin": {
+          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+          "type": "string"
+        },
+        "title": {
+          "description": "The title of the item.",
+          "type": "string"
+        },
+        "quantity": {
+          "description": "The total number of items included in the order.",
+          "type": "integer"
+        },
+        "orderId": {
+          "$ref": "#/definitions/OrderId"
+        },
+        "itemStatus": {
+          "description": "The status of the item.",
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "CANCELLED",
+            "SHIPPED",
+            "DELIVERED"
+          ]
+        },
+        "brandName": {
+          "description": "The brand name of the item.",
+          "type": "string"
+        },
+        "itemDelivery": {
+          "$ref": "#/definitions/ItemDelivery"
+        }
+      }
+    },
+    "ItemDelivery": {
+      "description": "Delivery information for the item.",
+      "type": "object",
+      "properties": {
+        "estimatedDeliveryDate": {
+          "description": "The date and time of the latest Estimated Delivery Date (EDD) of all the items with an EDD. In ISO 8601 format.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "itemDeliveryPromise": {
+          "$ref": "#/definitions/ItemDeliveryPromise"
+        }
+      }
+    },
+    "ItemDeliveryPromise": {
+      "description": "Promised delivery information for the item.",
+      "type": "object",
+      "properties": {
+        "startTime": {
+          "description": "The date and time of the start of the promised delivery window, in ISO 8601 format.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "endTime": {
+          "description": "The date and time of the end of the promised delivery window, in ISO 8601 format.",
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "ServiceLocation": {
+      "description": "Information about the location of the service job.",
+      "type": "object",
+      "properties": {
+        "serviceLocationType": {
+          "description": "The location of the service job.",
+          "type": "string",
+          "enum": [
+            "IN_HOME",
+            "IN_STORE",
+            "ONLINE"
+          ]
+        },
+        "address": {
+          "$ref": "#/definitions/Address"
+        }
+      }
+    },
+    "Address": {
+      "description": "The shipping address for the service job.",
+      "properties": {
+        "name": {
+          "description": "The name of the person, business, or institution.",
+          "type": "string"
+        },
+        "addressLine1": {
+          "description": "The first line of the address.",
+          "type": "string"
+        },
+        "addressLine2": {
+          "description": "Additional address information, if required.",
+          "type": "string"
+        },
+        "addressLine3": {
+          "description": "Additional address information, if required.",
+          "type": "string"
+        },
+        "city": {
+          "description": "The city.",
+          "type": "string"
+        },
+        "county": {
+          "description": "The county.",
+          "type": "string"
+        },
+        "district": {
+          "description": "The district.",
+          "type": "string"
+        },
+        "stateOrRegion": {
+          "description": "The state or region.",
+          "type": "string"
+        },
+        "postalCode": {
+          "description": "The postal code. This can contain letters, digits, spaces, and/or punctuation.",
+          "type": "string"
+        },
+        "countryCode": {
+          "description": "The two digit country code, in ISO 3166-1 alpha-2 format.",
+          "type": "string"
+        },
+        "phone": {
+          "description": "The phone number.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "addressLine1"
+      ],
+      "type": "object"
+    },
+    "ErrorList": {
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occurred.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition in a human-readable form.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    }
+  },
+  "paths": {
+    "/service/v1/serviceJobs/{serviceJobId}": {
+      "get": {
+        "tags": [
+          "service"
+        ],
+        "description": "Gets service job details for the specified service job identifier.",
+        "operationId": "GetServiceJobByServiceJobId",
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetServiceJobByServiceJobIdResponse"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": { },
+                "response": {
+                  "payload": {
+                    "createTime": "2019-10-25T20:22:30.737Z",
+                    "serviceJobId": "d0b0789c-ebdb-d92a-dk3c-ba90f467fj498",
+                    "serviceJobStatus": "PENDING_SCHEDULE",
+                    "scopeOfWork": {
+                      "asin": "B00SPNPZU8",
+                      "title": "Night lamp restoration",
+                      "quantity": 1,
+                      "requiredSkills": [
+                        "HomeClean"
+                      ]
+                    },
+                    "seller": {
+                      "sellerId": "f67a41c1-dbsdc-4ebc-946f-4c822j3k4148d"
+                    },
+                    "serviceJobProvider": {
+                      "serviceJobProviderId": "f67a41c1-dbsdc-4ebc-946f-4c822j3k4148d"
+                    },
+                    "preferredAppointmentTimes": [{
+                      "durationInMinutes": 1994,
+                      "startTime": "2018-09-25T20:22:30.737Z"
+                    }
+                    ],
+                    "appointments": [{
+                      "appointmentId": "d7hdi38-ebdb-d92a-d8dc-ba90fa747b57_72b0dbf5-06de-2463-e040-ba5c1c209a34",
+                      "appointmentStatus": "ACTIVE",
+                      "appointmentTime": {
+                        "durationInMinutes": 1994,
+                        "startTime": "2018-09-25T20:22:30.737Z"
+                      },
+                      "assignedTechnicians": [
+                        {
+                          "technicianId": "e45terc1-dbsdc-4ebc-946f-4c822j3k4148d",
+                          "name": "Jimmy Sanders"
+                        }
+                      ]
+                    }],
+                    "associatedItems": [
+                      {
+                        "asin": "AB00SPPZU8",
+                        "title": "5m Copper wire 2mm",
+                        "quantity": 1,
+                        "orderId": "902-7894293-10873046",
+                        "productStatus": "ACTIVE",
+                        "itemDelivery": {
+                          "estimatedDeliveryDate": "2018-09-24T20:22:30.737Z"
+                        },
+                        "brandName": "Mellie's"
+                      }
+                    ],
+                    "serviceLocation": {
+                      "serviceLocationType": "IN_HOME",
+                      "address": {
+                        "name": "Kiana Ray",
+                        "addressLine1": "410 TERRY AVE NORTH SEATTLE WA",
+                        "city": "SEATTLE",
+                        "countryCode": "US",
+                        "pinCode": "10004-2448",
+                        "state": "WA"
+                      }
+                    },
+                    "buyer": {
+                      "buyerId": "fdk23dbsa-4ebc-946f-4c822j3k4148d",
+                      "name": "Kiana Ray",
+                      "phone": "10004-2448",
+                      "isPrimeMember": true
+                    },
+                    "serviceOrderId": "902-8478293-10873046",
+                    "marketplaceId": "ATVPDKIKSLX0DER"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetServiceJobByServiceJobIdResponse"
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetServiceJobByServiceJobIdResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetServiceJobByServiceJobIdResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetServiceJobByServiceJobIdResponse"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetServiceJobByServiceJobIdResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetServiceJobByServiceJobIdResponse"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetServiceJobByServiceJobIdResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetServiceJobByServiceJobIdResponse"
+            }
+          }
+        },
+        "parameters": [{
+          "name": "serviceJobId",
+          "in": "path",
+          "description": "A service job identifier.",
+          "required": true,
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+        ]
+      }
+    }
+  }
+}

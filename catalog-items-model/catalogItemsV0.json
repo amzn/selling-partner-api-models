@@ -1,0 +1,909 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Catalog Items helps you programmatically retrieve item details for items in the catalog.",
+    "version": "v0",
+    "title": "Selling Partner API for Catalog Items",
+    "contact": {
+      "name": "Selling Partner API Test Support",
+      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/catalog/v0/items": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "description": "Returns a list of items and their attributes, based on a search query or item identifiers that you specify. When based on a search query, provide the Query parameter and optionally, the QueryContextId parameter. When based on item identifiers, provide a single appropriate parameter based on the identifier type, and specify the associated item value. MarketplaceId is always required.",
+        "operationId": "listCatalogItems",
+        "parameters": [
+          {
+            "name": "MarketplaceId",
+            "in": "query",
+            "description": "A marketplace identifier. Specifies the marketplace for which items are returned.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Query",
+            "in": "query",
+            "description": "Keyword(s) to use to search for items in the catalog. Example: 'harry potter books'.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "QueryContextId",
+            "in": "query",
+            "description": "An identifier for the context within which the given search will be performed. A marketplace might provide mechanisms for constraining a search to a subset of potential items. For example, the retail marketplace allows queries to be constrained to a specific category. The QueryContextId parameter specifies such a subset. If it is omitted, the search will be performed using the default context for the marketplace, which will typically contain the largest set of items.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SellerSKU",
+            "in": "query",
+            "description": "Used to identify an item in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "UPC",
+            "in": "query",
+            "description": "A 12-digit bar code used for retail packaging.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EAN",
+            "in": "query",
+            "description": "A European article number that uniquely identifies the catalog item, manufacturer, and its attributes.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ISBN",
+            "in": "query",
+            "description": "The unique commercial book identifier used to identify books internationally.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "JAN",
+            "in": "query",
+            "description": "A Japanese article number that uniquely identifies the product, manufacturer, and its attributes.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "TEST_CASE_200"
+                    },
+                    "SellerSKU": {
+                      "value": "SKU_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "Items": [
+                      {
+                        "Identifiers": {
+                          "MarketplaceASIN": {
+                            "MarketplaceId": "ATVPDKIKX0DER",
+                            "ASIN": "A00551Q3CA"
+                          },
+                          "SKUIdentifier": {
+                            "MarketplaceId": "",
+                            "SellerId": "",
+                            "SellerSKU": ""
+                          }
+                        }
+                      },
+                      {
+                        "Identifiers": {
+                          "MarketplaceASIN": {
+                            "MarketplaceId": "ATVPDKIKX0DER",
+                            "ASIN": "B00551Q3CS"
+                          },
+                          "SKUIdentifier": {
+                            "MarketplaceId": "",
+                            "SellerId": "",
+                            "SellerSKU": ""
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "TEST_CASE_400"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/catalog/v0/items/{asin}": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "description": "Returns information about the item indicated by the specified ASIN, and its attributes.",
+        "operationId": "getCatalogItem",
+        "parameters": [
+          {
+            "name": "MarketplaceId",
+            "in": "query",
+            "description": "A marketplace identifier. Specifies the marketplace for the item.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "asin",
+            "in": "path",
+            "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetCatalogItemResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "TEST_CASE_200"
+                    },
+                    "asin": {
+                      "value": "ASIN_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "Identifiers": {
+                      "MarketplaceASIN": {
+                        "MarketplaceId": "ATVPDKIKX0DER",
+                        "ASIN": "B00551Q3CS"
+                      },
+                      "SKUIdentifier": {
+                        "MarketplaceId": "",
+                        "SellerId": "",
+                        "SellerSKU": ""
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetCatalogItemResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "TEST_CASE_400"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetCatalogItemResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetCatalogItemResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetCatalogItemResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetCatalogItemResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetCatalogItemResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetCatalogItemResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/catalog/v0/categories": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "description": "Returns the parent categories to which an item belongs, based on the specified ASIN or SellerSKU.",
+        "operationId": "listCatalogCategories",
+        "parameters": [
+          {
+            "name": "MarketplaceId",
+            "in": "query",
+            "description": "A marketplace identifier. Specifies the marketplace for the item.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "ASIN",
+            "in": "query",
+            "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SellerSKU",
+            "in": "query",
+            "description": "Used to identify items in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogCategoriesResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "TEST_CASE_200"
+                    },
+                    "ASIN": {
+                      "value": "asin_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": [
+                    {
+                      "ProductCategoryId": "26752675",
+                      "ProductCategoryName": "Project Management",
+                      "parent": {}
+                    },
+                    {
+                      "ProductCategoryId": "468220445",
+                      "ProductCategoryName": "Art",
+                      "parent": {}
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogCategoriesResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "TEST_CASE_400"
+                    },
+                    "ASIN": {
+                      "value": "ASIN_TO_TEST"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogCategoriesResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogCategoriesResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogCategoriesResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogCategoriesResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogCategoriesResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ListCatalogCategoriesResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    }
+  },
+  "definitions": {
+    "ListCatalogItemsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the listCatalogItems operation.",
+          "$ref": "#/definitions/ListMatchingItemsResponse"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the listCatalogItems operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "ListMatchingItemsResponse": {
+      "type": "object",
+      "properties": {
+        "Items": {
+          "$ref": "#/definitions/ItemList"
+        }
+      }
+    },
+    "ItemList": {
+      "description": "A list of items.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Item"
+      }
+    },
+    "GetCatalogItemResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getCatalogItem operation.",
+          "$ref": "#/definitions/Item"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getCatalogItem operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "Item": {
+      "description": "An item in the catalog.",
+      "type": "object",
+      "required": [
+        "Identifiers"
+      ],
+      "properties": {
+        "Identifiers" : {
+          "description": "The identifiers that uniquely identify an item.",
+          "$ref" : "#/definitions/IdentifierType"
+        },
+        "AttributeSets" : {
+          "description": "Contains item attributes if they are applicable to the item that is returned.",
+          "$ref" : "#/definitions/AttributeSetList"
+        },
+        "Relationships" : {
+          "description": "A list of variation relationship information, if applicable for the item.",
+          "$ref" : "#/definitions/RelationshipList"
+        },
+        "SalesRankings" : {
+          "description": "A list of sales rank information for the item by category.",
+          "$ref" : "#/definitions/SalesRankList"
+        }
+      }
+    },
+    "IdentifierType" : {
+      "type" : "object",
+      "properties" : {
+        "MarketplaceASIN" : {
+          "description": "Indicates the item is identified by MarketPlaceId and ASIN.",
+          "$ref" : "#/definitions/ASINIdentifier"
+        },
+        "SKUIdentifier" : {
+          "description": "Indicates the item is identified by MarketPlaceId, SellerId, and SellerSKU.",
+          "$ref" : "#/definitions/SellerSKUIdentifier"
+        }
+      }
+    },
+    "ASINIdentifier": {
+      "type": "object",
+      "required" : [ 
+        "MarketplaceId", 
+        "ASIN" 
+        ],
+      "properties" : {
+        "MarketplaceId" : {
+          "description": "A marketplace identifier.",
+          "type" : "string"
+        },
+        "ASIN" : {
+          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+          "type" : "string"
+        }
+      }
+    },
+    "SellerSKUIdentifier": {
+      "type" : "object",
+      "required" : [ 
+        "MarketplaceId", 
+        "SellerId", 
+        "SellerSKU" 
+      ],
+      "properties" : {
+        "MarketplaceId" : {
+          "description": "A marketplace identifier.",
+          "type" : "string"
+        },
+        "SellerId" : {
+          "description": "The seller identifier submitted for the operation.",
+          "type" : "string"
+        },
+        "SellerSKU" : {
+          "description": "The seller stock keeping unit (SKU) of the item.",
+          "type" : "string"
+        }
+      }
+    },
+    "AttributeSetList": {
+      "description": "A list of attributes for an item.",
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "RelationshipList": {
+      "description": "A list of variation relationship information, if applicable for the item.",
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "SalesRankList" : {
+      "description": "A list of sales rank information for the item by category.",
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/SalesRankType"
+      }
+    },
+    "SalesRankType" : {
+      "type" : "object",
+      "required" : [ 
+        "ProductCategoryId", 
+        "Rank" 
+      ],
+      "properties" : {
+        "ProductCategoryId" : {
+          "description": "Identifies the item category from which the sales rank is taken.",
+          "type" : "string"
+        },
+        "Rank" : {
+          "description": "The sales rank of the item within the item category.",
+          "type" : "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "NumberOfOfferListingsList" : {
+      "description": "The number of active offer listings for the item that was submitted. The listing count is returned by condition, one for each listing condition value that is returned. Possible listing condition values are: Any, New, Used, Collectible, Refurbished, or Club.",
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/OfferListingCountType"
+      }
+    },
+    "OfferListingCountType" : {
+      "description": "The number of offer listings with the specified condition.",
+      "type" : "object",
+      "required" : [ 
+        "Count", 
+        "condition" 
+      ],
+      "properties" : {
+        "Count" : {
+          "description": "The number of offer listings.",
+          "type" : "integer",
+          "format": "int32"
+        },
+        "condition" : {
+          "description": "The condition of the item.",
+          "type" : "string"
+        }
+      }
+    },
+    "QualifiersType" : {
+      "type" : "object",
+      "required" : [ 
+        "ItemCondition", 
+        "ItemSubcondition", 
+        "FulfillmentChannel", 
+        "ShipsDomestically", 
+        "ShippingTime", 
+        "SellerPositiveFeedbackRating" 
+      ],
+      "properties" : {
+        "ItemCondition" : {
+          "description": "The condition of the item. Possible values: New, Used, Collectible, Refurbished, or Club.",
+          "type" : "string"
+        },
+        "ItemSubcondition" : {
+          "description": "The item subcondition for the offer listing. Possible values: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty, Refurbished Warranty, Refurbished, Open Box, or Other.",
+          "type" : "string"
+        },
+        "FulfillmentChannel" : {
+          "description": "The fulfillment channel for the item. Possible values:\n\n* Amazon - Fulfilled by Amazon.\n* Merchant - Fulfilled by the seller.",
+          "type" : "string"
+        },
+        "ShipsDomestically" : {
+          "description": "Indicates whether the marketplace specified in the request and the location that the item ships from are in the same country. Possible values: True, False, or Unknown.",
+          "type" : "string"
+        },
+        "ShippingTime" : {
+          "description": "(0-2 days, 3-7 days, 8-13 days, or 14 or more days) – Indicates the maximum time within which the item will likely be shipped once an order has been placed.",
+          "$ref" : "#/definitions/ShippingTimeType"
+        },
+        "SellerPositiveFeedbackRating" : {
+          "description": "(98-100%, 95-97%, 90-94%, 80-89%, 70-79%, Less than 70%, or Just launched ) – Indicates the percentage of feedback ratings that were positive over the past 12 months.",
+          "type" : "string"
+        }
+      }
+    },
+    "ShippingTimeType" : {
+      "type" : "object",
+      "properties" : {
+        "Max" : {
+          "description": "(0-2 days, 3-7 days, 8-13 days, or 14 or more days) – Indicates the maximum time within which the item will likely be shipped once an order has been placed.",
+          "type" : "string"
+        }
+      }
+    },
+    "ListCatalogCategoriesResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the listCatalogCategories operation.",
+          "$ref": "#/definitions/ListOfCategories"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the listCatalogCategories operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "ListOfCategories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Categories"
+      }
+    },
+    "Categories": {
+      "type": "object",
+      "properties": {
+        "ProductCategoryId": {
+          "description": "The identifier for the product category (or browse node).",
+          "type": "string"
+        },
+        "ProductCategoryName": {
+          "description": "The name of the product category (or browse node).",
+          "type": "string"
+        },
+        "parent": {
+          "type": "object",
+          "description": "The parent product category."
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition in a human-readable form."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional information that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    }
+  }
+}

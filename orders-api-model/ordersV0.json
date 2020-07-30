@@ -1,0 +1,2171 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Orders helps you programmatically retrieve order information. These APIs let you develop fast, flexible, custom applications in areas like order synchronization, order research, and demand-based decision support tools.",
+    "version": "v0",
+    "title": "Selling Partner API for Orders",
+    "contact": {
+      "name": "Selling Partner API Test Support",
+      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/orders/v0/orders": {
+      "get": {
+        "tags": [
+          "ordersV0"
+        ],
+        "description": "Returns orders created or updated during the time frame indicated by the specified parameters. You can also apply a range of filtering criteria to narrow the list of orders returned. If NextToken is present, that will be used to retrieve the orders instead of other criteria.",
+        "operationId": "getOrders",
+        "parameters": [
+          {
+            "name": "CreatedAfter",
+            "in": "query",
+            "description": "A date used for selecting orders created after (or at) a specified time. Only orders placed after the specified time are returned. Either the CreatedAfter parameter or the LastUpdatedAfter parameter is required. Both cannot be empty. The date must be in ISO 8601 format.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "CreatedBefore",
+            "in": "query",
+            "description": "A date used for selecting orders created before (or at) a specified time. Only orders placed before the specified time are returned. The date must be in ISO 8601 format.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LastUpdatedAfter",
+            "in": "query",
+            "description": "A date used for selecting orders that were last updated after (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. The date must be in ISO 8601 format.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LastUpdatedBefore",
+            "in": "query",
+            "description": "A date used for selecting orders that were last updated before (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. The date must be in ISO 8601 format.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "OrderStatuses",
+            "in": "query",
+            "description": "A list of OrderStatus values used to filter the results. Possible values: PendingAvailability (This status is available for pre-orders only. The order has been placed, payment has not been authorized, and the release date of the item is in the future.); Pending (The order has been placed but payment has not been authorized); Unshipped (Payment has been authorized and the order is ready for shipment, but no items in the order have been shipped); PartiallyShipped (One or more, but not all, items in the order have been shipped); Shipped (All items in the order have been shipped); InvoiceUnconfirmed (All items in the order have been shipped. The seller has not yet given confirmation to Amazon that the invoice has been shipped to the buyer.); Canceled (The order has been canceled); and Unfulfillable (The order cannot be fulfilled. This state applies only to Multi-Channel Fulfillment orders.). Default: All.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "MarketplaceIds",
+            "in": "query",
+            "description": "A list of MarketplaceId values. Used to select orders that were placed in the specified marketplaces.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50
+          },
+          {
+            "name": "FulfillmentChannels",
+            "in": "query",
+            "description": "A list that indicates how an order was fulfilled. Filters the results by fulfillment channel. Possible values: FBA (Fulfillment by Amazon); SellerFulfilled (Fulfilled by the seller). Default: All.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PaymentMethods",
+            "in": "query",
+            "description": "A list of payment method values. Used to select orders paid using the specified payment methods. Possible values: COD (Cash on delivery); CVS (Convenience store payment); Other (Any payment method other than COD or CVS). Default: All.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BuyerEmail",
+            "in": "query",
+            "description": "The email address of a buyer. Used to select orders that contain the specified email address.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "SellerOrderId",
+            "in": "query",
+            "description": "An order identifier that is specified by the seller. Used to select only the orders that match the order identifier. If SellerOrderId is specified, then FulfillmentChannels, OrderStatuses, PaymentMethod, LastUpdatedAfter, LastUpdatedBefore, and BuyerEmail cannot be specified.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "MaxResultsPerPage",
+            "in": "query",
+            "description": "A number that indicates the maximum number of orders that can be returned per page. Value must be 1 - 100. Default 100.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "EasyShipShipmentStatuses",
+            "in": "query",
+            "description": "A list of EasyShipShipmentStatus values. Used to select Easy Ship orders with statuses that match the specified  values. If EasyShipShipmentStatus is specified, only Amazon Easy Ship orders are returned. Possible values: PendingPickUp (Amazon has not yet picked up the package from the seller); LabelCanceled (The seller canceled the pickup); PickedUp (Amazon has picked up the package from the seller); AtOriginFC (The packaged is at the origin fulfillment center); AtDestinationFC (The package is at the destination fulfillment center); OutForDelivery (The package is out for delivery); Damaged (The package was damaged by the carrier); Delivered (The package has been delivered to the buyer); RejectedByBuyer (The package has been rejected by the buyer); Undeliverable (The package cannot be delivered); ReturnedToSeller (The package was not delivered to the buyer and was returned to the seller); ReturningToSeller (The package was not delivered to the buyer and is being returned to the seller). Default: All.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "NextToken",
+            "in": "query",
+            "description": "A string token returned in the response of your previous request.",
+            "type": "string"
+          },
+          {
+            "name": "AmazonOrderIds",
+            "type": "array",
+            "in": "query",
+            "description": "A list of AmazonOrderId values. An AmazonOrderId is an Amazon-defined order identifier, in 3-7-7 format.",
+            "required": false,
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "CreatedAfter": {
+                      "value": "TEST_CASE_200"
+                    },
+                    "MarketplaceIds": {
+                      "value": ["ATVPDKIKX0DER"]
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "CreatedBefore": "1.569521782042E9",
+                    "Orders": [
+                      {
+                        "AmazonOrderId": "902-1845936-5435065",
+                        "PurchaseDate": "1970-01-19T03:58:30Z",
+                        "LastUpdateDate": "1970-01-19T03:58:32Z",
+                        "OrderStatus": "Unshipped",
+                        "FulfillmentChannel": "MFN",
+                        "SalesChannel": "Amazon.com",
+                        "ShipServiceLevel": "Std US D2D Dom",
+                        "OrderTotal": {
+                          "CurrencyCode": "USD",
+                          "Amount": "11.01"
+                        },
+                        "NumberOfItemsShipped": 0,
+                        "NumberOfItemsUnshipped": 1,
+                        "PaymentMethod": "Other",
+                        "PaymentMethodDetails": [
+                          "Standard"
+                        ],
+                        "IsReplacementOrder": false,
+                        "MarketplaceId": "ATVPDKIKX0DER",
+                        "ShipmentServiceLevelCategory": "Standard",
+                        "OrderType": "StandardOrder",
+                        "EarliestShipDate": "1970-01-19T03:59:27Z",
+                        "LatestShipDate": "1970-01-19T04:05:13Z",
+                        "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                        "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                        "IsBusinessOrder": false,
+                        "IsPrime": false,
+                        "IsGlobalExpressEnabled": false,
+                        "IsPremiumOrder": false,
+                        "IsSoldByAB": false
+                      },
+                      {
+                        "AmazonOrderId": "902-8745147-1934268",
+                        "PurchaseDate": "1970-01-19T03:58:30Z",
+                        "LastUpdateDate": "1970-01-19T03:58:32Z",
+                        "OrderStatus": "Unshipped",
+                        "FulfillmentChannel": "MFN",
+                        "SalesChannel": "Amazon.com",
+                        "ShipServiceLevel": "Std US D2D Dom",
+                        "OrderTotal": {
+                          "CurrencyCode": "USD",
+                          "Amount": "11.01"
+                        },
+                        "NumberOfItemsShipped": 0,
+                        "NumberOfItemsUnshipped": 1,
+                        "PaymentMethod": "Other",
+                        "PaymentMethodDetails": [
+                          "Standard"
+                        ],
+                        "IsReplacementOrder": false,
+                        "MarketplaceId": "ATVPDKIKX0DER",
+                        "ShipmentServiceLevelCategory": "Standard",
+                        "OrderType": "StandardOrder",
+                        "EarliestShipDate": "1970-01-19T03:59:27Z",
+                        "LatestShipDate": "1970-01-19T04:05:13Z",
+                        "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                        "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                        "IsBusinessOrder": false,
+                        "IsPrime": false,
+                        "IsGlobalExpressEnabled": false,
+                        "IsPremiumOrder": false,
+                        "IsSoldByAB": false
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=",
+                  "Orders": [
+                    {
+                      "AmazonOrderId": "902-3159896-1390916",
+                      "PurchaseDate": "2017-01-20T19:49:35Z",
+                      "LastUpdateDate": "2017-01-20T19:49:35Z",
+                      "OrderStatus": "Pending",
+                      "FulfillmentChannel": "SellerFulfilled",
+                      "NumberOfItemsShipped": 0,
+                      "NumberOfItemsUnshipped": 0,
+                      "PaymentMethod": "Other",
+                      "PaymentMethodDetails": [
+                        "CreditCard",
+                        "GiftCerificate"
+                      ],
+                      "MarketplaceId": "ATVPDKIKX0DER",
+                      "ShipmentServiceLevelCategory": "Standard",
+                      "OrderType": "StandardOrder",
+                      "EarliestShipDate": "2017-01-20T19:51:16Z",
+                      "LatestShipDate": "2017-01-25T19:49:35Z",
+                      "IsBusinessOrder": false,
+                      "IsPrime": false,
+                      "IsGlobalExpressEnabled": false,
+                      "IsPremiumOrder": false,
+                      "IsSoldByAB": false
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "CreatedAfter": {
+                      "value": "TEST_CASE_400"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Input"
+                    }
+                  ]
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/orders/v0/orders/{orderId}": {
+      "get": {
+        "tags": [
+          "ordersV0"
+        ],
+        "description": "Returns the order indicated by the specified order ID.",
+        "operationId": "getOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "An Amazon-defined order identifier, in 3-7-7 format.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "AmazonOrderId": "902-1845936-5435065",
+                    "PurchaseDate": "1970-01-19T03:58:30Z",
+                    "LastUpdateDate": "1970-01-19T03:58:32Z",
+                    "OrderStatus": "Unshipped",
+                    "FulfillmentChannel": "MFN",
+                    "SalesChannel": "Amazon.com",
+                    "ShipServiceLevel": "Std US D2D Dom",
+                    "OrderTotal": {
+                      "CurrencyCode": "USD",
+                      "Amount": "11.01"
+                    },
+                    "NumberOfItemsShipped": 0,
+                    "NumberOfItemsUnshipped": 1,
+                    "PaymentMethod": "Other",
+                    "PaymentMethodDetails": [
+                      "Standard"
+                    ],
+                    "IsReplacementOrder": false,
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "ShipmentServiceLevelCategory": "Standard",
+                    "OrderType": "StandardOrder",
+                    "EarliestShipDate": "1970-01-19T03:59:27Z",
+                    "LatestShipDate": "1970-01-19T04:05:13Z",
+                    "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                    "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                    "IsBusinessOrder": false,
+                    "IsPrime": false,
+                    "IsGlobalExpressEnabled": false,
+                    "IsPremiumOrder": false,
+                    "IsSoldByAB": false
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_IBA_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "AmazonOrderId": "921-3175655-0452641",
+                    "PurchaseDate": "2019-05-07T15:42:57.058Z",
+                    "LastUpdateDate": "2019-05-08T21:59:59Z",
+                    "OrderStatus": "Shipped",
+                    "FulfillmentChannel": "AFN",
+                    "SalesChannel": "Amazon.de",
+                    "ShipServiceLevel": "Standard",
+                    "OrderTotal": {
+                      "CurrencyCode": "EUR",
+                      "Amount": "100.00"
+                    },
+                    "NumberOfItemsShipped": 1,
+                    "NumberOfItemsUnshipped": 0,
+                    "PaymentMethod": "Other",
+                    "PaymentMethodDetails": [
+                      "Invoice"
+                    ],
+                    "IsReplacementOrder": false,
+                    "MarketplaceId": "A1PA6795UKMFR9",
+                    "ShipmentServiceLevelCategory": "Standard",
+                    "OrderType": "StandardOrder",
+                    "EarliestShipDate": "1970-01-19T03:59:27Z",
+                    "LatestShipDate": "2019-05-08T21:59:59Z",
+                    "EarliestDeliveryDate": "2019-05-10T21:59:59Z",
+                    "LatestDeliveryDate": "2019-05-12T21:59:59Z",
+                    "IsBusinessOrder": true,
+                    "IsPrime": false,
+                    "IsGlobalExpressEnabled": false,
+                    "IsPremiumOrder": false,
+                    "IsSoldByAB": true
+                  }
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "AmazonOrderId": "902-3159896-1390916",
+                  "PurchaseDate": "2017-01-20T19:49:35Z",
+                  "LastUpdateDate": "2017-01-20T19:49:35Z",
+                  "OrderStatus": "Pending",
+                  "FulfillmentChannel": "SellerFulfilled",
+                  "NumberOfItemsShipped": 0,
+                  "NumberOfItemsUnshipped": 0,
+                  "PaymentMethod": "Other",
+                  "PaymentMethodDetails": [
+                    "CreditCard",
+                    "GiftCerificate"
+                  ],
+                  "MarketplaceId": "ATVPDKIKX0DER",
+                  "ShipmentServiceLevelCategory": "Standard",
+                  "OrderType": "StandardOrder",
+                  "EarliestShipDate": "2017-01-20T19:51:16Z",
+                  "LatestShipDate": "2017-01-25T19:49:35Z",
+                  "IsBusinessOrder": false,
+                  "IsPrime": false,
+                  "IsGlobalExpressEnabled": false,
+                  "IsPremiumOrder": false,
+                  "IsSoldByAB": false
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_400"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Input"
+                    }
+                  ]
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/orders/v0/orders/{orderId}/buyerInfo": {
+      "get": {
+        "tags": [
+          "ordersV0"
+        ],
+        "description": "Returns buyer information for the order indicated by the specified order ID.",
+        "operationId": "getOrderBuyerInfo",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "An orderId is an Amazon-defined order identifier, in 3-7-7 format.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "AmazonOrderId": "902-1845936-5435065",
+                    "BuyerEmail": "fzyrv6gwkhbb15c@devo-marketplace.amazon.com",
+                    "BuyerName": "MFNIntegrationTestMerchant"
+                  }
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrderBuyerInfoResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "AmazonOrderId": "902-3159896-1390916",
+                  "BuyerEmail": "user@amz.com",
+                  "BuyerName": "John Smith",
+                  "BuyerTaxInfo": {
+                    "CompanyLegalName": "Company Name"
+                  },
+                  "PurchaseOrderNumber": "2234345435345"
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_400"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Input"
+                    }
+                  ]
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrderBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/orders/v0/orders/{orderId}/address": {
+      "get": {
+        "tags": [
+          "ordersV0"
+        ],
+        "description": "Returns the shipping address for the order indicated by the specified order ID.",
+        "operationId": "getOrderAddress",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "An orderId is an Amazon-defined order identifier, in 3-7-7 format.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "AmazonOrderId": "902-1845936-5435065",
+                    "ShippingAddress": {
+                      "Name": "MFNIntegrationTestMerchant",
+                      "AddressLine1": "2201 WESTLAKE AVE",
+                      "City": "SEATTLE",
+                      "StateOrRegion": "WA",
+                      "PostalCode": "98121-2778",
+                      "CountryCode": "US",
+                      "Phone": "+1 480-386-0930 ext. 73824",
+                      "AddressType": "Commercial"
+                    }
+                  }
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrderAddressResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "AmazonOrderId": "902-3159896-1390916",
+                  "ShippingAddress": {
+                    "Name": "Michigan address",
+                    "AddressLine1": "1 cross st",
+                    "City": "Canton",
+                    "StateOrRegion": "MI",
+                    "PostalCode": "48817",
+                    "CountryCode": "US"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_400"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Input"
+                    }
+                  ]
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrderAddressResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderAddressResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderAddressResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderAddressResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderAddressResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderAddressResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/orders/v0/orders/{orderId}/orderItems": {
+      "get": {
+        "tags": [
+          "ordersV0"
+        ],
+        "description": "Returns detailed order item information for the order indicated by the specified order ID. If NextToken is provided, it's used to retrieve the next page of order items.\n\nNote: When an order is in the Pending state (the order has been placed but payment has not been authorized), the getOrderItems operation does not return information about pricing, taxes, shipping charges, gift status or promotions for the order items in the order. After an order leaves the Pending state (this occurs when payment has been authorized) and enters the Unshipped, Partially Shipped, or Shipped state, the getOrderItems operation returns information about pricing, taxes, shipping charges, gift status and promotions for the order items in the order.",
+        "operationId": "getOrderItems",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "An Amazon-defined order identifier, in 3-7-7 format.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "NextToken",
+            "in": "query",
+            "description": "A string token returned in the response of your previous request.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "AmazonOrderId": "902-1845936-5435065",
+                    "OrderItems": [
+                      {
+                        "ASIN": "B00551Q3CS",
+                        "OrderItemId": "05015851154158",
+                        "SellerSKU": "NABetaASINB00551Q3CS",
+                        "Title": "B00551Q3CS [Card Book]",
+                        "QuantityOrdered": 1,
+                        "QuantityShipped": 0,
+                        "ProductInfo": {
+                          "NumberOfItems": 1
+                        },
+                        "ItemPrice": {
+                          "CurrencyCode": "USD",
+                          "Amount": "10.00"
+                        },
+                        "ItemTax": {
+                          "CurrencyCode": "USD",
+                          "Amount": "1.01"
+                        },
+                        "PromotionDiscount": {
+                          "CurrencyCode": "USD",
+                          "Amount": "0.00"
+                        },
+                        "IsGift": false,
+                        "ConditionId": "New",
+                        "ConditionSubtypeId": "New",
+                        "IsTransparency": false,
+                        "SerialNumberRequired": false
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "AmazonOrderId": "903-1671087-0812628",
+                  "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=",
+                  "OrderItems": [
+                    {
+                      "ASIN": "BT0093TELA",
+                      "OrderItemId": "68828574383266",
+                      "SellerSKU": "CBA_OTF_1",
+                      "Title": "Example item name",
+                      "QuantityOrdered": 1,
+                      "QuantityShipped": 1,
+                      "PointsGranted": {
+                        "PointsNumber": 10,
+                        "PointsMonetaryValue": {
+                          "CurrencyCode": "JPY",
+                          "Amount": "10.00"
+                        }
+                      },
+                      "ItemPrice": {
+                        "CurrencyCode": "JPY",
+                        "Amount": "25.99"
+                      },
+                      "ShippingPrice": {
+                        "CurrencyCode": "JPY",
+                        "Amount": "1.26"
+                      },
+                      "ScheduledDeliveryEndDate": "2013-09-09T01:30:00Z",
+                      "ScheduledDeliveryStartDate": "2013-09-07T02:00:00Z",
+                      "CODFee": {
+                        "CurrencyCode": "JPY",
+                        "Amount": "10.00"
+                      },
+                      "CODFeeDiscount": {
+                        "CurrencyCode": "JPY",
+                        "Amount": "1.00"
+                      },
+                      "priceDesignation": "BusinessPrice"
+                    },
+                    {
+                      "ASIN": "BCTU1104UEFB",
+                      "OrderItemId": "79039765272157",
+                      "SellerSKU": "CBA_OTF_5",
+                      "Title": "Example item name",
+                      "QuantityOrdered": 2,
+                      "ItemPrice": {
+                        "CurrencyCode": "JPY",
+                        "Amount": "17.95"
+                      },
+                      "PromotionIds": [
+                        "FREESHIP"
+                      ],
+                      "ConditionId": "Used",
+                      "ConditionSubtypeId": "Mint",
+                      "ConditionNote": "Example ConditionNote",
+                      "PriceDesignation": "BusinessPrice"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_400"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Input"
+                    }
+                  ]
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/orders/v0/orders/{orderId}/orderItems/buyerInfo": {
+      "get": {
+        "tags": [
+          "ordersV0"
+        ],
+        "description": "Returns buyer information in the order items of the order indicated by the specified order ID.",
+        "operationId": "getOrderItemsBuyerInfo",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "An Amazon-defined order identifier, in 3-7-7 format.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "NextToken",
+            "in": "query",
+            "description": "A string token returned in the response of your previous request.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "AmazonOrderId": "902-1845936-5435065",
+                    "OrderItems": [
+                      {
+                        "BuyerCustomizedInfo": {
+                          "CustomizedURL": "https://zme-caps.amazon.com/t/bR6qHkzSOxuB/J8nbWhze0Bd3DkajkOdY-XQbWkFralegp2sr_QZiKEE/1"
+                        },
+                        "GiftMessageText": "Et toi!",
+                        "GiftWrapPrice": {
+                          "CurrencyCode": "JPY",
+                          "Amount": "1.99"
+                        },
+                        "GiftWrapLevel": "Classic"
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "OrderItemId": "903-1671087-0812628",
+                  "BuyerCustomizedInfo": {
+                    "CustomizedURL": "https://zme-caps.amazon.com/t/bR6qHkzSOxuB/J8nbWhze0Bd3DkajkOdY-XQbWkFralegp2sr_QZiKEE/1"
+                  },
+                  "GiftMessageText": "For you!",
+                  "GiftWrapPrice": {
+                    "CurrencyCode": "JPY",
+                    "Amount": "1.99"
+                  },
+                  "GiftWrapLevel": "Classic"
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_400"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Input"
+                    }
+                  ]
+                }
+              }
+            ],
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    }
+  },
+  "definitions": {
+    "GetOrdersResponse": {
+      "description": "The response schema for the getOrders operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getOrders operation.",
+          "$ref": "#/definitions/OrdersList"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getOrders operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetOrderResponse": {
+      "description": "The response schema for the getOrder operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getOrder operation.",
+          "$ref": "#/definitions/Order"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getOrder operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetOrderBuyerInfoResponse": {
+      "description": "The response schema for the getOrderBuyerInfo operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getOrderBuyerInfo operations.",
+          "$ref": "#/definitions/OrderBuyerInfo"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getOrderBuyerInfo operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetOrderAddressResponse": {
+      "description": "The response schema for the getOrderAddress operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getOrderAddress operations.",
+          "$ref": "#/definitions/OrderAddress"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getOrderAddress operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetOrderItemsResponse": {
+      "description": "The response schema for the getOrderItems operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getOrderItems operation.",
+          "$ref": "#/definitions/OrderItemsList"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getOrderItems operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "GetOrderItemsBuyerInfoResponse": {
+      "description": "The response schema for the getOrderItemsBuyerInfo operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getOrderItemsBuyerInfo operation.",
+          "$ref": "#/definitions/OrderItemsBuyerInfoList"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getOrderItemsBuyerInfo operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "OrdersList": {
+      "description": "A list of orders along with additional information to make subsequent API calls.",
+      "type": "object",
+      "required": [
+        "Orders"
+      ],
+      "properties": {
+        "Orders": {
+          "$ref": "#/definitions/OrderList"
+        },
+        "NextToken": {
+          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
+          "type": "string"
+        },
+        "LastUpdatedBefore": {
+          "description": "A date used for selecting orders that were last updated before (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. All dates must be in ISO 8601 format.",
+          "type": "string"
+        },
+        "CreatedBefore": {
+          "description": "A date used for selecting orders created before (or at) a specified time. Only orders placed before the specified time are returned. The date must be in ISO 8601 format.",
+          "type": "string"
+        }
+      }
+    },
+    "OrderList": {
+      "description": "A list of orders.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Order"
+      }
+    },
+    "Order": {
+      "description": "Order information.",
+      "type": "object",
+      "required": [
+        "AmazonOrderId",
+        "LastUpdateDate",
+        "OrderStatus",
+        "PurchaseDate"
+      ],
+      "properties": {
+        "AmazonOrderId": {
+          "description": "An Amazon-defined order identifier, in 3-7-7 format.",
+          "type": "string"
+        },
+        "SellerOrderId": {
+          "description": "A seller-defined order identifier.",
+          "type": "string"
+        },
+        "PurchaseDate": {
+          "description": "The date when the order was created.",
+          "type": "string"
+        },
+        "LastUpdateDate": {
+          "description": "The date when the order was last updated.\n\nNote: LastUpdateDate is returned with an incorrect date for orders that were last updated before 2009-04-01.",
+          "type": "string"
+        },
+        "OrderStatus": {
+          "description": "The current order status.",
+          "$ref": "#/definitions/OrderStatusEnum"
+        },
+        "FulfillmentChannel": {
+          "description": "Whether the order was fulfilled by Amazon (AFN) or by the seller (MFN).",
+          "$ref": "#/definitions/FulfillmentChannelEnum"
+        },
+        "SalesChannel": {
+          "description": "The sales channel of the first item in the order.", 
+          "type": "string"
+        },
+        "OrderChannel": {
+          "description": "The order channel of the first item in the order.",
+          "type": "string"
+        },
+        "ShipServiceLevel": {
+          "description": "The shipment service level of the order.",
+          "type": "string"
+        },
+        "OrderTotal": {
+          "description": "The total charge for this order.",
+          "$ref": "#/definitions/Money"
+        },
+        "NumberOfItemsShipped": {
+          "description": "The number of items shipped.",
+          "type": "integer"
+        },
+        "NumberOfItemsUnshipped": {
+          "description": "The number of items unshipped.",
+          "type": "integer"
+        },
+        "PaymentExecutionDetail": {
+          "description": "Information about sub-payment methods for a Cash On Delivery (COD) order.\n\nNote: For a COD order that is paid for using one sub-payment method, one PaymentExecutionDetailItem object is returned, with PaymentExecutionDetailItem/PaymentMethod = COD. For a COD order that is paid for using multiple sub-payment methods, two or more PaymentExecutionDetailItem objects are returned.",
+          "$ref": "#/definitions/PaymentExecutionDetailItemList"
+        },
+        "PaymentMethod": {
+          "description": "The payment method for the order. This property is limited to Cash On Delivery (COD) and Convenience Store (CVS) payment methods. Unless you need the specific COD payment information provided by the PaymentExecutionDetailItem object, we recommend using the PaymentMethodDetails property to get payment method information.",
+          "$ref": "#/definitions/PaymentMethodEnum"
+        },
+        "PaymentMethodDetails": {
+          "description": "A list of payment methods for the order.",
+          "$ref": "#/definitions/PaymentMethodDetailItemList"
+        },
+        "MarketplaceId": {
+          "description": "The identifier for the marketplace where the order was placed.",
+          "type": "string"
+        },
+        "ShipmentServiceLevelCategory": {
+          "description": "The shipment service level category of the order.\n\nPossible values: Expedited, FreeEconomy, NextDay, SameDay, SecondDay, Scheduled, Standard.",
+          "type": "string"
+        },
+        "EasyShipShipmentStatus": {
+          "description": "The status of the Amazon Easy Ship order. This property is included only for Amazon Easy Ship orders.\n\nPossible values: PendingPickUp, LabelCanceled, PickedUp, OutForDelivery, Damaged, Delivered, RejectedByBuyer, Undeliverable, ReturnedToSeller, ReturningToSeller.",
+          "type": "string"
+        },
+        "CbaDisplayableShippingLabel": {
+          "description": "Custom ship label for Checkout by Amazon (CBA).",
+          "type": "string"
+        },
+        "OrderType": {
+          "description": "The type of the order.",
+          "$ref": "#/definitions/OrderTypeEnum"
+        },
+        "EarliestShipDate": {
+          "description":"The start of the time period within which you have committed to ship the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders.\n\nNote: EarliestShipDate might not be returned for orders placed before February 1, 2013.",
+          "type": "string"
+        },
+        "LatestShipDate": {
+          "description": "The end of the time period within which you have committed to ship the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders.\n\nNote: LatestShipDate might not be returned for orders placed before February 1, 2013.",
+          "type": "string"
+        },
+        "EarliestDeliveryDate": {
+          "description": "The start of the time period within which you have committed to fulfill the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders.",
+          "type": "string"
+        },
+        "LatestDeliveryDate": {
+          "description": "The end of the time period within which you have committed to fulfill the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders that do not have a PendingAvailability, Pending, or Canceled status.",
+          "type": "string"
+        },
+        "IsBusinessOrder": {
+          "description": "When true, the order is an Amazon Business order. An Amazon Business order is an order where the buyer is a Verified Business Buyer.",
+          "type": "boolean"
+        },
+        "IsPrime": {
+          "description": "When true, the order is a seller-fulfilled Amazon Prime order.",
+          "type": "boolean"
+        },
+        "IsPremiumOrder": {
+          "description": "When true, the order has a Premium Shipping Service Level Agreement. For more information about Premium Shipping orders, see \"Premium Shipping Options\" in the Seller Central Help for your marketplace.",
+          "type": "boolean"
+        },
+        "IsGlobalExpressEnabled": {
+          "description": "When true, the order is a GlobalExpress order.",
+          "type": "boolean"
+        },
+        "ReplacedOrderId": {
+          "description": "The order ID value for the order that is being replaced. Returned only if IsReplacementOrder = true.",
+          "type": "string"
+        },
+        "IsReplacementOrder": {
+          "description": "When true, this is a replacement order.",
+          "type": "boolean"
+        },
+        "PromiseResponseDueDate": {
+          "description": "Indicates the date by which the seller must respond to the buyer with an estimated ship date. Returned only for Sourcing on Demand orders.",
+          "type": "string"
+        },
+        "IsEstimatedShipDateSet": {
+          "description": "When true, the estimated ship date is set for the order. Returned only for Sourcing on Demand orders.",
+          "type": "boolean"
+        },
+        "IsSoldByAB": {
+          "description": "When true, the item within this order was bought and re-sold by Amazon Business EU SARL (ABEU). By buying and instantly re-selling your items, ABEU becomes the seller of record, making your inventory available for sale to customers who would not otherwise purchase from a third-party seller.",
+          "type": "boolean"
+        }
+      }
+    },
+    "OrderBuyerInfo": {
+      "description": "Buyer information for an order.",
+      "type": "object",
+      "required": [
+        "AmazonOrderId"
+      ],
+      "properties": {
+        "AmazonOrderId": {
+          "description": "An Amazon-defined order identifier, in 3-7-7 format.",
+          "type": "string"
+        },
+        "BuyerEmail": {
+          "description": "The anonymized email address of the buyer.",
+          "type": "string"
+        },
+        "BuyerName": {
+          "description": "The name of the buyer.",
+          "type": "string"
+        },
+        "BuyerCounty": {
+          "description": "The county of the buyer.",
+          "type": "string"
+        },
+        "BuyerTaxInfo": {
+          "description": "Tax information about the buyer.",
+          "$ref": "#/definitions/BuyerTaxInfo"
+        },
+        "PurchaseOrderNumber": {
+          "description": "The purchase order (PO) number entered by the buyer at checkout. Returned only for orders where the buyer entered a PO number at checkout.",
+          "type": "string"
+        }
+      }
+    },
+    "OrderAddress": {
+      "description": "The shipping address for the order.",
+      "type": "object",
+      "required": [
+        "AmazonOrderId"
+      ],
+      "properties": {
+        "AmazonOrderId": {
+          "description": "An Amazon-defined order identifier, in 3-7-7 format.",
+          "type": "string"
+        },
+        "ShippingAddress": {
+          "$ref": "#/definitions/Address"
+        }
+      }
+    },
+    "OrderStatusEnum": {
+      "description": "The order status.",
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Unshipped",
+        "PartiallyShipped",
+        "Shipped",
+        "Canceled",
+        "Unfulfillable",
+        "InvoiceUnconfirmed",
+        "PendingAvailability"
+      ]
+    },
+    "FulfillmentChannelEnum": {
+      "description": "The fulfillment channel for the order.",
+      "type": "string",
+      "enum": [
+        "MFN",
+        "AFN"
+      ]
+    },
+    "Address": {
+      "description": "The shipping address for the order.",
+      "type": "object",
+      "required": [
+        "Name"
+      ],
+      "properties": {
+        "Name": {
+          "description": "The name.",
+          "type": "string"
+        },
+        "AddressLine1": {
+          "description": "The street address.",
+          "type": "string"
+        },
+        "AddressLine2": {
+          "description": "Additional street address information, if required.",
+          "type": "string"
+        },
+        "AddressLine3": {
+          "description": "Additional street address information, if required.",
+          "type": "string"
+        },
+        "City": {
+          "description": "The city ",
+          "type": "string"
+        },
+        "County": {
+          "description": "The county.",
+          "type": "string"
+        },
+        "District": {
+          "description": "The district.",
+          "type": "string"
+        },
+        "StateOrRegion": {
+          "description": "The state or region.",
+          "type": "string"
+        },
+        "Municipality": {
+          "description": "The municipality.",
+          "type": "string"
+        },
+        "PostalCode": {
+          "description": "The postal code.",
+          "type": "string"
+        },
+        "CountryCode": {
+          "description": "The country code. A two-character country code, in ISO 3166-1 alpha-2 format.",
+          "type": "string"
+        },
+        "Phone": {
+          "description": "The phone number. Not returned for Fulfillment by Amazon (FBA) orders.",
+          "type": "string"
+        },
+        "AddressType": {
+          "$ref": "#/definitions/AddressTypeEnum"
+        }
+      }
+    },
+    "AddressTypeEnum": {
+      "description": "The address type of the shipping address.",
+      "type": "string",
+      "enum": [
+        "Residential",
+        "Commercial"
+      ]
+    },
+    "Money": {
+      "description": "The monetary value of the order.",
+      "type": "object",
+      "properties": {
+        "CurrencyCode": {
+          "description": "The three-digit currency code. In ISO 4217 format.",
+          "type": "string"
+        },
+        "Amount": {
+          "description": "The currency amount.",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentMethodEnum": {
+      "description": "The payment method for the order.",
+      "type": "string",
+      "enum": [
+        "COD",
+        "CVS",
+        "Other"
+      ]
+    },
+    "PaymentMethodDetailItemList": {
+      "description": "A list of payment method detail items.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "PaymentExecutionDetailItemList": {
+      "description": "A list of payment execution detail items.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PaymentExecutionDetailItem"
+      }
+    },
+    "PaymentExecutionDetailItem": {
+      "description": "Information about a sub-payment method used to pay for a COD order.",
+      "type": "object",
+      "required": [
+        "Payment",
+        "PaymentMethod"
+      ],
+      "properties": {
+        "Payment": {
+          "$ref": "#/definitions/Money"
+        },
+        "PaymentMethod": {
+          "description": "A sub-payment method for a COD order.\n\nPossible values:\n\n* COD - Cash On Delivery.\n\n* GC - Gift Card.\n\n* PointsAccount - Amazon Points.",
+          "type": "string"
+        }
+      }
+    },
+    "BuyerTaxInfo": {
+      "description": "Tax information about the buyer.",
+      "type": "object",
+      "properties": {
+        "CompanyLegalName": {
+          "description": "The legal name of the company.",
+          "type": "string"
+        },
+        "TaxingRegion": {
+          "description": "The country or region imposing the tax.",
+          "type": "string"
+        },
+        "TaxClassifications": {
+          "description": "A list of tax classifications.",
+          "$ref": "#/definitions/TaxClassificationList"
+        }
+      }
+    },
+    "TaxClassificationList": {
+      "description": "The tax classifications that apply to the order.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TaxClassification"
+      }
+    },
+    "TaxClassification": {
+      "description": "The tax classification for the order.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "description": "The type of tax.",
+          "type": "string"
+        },
+        "Value": {
+          "description": "The buyer's tax identifier.",
+          "type": "string"
+        }
+      }
+    },
+    "OrderTypeEnum": {
+      "description": "The order type.",
+      "type": "string",
+      "enum": [
+        "StandardOrder",
+        "LongLeadTimeOrder",
+        "Preorder",
+        "BackOrder",
+        "SourcingOnDemandOrder"
+      ]
+    },
+    "OrderItemsList": {
+      "description": "The order items list along with the order ID.",
+      "type": "object",
+      "required": [
+        "AmazonOrderId",
+        "OrderItems"
+      ],
+      "properties": {
+        "OrderItems": {
+          "$ref": "#/definitions/OrderItemList"
+        },
+        "NextToken": {
+          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
+          "type": "string"
+        },
+        "AmazonOrderId": {
+          "description": "An Amazon-defined order identifier, in 3-7-7 format.",
+          "type": "string"
+        }
+      }
+    },
+    "OrderItemList": {
+      "description": "A list of order items.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OrderItem"
+      }
+    },
+    "OrderItem": {
+      "description": "A single order item.",
+      "type": "object",
+      "required": [
+        "ASIN",
+        "OrderItemId",
+        "QuantityOrdered"
+      ],
+      "properties": {
+        "ASIN": {
+          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+          "type": "string"
+        },
+        "SellerSKU": {
+          "description": "The seller stock keeping unit (SKU) of the item.",
+          "type": "string"
+        },
+        "OrderItemId": {
+          "description": "An Amazon-defined order item identifier.",
+          "type": "string"
+        },
+        "Title": {
+          "description": "The name of the item.",
+          "type": "string"
+        },
+        "QuantityOrdered": {
+          "description": "The number of items in the order. ",
+          "type": "integer"
+        },
+        "QuantityShipped": {
+          "description": "The number of items shipped.",
+          "type": "integer"
+        },
+        "ProductInfo": {
+          "description": "Product information for the item.", 
+          "$ref": "#/definitions/ProductInfoDetail"
+        },
+        "PointsGranted": {
+          "description": "The number and value of Amazon Points granted with the purchase of an item.",
+          "$ref": "#/definitions/PointsGrantedDetail"
+        },
+        "ItemPrice": {
+          "description": "The selling price of the order item. Note that an order item is an item and a quantity. This means that the value of ItemPrice is equal to the selling price of the item multiplied by the quantity ordered. Note that ItemPrice excludes ShippingPrice and GiftWrapPrice.",
+          "$ref": "#/definitions/Money"
+        },
+        "ShippingPrice": {
+          "description": "The shipping price of the item.",
+          "$ref": "#/definitions/Money"
+        },
+        "ItemTax": {
+          "description": "The tax on the item price.",
+          "$ref": "#/definitions/Money"
+        },
+        "ShippingTax": {
+          "description": "The tax on the shipping price.",
+          "$ref": "#/definitions/Money"
+        },
+        "ShippingDiscount": {
+          "description": "The discount on the shipping price.",
+          "$ref": "#/definitions/Money"
+        },
+        "ShippingDiscountTax": {
+          "description": "The tax on the discount on the shipping price.",
+          "$ref": "#/definitions/Money"
+        },
+        "PromotionDiscount": {
+          "description": "The total of all promotional discounts in the offer.",
+          "$ref": "#/definitions/Money"
+        },
+        "PromotionDiscountTax": {
+          "description": "The tax on the total of all promotional discounts in the offer.",
+          "$ref": "#/definitions/Money"
+        },
+        "PromotionIds": {
+          "$ref": "#/definitions/PromotionIdList"
+        },
+        "CODFee": {
+          "description": "The fee charged for COD service.",
+          "$ref": "#/definitions/Money"
+        },
+        "CODFeeDiscount": {
+          "description": "The discount on the COD fee.",
+          "$ref": "#/definitions/Money"
+        },
+        "IsGift": {
+          "description": "When true, the item is a gift.",
+          "type": "boolean"
+        },
+        "ConditionNote": {
+          "description": "The condition of the item as described by the seller.",
+          "type": "string"
+        },
+        "ConditionId": {
+          "description": "The condition of the item.\n\nPossible values: New, Used, Collectible, Refurbished, Preorder, Club.",
+          "type": "string"
+        },
+        "ConditionSubtypeId": {
+          "description": "The subcondition of the item.\n\nPossible values: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty, Refurbished Warranty, Refurbished, Open Box, Any, Other.",
+          "type": "string"
+        },
+        "ScheduledDeliveryStartDate": {
+          "description": "The start date of the scheduled delivery window in the time zone of the order destination. In ISO 8601 date time format.",
+          "type": "string"
+        },
+        "ScheduledDeliveryEndDate": {
+          "description": "The end date of the scheduled delivery window in the time zone of the order destination. In ISO 8601 date time format.",
+          "type": "string"
+        },
+        "PriceDesignation": {
+          "description": "Indicates that the selling price is a special price that is available only for Amazon Business orders. For more information about the Amazon Business Seller Program, see the [Amazon Business website](https://www.amazon.com/b2b/info/amazon-business). \n\nPossible values: BusinessPrice - A special price that is available only for Amazon Business orders.",
+          "type": "string"
+        },
+        "TaxCollection": {
+          "description": "Information about withheld taxes.",
+          "$ref": "#/definitions/TaxCollection"
+        },
+        "SerialNumberRequired": {
+          "description": "When true, the product type for this item has a serial number.\n\nReturned only for Amazon Easy Ship orders.",
+          "type": "boolean"
+        },
+        "IsTransparency": {
+          "description": "When true, transparency codes are required.",
+          "type": "boolean"
+        }
+      }
+    },
+    "OrderItemsBuyerInfoList": {
+      "description": "A single order item's buyer information list with the order ID.",
+      "type": "object",
+      "required": [
+        "AmazonOrderId",
+        "OrderItems"
+      ],
+      "properties": {
+        "OrderItems": {
+          "$ref": "#/definitions/OrderItemBuyerInfoList"
+        },
+        "NextToken": {
+          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
+          "type": "string"
+        },
+        "AmazonOrderId": {
+          "description": "An Amazon-defined order identifier, in 3-7-7 format.",
+          "type": "string"
+        }
+      }
+    },
+    "OrderItemBuyerInfoList": {
+      "description": "A single order item's buyer information list.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OrderItemBuyerInfo"
+      }
+    },
+    "OrderItemBuyerInfo": {
+      "description": "A single order item's buyer information.",
+      "type": "object",
+      "required": [
+        "OrderItemId"
+      ],
+      "properties": {
+        "OrderItemId": {
+          "description": "An Amazon-defined order item identifier.",  
+          "type": "string"
+        },
+        "BuyerCustomizedInfo": {
+          "description": "Buyer information for custom orders from the Amazon Custom program.",
+          "$ref": "#/definitions/BuyerCustomizedInfoDetail"
+        },
+        "GiftWrapPrice": {
+          "description": "The gift wrap price of the item.",
+          "$ref": "#/definitions/Money"
+        },
+        "GiftWrapTax": {
+          "description": "The tax on the gift wrap price.",
+          "$ref": "#/definitions/Money"
+        },
+        "GiftMessageText": {
+          "description": "A gift message provided by the buyer.",
+          "type": "string"
+        },
+        "GiftWrapLevel": {
+          "description": "The gift wrap level specified by the buyer.",
+          "type": "string"
+        }
+      }
+    },
+    "PointsGrantedDetail": {
+      "description": "The number of Amazon Points offered with the purchase of an item, and their monetary value.",
+      "type": "object",
+      "properties": {
+        "PointsNumber": {
+          "description": "The number of Amazon Points granted with the purchase of an item.",
+          "type": "integer"
+        },
+        "PointsMonetaryValue": {
+          "description": "The monetary value of the Amazon Points granted.",
+          "$ref": "#/definitions/Money"
+        }
+      }
+    },
+    "ProductInfoDetail": {
+      "description": "Product information on the number of items.",
+      "type": "object",
+      "properties": {
+        "NumberOfItems": {
+          "description": "The total number of items that are included in the ASIN.",
+          "type": "integer"
+        }
+      }
+    },
+    "PromotionIdList": {
+      "description": "A list of promotion identifiers provided by the seller when the promotions were created.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "BuyerCustomizedInfoDetail": {
+      "description": "Buyer information for custom orders from the Amazon Custom program.",
+      "type": "object",
+      "properties": {
+        "CustomizedURL": {
+          "description": "The location of a zip file containing Amazon Custom data.",
+          "type": "string"
+        }
+      }
+    },
+    "TaxCollection": {
+      "description": "Information about withheld taxes.",
+      "type": "object",
+      "properties": {
+        "Model": {
+          "description": "The tax collection model applied to the item.",
+          "$ref": "#/definitions/TaxCollectionModelEnum"
+        },
+        "ResponsibleParty": {
+          "description": "The party responsible for withholding the taxes and remitting them to the taxing authority.",
+          "$ref": "#/definitions/ResponsiblePartyEnum"
+        }
+      }
+    },
+    "TaxCollectionModelEnum": {
+      "description": "The tax collection model applied to the item.",
+      "type": "string",
+      "enum": [
+        "MarketplaceFacilitator"
+      ]
+    },
+    "ResponsiblePartyEnum": {
+      "description": "The party responsible for withholding the taxes and remitting them to the taxing authority.",
+      "type": "string",
+      "enum": [
+        "Amazon Services, Inc."
+      ]
+    },
+    "ErrorList": {
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition in a human-readable form."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      }
+    }
+  }
+}
