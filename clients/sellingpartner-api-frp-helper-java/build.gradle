@@ -1,0 +1,107 @@
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.+'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+    }
+}
+
+plugins {
+    id 'idea'
+    id 'eclipse'
+    id 'java'
+    id 'maven'
+}
+
+group = 'io.swagger'
+version = '1.0.0'
+
+
+repositories {
+    jcenter()
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+
+
+/*sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}*/
+
+
+install {
+    repositories.mavenInstaller {
+        pom.artifactId = 'feeds-uploads-reports-java-helper'
+    }
+}
+
+task execute(type: JavaExec) {
+    main = System.getProperty('mainClass')
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+test {
+    jvmArgs('-Djavax.net.ssl.trustStore=resources/main/certs/InternalAndExternalTrustStore.jks',
+            '-Djavax.net.ssl.trustStorePassword=amazon')
+}
+
+test.dependsOn processTestResources
+
+// TO get this to work,
+// You must add the sellingpartner-api-aa-java.jar (with dependencies) to your
+// /libs/ folder!!!!!
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    implementation 'io.swagger:swagger-annotations:1.5.17'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation 'com.squareup.okhttp:logging-interceptor:2.7.5'
+    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'io.gsonfire:gson-fire:1.8.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.2'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
+    implementation group: 'org.apache.directory.studio', name: 'org.apache.commons.io', version: '2.4'
+    implementation group: 'com.google.guava', name: 'guava', version: '28.2-jre'
+    implementation group: 'joda-time', name: 'joda-time', version: '2.10.5'
+
+    // https://mvnrepository.com/artifact/org.threeten/threetenbp
+    implementation group: 'org.threeten', name: 'threetenbp', version: '1.3.5'
+    // https://mvnrepository.com/artifact/junit/junit
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    implementation 'com.amazonaws:aws-java-sdk-signer:1.11.610'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation 'org.junit.jupiter:junit-jupiter-engine:5.0.0'
+    implementation 'org.junit.jupiter:junit-jupiter-params:5.3.2'
+    implementation 'org.junit.jupiter:junit-jupiter-migrationsupport:5.5.1'
+    implementation 'org.mockito:mockito-core:3.0.0'
+    implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.9'
+
+    implementation fileTree(dir: 'libs', include: '*.jar')
+
+}

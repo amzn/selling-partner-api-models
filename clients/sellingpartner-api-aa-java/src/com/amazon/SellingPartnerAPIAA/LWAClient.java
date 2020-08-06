@@ -1,0 +1,58 @@
+package com.amazon.SellingPartnerAPIAA;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.IOException;
+
+class LWAClient {
+    private static final String ACCESS_TOKEN_KEY = "access_token";
+    private static final MediaType JSON_MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
+
+    @Getter
+    private String endpoint;
+
+    @Setter(AccessLevel.PACKAGE)
+    private OkHttpClient okHttpClient;
+
+    LWAClient(String endpoint) {
+        okHttpClient = new OkHttpClient();
+        this.endpoint = endpoint;
+    }
+
+    String getAccessToken(LWAAccessTokenRequestMeta lwaAccessTokenRequestMeta) {
+        RequestBody requestBody = RequestBody.create(JSON_MEDIA_TYPE,
+                new Gson().toJson(lwaAccessTokenRequestMeta));
+        Request accessTokenRequest = new Request.Builder()
+                .url(endpoint)
+                .post(requestBody)
+                .build();
+
+        String accessToken;
+        try {
+            Response response = okHttpClient.newCall(accessTokenRequest).execute();
+            if (!response.isSuccessful()) {
+                throw new IOException("Unsuccessful LWA token exchange");
+            }
+
+            JsonObject responseJson = new JsonParser()
+                    .parse(response.body().string())
+                    .getAsJsonObject();
+
+            accessToken = responseJson.get(ACCESS_TOKEN_KEY).getAsString();
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting LWA Access Token", e);
+        }
+
+        return accessToken;
+    }
+}
