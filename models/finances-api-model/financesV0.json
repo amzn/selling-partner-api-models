@@ -5,13 +5,12 @@
     "version": "v0",
     "title": "Selling Partner API for Finances",
     "contact": {
-      "name": "Selling Partner API Test Support",
-      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
-      "email": "marketplaceapitest@amazon.com"
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
     },
     "license": {
-      "name": "Amazon Software License",
-      "url": "https://aws.amazon.com/asl/"
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
     }
   },
   "host": "sellingpartnerapi-na.amazon.com",
@@ -27,7 +26,7 @@
   "paths": {
     "/finances/v0/financialEventGroups": {
       "get": {
-        "description": "Returns financial event groups for a given date range.",
+        "description": "Returns financial event groups for a given date range.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 30 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "listFinancialEventGroups",
         "parameters": [
           {
@@ -209,7 +208,7 @@
     },
     "/finances/v0/financialEventGroups/{eventGroupId}/financialEvents": {
       "get": {
-        "description": "Returns all financial events for the specified financial event group.",
+        "description": "Returns all financial events for the specified financial event group.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 30 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "listFinancialEventsByGroupId",
         "parameters": [
           {
@@ -564,6 +563,23 @@
                             "CurrencyAmount": 25.37
                           }
                         }
+                      ],
+                      "TrialShipmentEventList": [
+                        {
+                          "AmazonOrderId": "444-555-3343433",
+                          "FinancialEventGroupId": "1",
+                          "PostedDate": "2020-02-05T13:56:00.363Z",
+                          "SKU": "456454455464",
+                          "FeeList": [
+                            {
+                              "FeeType": "FixedClosingFee",
+                              "FeeAmount": {
+                                "CurrencyCode": "USD",
+                                "CurrencyAmount": 25.37
+                              }
+                            }
+                          ]
+                        }
                       ]
                     }
                   }
@@ -662,7 +678,7 @@
     },
     "/finances/v0/orders/{orderId}/financialEvents": {
       "get": {
-        "description": "Returns all financial events for the specified order.",
+        "description": "Returns all financial events for the specified order.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 30 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "listFinancialEventsByOrderId",
         "parameters": [
           {
@@ -927,7 +943,7 @@
     },
     "/finances/v0/financialEvents": {
       "get": {
-        "description": "Returns financial events for the specified data range.",
+        "description": "Returns financial events for the specified data range.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 30 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "listFinancialEvents",
         "parameters": [
           {
@@ -1526,7 +1542,7 @@
           "type": "string"
         },
         "LiquidationProceedsAmount": {
-          "description": "The amount paid by the liquidator for the seller’s inventory. The seller receives this amount minus LiquidationFeeAmount.",
+          "description": "The amount paid by the liquidator for the seller's inventory. The seller receives this amount minus LiquidationFeeAmount.",
           "$ref": "#/definitions/Currency"
         },
         "LiquidationFeeAmount": {
@@ -1693,11 +1709,17 @@
         },
         "AffordabilityExpenseReversalEventList": {
           "$ref": "#/definitions/AffordabilityExpenseEventList"
+        },
+        "TrialShipmentEventList": {
+          "$ref": "#/definitions/TrialShipmentEventList"
+        },
+        "ShipmentSettleEventList" : {
+          "$ref": "#/definitions/ShipmentSettleEventList"
         }
       }
     },
     "ImagingServicesFeeEvent": {
-      "description": "A fee event related to Amazon Imaging services.",     
+      "description": "A fee event related to Amazon Imaging services.",
       "type": "object",
       "properties": {
         "ImagingRequestBillingItemID": {
@@ -1968,8 +1990,12 @@
           "description": "The date and time when the financial event was posted.",
           "$ref": "#/definitions/Date"
         },
+        "MerchantOrderId": {
+          "description": "The merchant removal orderId.",
+          "type": "string"
+        },
         "OrderId": {
-          "description": "The identifier for the removal shipment order.",
+          "description": "The orderId for shipping inventory.",
           "type": "string"
         },
         "TransactionType": {
@@ -2001,7 +2027,7 @@
           "description": "The tax collection model applied to the item.\n\nPossible values:\n\n* MarketplaceFacilitator - Tax is withheld and remitted to the taxing authority by Amazon on behalf of the seller.\n\n* Standard - Tax is paid to the seller and not remitted to the taxing authority by Amazon.",
           "type": "string"
         },
-        "FufillmentNetworkSKU": {
+        "FulfillmentNetworkSKU": {
           "description": "The Amazon fulfillment network SKU for the item.",
           "type": "string"
         },
@@ -2034,6 +2060,82 @@
       "items": {
         "$ref": "#/definitions/RemovalShipmentItem"
       }
+    },
+    "RemovalShipmentAdjustmentEvent": {
+      "description": "A financial adjustment event for FBA liquidated inventory.\n\nPossible adjustment:\n\n* Positive values - Buyer needs to pay more amount to Amazon. E.g. charge was wrongly calculated 0$ instead of 100$ due to system error. \n\n* Negative Values - Buyer get refund. E.g. Buyer receives less items or damaged items and as part of their adjustment buyer gets refund.",
+      "type": "object",
+      "properties": {
+        "PostedDate": {
+          "description": "The date when the financial event was posted.",
+          "$ref": "#/definitions/Date"
+        },
+        "AdjustmentEventId": {
+          "description": "The unique identifier for the adjustment event.",
+          "type": "string"
+        },
+        "MerchantOrderId": {
+          "description": "The merchant removal orderId.",
+          "type": "string"
+        },
+        "OrderId": {
+          "description": "The orderId for shipping inventory.",
+          "type": "string"
+        },
+        "TransactionType": {
+          "description": "The type of removal order.\n\nPossible values:\n\n* WHOLESALE_LIQUIDATION.",
+          "type": "string"
+        },
+        "RemovalShipmentItemAdjustmentList": {
+          "description": "A comma-delimited list of Removal shipmentItemAdjustment details for FBA inventory.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RemovalShipmentItemAdjustment"
+          }
+        }
+      }
+    },
+    "RemovalShipmentAdjustmentEventList": {
+      "description": "A comma-delimited list of Removal shipmentAdjustment details for FBA inventory.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RemovalShipmentAdjustmentEvent"
+      }
+    },
+    "RemovalShipmentItemAdjustment": {
+      "description": "Item-level information for a removal shipment item adjustment.",
+      "type": "object",
+      "properties": {
+        "RemovalShipmentItemId": {
+          "description": "An identifier for an item in a removal shipment.",
+          "type": "string"
+        },
+        "TaxCollectionModel": {
+          "description": "The tax collection model applied to the item.\n\nPossible values:\n\n* MarketplaceFacilitator - Tax is withheld and remitted to the taxing authority by Amazon on behalf of the seller.\n\n* Standard - Tax is paid to the seller and not remitted to the taxing authority by Amazon.",
+          "type": "string"
+        },
+        "FulfillmentNetworkSKU": {
+          "description": "The Amazon fulfillment network SKU for the item.",
+          "type": "string"
+        },
+        "AdjustedQuantity": {
+          "description": "Adjusted quantity of removal shipmentItemAdjustment items.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "RevenueAdjustment": {
+          "description": "The total amount adjusted for disputed items.",
+          "$ref": "#/definitions/Currency"
+        },
+        "TaxAmountAdjustment": {
+          "description": "Adjustment on the Tax collected amount on the adjusted revenue.",
+          "$ref": "#/definitions/Currency"
+        },
+        "TaxWithheldAdjustment": {
+          "description": "Adjustment the tax withheld and remitted to the taxing authority by Amazon on behalf of the seller. If TaxCollectionModel=MarketplaceFacilitator, then TaxWithheld=TaxAmount (except the TaxWithheld amount is a negative number). Otherwise TaxWithheld=0.",
+          "$ref": "#/definitions/Currency"
+        }
+      }
+    }
     },
     "RentalTransactionEvent": {
       "description": "An event related to a rental transaction.",
@@ -2567,6 +2669,13 @@
       "type": "array",
       "items": {
         "$ref": "#/definitions/TrialShipmentEvent"
+      }
+    },
+    "ShipmentSettleEventList": {
+      "description": "A list of information about shipment settle financial events.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ShipmentEvent"
       }
     },
     "ErrorList": {

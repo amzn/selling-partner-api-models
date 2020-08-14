@@ -1,9 +1,17 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Amazon Shipping API",
-    "description": "Provides programmatic access to Amazon Shipping API",
-    "version": "v1"
+    "title": "Selling Partner API for Shipping",
+    "description": "Provides programmatic access to Amazon Shipping APIs.",
+    "version": "v1",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
   },
   "host": "sellingpartnerapi-na.amazon.com",
   "schemes": [
@@ -46,7 +54,7 @@
       "type": "array"
     },
     "AccountId": {
-      "description": "This is the Amazon Shipping account ID generated during the Amazon Shipping onboarding process.",
+      "description": "This is the Amazon Shipping account id generated during the Amazon Shipping onboarding process.",
       "maxLength": 10,
       "type": "string"
     },
@@ -62,6 +70,103 @@
     "ContainerReferenceId": {
       "description": "An identifier for the container. This must be unique within all the containers in the same shipment.",
       "maxLength": 40,
+      "type": "string"
+    },
+    "EventCode": {
+      "description": "The event code of a shipment, such as Departed, Received, and ReadyForReceive.",
+      "minLength": 1,
+      "maxLength": 60,
+      "type": "string"
+    },
+    "StateOrRegion": {
+      "description": "The state or region where the person, business or institution is located.",
+      "type": "string"
+    },
+    "City": {
+      "description": "The city where the person, business or institution is located.",
+      "minLength": 1,
+      "maxLength": 50,
+      "type": "string"
+    },
+    "CountryCode": {
+      "description": "The two digit country code. In ISO 3166-1 alpha-2 format.",
+      "minLength": 2,
+      "maxLength": 2,
+      "type": "string"
+    },
+    "PostalCode": {
+      "description": "The postal code of that address. It contains a series of letters or digits or both, sometimes including spaces or punctuation.",
+      "minLength": 1,
+      "maxLength": 20,
+      "type": "string"
+    },
+    "Location": {
+      "description": "The location where the person, business or institution is located.",
+      "properties": {
+        "stateOrRegion": {
+          "$ref": "#/definitions/StateOrRegion"
+        },
+        "city": {
+          "$ref": "#/definitions/City"
+        },
+        "countryCode": {
+          "$ref": "#/definitions/CountryCode"
+        },
+        "postalCode": {
+          "$ref": "#/definitions/PostalCode"
+        }
+      },
+      "type": "object"
+    },
+    "Event": {
+      "description": "An event of a shipment",
+      "properties": {
+        "eventCode": {
+          "$ref": "#/definitions/EventCode"
+        },
+        "eventTime": {
+          "description": "The date and time of an event for a shipment.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "location": {
+          "$ref": "#/definitions/Location"
+        }
+      },
+      "required": [
+        "eventCode",
+        "time"
+      ],
+      "type": "object"
+    },
+    "EventList": {
+      "description": "A list of events of a shipment.",
+      "items": {
+        "$ref": "#/definitions/Event"
+      },
+      "type": "array"
+    },
+    "TrackingId": {
+      "description": "The tracking id generated to each shipment. It contains a series of letters or digits or both.",
+      "minLength": 1,
+      "maxLength": 60,
+      "type": "string"
+    },
+    "TrackingSummary": {
+      "description": "The tracking summary.",
+      "properties": {
+        "status": {
+          "description": "The derived status based on the events in the eventHistory.",
+          "minLength": 1,
+          "maxLength": 60,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "PromisedDeliveryDate": {
+      "description": "The promised delivery date and time of a shipment.",
+      "format": "date-time",
       "type": "string"
     },
     "Address": {
@@ -91,27 +196,17 @@
           "maxLength": 60,
           "type": "string"
         },
-        "city": {
-          "description": "The city where the person, business or institution is located.",
-          "minLength": 1,
-          "maxLength": 50,
-          "type": "string"
+        "stateOrRegion": {
+          "$ref": "#/definitions/StateOrRegion"
         },
-        "postalCode": {
-          "description": "The postal code of that address. It conatins a series of letters or digits or both, sometimes including spaces or punctuation.",
-          "minLength": 1,
-          "maxLength": 20,
-          "type": "string"
+        "city": {
+          "$ref": "#/definitions/City"
         },
         "countryCode": {
-          "description": "The two digit country code. In ISO 3166-1 alpha-2 format.",
-          "minLength": 2,
-          "maxLength": 2,
-          "type": "string"
+          "$ref": "#/definitions/CountryCode"
         },
-        "stateOrRegion": {
-          "description": "The state or region where the person, business or institution is located.",
-          "type": "string"
+        "postalCode": {
+          "$ref": "#/definitions/PostalCode"
         },
         "email": {
           "description": "The email address of the contact associated with the address.",
@@ -176,14 +271,34 @@
     },
     "ServiceType": {
       "description": "The type of shipping service that will be used for the service offering.",
+      "type": "string",
       "enum": [
         "Amazon Shipping Ground",
         "Amazon Shipping Standard",
         "Amazon Shipping Premium"
       ],
-      "type": "string"
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "Amazon Shipping Ground",
+          "description": "Amazon Shipping Ground."
+        },
+        {
+          "value": "Amazon Shipping Standard",
+          "description": "Amazon Shipping Standard."
+        },
+        {
+          "value": "Amazon Shipping Premium",
+          "description": "Amazon Shipping Premium."
+        }
+      ]
     },
-
+    "ServiceTypeList": {
+      "description": "A list of service types that can be used to send the shipment.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ServiceType"
+      }
+    },
     "Rate": {
       "description": "The available rate that can be used to send the shipment",
       "properties": {
@@ -244,6 +359,39 @@
       },
       "type": "object"
     },
+    "ServiceRate": {
+      "description": "The specific rate for a shipping service, or null if no service available.",
+      "properties": {
+        "totalCharge": {
+          "description": "The total charge that will be billed for the rate.",
+          "$ref": "#/definitions/Currency"
+        },
+        "billableWeight": {
+          "description": "The weight that was used to calculate the totalCharge.",
+          "$ref": "#/definitions/Weight"
+        },
+        "serviceType": {
+          "$ref": "#/definitions/ServiceType"
+        },
+        "promise": {
+          "$ref": "#/definitions/ShippingPromiseSet"
+        }
+      },
+      "required": [
+        "totalCharge",
+        "billableWeight",
+        "serviceType",
+        "promise"
+      ],
+      "type": "object"
+    },
+    "ServiceRateList": {
+      "description": "A list of service rates.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ServiceRate"
+      }
+    },
     "Party": {
       "description": "The account related with the shipment.",
       "properties": {
@@ -289,10 +437,20 @@
           "type": "number"
         },
         "unit": {
-          "description": "The unit of these measurement. Enum of IN and CM only.",
+          "description": "The unit of these measurements.",
           "enum": [
             "IN",
             "CM"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "IN",
+              "description": "Inches"
+            },
+            {
+              "value": "CM",
+              "description": "Centimeters"
+            }
           ],
           "type": "string"
         }
@@ -315,6 +473,24 @@
             "kg",
             "oz",
             "lb"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "g",
+              "description": "Grams"
+            },
+            {
+              "value": "kg",
+              "description": "Kilograms"
+            },
+            {
+              "value": "oz",
+              "description": "Ounces"
+            },
+            {
+              "value": "lb",
+              "description": "Pounds"
+            }
           ],
           "type": "string"
         },
@@ -366,6 +542,12 @@
           "enum": [
             "PACKAGE"
           ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "PACKAGE",
+              "description": "PACKAGE"
+            }
+          ],
           "type": "string"
         },
         "containerReferenceId": {
@@ -405,6 +587,31 @@
       "type": "array",
       "items": {
         "$ref": "#/definitions/Container"
+      }
+    },
+    "ContainerSpecification": {
+      "description": "Container specification for checking the service rate.",
+      "properties": {
+        "dimensions": {
+          "description": "The length, width, and height of the container.",
+          "$ref": "#/definitions/Dimensions"
+        },
+        "weight": {
+          "description": "The weight of the container.",
+          "$ref": "#/definitions/Weight"
+        }
+      },
+      "required": [
+        "dimensions",
+        "weight"
+      ],
+      "type": "object"
+    },
+    "ContainerSpecificationList": {
+      "description": "A list of container specifications.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ContainerSpecification"
       }
     },
     "Label": {
@@ -454,12 +661,24 @@
           "enum": [
             "PNG"
           ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "PNG",
+              "description": "PNG"
+            }
+          ],
           "type": "string"
         },
         "labelStockSize": {
           "description": "The label stock size specification in length and height. Enum of 4x6 only for now.",
           "enum": [
             "4x6"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "4x6",
+              "description": "4x6"
+            }
           ],
           "type": "string"
         }
@@ -518,6 +737,72 @@
         }
       },
       "required": [
+        "labelSpecification"
+      ],
+      "type": "object"
+    },
+    "GetRatesRequest": {
+      "description": "The payload schema for the getRates operation.",
+      "properties": {
+        "shipTo": {
+          "$ref": "#/definitions/Address"
+        },
+        "shipFrom": {
+          "$ref": "#/definitions/Address"
+        },
+        "serviceTypes": {
+          "$ref": "#/definitions/ServiceTypeList"
+        },
+        "shipDate": {
+          "description": "The start date and time. This defaults to the current date and time.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "containerSpecifications": {
+          "$ref": "#/definitions/ContainerSpecificationList"
+        }
+      },
+      "required": [
+        "shipTo",
+        "shipFrom",
+        "serviceTypes",
+        "containerSpecifications"
+      ],
+      "type": "object"
+    },
+    "PurchaseShipmentRequest": {
+      "description": "The payload schema for the purchaseShipment operation.",
+      "properties": {
+        "clientReferenceId": {
+          "$ref": "#/definitions/ClientReferenceId"
+        },
+        "shipTo": {
+          "$ref": "#/definitions/Address"
+        },
+        "shipFrom": {
+          "$ref": "#/definitions/Address"
+        },
+        "shipDate": {
+          "description": "The start date and time. This defaults to the current date and time.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "serviceType": {
+          "$ref": "#/definitions/ServiceType"
+        },
+        "containers": {
+          "$ref": "#/definitions/ContainerList"
+        },
+        "labelSpecification": {
+          "$ref": "#/definitions/LabelSpecification"
+        }
+      },
+      "required": [
+        "clientReferenceId",
+        "shipTo",
+        "shipFrom",
+        "serviceType",
+        "containers",
         "labelSpecification"
       ],
       "type": "object"
@@ -623,6 +908,62 @@
       ],
       "type": "object"
     },
+    "GetRatesResult": {
+      "description": "The payload schema for the getRates operation.",
+      "properties": {
+        "serviceRates": {
+          "$ref": "#/definitions/ServiceRateList"
+        }
+      },
+      "required": [
+        "serviceRates"
+      ],
+      "type": "object"
+    },
+    "PurchaseShipmentResult": {
+      "description": "The payload schema for the purchaseShipment operation.",
+      "properties": {
+        "shipmentId": {
+          "$ref": "#/definitions/ShipmentId"
+        },
+        "serviceRate": {
+          "$ref": "#/definitions/ServiceRate"
+        },
+        "labelResults": {
+          "$ref": "#/definitions/LabelResultList"
+        }
+      },
+      "required": [
+        "shipmentId",
+        "serviceRate",
+        "labelResults"
+      ],
+      "type": "object"
+    },
+    "TrackingInformation": {
+      "description": "The payload schema for the getTrackingInformation operation.",
+      "properties": {
+        "trackingId": {
+          "$ref": "#/definitions/TrackingId"
+        },
+        "summary": {
+          "$ref": "#/definitions/TrackingSummary"
+        },
+        "promisedDeliveryDate": {
+          "$ref": "#/definitions/PromisedDeliveryDate"
+        },
+        "eventHistory": {
+          "$ref": "#/definitions/EventList"
+        }
+      },
+      "required": [
+        "trackingId",
+        "summary",
+        "promisedDeliveryDate",
+        "eventHistory"
+      ],
+      "type": "object"
+    },
     "CreateShipmentResponse": {
       "description": "The response schema for the createShipment operation.",
       "properties": {
@@ -643,6 +984,34 @@
         "payload": {
           "description": "The payload for getShipment operation",
           "$ref": "#/definitions/Shipment"
+        },
+        "errors": {
+          "description": "Encountered errors for the operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "type": "object"
+    },
+    "GetRatesResponse": {
+      "description": "The response schema for the getRates operation.",
+      "properties": {
+        "payload": {
+          "description": "The payload for getRates operation",
+          "$ref": "#/definitions/GetRatesResult"
+        },
+        "errors": {
+          "description": "Encountered errors for the operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "type": "object"
+    },
+    "PurchaseShipmentResponse": {
+      "description": "The response schema for the purchaseShipment operation.",
+      "properties": {
+        "payload": {
+          "description": "The payload for purchaseShipment operation",
+          "$ref": "#/definitions/PurchaseShipmentResult"
         },
         "errors": {
           "description": "Encountered errors for the operation.",
@@ -702,13 +1071,27 @@
         }
       },
       "type": "object"
+    },
+    "GetTrackingInformationResponse": {
+      "description": "The response schema for the getTrackingInformation operation.",
+      "properties": {
+        "payload": {
+          "description": "The payload for getTrackingInformation operation",
+          "$ref": "#/definitions/TrackingInformation"
+        },
+        "errors": {
+          "description": "Encountered errors for the operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "type": "object"
     }
   },
   "paths": {
     "/shipping/v1/shipments": {
       "post": {
         "tags": ["shipping"],
-        "description": "Create a new shipment.",
+        "description": "Create a new shipment.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "createShipment",
         "responses": {
           "200": {
@@ -719,9 +1102,7 @@
                   "parameters": {
                     "body": {
                       "value": {
-                        "clientReferenceId": [
-                          "TEST_CASE_200"
-                        ]
+                        "clientReferenceId": "TEST_CASE_200"
                       }
                     }
                   }
@@ -738,17 +1119,15 @@
                         "value": 3.25,
                         "unit": "GBP"
                       },
-                      "shippingService": {
-                        "serviceCode": "Amazon Shipping Standard"
-                      },
+                      "serviceType": "Amazon Shipping Standard",
                       "promise": {
                         "deliveryWindow": {
-                            "start": "2018-08-25T20:22:30.737Z",
-                            "end": "2018-08-26T20:22:30.737Z"
+                          "start": "2018-08-25T20:22:30.737Z",
+                          "end": "2018-08-26T20:22:30.737Z"
                         },
                         "receiveWindow": {
-                            "start": "2018-08-23T09:22:30.737Z",
-                            "end": "2018-08-23T11:22:30.737Z"
+                          "start": "2018-08-23T09:22:30.737Z",
+                          "end": "2018-08-23T11:22:30.737Z"
                         }
                       },
                       "rateId": "RI123456",
@@ -768,31 +1147,29 @@
               "application/json": {
                 "shipmentId": "89108749065090",
                 "eligibleRates": [{
-                    "billedWeight": {
-                      "value": 4,
-                      "unit": "kg"
+                  "billedWeight": {
+                    "value": 4,
+                    "unit": "kg"
+                  },
+                  "totalCharge": {
+                    "value": 3.25,
+                    "unit": "GBP"
+                  },
+                  "serviceType": "Amazon Shipping Standard",
+                  "promise": {
+                    "deliveryWindow": {
+                      "start": "2018-08-25T20:22:30.737Z",
+                      "end": "2018-08-26T20:22:30.737Z"
                     },
-                    "totalCharge": {
-                      "value": 3.25,
-                      "unit": "GBP"
-                    },
-                    "shippingService": {
-                      "serviceCode": "Amazon Shipping Standard"
-                    },
-                    "promise": {
-                      "deliveryWindow": {
-                          "start": "2018-08-25T20:22:30.737Z",
-                          "end": "2018-08-26T20:22:30.737Z"
-                      },
-                      "receiveWindow": {
-                          "start": "2018-08-23T09:22:30.737Z",
-                          "end": "2018-08-23T11:22:30.737Z"
-                      }
-                    },
-                    "rateId": "RI123456",
-                    "expirationTime": "2018-08-22T09:22:30.737Z"
-                  }]
-                }
+                    "receiveWindow": {
+                      "start": "2018-08-23T09:22:30.737Z",
+                      "end": "2018-08-23T11:22:30.737Z"
+                    }
+                  },
+                  "rateId": "RI123456",
+                  "expirationTime": "2018-08-22T09:22:30.737Z"
+                }]
+              }
             },
             "schema": {
               "$ref": "#/definitions/CreateShipmentResponse"
@@ -806,22 +1183,18 @@
                   "parameters": {
                     "body": {
                       "value": {
-                        "clientReferenceId": [
-                          "TEST_CASE_400"
-                        ]
+                        "clientReferenceId": "TEST_CASE_400"
                       }
                     }
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "InvalidInput",
                         "message": "Invalid input."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -843,22 +1216,18 @@
                   "parameters": {
                     "body": {
                       "value": {
-                        "clientReferenceId": [
-                          "TEST_CASE_401"
-                        ]
+                        "clientReferenceId": "TEST_CASE_401"
                       }
                     }
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "Unauthorized",
                         "message": "Access to requested resource is denied."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -880,22 +1249,18 @@
                   "parameters": {
                     "body": {
                       "value": {
-                        "clientReferenceId": [
-                          "TEST_CASE_403"
-                        ]
+                        "clientReferenceId": "TEST_CASE_403"
                       }
                     }
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "Unauthorized",
                         "message": "Access to requested resource is denied."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -917,22 +1282,18 @@
                   "parameters": {
                     "body": {
                       "value": {
-                        "clientReferenceId": [
-                          "TEST_CASE_404"
-                        ]
+                        "clientReferenceId": "TEST_CASE_404"
                       }
                     }
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "NotFound",
                         "message": "The requested resource doesn't exist."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -954,22 +1315,18 @@
                   "parameters": {
                     "body": {
                       "value": {
-                        "clientReferenceId": [
-                          "TEST_CASE_429"
-                        ]
+                        "clientReferenceId": "TEST_CASE_429"
                       }
                     }
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "QuotaExceeded",
                         "message": "You exceeded your quota for the requested resource."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -991,22 +1348,18 @@
                   "parameters": {
                     "body": {
                       "value": {
-                        "clientReferenceId": [
-                          "TEST_CASE_500"
-                        ]
+                        "clientReferenceId": "TEST_CASE_500"
                       }
                     }
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "InternalFailure",
                         "message": "We encountered an internal error. Please try again."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1028,22 +1381,18 @@
                   "parameters": {
                     "body": {
                       "value": {
-                        "clientReferenceId": [
-                          "TEST_CASE_503"
-                        ]
+                        "clientReferenceId": "TEST_CASE_503"
                       }
                     }
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "ServiceUnavailable",
                         "message": "Service is temporarily unavailable. Please try again."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1064,61 +1413,61 @@
           "name": "body",
           "schema": {
             "example": {
-            	"clientReferenceId": "911-7267646-6348616",
-            	"shipFrom": {
-            		"name": "test name 1",
-            		"addressLine1": "some Test address 1",
-            		"postalCode": "90013",
-            		"city": "Los Angeles",
-            		"countryCode": "US",
-            		"stateOrRegion": "CA",
-            		"email": "testEmail1@amazon.com",
-            		"phoneNumber": "1234567890"
-            	},
-            	"shipTo": {
-            		"name": "test name 2",
-            		"addressLine1": "some Test address 2",
-            		"postalCode": "90013-1805",
-            		"city": "LOS ANGELES",
-            		"countryCode": "US",
-            		"stateOrRegion": "CA",
-            		"email": "testEmail2@amazon.com",
-            		"phoneNumber": "1234567890"
-            	},
-            	"containers": [
-            		{
-            			"containerType": "PACKAGE",
-            			"containerReferenceId": "ContainerRefId-01",
-            			"items": [
-            				{
-            					"title": "String",
-            					"quantity": 2,
-            					"unitPrice": {
-            						"unit": "USD",
-            						"value": 14.99
-            					},
-            					"unitWeight": {
-            						"unit": "lb",
-            						"value": 0.08164656
-            					}
-            				}
-            			],
-            			"dimensions": {
-            				"height": 12,
-            				"length": 36,
-            				"width": 15,
-            				"unit": "CM"
-            			},
-            			"weight": {
-            				"unit": "lb",
-            				"value": 0.08164656
-            			},
-            			"value": {
-            				"unit": "USD",
-            				"value": 29.98
-            			}
-            		}
-            	]
+              "clientReferenceId": "911-7267646-6348616",
+              "shipFrom": {
+                "name": "test name 1",
+                "addressLine1": "some Test address 1",
+                "postalCode": "90013",
+                "city": "Los Angeles",
+                "countryCode": "US",
+                "stateOrRegion": "CA",
+                "email": "testEmail1@amazon.com",
+                "phoneNumber": "1234567890"
+              },
+              "shipTo": {
+                "name": "test name 2",
+                "addressLine1": "some Test address 2",
+                "postalCode": "90013-1805",
+                "city": "LOS ANGELES",
+                "countryCode": "US",
+                "stateOrRegion": "CA",
+                "email": "testEmail2@amazon.com",
+                "phoneNumber": "1234567890"
+              },
+              "containers": [
+                {
+                  "containerType": "PACKAGE",
+                  "containerReferenceId": "ContainerRefId-01",
+                  "items": [
+                    {
+                      "title": "String",
+                      "quantity": 2,
+                      "unitPrice": {
+                        "unit": "USD",
+                        "value": 14.99
+                      },
+                      "unitWeight": {
+                        "unit": "lb",
+                        "value": 0.08164656
+                      }
+                    }
+                  ],
+                  "dimensions": {
+                    "height": 12,
+                    "length": 36,
+                    "width": 15,
+                    "unit": "CM"
+                  },
+                  "weight": {
+                    "unit": "lb",
+                    "value": 0.08164656
+                  },
+                  "value": {
+                    "unit": "USD",
+                    "value": 29.98
+                  }
+                }
+              ]
             },
             "$ref": "#/definitions/CreateShipmentRequest"
           }
@@ -1128,7 +1477,7 @@
     "/shipping/v1/shipments/{shipmentId}": {
       "get": {
         "tags": ["shipping"],
-        "description": "Return the entire shipment object for the shipmentId.",
+        "description": "Return the entire shipment object for the shipmentId.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getShipment",
         "responses": {
           "200": {
@@ -1157,9 +1506,7 @@
                         "value": 3.5,
                         "unit": "GBP"
                       },
-                      "shippingService": {
-                        "serviceCode": "Amazon Shipping Standard"
-                      },
+                      "serviceType": "Amazon Shipping Standard",
                       "promise": {
                         "deliveryWindow": {
                           "start": "2018-08-25T20:22:30.737Z",
@@ -1233,9 +1580,7 @@
                     "value": 3.5,
                     "unit": "GBP"
                   },
-                  "shippingService": {
-                    "serviceCode": "Amazon Shipping Standard"
-                  },
+                  "serviceType": "Amazon Shipping Standard",
                   "promise": {
                     "deliveryWindow": {
                       "start": "2018-08-25T20:22:30.737Z",
@@ -1302,14 +1647,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "InvalidInput",
                         "message": "Invalid input."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1335,7 +1678,6 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "Unauthorized",
@@ -1343,7 +1685,6 @@
                       }
                     ]
                   }
-                }
               }
             ],
             "headers": {
@@ -1368,14 +1709,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "Unauthorized",
                         "message": "Access to requested resource is denied."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1401,14 +1740,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "NotFound",
                         "message": "The requested resource doesn't exist."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1434,14 +1771,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "QuotaExceeded",
                         "message": "You exceeded your quota for the requested resource."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1467,14 +1802,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "InternalFailure",
                         "message": "We encountered an internal error. Please try again."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1500,14 +1833,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "ServiceUnavailable",
                         "message": "Service is temporarily unavailable. Please try again."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1533,7 +1864,7 @@
     "/shipping/v1/shipments/{shipmentId}/cancel": {
       "post": {
         "tags": ["shipping"],
-        "description": "Cancel a shipment by the given shipmentId.",
+        "description": "Cancel a shipment by the given shipmentId.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "cancelShipment",
         "responses": {
           "200": {
@@ -1574,14 +1905,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "InvalidInput",
                         "message": "Invalid input."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1607,14 +1936,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "Unauthorized",
                         "message": "Access to requested resource is denied."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1640,7 +1967,6 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "Unauthorized",
@@ -1649,7 +1975,6 @@
                     ]
                   }
                 }
-              }
             ],
             "headers": {
               "x-amzn-RequestId": {
@@ -1673,14 +1998,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "NotFound",
                         "message": "The requested resource doesn't exist."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1706,14 +2029,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "QuotaExceeded",
                         "message": "You exceeded your quota for the requested resource."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1739,14 +2060,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "InternalFailure",
                         "message": "We encountered an internal error. Please try again."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1772,14 +2091,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "ServiceUnavailable",
                         "message": "Service is temporarily unavailable. Please try again."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1805,7 +2122,7 @@
     "/shipping/v1/shipments/{shipmentId}/purchaseLabels": {
       "post": {
         "tags": ["shipping"],
-        "description": "Purchase shipping labels based on a given rate.",
+        "description": "Purchase shipping labels based on a given rate.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "purchaseLabels",
         "responses": {
           "200": {
@@ -1824,39 +2141,39 @@
                     "shipmentId": "TEST_CASE_200",
                     "clientReferenceId": "911-7267646-6348616",
                     "acceptedRate": {
-                     "billedWeight": {
-                       "value": 4,
-                       "unit": "kg"
-                     },
-                     "totalCharge": {
-                       "value": 3.5,
-                       "unit": "GBP"
-                     },
-                     "shippingService": {
-                       "serviceCode": "SWA-UK-PRIME-PREM"
-                     },
-                     "promise": {
-                       "deliveryWindow": {
-                         "start": "2018-08-25T20:22:30.737Z",
-                         "end": "2018-08-26T20:22:30.737Z"
-                       },
-                       "receiveWindow": {
-                         "start": "2018-08-23T09:22:30.737Z",
-                         "end": "2018-08-23T11:22:30.737Z"
-                       }
-                     }
+                      "billedWeight": {
+                        "value": 4,
+                        "unit": "kg"
+                      },
+                      "totalCharge": {
+                        "value": 3.5,
+                        "unit": "GBP"
+                      },
+                      "serviceType": "Amazon Shipping Standard",
+                      "promise": {
+                        "deliveryWindow": {
+                          "start": "2018-08-25T20:22:30.737Z",
+                          "end": "2018-08-26T20:22:30.737Z"
+                        },
+                        "receiveWindow": {
+                          "start": "2018-08-23T09:22:30.737Z",
+                          "end": "2018-08-23T11:22:30.737Z"
+                        }
+                      }
                     },
-                    "labelResults": [{
-                     "containerReferenceId": "CRI123456789",
-                     "trackingId": "1512748795322",
-                     "label": {
-                       "labelStream": "iVBORw0KGgo...AAAARK5CYII=(Truncated)",
-                       "labelSpecification": {
-                         "labelFormat": "PNG",
-                         "labelStockSize": "4x6"
-                       }
-                     }
-                    }]
+                    "labelResults": [
+                      {
+                        "containerReferenceId": "CRI123456789",
+                        "trackingId": "1512748795322",
+                        "label": {
+                          "labelStream": "iVBORw0KGgo...AAAARK5CYII=(Truncated)",
+                          "labelSpecification": {
+                            "labelFormat": "PNG",
+                            "labelStockSize": "4x6"
+                          }
+                        }
+                      }
+                    ]
                   }
                 }
               }
@@ -1872,39 +2189,39 @@
                 "shipmentId": "89108749065090",
                 "clientReferenceId": "911-7267646-6348616",
                 "acceptedRate": {
-                 "billedWeight": {
-                   "value": 4,
-                   "unit": "kg"
-                 },
-                 "totalCharge": {
-                   "value": 3.5,
-                   "unit": "GBP"
-                 },
-                 "shippingService": {
-                   "serviceCode": "SWA-UK-PRIME-PREM"
-                 },
-                 "promise": {
-                   "deliveryWindow": {
-                     "start": "2018-08-25T20:22:30.737Z",
-                     "end": "2018-08-26T20:22:30.737Z"
-                   },
-                   "receiveWindow": {
-                     "start": "2018-08-23T09:22:30.737Z",
-                     "end": "2018-08-23T11:22:30.737Z"
-                   }
-                 }
+                  "billedWeight": {
+                    "value": 4,
+                    "unit": "kg"
+                  },
+                  "totalCharge": {
+                    "value": 3.5,
+                    "unit": "GBP"
+                  },
+                  "serviceType": "Amazon Shipping Standard",
+                  "promise": {
+                    "deliveryWindow": {
+                      "start": "2018-08-25T20:22:30.737Z",
+                      "end": "2018-08-26T20:22:30.737Z"
+                    },
+                    "receiveWindow": {
+                      "start": "2018-08-23T09:22:30.737Z",
+                      "end": "2018-08-23T11:22:30.737Z"
+                    }
+                  }
                 },
-                "labelResults": [{
-                 "containerReferenceId": "CRI123456789",
-                 "trackingId": "1512748795322",
-                 "label": {
-                   "labelStream": "iVBORw0KGgo...AAAARK5CYII=(Truncated)",
-                   "labelSpecification": {
-                     "labelFormat": "PNG",
-                     "labelStockSize": "4x6"
-                   }
-                 }
-                }]
+                "labelResults": [
+                  {
+                    "containerReferenceId": "CRI123456789",
+                    "trackingId": "1512748795322",
+                    "label": {
+                      "labelStream": "iVBORw0KGgo...AAAARK5CYII=(Truncated)",
+                      "labelSpecification": {
+                        "labelFormat": "PNG",
+                        "labelStockSize": "4x6"
+                      }
+                    }
+                  }
+                ]
               }
             },
             "schema": {
@@ -1923,14 +2240,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "InvalidInput",
                         "message": "Invalid input."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1956,14 +2271,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "Unauthorized",
                         "message": "Access to requested resource is denied."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -1989,14 +2302,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "Unauthorized",
                         "message": "Access to requested resource is denied."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2022,14 +2333,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "NotFound",
                         "message": "The requested resource doesn't exist."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2055,14 +2364,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "QuotaExceeded",
                         "message": "You exceeded your quota for the requested resource."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2088,14 +2395,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "InternalFailure",
                         "message": "We encountered an internal error. Please try again."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2121,14 +2426,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "ServiceUnavailable",
                         "message": "Service is temporarily unavailable. Please try again."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2169,7 +2472,7 @@
     "/shipping/v1/shipments/{shipmentId}/containers/{trackingId}/label": {
       "post": {
         "tags": ["shipping"],
-        "description": "Retrieve shipping label based on the shipment id and tracking id.",
+        "description": "Retrieve shipping label based on the shipment id and tracking id.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "retrieveShippingLabel",
         "responses": {
           "200": {
@@ -2225,14 +2528,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "InvalidInput",
                         "message": "Invalid input."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2258,7 +2559,6 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "Unauthorized",
@@ -2266,7 +2566,6 @@
                       }
                     ]
                   }
-                }
               }
             ],
             "headers": {
@@ -2291,14 +2590,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "Unauthorized",
                         "message": "Access to requested resource is denied."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2324,14 +2621,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "NotFound",
                         "message": "The requested resource doesn't exist."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2357,14 +2652,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "QuotaExceeded",
                         "message": "You exceeded your quota for the requested resource."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2390,14 +2683,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "InternalFailure",
                         "message": "We encountered an internal error. Please try again."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2423,14 +2714,12 @@
                   }
                 },
                 "response": {
-                  "payload": {
                     "errors": [
                       {
                         "code": "ServiceUnavailable",
                         "message": "Service is temporarily unavailable. Please try again."
                       }
                     ]
-                  }
                 }
               }
             ],
@@ -2473,10 +2762,493 @@
         }]
       }
     },
+    "/shipping/v1/purchaseShipment": {
+      "post": {
+        "tags": [
+          "shipping"
+        ],
+        "description": "Purchase shipping labels.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "purchaseShipment",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "clientReferenceId": "TEST_CASE_200"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "shipmentId": "TEST_CASE_200",
+                    "serviceRate": {
+                      "billableWeight": {
+                        "value": 4,
+                        "unit": "kg"
+                      },
+                      "totalCharge": {
+                        "value": 3.5,
+                        "unit": "GBP"
+                      },
+                      "serviceType": "Amazon Shipping Standard",
+                      "promise": {
+                        "deliveryWindow": {
+                          "start": "2018-08-25T20:22:30.737Z",
+                          "end": "2018-08-26T20:22:30.737Z"
+                        },
+                        "receiveWindow": {
+                          "start": "2018-08-23T09:22:30.737Z",
+                          "end": "2018-08-23T11:22:30.737Z"
+                        }
+                      }
+                    },
+                    "labelResults": [
+                      {
+                        "containerReferenceId": "CRI123456789",
+                        "trackingId": "1512748795322",
+                        "label": {
+                          "labelStream": "iVBORw0KGgo...AAAARK5CYII=(Truncated)",
+                          "labelSpecification": {
+                            "labelFormat": "PNG",
+                            "labelStockSize": "4x6"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "shipmentId": "89108749065090",
+                "serviceRate": {
+                  "billableWeight": {
+                    "value": 4,
+                    "unit": "kg"
+                  },
+                  "totalCharge": {
+                    "value": 3.5,
+                    "unit": "GBP"
+                  },
+                  "serviceType": "Amazon Shipping Standard",
+                  "promise": {
+                    "deliveryWindow": {
+                      "start": "2018-08-25T20:22:30.737Z",
+                      "end": "2018-08-26T20:22:30.737Z"
+                    },
+                    "receiveWindow": {
+                      "start": "2018-08-23T09:22:30.737Z",
+                      "end": "2018-08-23T11:22:30.737Z"
+                    }
+                  }
+                },
+                "labelResults": [
+                  {
+                    "containerReferenceId": "CRI123456789",
+                    "trackingId": "1512748795322",
+                    "label": {
+                      "labelStream": "iVBORw0KGgo...AAAARK5CYII=(Truncated)",
+                      "labelSpecification": {
+                        "labelFormat": "PNG",
+                        "labelStockSize": "4x6"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PurchaseShipmentResponse"
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PurchaseShipmentResponse"
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PurchaseShipmentResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PurchaseShipmentResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PurchaseShipmentResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PurchaseShipmentResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PurchaseShipmentResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PurchaseShipmentResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "required": true,
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "example": {
+                "clientReferenceId": "911-7267646-6348616",
+                "shipFrom": {
+                  "name": "test name 1",
+                  "addressLine1": "some Test address 1",
+                  "postalCode": "90013",
+                  "city": "Los Angeles",
+                  "countryCode": "US",
+                  "stateOrRegion": "CA",
+                  "email": "testEmail1@amazon.com",
+                  "phoneNumber": "1234567890"
+                },
+                "shipTo": {
+                  "name": "test name 2",
+                  "addressLine1": "some Test address 2",
+                  "postalCode": "90013",
+                  "city": "Los Angeles",
+                  "countryCode": "US",
+                  "stateOrRegion": "CA",
+                  "email": "testEmail2@amazon.com",
+                  "phoneNumber": "1234567890"
+                },
+                "containers": [
+                  {
+                    "containerType": "PACKAGE",
+                    "containerReferenceId": "ContainerRefId-01",
+                    "items": [
+                      {
+                        "title": "String",
+                        "quantity": 2,
+                        "unitPrice": {
+                          "unit": "USD",
+                          "value": 14.99
+                        },
+                        "unitWeight": {
+                          "unit": "lb",
+                          "value": 0.08164656
+                        }
+                      }
+                    ],
+                    "dimensions": {
+                      "height": 12,
+                      "length": 36,
+                      "width": 15,
+                      "unit": "CM"
+                    },
+                    "weight": {
+                      "unit": "lb",
+                      "value": 0.08164656
+                    },
+                    "value": {
+                      "unit": "USD",
+                      "value": 29.98
+                    }
+                  }
+                ],
+                "labelSpecification": {
+                  "labelFormat": "PNG",
+                  "labelStockSize": "4x6"
+                },
+                "serviceType": "Amazon Shipping Standard"
+              },
+              "$ref": "#/definitions/PurchaseShipmentRequest"
+            }
+          }
+        ]
+      }
+    },
+    "/shipping/v1/rates": {
+      "post": {
+        "tags": [
+          "shipping"
+        ],
+        "description": "Get service rates.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getRates",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {}
+                },
+                "response": {
+                  "payload": {
+                    "serviceRates": [
+                      {
+                        "billableWeight": {
+                          "value": 4,
+                          "unit": "kg"
+                        },
+                        "totalCharge": {
+                          "value": 3.25,
+                          "unit": "GBP"
+                        },
+                        "serviceType": "Amazon Shipping Standard",
+                        "promise": {
+                          "deliveryWindow": {
+                            "start": "2018-08-25T20:22:30.737Z",
+                            "end": "2018-08-26T20:22:30.737Z"
+                          },
+                          "receiveWindow": {
+                            "start": "2018-08-23T09:22:30.737Z",
+                            "end": "2018-08-23T11:22:30.737Z"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "serviceRates": [
+                  {
+                    "billableWeight": {
+                      "value": 4,
+                      "unit": "kg"
+                    },
+                    "totalCharge": {
+                      "value": 3.25,
+                      "unit": "GBP"
+                    },
+                    "serviceType": "Amazon Shipping Standard",
+                    "promise": {
+                      "deliveryWindow": {
+                        "start": "2018-08-25T20:22:30.737Z",
+                        "end": "2018-08-26T20:22:30.737Z"
+                      },
+                      "receiveWindow": {
+                        "start": "2018-08-23T09:22:30.737Z",
+                        "end": "2018-08-23T11:22:30.737Z"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetRatesResponse"
+            }
+          },
+          "400": {
+            "description": "Request is missing or has invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetRatesResponse"
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetRatesResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetRatesResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetRatesResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetRatesResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetRatesResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetRatesResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "required": true,
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "example": {
+                "shipFrom": {
+                  "name": "test name 1",
+                  "addressLine1": "some Test address 1",
+                  "postalCode": "90013",
+                  "city": "Los Angeles",
+                  "countryCode": "US",
+                  "stateOrRegion": "CA"
+                },
+                "shipTo": {
+                  "name": "test name 2",
+                  "addressLine1": "some Test address 2",
+                  "postalCode": "90013",
+                  "city": "Los Angeles",
+                  "countryCode": "US",
+                  "stateOrRegion": "CA"
+                },
+                "containerSpecifications": [
+                  {
+                    "dimensions": {
+                      "height": 12,
+                      "length": 36,
+                      "width": 15,
+                      "unit": "CM"
+                    },
+                    "weight": {
+                      "unit": "lb",
+                      "value": 0.08164656
+                    }
+                  }
+                ],
+                "serviceTypes": [
+                  "Amazon Shipping Standard"
+                ]
+              },
+              "$ref": "#/definitions/GetRatesRequest"
+            }
+          }
+        ]
+      }
+    },
     "/shipping/v1/account": {
       "get": {
         "tags": ["shipping"],
-        "description": "Verify if the current account is valid.",
+        "description": "Verify if the current account is valid.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getAccount",
         "responses": {
           "200": {
@@ -2484,6 +3256,7 @@
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
+                  "parameters": {}
                 },
                 "response": {
                   "payload": {
@@ -2509,7 +3282,6 @@
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "x-amazon-spds-sandbox-behaviors": [],
             "headers": {
               "x-amzn-RequestId": {
                 "description": "Unique request reference id.",
@@ -2522,7 +3294,6 @@
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
-            "x-amazon-spds-sandbox-behaviors": [],
             "headers": {
               "x-amzn-RequestId": {
                 "description": "Unique request reference id.",
@@ -2535,7 +3306,6 @@
           },
           "403": {
             "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
-            "x-amazon-spds-sandbox-behaviors": [],
             "headers": {
               "x-amzn-RequestId": {
                 "description": "Unique request reference id.",
@@ -2548,7 +3318,6 @@
           },
           "404": {
             "description": "The resource specified does not exist.",
-            "x-amazon-spds-sandbox-behaviors": [],
             "headers": {
               "x-amzn-RequestId": {
                 "description": "Unique request reference id.",
@@ -2561,7 +3330,6 @@
           },
           "429": {
             "description": "The frequency of requests was greater than allowed.",
-            "x-amazon-spds-sandbox-behaviors": [],
             "headers": {
               "x-amzn-RequestId": {
                 "description": "Unique request reference id.",
@@ -2574,7 +3342,6 @@
           },
           "500": {
             "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
-            "x-amazon-spds-sandbox-behaviors": [],
             "headers": {
               "x-amzn-RequestId": {
                 "description": "Unique request reference id.",
@@ -2587,7 +3354,6 @@
           },
           "503": {
             "description": "Temporary overloading or maintenance of the server.",
-            "x-amazon-spds-sandbox-behaviors": [],
             "headers": {
               "x-amzn-RequestId": {
                 "description": "Unique request reference id.",
@@ -2599,6 +3365,189 @@
             }
           }
         }
+      }
+    },
+    "/shipping/v1/tracking/{trackingId}": {
+      "get": {
+        "tags": ["shipping"],
+        "description": "Return the tracking information of a shipment.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getTrackingInformation",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "trackingId": {
+                      "value": "TEST_CASE_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "trackingId": "TEST_CASE_200",
+                    "eventHistory": [
+                      {
+                        "eventCode": "Delivered",
+                        "location": {
+                          "city": "San Bernardino",
+                          "countryCode": "US",
+                          "stateProvince": "CA",
+                          "postalCode": "92404"
+                        },
+                        "eventTime": "2019-04-04T06:45:12Z"
+                      }
+                    ],
+                    "promisedDeliveryDate": "2019-04-04T07:05:06Z",
+                    "summary": {
+                      "status": "Delivered"
+                    }
+                  }
+                }
+              }
+            ],
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "trackingId": "89108749065090",
+                "eventHistory": [
+                  {
+                    "eventCode": "Delivered",
+                    "location": {
+                      "city": "San Bernardino",
+                      "countryCode": "US",
+                      "stateProvince": "CA",
+                      "postalCode": "92404"
+                    },
+                    "eventTime": "2019-04-04T06:45:12Z"
+                  }
+                ],
+                "promisedDeliveryDate": "2019-04-04T07:05:06Z",
+                "summary": {
+                  "status": "Delivered"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetTrackingInformationResponse"
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "trackingId": {
+                      "value": "TEST_CASE_400"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Input"
+                    }
+                  ]
+                }
+              }
+            ],
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetTrackingInformationResponse"
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetTrackingInformationResponse"
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetTrackingInformationResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetTrackingInformationResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetTrackingInformationResponse"
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetTrackingInformationResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference id.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetTrackingInformationResponse"
+            }
+          }
+        },
+        "parameters": [{
+          "required": true,
+          "in": "path",
+          "name": "trackingId",
+          "type": "string"
+        }]
       }
     }
   }

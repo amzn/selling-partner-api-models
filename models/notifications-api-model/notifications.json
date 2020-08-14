@@ -4,14 +4,13 @@
     "title":"Selling Partner API for Notifications",
     "description":"The Selling Partner API for Notifications lets you subscribe to notifications that are relevant to a selling partner's business. Using this API you can create a destination to receive notifications, subscribe to notifications, delete notification subscriptions, and more.",
     "version":"v1",
-    "contact":{
-      "name":"Selling Partner API Test Support",
-      "url":"https://github.com/amzn/amazon-marketplace-api-sdk/issues",
-      "email":"marketplaceapitest@amazon.com"
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
     },
-    "license":{
-      "name":"Amazon Software License",
-      "url":"https://aws.amazon.com/asl/"
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
     }
   },
   "host":"sellingpartnerapi-na.amazon.com",
@@ -334,7 +333,7 @@
     "NotificationType": {
       "name": "notificationType",
       "in": "path",
-      "description": "The type of notification to which you want to subscribe.\n\nPossible values:\n\n* ANY_OFFER_CHANGED - Sent whenever there is a listing change for any of the top 20 offers, by condition (new or used), or if the external price (the price from other retailers) changes for an item listed by the seller. The top 20 offers are determined by the landed price, which is the price plus shipping minus Amazon Points. If multiple sellers are charging the same landed price, the results will be returned in random order.\n\n These notifications are only sent for items for which the seller has active offers. You cannot subscribe to notifications for items for which the seller does not have active offers.\n\n* FEED_PROCESSING_FINISHED - Sent whenever any feed submitted using the Selling Partner API for Feeds reaches a feed processing status of DONE or CANCELLED.\n\n* FBA_OUTBOUND_SHIPMENT_STATUS - Sent whenever we create or cancel a Fulfillment by Amazon shipment for a seller.\n\n* FEE_PROMOTION - Sent when a promotion becomes active. Sellers can benefit from time-limited fee promotions. To receive notifications of these fee promotions on behalf of the seller, subscribe to the FEE_PROMOTION notification. All currently active promotions are sent at first, with each promotion sent as a single message. Subsequent notifications are sent when the promotion becomes active.\n\n* FULFILLMENT_ORDER_STATUS - Sent whenever there is a change in the status of a Multi-Channel Fulfillment order.\n\nMulti-Channel Fulfillment is a program where sellers use their FBA inventory to fulfill orders not sold on the retail site.\n\n* REPORT_PROCESSING_FINISHED - Sent whenever any report that you have requested using the Selling Partner API for Reports reaches a report processing status of DONE, CANCELLED, or DONE_NO_DATA.\n\n* BRANDED_ITEM_CONTENT_CHANGE - Sent whenever there is a change to the title, description, or bullet points for any ASIN that the selling partner has a brand relationship with.\n\n* ITEM_PRODUCT_TYPE_CHANGE - Sent whenever there is a change to the product type name of any ASIN that the selling partner has a brand relationship with. For more information about notification types, see the Notifications API Use Case Guide.",
+      "description": "The type of notification to which you want to subscribe.\n\n For more information about notification types, see the Notifications API Use Case Guide.",
       "required": true,
       "type": "string",
       "enum": [
@@ -345,7 +344,46 @@
         "FULFILLMENT_ORDER_STATUS",
         "REPORT_PROCESSING_FINISHED",
         "BRANDED_ITEM_CONTENT_CHANGE",
-        "ITEM_PRODUCT_TYPE_CHANGE"
+        "ITEM_PRODUCT_TYPE_CHANGE",
+        "MFN_ORDER_STATUS_CHANGE"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "ANY_OFFER_CHANGED",
+          "description": "Sent whenever there is a listing change for any of the top 20 offers, by condition (new or used), or if the external price (the price from other retailers) changes for an item listed by the seller. The top 20 offers are determined by the landed price, which is the price plus shipping minus Amazon Points. If multiple sellers are charging the same landed price, the results will be returned in random order.\n\n These notifications are only sent for items for which the seller has active offers. You cannot subscribe to notifications for items for which the seller does not have active offers."
+        },
+        {
+          "value": "FEED_PROCESSING_FINISHED",
+          "description": "Sent whenever any feed submitted using the Selling Partner API for Feeds reaches a feed processing status of DONE or CANCELLED."
+        },
+        {
+          "value": "FBA_OUTBOUND_SHIPMENT_STATUS",
+          "description": "Sent whenever we create or cancel a Fulfillment by Amazon shipment for a seller."
+        },
+        {
+          "value": "FEE_PROMOTION",
+          "description": "Sent when a promotion becomes active. Sellers can benefit from time-limited fee promotions. To receive notifications of these fee promotions on behalf of the seller, subscribe to the FEE_PROMOTION notification. All currently active promotions are sent at first, with each promotion sent as a single message. Subsequent notifications are sent when the promotion becomes active."
+        },
+        {
+          "value": "FULFILLMENT_ORDER_STATUS",
+          "description": "Sent whenever there is a change in the status of a Multi-Channel Fulfillment order.\n\n Multi-Channel Fulfillment is a program where sellers use their FBA inventory to fulfill orders not sold on the retail site."
+        },
+        {
+          "value": "REPORT_PROCESSING_FINISHED",
+          "description": "Sent whenever any report that you have requested using the Selling Partner API for Reports reaches a report processing status of DONE, CANCELLED, or DONE_NO_DATA."
+        },
+        {
+          "value": "BRANDED_ITEM_CONTENT_CHANGE",
+          "description": "Sent whenever there is a change to the title, description, or bullet points for any ASIN that the selling partner has a brand relationship with."
+        },
+        {
+          "value": "ITEM_PRODUCT_TYPE_CHANGE",
+          "description": "Sent whenever there is a change to the product type name of any ASIN that the selling partner has a brand relationship with."
+        },
+        {
+          "value": "MFN_ORDER_STATUS_CHANGE",
+          "description": "Sent whenever there is a change in the status of a MFN order availability."
+        }
       ]
     }
   },
@@ -355,7 +393,7 @@
         "tags":[
           "notifications"
         ],
-        "description":"Creates a subscription for the specified notification type to be delivered to the specified destination. Before you can subscribe, you must first create the destination by calling the createDestination operation.",
+        "description":"Creates a subscription for the specified notification type to be delivered to the specified destination. Before you can subscribe, you must first create the destination by calling the createDestination operation.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId":"createSubscription",
         "parameters":[
           {
@@ -467,7 +505,7 @@
             }
           },
           "415":{
-            "description":"The entity of the request is in a format not supported by the requested resource.",
+            "description":"The request payload is in an unsupported format.",
             "headers":{
               "x-amzn-RequestId":{
                 "description":"Unique request reference identifier.",
@@ -520,7 +558,7 @@
         "tags":[
           "notifications"
         ],
-        "description":"Returns information about subscriptions of the specified notification type. You can use this API to get subscription information when you do not have a subscription identifier.",
+        "description":"Returns information about subscriptions of the specified notification type. You can use this API to get subscription information when you do not have a subscription identifier.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId":"getSubscription",
         "parameters":[
           {
@@ -613,7 +651,7 @@
             }
           },
           "415":{
-            "description":"The entity of the request is in a format not supported by the requested resource.",
+            "description":"The request payload is in an unsupported format.",
             "headers":{
               "x-amzn-RequestId":{
                 "description":"Unique request reference identifier.",
@@ -668,7 +706,7 @@
         "tags":[
           "notifications"
         ],
-        "description":"Deletes the subscription indicated by the subscription identifier and notification type that you specify. The subscription identifier can be for any subscription associated with your application. After you successfully call this operation, notifications will stop being sent for the associated subscription. The deleteSubscriptionById API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.",
+        "description":"Deletes the subscription indicated by the subscription identifier and notification type that you specify. The subscription identifier can be for any subscription associated with your application. After you successfully call this operation, notifications will stop being sent for the associated subscription. The deleteSubscriptionById API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId":"deleteSubscriptionById",
         "parameters":[
           {
@@ -770,7 +808,7 @@
             }
           },
           "415":{
-            "description":"The entity of the request is in a format not supported by the requested resource.",
+            "description":"The request payload is in an unsupported format.",
             "headers":{
               "x-amzn-RequestId":{
                 "description":"Unique request reference identifier.",
@@ -823,7 +861,7 @@
         "tags":[
           "notifications"
         ],
-        "description":"Returns information about a subscription for the specified notification type. The getSubscriptionById API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.",
+        "description":"Returns information about a subscription for the specified notification type. The getSubscriptionById API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId":"getSubscriptionById",
         "parameters":[
           {
@@ -935,7 +973,7 @@
             }
           },
           "415":{
-            "description":"The entity of the request is in a format not supported by the requested resource.",
+            "description":"The request payload is in an unsupported format.",
             "headers":{
               "x-amzn-RequestId":{
                 "description":"Unique request reference identifier.",
@@ -990,7 +1028,7 @@
         "tags":[
           "notifications"
         ],
-        "description":"Creates a destination resource to receive notifications. The createDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.",
+        "description":"Creates a destination resource to receive notifications. The createDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId":"createDestination",
         "parameters":[
           {
@@ -1108,7 +1146,7 @@
             }
           },
           "415":{
-            "description":"The entity of the request is in a format not supported by the requested resource.",
+            "description":"The request payload is in an unsupported format.",
             "headers":{
               "x-amzn-RequestId":{
                 "description":"Unique request reference identifier.",
@@ -1161,7 +1199,7 @@
         "tags":[
           "notifications"
         ],
-        "description":"Returns information about all destinations. The getDestinations API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.",
+        "description":"Returns information about all destinations. The getDestinations API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId":"getDestinations",
         "parameters":[
 
@@ -1275,7 +1313,7 @@
             }
           },
           "415":{
-            "description":"The entity of the request is in a format not supported by the requested resource.",
+            "description":"The request payload is in an unsupported format.",
             "headers":{
               "x-amzn-RequestId":{
                 "description":"Unique request reference identifier.",
@@ -1330,7 +1368,7 @@
         "tags":[
           "notifications"
         ],
-        "description":"Returns information about the destination that you specify. The getDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.",
+        "description":"Returns information about the destination that you specify. The getDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId":"getDestination",
         "parameters":[
           {
@@ -1447,7 +1485,7 @@
             }
           },
           "415":{
-            "description":"The entity of the request is in a format not supported by the requested resource.",
+            "description":"The request payload is in an unsupported format.",
             "headers":{
               "x-amzn-RequestId":{
                 "description":"Unique request reference identifier.",
@@ -1500,7 +1538,7 @@
         "tags":[
           "notifications"
         ],
-        "description":"Deletes the destination that you specify. The deleteDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.",
+        "description":"Deletes the destination that you specify. The deleteDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId":"deleteDestination",
         "parameters":[
           {
@@ -1599,7 +1637,7 @@
             }
           },
           "415":{
-            "description":"The payload of the request is in a format not supported by the requested resource.",
+            "description":"The request payload is in an unsupported format.",
             "headers":{
               "x-amzn-RequestId":{
                 "description":"Unique request reference identifier.",

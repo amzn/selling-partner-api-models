@@ -1,17 +1,19 @@
 {
   "swagger": "2.0",
-  "info": {
+  "info":
+  {
     "title": "Selling Partner API for Sales",
     "description": "The Selling Partner API for Sales provides APIs related to sales performance.",
     "version": "v1",
-    "contact": {
-      "name": "Selling Partner API Test Support",
-      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
-      "email": "marketplaceapitest@amazon.com"
+    "contact":
+    {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
     },
-    "license": {
-      "name": "Amazon Software License",
-      "url": "https://aws.amazon.com/asl/"
+    "license":
+    {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
     }
   },
   "host": "sellingpartnerapi-na.amazon.com",
@@ -24,53 +26,68 @@
   "produces": [
     "application/json"
   ],
-  "definitions": {
-    "GetOrderMetricsResponse": {
+  "definitions":
+  {
+    "GetOrderMetricsResponse":
+    {
       "description": "The response schema for the getOrderMetrics operation.",
       "type": "object",
-      "properties": {
-        "payload": {
+      "properties":
+      {
+        "payload":
+        {
           "description": "The payload for the getOrderMetrics operation.",
           "$ref": "#/definitions/OrderMetricsList"
         },
-        "errors": {
+        "errors":
+        {
           "description": "Encountered errors for the getOrderMetrics operation.",
           "$ref": "#/definitions/ErrorList"
         }
       }
     },
-    "OrderMetricsList": {
+    "OrderMetricsList":
+    {
       "description": "A set of order metrics, each scoped to a particular time interval.",
       "type": "array",
-      "items": {
+      "items":
+      {
         "$ref": "#/definitions/OrderMetricsInterval"
       }
     },
-    "OrderMetricsInterval": {
+    "OrderMetricsInterval":
+    {
       "description": "Contains order metrics.",
       "type": "object",
-      "properties": {
-        "interval": {
+      "properties":
+      {
+        "interval":
+        {
           "description": "The interval of time based on requested granularity (ex. Hour, Day, etc.) If this is the first or the last interval from the list, it might contain incomplete data if the requested interval doesn't align with the requested granularity (ex. request interval 2018-09-01T02:00:00Z--2018-09-04T19:00:00Z and granularity day will result in Sept 1st UTC day and Sept 4th UTC days having partial data).",
           "type": "string"
         },
-        "unitCount": {
+        "unitCount":
+        {
           "description": "The number of units in orders based on the specified filters.",
           "type": "integer"
         },
-        "orderItemCount": {
+        "orderItemCount":
+        {
           "description": "The number of order items based on the specified filters.",
           "type": "integer"
         },
-        "orderCount": {
+        "orderCount":
+        {
           "description": "The number of orders based on the specified filters.",
           "type": "integer"
         },
-        "averageUnitPrice": {
+        "averageUnitPrice":
+        {
           "description": "The average price for an item based on the specified filters. Formula is totalSales/unitCount.",
           "$ref": "#/definitions/Money"
         },
-        "totalSales": {
+        "totalSales":
+        {
           "description": "The total ordered product sales for all orders based on the specified filters.",
           "$ref": "#/definitions/Money"
         }
@@ -84,18 +101,23 @@
         "totalSales"
       ]
     },
-    "Error": {
+    "Error":
+    {
       "description": "Error response returned when the request is unsuccessful.",
-      "properties": {
-        "code": {
+      "properties":
+      {
+        "code":
+        {
           "description": "An error code that identifies the type of error that occured.",
           "type": "string"
         },
-        "message": {
+        "message":
+        {
           "description": "A message that describes the error condition in a human-readable form.",
           "type": "string"
         },
-        "details": {
+        "details":
+        {
           "description": "Additional details that can help the caller understand or fix the issue.",
           "type": "string"
         }
@@ -106,21 +128,27 @@
       ],
       "type": "object"
     },
-    "ErrorList": {
+    "ErrorList":
+    {
       "description": "A list of error responses returned when a request is unsuccessful.",
       "type": "array",
-      "items": {
+      "items":
+      {
         "$ref": "#/definitions/Error"
       }
     },
-    "Money": {
+    "Money":
+    {
       "description": "The currency type and the amount.",
-      "properties": {
-        "currencyCode": {
+      "properties":
+      {
+        "currencyCode":
+        {
           "description": "Three-digit currency code. In ISO 4217 format.",
           "type": "string"
         },
-        "amount": {
+        "amount":
+        {
           "description": "The currency amount.",
           "$ref": "#/definitions/Decimal"
         }
@@ -131,43 +159,56 @@
       ],
       "type": "object"
     },
-    "Decimal": {
+    "Decimal":
+    {
       "pattern": "^-?(0|([1-9]\\d*))(\\.\\d+)?([eE][+-]?\\d+)?$",
       "description": "A decimal number with no loss of precision. Useful when precision loss is unnaceptable, as with currencies. Follows RFC7159 for number representation.",
       "type": "string"
     }
   },
-  "paths": {
-    "/sales/v1/orderMetrics": {
-      "get": {
+  "paths":
+  {
+    "/sales/v1/orderMetrics":
+    {
+      "get":
+      {
         "tags": [
           "sales"
         ],
-        "description": "Returns aggregated order metrics for given interval, broken down by granularity, for given buyer type.",
+        "description": "Returns aggregated order metrics for given interval, broken down by granularity, for given buyer type.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| .5 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getOrderMetrics",
-        "responses": {
-          "200": {
+        "responses":
+        {
+          "200":
+          {
             "description": "OrderMetric action taken on the resource OrderMetrics.",
-            "headers": {
-              "x-amzn-RequestId": {
+            "headers":
+            {
+              "x-amzn-RequestId":
+              {
                 "description": "unique request reference id.",
                 "type": "string"
               }
             },
-            "examples": {
-              "payload": {
-                "dayGranularity": {
+            "examples":
+            {
+              "payload":
+              {
+                "dayGranularity":
+                {
                   "metrics": [
                     {
                       "interval": "2018-05-01T00:00-07:00--2018-05-02T00:00-07:00",
                       "unitCount": 1,
                       "orderItemCount": 1,
                       "orderCount": 1,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "22.95",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "22.95",
                         "currencyCode": "USD"
                       }
@@ -177,47 +218,55 @@
                       "unitCount": 1,
                       "orderItemCount": 1,
                       "orderCount": 1,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "2.05",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "2.05",
                         "currencyCode": "USD"
                       }
                     }
                   ]
                 },
-                "totalGranularity": {
+                "totalGranularity":
+                {
                   "metrics": [
                     {
                       "interval": "2018-05-01T00:00-07:00--2018-05-03T00:00-07:00",
                       "unitCount": 2,
                       "orderItemCount": 2,
                       "orderCount": 2,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "12.5",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "25",
                         "currencyCode": "USD"
                       }
                     }
                   ]
                 },
-                "asinFilter": {
+                "asinFilter":
+                {
                   "metrics": [
                     {
                       "interval": "2018-05-01T00:00-07:00--2018-05-02T00:00-07:00",
                       "unitCount": 1,
                       "orderItemCount": 1,
                       "orderCount": 1,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "22.95",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "22.95",
                         "currencyCode": "USD"
                       }
@@ -227,11 +276,13 @@
                       "unitCount": 0,
                       "orderItemCount": 0,
                       "orderCount": 0,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "0",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "0",
                         "currencyCode": "USD"
                       }
@@ -240,53 +291,70 @@
                 }
               }
             },
-            "schema": {
+            "schema":
+            {
               "$ref": "#/definitions/GetOrderMetricsResponse"
             },
             "x-amazon-spds-sandbox-behaviors": [
               {
-                "request": {  
-                  "parameters": {
-                    "granularity": {"value": "Total"}
+                "request":
+                {
+                  "parameters":
+                  {
+                    "granularity":
+                    {
+                      "value": "Total"
                     }
+                  }
                 },
-                "response": {
+                "response":
+                {
                   "payload": [
                     {
                       "interval": "2019-08-01T00:00-07:00--2018-08-03T00:00-07:00",
                       "unitCount": 2,
                       "orderItemCount": 2,
                       "orderCount": 2,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "12.5",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "25",
                         "currencyCode": "USD"
                       }
                     }
-                  ]  
+                  ]
                 }
               },
               {
-                "request": {  
-                  "parameters": {
-                    "granularity": {"value": "Day"}
+                "request":
+                {
+                  "parameters":
+                  {
+                    "granularity":
+                    {
+                      "value": "Day"
                     }
+                  }
                 },
-                "response": {
+                "response":
+                {
                   "payload": [
                     {
                       "interval": "2019-08-01T00:00-07:00--2018-08-02T00:00-07:00",
                       "unitCount": 1,
                       "orderItemCount": 1,
                       "orderCount": 1,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "22.95",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "22.95",
                         "currencyCode": "USD"
                       }
@@ -296,63 +364,87 @@
                       "unitCount": 1,
                       "orderItemCount": 1,
                       "orderCount": 1,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "2.05",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "2.05",
                         "currencyCode": "USD"
                       }
                     }
-                  ]  
+                  ]
                 }
               },
               {
-                "request": {  
-                  "parameters": {
-                    "granularity": {"value": "Total"},
-                    "asin": {"value": "B008OLKVEW"}
+                "request":
+                {
+                  "parameters":
+                  {
+                    "granularity":
+                    {
+                      "value": "Total"
+                    },
+                    "asin":
+                    {
+                      "value": "B008OLKVEW"
                     }
+                  }
                 },
-                "response": {
+                "response":
+                {
                   "payload": [
                     {
                       "interval": "2018-05-01T00:00-07:00--2018-05-03T00:00-07:00",
                       "unitCount": 1,
                       "orderItemCount": 1,
                       "orderCount": 1,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "22.95",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "22.95",
                         "currencyCode": "USD"
                       }
                     }
-                  ]  
+                  ]
                 }
-              },              
+              },
               {
-                "request": {  
-                  "parameters": {
-                    "granularity": {"value": "Day"},
-                    "asin": {"value": "B008OLKVEW"}
+                "request":
+                {
+                  "parameters":
+                  {
+                    "granularity":
+                    {
+                      "value": "Day"
+                    },
+                    "asin":
+                    {
+                      "value": "B008OLKVEW"
                     }
+                  }
                 },
-                "response": {
+                "response":
+                {
                   "payload": [
                     {
                       "interval": "2018-05-01T00:00-07:00--2018-05-02T00:00-07:00",
                       "unitCount": 1,
                       "orderItemCount": 1,
                       "orderCount": 1,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "22.95",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "22.95",
                         "currencyCode": "USD"
                       }
@@ -362,113 +454,147 @@
                       "unitCount": 0,
                       "orderItemCount": 0,
                       "orderCount": 0,
-                      "averageUnitPrice": {
+                      "averageUnitPrice":
+                      {
                         "amount": "0",
                         "currencyCode": "USD"
                       },
-                      "totalSales": {
+                      "totalSales":
+                      {
                         "amount": "0",
                         "currencyCode": "USD"
                       }
                     }
-                  ]  
+                  ]
                 }
               }
             ]
           },
-          "400": {
+          "400":
+          {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "headers": {
-              "x-amzn-RequestId": {
+            "headers":
+            {
+              "x-amzn-RequestId":
+              {
                 "description": "Unique request reference id.",
                 "type": "string"
               }
             },
-            "schema": {
+            "schema":
+            {
               "$ref": "#/definitions/GetOrderMetricsResponse"
             }
           },
-          "403": {
+          "403":
+          {
             "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
-            "headers": {
-              "x-amzn-RequestId": {
+            "headers":
+            {
+              "x-amzn-RequestId":
+              {
                 "description": "Unique request reference id.",
                 "type": "string"
               }
             },
-            "schema": {
+            "schema":
+            {
               "$ref": "#/definitions/GetOrderMetricsResponse"
             }
           },
-          "404": {
+          "404":
+          {
             "description": "The resource specified does not exist.",
-            "headers": {
-              "x-amzn-RequestId": {
+            "headers":
+            {
+              "x-amzn-RequestId":
+              {
                 "description": "Unique request reference id.",
                 "type": "string"
               }
             },
-            "schema": {
+            "schema":
+            {
               "$ref": "#/definitions/GetOrderMetricsResponse"
             }
           },
-          "413": {
+          "413":
+          {
             "description": "The request size exceeded the maximum accepted size.",
-            "headers": {
-              "x-amzn-RequestId": {
+            "headers":
+            {
+              "x-amzn-RequestId":
+              {
                 "description": "Unique request reference id.",
                 "type": "string"
               }
             },
-            "schema": {
+            "schema":
+            {
               "$ref": "#/definitions/GetOrderMetricsResponse"
             }
           },
-          "415": {
+          "415":
+          {
             "description": "The entity of the request is in a format not supported by the requested resource.",
-            "headers": {
-              "x-amzn-RequestId": {
+            "headers":
+            {
+              "x-amzn-RequestId":
+              {
                 "description": "Unique request reference id.",
                 "type": "string"
               }
             },
-            "schema": {
+            "schema":
+            {
               "$ref": "#/definitions/GetOrderMetricsResponse"
             }
           },
-          "429": {
+          "429":
+          {
             "description": "The frequency of requests was greater than allowed.",
-            "headers": {
-              "x-amzn-RequestId": {
+            "headers":
+            {
+              "x-amzn-RequestId":
+              {
                 "description": "Unique request reference id.",
                 "type": "string"
               }
             },
-            "schema": {
+            "schema":
+            {
               "$ref": "#/definitions/GetOrderMetricsResponse"
             }
           },
-          "500": {
+          "500":
+          {
             "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
-            "headers": {
-              "x-amzn-RequestId": {
+            "headers":
+            {
+              "x-amzn-RequestId":
+              {
                 "description": "Unique request reference id.",
                 "type": "string"
               }
             },
-            "schema": {
+            "schema":
+            {
               "$ref": "#/definitions/GetOrderMetricsResponse"
             }
           },
-          "503": {
+          "503":
+          {
             "description": "Temporary overloading or maintenance of the server.",
-            "headers": {
-              "x-amzn-RequestId": {
+            "headers":
+            {
+              "x-amzn-RequestId":
+              {
                 "description": "Unique request reference id.",
                 "type": "string"
               }
             },
-            "schema": {
+            "schema":
+            {
               "$ref": "#/definitions/GetOrderMetricsResponse"
             }
           }
@@ -480,7 +606,8 @@
             "description": "A list of marketplace identifiers. Example: ATVPDKIKX0DER indicates the US marketplace.",
             "required": true,
             "type": "array",
-            "items": {
+            "items":
+            {
               "type": "string"
             }
           },
@@ -510,6 +637,32 @@
               "Month",
               "Year",
               "Total"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "Hour",
+                "description": "Hour"
+              },
+              {
+                "value": "Day",
+                "description": "Day"
+              },
+              {
+                "value": "Week",
+                "description": "Week"
+              },
+              {
+                "value": "Month",
+                "description": "Month"
+              },
+              {
+                "value": "Year",
+                "description": "Year"
+              },
+              {
+                "value": "Total",
+                "description": "Total"
+              }
             ]
           },
           {
@@ -521,6 +674,20 @@
               "B2B",
               "B2C",
               "All"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "B2B",
+                "description": "Business to business."
+              },
+              {
+                "value": "B2C",
+                "description": "Business to customer."
+              },
+              {
+                "value": "All",
+                "description": "Business to business and business to customer."
+              }
             ],
             "default": "All"
           },
@@ -538,6 +705,16 @@
             "enum": [
               "Monday",
               "Sunday"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "Monday",
+                "description": "Monday"
+              },
+              {
+                "value": "Sunday",
+                "description": "Sunday"
+              }
             ],
             "default": "Monday"
           },
