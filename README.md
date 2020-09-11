@@ -5,8 +5,6 @@ The [models directory](https://github.com/amzn/selling-partner-api-models/tree/m
 
 The [clients directory](https://github.com/amzn/selling-partner-api-models/tree/main/clients) contains a [Java library](https://github.com/amzn/selling-partner-api-models/tree/main/clients/sellingpartner-api-aa-java) and a [C# library](https://github.com/amzn/selling-partner-api-models/tree/main/clients/sellingpartner-api-aa-csharp) with mustache templates for use with [swagger-codegen](https://swagger.io/tools/swagger-codegen/) to generate client libraries with authentication and authorization functionality included. The templates are located in *resources/swagger-codegen*.
 
-You can also find Java helper code for using the Feeds API and the Reports API in the [sellingpartner-api-frp-helper-java](https://github.com/amzn/selling-partner-api-models/tree/main/clients/sellingpartner-api-frp-helper-java) directory.
-
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
