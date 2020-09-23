@@ -57,7 +57,23 @@ AWSAuthenticationCredentials awsAuthenticationCredentials = AWSAuthenticationCre
 
 com.squareup.okhttp.Request signedRequest = new AWSSigV4Signer(awsAuthenticationCredentials)
     .sign(request);
+
+/*Signs request using IAM role credentials.
+
+AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider = AWSAuthenticationCredentialsProvider.builder()
+               .roleArn("...")
+               .roleSessionName("...")
+               .build();
+               
+com.squareup.okhttp.Request signedRequest = new 
+     AWSSigV4Signer(awsAuthenticationCredentialsProvider.getCredentials())
+    .sign(request);
+
 ```
+
+## LWAAccessTokenCache
+Interface to implement cache for access token that is returned in LWAClient and reuse the access token until time to live.
+
 
 ## Resources
 This package features Mustache templates designed for use with [swagger codegen](https://swagger.io/tools/swagger-codegen/). 
