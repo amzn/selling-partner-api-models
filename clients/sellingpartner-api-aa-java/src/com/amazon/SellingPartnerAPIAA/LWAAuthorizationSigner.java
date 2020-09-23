@@ -10,7 +10,6 @@ import lombok.Setter;
  */
 public class LWAAuthorizationSigner {
     private static final String SIGNED_ACCESS_TOKEN_HEADER_NAME = "x-amz-access-token";
-    private final String tokenRequestGrantType;
 
     @Getter(AccessLevel.PACKAGE)
     @Setter(AccessLevel.PACKAGE)
@@ -18,14 +17,8 @@ public class LWAAuthorizationSigner {
 
     private LWAAccessTokenRequestMeta lwaAccessTokenRequestMeta;
 
-    /**
-     *
-     * @param lwaAuthorizationCredentials LWA Authorization Credentials for token exchange
-     */
-    public LWAAuthorizationSigner(LWAAuthorizationCredentials lwaAuthorizationCredentials) {
-
-        lwaClient = new LWAClient(lwaAuthorizationCredentials.getEndpoint());
-
+    private void buildLWAAccessTokenRequestMeta(LWAAuthorizationCredentials lwaAuthorizationCredentials) {
+        String tokenRequestGrantType;
         if (!lwaAuthorizationCredentials.getScopes().isEmpty()) {
             tokenRequestGrantType = "client_credentials";
         } else {
@@ -39,6 +32,33 @@ public class LWAAuthorizationSigner {
                 .grantType(tokenRequestGrantType).scopes(lwaAuthorizationCredentials.getScopes())
                 .build();
     }
+
+     /**
+     *
+     * @param lwaAuthorizationCredentials LWA Authorization Credentials for token exchange
+     */
+    public LWAAuthorizationSigner(LWAAuthorizationCredentials lwaAuthorizationCredentials) {
+
+        lwaClient = new LWAClient(lwaAuthorizationCredentials.getEndpoint());
+
+        buildLWAAccessTokenRequestMeta(lwaAuthorizationCredentials);
+
+    }
+
+    /**
+    *
+    * Overloaded Constructor @param lwaAuthorizationCredentials LWA Authorization Credentials for token exchange
+    * and LWAAccessTokenCache
+    */
+    public LWAAuthorizationSigner(LWAAuthorizationCredentials lwaAuthorizationCredentials,
+           LWAAccessTokenCache lwaAccessTokenCache) {
+
+       lwaClient = new LWAClient(lwaAuthorizationCredentials.getEndpoint());
+       lwaClient.setLWAAccessTokenCache(lwaAccessTokenCache);
+
+       buildLWAAccessTokenRequestMeta(lwaAuthorizationCredentials);
+
+   }
 
     /**
      *  Signs a Request with an LWA Access Token

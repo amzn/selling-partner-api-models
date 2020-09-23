@@ -30,12 +30,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.amazon.SellingPartnerAPIAA.ScopeConstants.SCOPE_MIGRATION_API;
-import static com.amazon.SellingPartnerAPIAA.ScopeConstants.SCOPE_NOTIFICATIONS_API;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
+import static com.amazon.SellingPartnerAPIAA.ScopeConstants.SCOPE_NOTIFICATIONS_API;
+import static com.amazon.SellingPartnerAPIAA.ScopeConstants.SCOPE_MIGRATION_API;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LWAClientTest {
@@ -52,13 +53,13 @@ public class LWAClientTest {
 
     private static final String SELLER_TYPE_SELLER = "seller";
     private static final String SELLER_TYPE_SELLERLESS = "sellerless";
-
+    
     @Mock
     private OkHttpClient mockOkHttpClient;
 
     @Mock
     private Call mockCall;
-
+    
     private LWAClient underTest;
 
     static {
@@ -74,17 +75,15 @@ public class LWAClientTest {
                 .clientSecret("cSecret")
                 .grantType("cCredentials")
                 .scopes(new LWAClientScopes(scopesTestSellerless))
-                .build();
+                .build(); 
     }
 
-    @Before
-    @BeforeEach
+    @Before @BeforeEach
     public void init() {
         MockitoAnnotations.initMocks(this);
 
         underTest = new LWAClient(TEST_ENDPOINT);
         underTest.setOkHttpClient(mockOkHttpClient);
-
     }
 
     public static Stream<Arguments> lwaClient(){
@@ -169,10 +168,43 @@ public class LWAClientTest {
             underTest.getAccessToken(testLwaAccessTokenRequestMeta);
                 });
     }
-
-    private static Response buildResponse(int code, String accessToken) {
+    
+    //Test for Access Token getting from cache
+    @Test
+    public void returnAccessTokenFromCache() throws IOException, InterruptedException {
+        
+        when(mockOkHttpClient.newCall(any(Request.class)))
+        .thenReturn(mockCall);
+        when(mockCall.execute())     
+        .thenReturn(buildResponse(200, "Azta|foo", "120"))
+        .thenThrow(IllegalStateException.class);
+        underTest.setLWAAccessTokenCache(new LWAAccessTokenCacheImpl());
+        
+        //First call should get from Endpoint
+        assertEquals("Azta|foo", underTest.getAccessToken(lwaAccessTokenRequestMetaSeller));
+        //Second call when the cache is still valid, if it goes to end point it will return IllegalStateException.
+        assertEquals("Azta|foo", underTest.getAccessToken(lwaAccessTokenRequestMetaSeller));
+    }
+    
+    @Test
+    public void returnAccessTokenFromCacheWithExpiry() throws IOException, InterruptedException {
+        LWAClient client = new LWAClient(TEST_ENDPOINT);
+        client.setOkHttpClient(mockOkHttpClient);
+        when(mockOkHttpClient.newCall(any(Request.class)))
+        .thenReturn(mockCall);
+        when(mockCall.execute())     
+        .thenReturn(buildResponse(200, "Azta|foo", "1"))
+        .thenReturn(buildResponse(200, "Azta|foo1", "1"));
+       
+        //First call should get from Endpoint
+        assertEquals("Azta|foo", client.getAccessToken(lwaAccessTokenRequestMetaSeller));
+        //Second call should again go to the endpoint because accesstoken is expired after expiry adjustment.
+        assertEquals("Azta|foo1", client.getAccessToken(lwaAccessTokenRequestMetaSeller));
+    }
+    
+    private static Response buildResponse(int code, String accessToken, String expiryInSeconds) {
         ResponseBody responseBody = ResponseBody.create(EXPECTED_MEDIA_TYPE,
-                String.format("{%s:%s}", "access_token", accessToken));
+                String.format("{%s:%s,%s:%s}", "access_token", accessToken, "expires_in", expiryInSeconds));
 
         return new Response.Builder()
                 .request(new Request.Builder().url(TEST_ENDPOINT).build())
@@ -181,5 +213,9 @@ public class LWAClientTest {
                 .protocol(Protocol.HTTP_1_1)
                 .message("OK")
                 .build();
+    }
+    
+    private static Response buildResponse(int code, String accessToken) {
+        return buildResponse(code, accessToken, "3600");
     }
 }

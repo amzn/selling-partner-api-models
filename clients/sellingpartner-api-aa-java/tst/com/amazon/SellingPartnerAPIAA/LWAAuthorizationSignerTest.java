@@ -1,24 +1,37 @@
 package com.amazon.SellingPartnerAPIAA;
 
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Protocol;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
+
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.stream.Stream;
 
-import static com.amazon.SellingPartnerAPIAA.ScopeConstants.SCOPE_MIGRATION_API;
-import static com.amazon.SellingPartnerAPIAA.ScopeConstants.SCOPE_NOTIFICATIONS_API;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import static com.amazon.SellingPartnerAPIAA.ScopeConstants.SCOPE_NOTIFICATIONS_API;
+import static com.amazon.SellingPartnerAPIAA.ScopeConstants.SCOPE_MIGRATION_API;
 
 public class LWAAuthorizationSignerTest {
     private static final String TEST_REFRESH_TOKEN = "rToken";
@@ -29,11 +42,18 @@ public class LWAAuthorizationSignerTest {
     private static final String TEST_SCOPE_2 = SCOPE_MIGRATION_API;
     private static final String SELLER_TYPE_SELLER = "seller";
     private static final String SELLER_TYPE_SELLERLESS = "sellerless";
+    private static final MediaType EXPECTED_MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
 
 
     private Request request;
     private static LWAAuthorizationSigner underTestSeller;
     private static LWAAuthorizationSigner underTestSellerless;
+    
+    @Mock
+    private OkHttpClient mockOkHttpClient;
+
+    @Mock
+    private Call mockCall;
 
     static {
 
@@ -52,11 +72,12 @@ public class LWAAuthorizationSignerTest {
                 .build());
     }
 
-    @BeforeEach
+    @Before @BeforeEach
     public void init() {
         request = new Request.Builder()
                 .url("https://www.amazon.com/api")
                 .build();
+        MockitoAnnotations.initMocks(this);
 
     }
 
@@ -78,8 +99,7 @@ public class LWAAuthorizationSignerTest {
     @MethodSource("lwaAuthSigner")
     public void requestLWAAccessTokenFromConfiguration(String sellerType, LWAAuthorizationSigner testAuthSigner) {
         LWAClient mockLWAClient = mock(LWAClient.class);
-        ArgumentCaptor<LWAAccessTokenRequestMeta> lwaAccessTokenRequestMetaArgumentCaptor = ArgumentCaptor.forClass(
-                LWAAccessTokenRequestMeta.class);
+        ArgumentCaptor<LWAAccessTokenRequestMeta> lwaAccessTokenRequestMetaArgumentCaptor = ArgumentCaptor.forClass(LWAAccessTokenRequestMeta.class);
 
         when(mockLWAClient.getAccessToken(lwaAccessTokenRequestMetaArgumentCaptor.capture()))
                 .thenReturn("foo");
@@ -127,5 +147,45 @@ public class LWAAuthorizationSignerTest {
 
         testAuthSigner.setLwaClient(mockLWAClient);
         assertNotSame(request, testAuthSigner.sign(request));
+    }
+    
+    @Test
+    public void returnSignedRequestWithAccessTokenFromLWACache() throws IOException { 
+        LWAClient testLWAClient = new LWAClient(TEST_ENDPOINT);
+        testLWAClient.setOkHttpClient(mockOkHttpClient);
+        
+        when(mockOkHttpClient.newCall(any(Request.class)))
+        .thenReturn(mockCall);
+        when(mockCall.execute())     
+        .thenReturn(buildResponse(200, "Azta|foo", "120"))
+        .thenReturn(buildResponse(200, "Azta|foo1", "1"));
+
+        LWAAccessTokenCache testLWACache = new LWAAccessTokenCacheImpl();        
+        LWAAuthorizationSigner testlwaSigner = new LWAAuthorizationSigner(LWAAuthorizationCredentials.builder()
+                .clientId(TEST_CLIENT_ID)
+                .clientSecret(TEST_CLIENT_SECRET)
+                .refreshToken(TEST_REFRESH_TOKEN)
+                .endpoint(TEST_ENDPOINT)
+                .build() , testLWACache );  
+        
+        testlwaSigner.setLwaClient(testLWAClient);
+        testLWAClient.setLWAAccessTokenCache(testLWACache);
+        Request actualSignedRequest = testlwaSigner.sign(request);
+        Request actualSignedSecondRequest = testlwaSigner.sign(request);
+
+        assertEquals("Azta|foo", actualSignedSecondRequest.header("x-amz-access-token"));
+    }
+    
+    private static Response buildResponse(int code, String accessToken, String expiryInSeconds) {
+        ResponseBody responseBody = ResponseBody.create(EXPECTED_MEDIA_TYPE,
+                String.format("{%s:%s,%s:%s}", "access_token", accessToken, "expires_in", expiryInSeconds));
+
+        return new Response.Builder()
+                .request(new Request.Builder().url(TEST_ENDPOINT).build())
+                .code(code)
+                .body(responseBody)
+                .protocol(Protocol.HTTP_1_1)
+                .message("OK")
+                .build();
     }
 }
