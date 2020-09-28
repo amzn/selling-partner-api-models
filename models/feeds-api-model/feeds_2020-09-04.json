@@ -29,7 +29,7 @@
         "tags": [
           "feeds"
         ],
-        "description": "Returns feed details for the feeds that match the filters that you specify.",
+        "description": "Returns feed details for the feeds that match the filters that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getFeeds",
         "parameters": [
           {
@@ -308,7 +308,7 @@
         "tags": [
           "feeds"
         ],
-        "description": "Creates a feed. Encrypt and upload the contents of the feed document before calling this operation.",
+        "description": "Creates a feed. Encrypt and upload the contents of the feed document before calling this operation.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0083 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "createFeed",
         "parameters": [
           {
@@ -487,7 +487,7 @@
         "tags": [
           "feeds"
         ],
-        "description": "Cancels the feed that you specify. Only feeds with processingStatus=IN_QUEUE can be cancelled. Cancelled feeds are returned in subsequent calls to the getFeed and getFeeds operations.",
+        "description": "Cancels the feed that you specify. Only feeds with processingStatus=IN_QUEUE can be cancelled. Cancelled feeds are returned in subsequent calls to the getFeed and getFeeds operations.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "cancelFeed",
         "parameters": [
           {
@@ -645,7 +645,7 @@
         "tags": [
           "feeds"
         ],
-        "description": "Returns feed details (including the resultDocumentId, if available) for the feed that you specify.",
+        "description": "Returns feed details (including the resultDocumentId, if available) for the feed that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2.0 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getFeed",
         "parameters": [
           {
@@ -812,8 +812,11 @@
     },
     "/feeds/2020-09-04/documents": {
       "post": {
-        "description": "Creates a feed document for the feed type that you specify. This operation returns encryption details for encrypting the contents of the document, as well as a presigned URL for uploading the encrypted feed document contents. It also returns a feedDocumentId value that you can pass in with a subsequent call to the createFeed operation.",
+        "description": "Creates a feed document for the feed type that you specify. This operation returns encryption details for encrypting the contents of the document, as well as a presigned URL for uploading the encrypted feed document contents. It also returns a feedDocumentId value that you can pass in with a subsequent call to the createFeed operation.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0083 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "createFeedDocument",
+        "tags": [
+          "feeds"
+        ],
         "parameters": [
           {
             "in": "body",
@@ -823,9 +826,6 @@
               "$ref": "#/definitions/CreateFeedDocumentSpecification"
             }
           }
-        ],
-        "tags": [
-          "feeds"
         ],
         "responses": {
           "201": {
@@ -845,9 +845,7 @@
                   "parameters": {
                     "body": {
                       "value": {
-                        "feedType": "POST_PRODUCT_DATA",
-                        "contentType": "text/tab-separated-values; charset=UTF-8",
-                        "contentLength": 256
+                        "contentType": "text/tab-separated-values; charset=UTF-8"
                       }
                     }
                   }
@@ -883,7 +881,6 @@
                   "parameters": {
                     "body": {
                       "value": {
-                        "feedType": "BAD_FEED"
                       }
                     }
                   }
@@ -993,7 +990,7 @@
         "tags": [
           "feeds"
         ],
-        "description": "Returns the information required for retrieving a feed document's contents. This includes a presigned URL for the feed document as well as the information required to decrypt the document's contents.",
+        "description": "Returns the information required for retrieving a feed document's contents. This includes a presigned URL for the feed document as well as the information required to decrypt the document's contents.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getFeedDocument",
         "parameters": [
           {
@@ -1074,7 +1071,7 @@
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
             "schema": {
-              "$ref": "#/definitions/GetFeedResponse"
+              "$ref": "#/definitions/GetFeedDocumentResponse"
             },
             "headers": {
               "x-amzn-RequestId": {
@@ -1452,22 +1449,12 @@
     "CreateFeedDocumentSpecification": {
       "type": "object",
       "required": [
-        "contentLength",
-        "contentType",
-        "feedType"
+        "contentType"
       ],
       "properties": {
-        "feedType": {
-          "description": "The feed type.",
-          "type": "string"
-        },
         "contentType": {
           "description": "The content type of the feed.",
           "type": "string"
-        },
-        "contentLength": {
-          "description": "The content length of the feed in bytes.",
-          "type": "integer"
         }
       }
     },
