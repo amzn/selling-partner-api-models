@@ -1,0 +1,256 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Selling Partner API for Uploads",
+    "description": "The Selling Partner API for Uploads provides operations that support uploading files.",
+    "version": "2020-11-01",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/uploads/2020-11-01/uploadDestinations/{resource}": {
+      "post": {
+        "description": "Creates an upload destination for a resource that you specify and returns the information required to upload to that destination.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| .1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "createUploadDestinationForResource",
+        "tags": [
+          "uploads"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-requestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "uploadDestinationId": "5d4e42b5-1d6e-44e8-a89c-2abfca0625bb",
+                  "url": "https://s3.amazonaws.com/buyer-seller-messaging-test-draft-attachment-namarketplace/%2F067/5d4e42b5-1d6e-44e8-a89c-2abfca0625bb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20190701T214102Z&X-Amz-SignedHeaders=content-md5%3Bhost%3Bx-amz-server-side-encryption&X-Amz-Expires=900&X-Amz-Credential=AKIAW5VUA47ENEOYT7RC%2F20190701%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=d4f85c5f1a32a788a8d54e3f00a2a08af45be5b83551cdd81c82ae353dfcdfd4",
+                  "headers": {
+                    "Content-MD5": "5d41402abc4b2a76b9719d911017c592",
+                    "x-amz-server-side-encryption": "aws:kms"
+                  }
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUploadDestinationResponse"
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUploadDestinationResponse"
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUploadDestinationResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUploadDestinationResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUploadDestinationResponse"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUploadDestinationResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUploadDestinationResponse"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUploadDestinationResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUploadDestinationResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "marketplaceIds",
+            "type": "array",
+            "in": "query",
+            "required": true,
+            "description": "A list of marketplace identifiers. This specifies the marketplaces where the upload will be available. Only one marketplace can be specified.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          },
+          {
+            "name": "contentMD5",
+            "description": "An MD5 hash of the content to be submitted to the upload destination. This value is used to determine if the data has been corrupted or tampered with during transit.",
+            "type": "string",
+            "in": "query",
+            "required": true
+          },
+          {
+            "name": "resource",
+            "in": "path",
+            "description": "The URL of the resource for the upload destination that you are creating. For example, to create an upload destination for a Buyer-Seller Messaging message, the {resource} would be /messaging and the path would be  /uploads/v1/uploadDestinations/messaging",
+            "required": true,
+            "type": "string",
+            "x-amazon-spds-greedy-path-parameter":true
+          },
+          {
+            "name": "contentType",
+            "in": "query",
+            "description": "The content type of the file to be uploaded.",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "CreateUploadDestinationResponse": {
+      "description": "The response schema for the createUploadDestination operation.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/UploadDestination"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      }
+    },
+    "UploadDestination": {
+      "description": "Information about an upload destination.",
+      "type": "object",
+      "properties": {
+        "uploadDestinationId": {
+          "description": "The unique identifier for the upload destination.",
+          "type": "string"
+        },
+        "url": {
+          "description": "The URL for the upload destination.",
+          "type": "string"
+        },
+        "headers": {
+          "description": "The headers to include in the upload request.",
+          "type": "object",
+          "properties": {}
+        }
+      }
+    },
+    "ErrorList": {
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occurred.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition in a human-readable form.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    }
+  }
+}
