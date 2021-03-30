@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
-using RestSharp;
+using System.Net.Http;
+//using RestSharp;
 
 namespace Amazon.SellingPartnerAPIAA
 {
@@ -26,9 +27,9 @@ namespace Amazon.SellingPartnerAPIAA
         /// <param name="request">RestRequest which needs to be signed</param>
         /// <param name="host">Request endpoint</param>
         /// <returns>RestRequest with AWS Signature</returns>
-        public IRestRequest Sign(IRestRequest request, string host)
+        public HttpRequestMessage Sign(HttpRequestMessage request)
         {
-            DateTime signingDate = AwsSignerHelper.InitializeHeaders(request, host);
+            DateTime signingDate = AwsSignerHelper.InitializeHeaders(request);
             string signedHeaders = AwsSignerHelper.ExtractSignedHeaders(request);
 
             string hashedCanonicalRequest = CreateCanonicalRequest(request, signedHeaders);
@@ -52,14 +53,14 @@ namespace Amazon.SellingPartnerAPIAA
             return request;
         }
 
-        private string CreateCanonicalRequest(IRestRequest restRequest, string signedHeaders)
+        private string CreateCanonicalRequest(HttpRequestMessage restRequest, string signedHeaders)
         {
             var canonicalizedRequest = new StringBuilder();
             //Request Method
             canonicalizedRequest.AppendFormat("{0}\n", restRequest.Method);
 
             //CanonicalURI
-            canonicalizedRequest.AppendFormat("{0}\n", AwsSignerHelper.ExtractCanonicalURIParameters(restRequest.Resource));
+            canonicalizedRequest.AppendFormat("{0}\n", AwsSignerHelper.ExtractCanonicalURIParameters(string.Join(string.Empty, restRequest.RequestUri.Segments)));
 
             //CanonicalQueryString
             canonicalizedRequest.AppendFormat("{0}\n", AwsSignerHelper.ExtractCanonicalQueryString(restRequest));

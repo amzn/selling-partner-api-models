@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RestSharp;
+using System.Net.Http;
+//using RestSharp;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Amazon.SellingPartnerAPIAA
 {
@@ -72,11 +74,15 @@ namespace Amazon.SellingPartnerAPIAA
         /// </summary>
         /// <param name="request">RestRequest</param>
         /// <returns>Query parameters in canonical order with URL encoding</returns>
-        public virtual string ExtractCanonicalQueryString(IRestRequest request)
+        public virtual string ExtractCanonicalQueryString(HttpRequestMessage request)
         {
-            IDictionary<string, string> queryParameters = request.Parameters
-                .Where(parameter => ParameterType.QueryString.Equals(parameter.Type))
-                .ToDictionary(header => header.Name.Trim().ToString(), header => header.Value.ToString());
+            IDictionary<string, Microsoft.Extensions.Primitives.StringValues> queryParametersDic = QueryHelpers.ParseQuery(request.RequestUri.Query);
+            IDictionary<string, string> queryParameters = new Dictionary<string, string>();
+            foreach (var paramPair in queryParametersDic)
+            {
+                //take the last value from each parameter
+                queryParameters.Add(paramPair.Key, paramPair.Value[paramPair.Value.Count - 1]);
+            }
 
             SortedDictionary<string, string> sortedqueryParameters = new SortedDictionary<string, string>(queryParameters);
 
@@ -100,11 +106,10 @@ namespace Amazon.SellingPartnerAPIAA
         /// </summary>
         /// <param name="request">RestRequest</param>
         /// <returns>Returns Http headers in canonical order</returns>
-        public virtual string ExtractCanonicalHeaders(IRestRequest request)
+        public virtual string ExtractCanonicalHeaders(HttpRequestMessage request)
         {
-            IDictionary<string, string> headers = request.Parameters
-                .Where(parameter => ParameterType.HttpHeader.Equals(parameter.Type))
-                .ToDictionary(header => header.Name.Trim().ToLowerInvariant(), header => header.Value.ToString());
+            IDictionary<string, string> headers = request.Headers
+                .ToDictionary(header => header.Key.Trim().ToLowerInvariant(), header => header.Value.ToString());
 
             SortedDictionary<string, string> sortedHeaders = new SortedDictionary<string, string>(headers);
 
@@ -125,10 +130,9 @@ namespace Amazon.SellingPartnerAPIAA
         /// </summary>
         /// <param name="request">RestRequest</param>
         /// <returns>List of Http headers in canonical order</returns>
-        public virtual string ExtractSignedHeaders(IRestRequest request)
+        public virtual string ExtractSignedHeaders(HttpRequestMessage request)
         {
-            List<string> rawHeaders = request.Parameters.Where(parameter => ParameterType.HttpHeader.Equals(parameter.Type))
-                                                        .Select(header => header.Name.Trim().ToLowerInvariant())
+            List<string> rawHeaders = request.Headers.Select(header => header.Key.Trim().ToLowerInvariant())
                                                         .ToList();
             rawHeaders.Sort(StringComparer.OrdinalIgnoreCase);
 
@@ -140,10 +144,10 @@ namespace Amazon.SellingPartnerAPIAA
         /// </summary>
         /// <param name="request">RestRequest</param>
         /// <returns>Hexadecimal hashed value of payload in the body of request</returns>
-        public virtual string HashRequestBody(IRestRequest request)
+        public virtual string HashRequestBody(HttpRequestMessage request)
         {
-            Parameter body = request.Parameters.FirstOrDefault(parameter => ParameterType.RequestBody.Equals(parameter.Type));
-            string value = body != null ? body.Value.ToString() : string.Empty;
+            var body = request.Content;
+            string value = body != null ? body.ReadAsStringAsync().ToString() : string.Empty;
             return Utils.ToHex(Utils.Hash(value));
         }
 
@@ -174,17 +178,15 @@ namespace Amazon.SellingPartnerAPIAA
         /// <param name="restRequest">RestRequest</param>
         /// <param name="host">Request endpoint</param>
         /// <returns>Date and time used for x-amz-date, in UTC</returns>
-        public virtual DateTime InitializeHeaders(IRestRequest restRequest, string host)
+        public virtual DateTime InitializeHeaders(HttpRequestMessage restRequest)
         {
-            restRequest.Parameters.RemoveAll(parameter => ParameterType.HttpHeader.Equals(parameter.Type)
-                                                          && parameter.Name == XAmzDateHeaderName);
-            restRequest.Parameters.RemoveAll(parameter => ParameterType.HttpHeader.Equals(parameter.Type)
-                                                          && parameter.Name == HostHeaderName);
+            restRequest.Headers.Remove(XAmzDateHeaderName);
+            restRequest.Headers.Remove(HostHeaderName);
 
             DateTime signingDate = DateHelper.GetUtcNow();
 
-            restRequest.AddHeader(XAmzDateHeaderName, signingDate.ToString(ISO8601BasicDateTimeFormat, CultureInfo.InvariantCulture));
-            restRequest.AddHeader(HostHeaderName, host);
+            restRequest.Headers.Add(XAmzDateHeaderName, signingDate.ToString(ISO8601BasicDateTimeFormat, CultureInfo.InvariantCulture));
+            restRequest.Headers.Add(HostHeaderName, restRequest.RequestUri.Host);
 
             return signingDate;
         }
@@ -222,7 +224,7 @@ namespace Amazon.SellingPartnerAPIAA
         /// <param name="signature">The signature to add</param>
         /// <param name="region">AWS region for the request</param>
         /// <param name="signingDate">Signature date</param>
-        public virtual void AddSignature(IRestRequest restRequest,
+        public virtual void AddSignature(HttpRequestMessage restRequest,
                                          string accessKeyId,
                                          string signedHeaders,
                                          string signature,
@@ -236,7 +238,7 @@ namespace Amazon.SellingPartnerAPIAA
             authorizationHeaderValueBuilder.AppendFormat(" {0}={1},", SignedHeadersSubHeaderName, signedHeaders);
             authorizationHeaderValueBuilder.AppendFormat(" {0}={1}", SignatureSubHeaderName, signature);
 
-            restRequest.AddHeader(AuthorizationHeaderName, authorizationHeaderValueBuilder.ToString());
+            restRequest.Headers.TryAddWithoutValidation(AuthorizationHeaderName, authorizationHeaderValueBuilder.ToString());
         }
 
         private static string BuildScope(DateTime signingDate, string region)
