@@ -109,7 +109,7 @@ namespace Amazon.SellingPartnerAPIAA
         public virtual string ExtractCanonicalHeaders(HttpRequestMessage request)
         {
             IDictionary<string, string> headers = request.Headers
-                .ToDictionary(header => header.Key.Trim().ToLowerInvariant(), header => header.Value.ToString());
+                .ToDictionary(header => header.Key.Trim().ToLowerInvariant(), header => header.Value.FirstOrDefault());
 
             SortedDictionary<string, string> sortedHeaders = new SortedDictionary<string, string>(headers);
 
