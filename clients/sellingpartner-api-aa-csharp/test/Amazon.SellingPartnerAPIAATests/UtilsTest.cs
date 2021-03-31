@@ -9,6 +9,7 @@ namespace Amazon.SellingPartnerAPIAATests
     public class UtilsTest
     {
         private const string TestString = "test";
+        private Uri TestUri = new Uri("https://sellingpartnerapi-na.amazon.com/auth/o2/token?developerId=000000000000");
 
         [Fact]
         public void TestUrlEncode_WithoutEncoding()
@@ -50,6 +51,25 @@ namespace Amazon.SellingPartnerAPIAATests
                 183, 80, 81, 25, 213, 212, 241, 218, 201, 168, 17, 253, 143, 54, 226, 42, 118, 61, 54 };
             byte[] keyedHash = Utils.GetKeyedHash(Encoding.UTF8.GetBytes("testKey"), TestString);
             Assert.True(expectedHash.SequenceEqual(keyedHash));
+        }
+
+        [Fact]
+        public void TestGetResourceFromUri()
+        {
+            string expectedResource = "/auth/o2/token";
+            string resource = Utils.GetResourceFromUri(TestUri);
+            Assert.Equal(expectedResource, resource);
+        }
+
+        [Fact]
+        public void TestAddUriParameter()
+        {
+            Uri expectedUri = new Uri(TestUri + "?Version=2010-05-08&Action=ListUsers&RequestId=1");
+            Uri requestUri = TestUri;
+            requestUri = Utils.AddUriParameter(requestUri, "Version", "2010-05-08");
+            requestUri = Utils.AddUriParameter(requestUri, "Action", "ListUsers");
+            requestUri = Utils.AddUriParameter(requestUri, "RequestId", "1");
+            Assert.Equal(expectedUri, requestUri);
         }
     }
 }

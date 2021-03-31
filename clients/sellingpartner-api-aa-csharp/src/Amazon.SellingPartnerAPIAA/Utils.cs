@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using System.Security.Cryptography;
 using System.Globalization;
+using System;
+using System.Web;
 
 namespace Amazon.SellingPartnerAPIAA
 {
@@ -68,6 +70,21 @@ namespace Amazon.SellingPartnerAPIAA
             KeyedHashAlgorithm hashAlgorithm = new HMACSHA256(key);
             hashAlgorithm.Initialize();
             return hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(value));
+        }
+
+        public static string GetResourceFromUri(Uri uri)
+        {
+            return string.Join(string.Empty, uri.Segments);
+        }
+
+        public static Uri AddUriParameter(this Uri url, string paramName, string paramValue)
+        {
+            var uriBuilder = new UriBuilder(url);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            query[paramName] = paramValue;
+            uriBuilder.Query = query.ToString();
+
+            return uriBuilder.Uri;
         }
     }
 }
