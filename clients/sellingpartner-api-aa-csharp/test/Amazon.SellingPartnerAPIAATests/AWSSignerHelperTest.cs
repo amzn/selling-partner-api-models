@@ -5,6 +5,7 @@ using System.Text;
 using Moq;
 using System.Net.Http;
 using System.Web;
+using System.Linq;
 
 namespace Amazon.SellingPartnerAPIAATests
 {
@@ -174,61 +175,58 @@ namespace Amazon.SellingPartnerAPIAATests
             Assert.Equal(SigningDate, awsSignerHelperUnderTest.InitializeHeaders(new HttpRequestMessage(HttpMethod.Get, TestUri)));
         }
 
-        //[Fact]
-        //public void TestInitializeHeadersSetsUtcNowXAmzDateHeader()
-        //{
-        //    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, TestUri);
-        //    awsSignerHelperUnderTest.InitializeHeaders(request);
+        [Fact]
+        public void TestInitializeHeadersSetsUtcNowXAmzDateHeader()
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, TestUri);
+            awsSignerHelperUnderTest.InitializeHeaders(request);
 
-        //    Parameter actualParameter = request.Parameters.Find(parameter =>
-        //        ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.XAmzDateHeaderName);
+            string XAmzDateHeaderValue = request.Headers.GetValues(AWSSignerHelper.XAmzDateHeaderName).FirstOrDefault();
 
-        //    Assert.Equal(ISOSigningDateTime, actualParameter.Value);
-        //}
+            Assert.Equal(ISOSigningDateTime, XAmzDateHeaderValue);
+        }
 
-        //[Fact]
-        //public void TestInitializeHeadersOverwritesXAmzDateHeader()
-        //{
-        //    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, TestUri);
-        //    request.Headers.Add(AWSSignerHelper.XAmzDateHeaderName, "foobar");
+        [Fact]
+        public void TestInitializeHeadersOverwritesXAmzDateHeader()
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, TestUri);
+            request.Headers.Add(AWSSignerHelper.XAmzDateHeaderName, "foobar");
 
-        //    awsSignerHelperUnderTest.InitializeHeaders(request);
+            awsSignerHelperUnderTest.InitializeHeaders(request);
 
-        //    Parameter actualParameter = request.Parameters.Find(parameter =>
-        //        ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.XAmzDateHeaderName);
+            string XAmzDateHeaderValue = request.Headers.GetValues(AWSSignerHelper.XAmzDateHeaderName).FirstOrDefault();
 
-        //    Assert.Equal(ISOSigningDateTime, actualParameter.Value);
-        //}
+            Assert.Equal(ISOSigningDateTime, XAmzDateHeaderValue);
+        }
 
-        //[Fact]
-        //public void TestAddSignatureToRequest()
-        //{
-        //    HttpRequestMessage restRequest = new HttpRequestMessage();
-        //    string expectedAccessKeyId = TestAccessKeyId;
-        //    string expectedRegion = TestRegion;
-        //    string expectedSignature = "testCalculatedSignature";
-        //    string expectedSignedHeaders = "header1;header2";
+        [Fact]
+        public void TestAddSignatureToRequest()
+        {
+            HttpRequestMessage restRequest = new HttpRequestMessage();
+            string expectedAccessKeyId = TestAccessKeyId;
+            string expectedRegion = TestRegion;
+            string expectedSignature = "testCalculatedSignature";
+            string expectedSignedHeaders = "header1;header2";
 
-        //    string expectedAuthorizationHeaderValue = string.Format("AWS4-HMAC-SHA256 " +
-        //        "Credential={0}/{1}/{2}/execute-api/aws4_request, SignedHeaders={3}, Signature={4}",
-        //        expectedAccessKeyId,
-        //        ISOSigningDate,
-        //        expectedRegion,
-        //        expectedSignedHeaders,
-        //        expectedSignature);
+            string expectedAuthorizationHeaderValue = string.Format("AWS4-HMAC-SHA256 " +
+                "Credential={0}/{1}/{2}/execute-api/aws4_request, SignedHeaders={3}, Signature={4}",
+                expectedAccessKeyId,
+                ISOSigningDate,
+                expectedRegion,
+                expectedSignedHeaders,
+                expectedSignature);
 
-        //    awsSignerHelperUnderTest.AddSignature(restRequest,
-        //                                          expectedAccessKeyId,
-        //                                          expectedSignedHeaders,
-        //                                          expectedSignature,
-        //                                          expectedRegion,
-        //                                          SigningDate);
+            awsSignerHelperUnderTest.AddSignature(restRequest,
+                                                  expectedAccessKeyId,
+                                                  expectedSignedHeaders,
+                                                  expectedSignature,
+                                                  expectedRegion,
+                                                  SigningDate);
 
-        //    Parameter actualParameter = restRequest.Parameters.Find(parameter =>
-        //        ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.AuthorizationHeaderName);
+            string SignatureHeaderValue = restRequest.Headers.GetValues(AWSSignerHelper.AuthorizationHeaderName).FirstOrDefault();
 
-        //    Assert.Equal(expectedAuthorizationHeaderValue, actualParameter.Value);
-        //}
+            Assert.Equal(expectedAuthorizationHeaderValue, SignatureHeaderValue);
+        }
 
         [Fact]
         public void TestCalculateSignature()
@@ -240,32 +238,30 @@ namespace Amazon.SellingPartnerAPIAATests
             Assert.Equal("7e2c7c2e330123ef7468b41d8ddaf3841e6ef56959b9116b44ded5466cf96405", signature);
         }
 
-        //[Fact]
-        //public void TestInitializeHeadersSetsHostHeader()
-        //{
-        //    HttpRequestMessage restRequest = new HttpRequestMessage(HttpMethod.Get, TestUri);
+        [Fact]
+        public void TestInitializeHeadersSetsHostHeader()
+        {
+            HttpRequestMessage restRequest = new HttpRequestMessage(HttpMethod.Get, TestUri);
 
-        //    awsSignerHelperUnderTest.InitializeHeaders(restRequest);
+            awsSignerHelperUnderTest.InitializeHeaders(restRequest);
 
-        //    Parameter actualParamter = restRequest.Parameters.Find(parameter =>
-        //        ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.HostHeaderName);
+            string HostHeaderValue = restRequest.Headers.GetValues(AWSSignerHelper.HostHeaderName).FirstOrDefault();
 
-        //    Assert.Equal(TestHost, actualParamter.Value);
-        //}
+            Assert.Equal(TestHost, HostHeaderValue);
+        }
 
-        //[Fact]
-        //public void TestInitializeHeadersOverwritesHostHeader()
-        //{
-        //    HttpRequestMessage restRequest = new HttpRequestMessage(HttpMethod.Get, TestUri);
+        [Fact]
+        public void TestInitializeHeadersOverwritesHostHeader()
+        {
+            HttpRequestMessage restRequest = new HttpRequestMessage(HttpMethod.Get, TestUri);
 
-        //    restRequest.Headers.Add(AWSSignerHelper.HostHeaderName, "foobar");
+            restRequest.Headers.Add(AWSSignerHelper.HostHeaderName, "foobar");
 
-        //    awsSignerHelperUnderTest.InitializeHeaders(restRequest);
+            awsSignerHelperUnderTest.InitializeHeaders(restRequest);
+            
+            string HostHeaderValue = restRequest.Headers.GetValues(AWSSignerHelper.HostHeaderName).FirstOrDefault();
 
-        //    Parameter actualParamter = restRequest.Parameters.Find(parameter =>
-        //        ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.HostHeaderName);
-
-        //    Assert.Equal(TestHost, actualParamter.Value);
-        //}
+            Assert.Equal(TestHost, HostHeaderValue);
+        }
     }
 }

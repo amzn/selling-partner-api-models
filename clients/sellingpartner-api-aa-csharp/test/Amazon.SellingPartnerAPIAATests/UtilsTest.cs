@@ -64,7 +64,7 @@ namespace Amazon.SellingPartnerAPIAATests
         [Fact]
         public void TestAddUriParameter()
         {
-            Uri expectedUri = new Uri(TestUri + "?Version=2010-05-08&Action=ListUsers&RequestId=1");
+            Uri expectedUri = new Uri(TestUri + "&Version=2010-05-08&Action=ListUsers&RequestId=1");
             Uri requestUri = TestUri;
             requestUri = Utils.AddUriParameter(requestUri, "Version", "2010-05-08");
             requestUri = Utils.AddUriParameter(requestUri, "Action", "ListUsers");
