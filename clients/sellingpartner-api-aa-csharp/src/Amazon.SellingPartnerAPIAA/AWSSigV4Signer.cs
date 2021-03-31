@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Net.Http;
-//using RestSharp;
 
 namespace Amazon.SellingPartnerAPIAA
 {
@@ -60,7 +59,7 @@ namespace Amazon.SellingPartnerAPIAA
             canonicalizedRequest.AppendFormat("{0}\n", restRequest.Method);
 
             //CanonicalURI
-            canonicalizedRequest.AppendFormat("{0}\n", AwsSignerHelper.ExtractCanonicalURIParameters(string.Join(string.Empty, restRequest.RequestUri.Segments)));
+            canonicalizedRequest.AppendFormat("{0}\n", AwsSignerHelper.ExtractCanonicalURIParameters(Utils.GetResourceFromUri(restRequest.RequestUri)));
 
             //CanonicalQueryString
             canonicalizedRequest.AppendFormat("{0}\n", AwsSignerHelper.ExtractCanonicalQueryString(restRequest));

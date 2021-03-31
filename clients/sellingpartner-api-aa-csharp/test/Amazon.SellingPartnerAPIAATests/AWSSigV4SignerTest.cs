@@ -1,8 +1,8 @@
 ﻿using Moq;
 using Xunit;
-using RestSharp;
 using Amazon.SellingPartnerAPIAA;
 using System;
+using System.Net.Http;
 
 namespace Amazon.SellingPartnerAPIAATests
 {
@@ -13,14 +13,15 @@ namespace Amazon.SellingPartnerAPIAATests
         private const string TestRegion = "us-east-1";
         private const string TestResourcePath = "iam/user";
         private const string TestHost = "sellingpartnerapi.amazon.com";
+        private const string TestUri = "https://" + TestHost + "/" + TestResourcePath;
 
-        private RestRequest request;
+        private HttpRequestMessage request;
         private AWSSigV4Signer sigV4SignerUnderTest;
         private Mock<AWSSignerHelper> mockAWSSignerHelper;
 
         public AWSSigV4SignerTest()
         {
-            request = new RestRequest(TestResourcePath, Method.GET);
+            request = new HttpRequestMessage(HttpMethod.Get, TestUri);
 
             AWSAuthenticationCredentials authenticationCredentials = new AWSAuthenticationCredentials
             {
@@ -41,9 +42,9 @@ namespace Amazon.SellingPartnerAPIAATests
             string expectedSignedHeaders = "testSignedHeaders";
             string expectedSignature = "testSignature";
             string expectedStringToSign = "testStringToSign";
-            mockAWSSignerHelper.Setup(signerHelper => signerHelper.InitializeHeaders(request, TestHost))
+            mockAWSSignerHelper.Setup(signerHelper => signerHelper.InitializeHeaders(request))
                                .Returns(signingDate);
-            mockAWSSignerHelper.Setup(signerHelper => signerHelper.ExtractCanonicalURIParameters(request.Resource))
+            mockAWSSignerHelper.Setup(signerHelper => signerHelper.ExtractCanonicalURIParameters(Utils.GetResourceFromUri(request.RequestUri)))
                                .Returns("testURIParameters");
             mockAWSSignerHelper.Setup(signerHelper => signerHelper.ExtractCanonicalQueryString(request))
                                .Returns("testCanonicalQueryString");
@@ -60,10 +61,10 @@ namespace Amazon.SellingPartnerAPIAATests
                                       signingDate, TestSecretKey, TestRegion))
                                .Returns(expectedSignature);
 
-            IRestRequest actualRestRequest = sigV4SignerUnderTest.Sign(request, TestHost);
+            HttpRequestMessage actualRestRequest = sigV4SignerUnderTest.Sign(request);
 
-            mockAWSSignerHelper.Verify(signerHelper => signerHelper.InitializeHeaders(request, TestHost));
-            mockAWSSignerHelper.Verify(signerHelper => signerHelper.ExtractCanonicalURIParameters(request.Resource));
+            mockAWSSignerHelper.Verify(signerHelper => signerHelper.InitializeHeaders(request));
+            mockAWSSignerHelper.Verify(signerHelper => signerHelper.ExtractCanonicalURIParameters(Utils.GetResourceFromUri(request.RequestUri)));
             mockAWSSignerHelper.Verify(signerHelper => signerHelper.ExtractCanonicalQueryString(request));
             mockAWSSignerHelper.Verify(signerHelper => signerHelper.ExtractCanonicalHeaders(request));
             mockAWSSignerHelper.Verify(signerHelper => signerHelper.ExtractSignedHeaders(request));
