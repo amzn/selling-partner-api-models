@@ -1,0 +1,1072 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Shipment Invoicing helps you programmatically retrieve shipment invoice information in the Brazil marketplace for a selling partner’s Fulfillment by Amazon (FBA) orders.",
+    "version": "v0",
+    "title": "Selling Partner API for Shipment Invoicing",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/fba/outbound/brazil/v0/shipments/{shipmentId}": {
+      "get": {
+        "tags": [
+          "shipmentInvoice"
+        ],
+        "description": "Returns the shipment details required to issue an invoice for the specified shipment.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 1.133 | 25 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getShipmentDetails",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "in": "path",
+            "description": "The identifier for the shipment. Get this value from the FBAOutboundShipmentStatus notification. For information about subscribing to notifications, see the [Notifications API Use Case Guide](https://github.com/amzn/selling-partner-api-docs/blob/main/guides/en-US/use-case-guides/notifications-api-use-case-guide/notifications-use-case-guide-v1.md).",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "WarehouseId": "wID1234",
+                    "AmazonOrderId": "222-333-4444333",
+                    "AmazonShipmentId": "F4385943758",
+                    "PurchaseDate": "2020-10-07T17:36:47.470Z",
+                    "ShippingAddress": {
+                      "Name": "User Address1",
+                      "AddressLine1": "123 any st",
+                      "City": "Ann Arbor",
+                      "County": "Washtenaw",
+                      "StateOrRegion": "MI",
+                      "PostalCode": "48104",
+                      "CountryCode": "US",
+                      "Phone": "333-444-5555",
+                      "AddressType": "Residential"
+                    },
+                    "PaymentMethodDetails": [
+                      "GiftCertificate"
+                    ],
+                    "MarketplaceId": "ATV943520DER",
+                    "SellerId": "TEST34509GOGM",
+                    "BuyerName": "1",
+                    "BuyerCounty": "Washtenaw",
+                    "BuyerTaxInfo": {
+                      "CompanyLegalName": "Buyer Company",
+                      "TaxingRegion": "MI",
+                      "TaxClassifications": [
+                        {
+                          "Name": "Millage",
+                          "Value": "10"
+                        }
+                      ]
+                    },
+                    "ShipmentItems": [
+                      {
+                        "ASIN": "BKUO9348543",
+                        "SellerSKU": "BKUO9348543SKU",
+                        "OrderItemId": "23423424",
+                        "Title": "Pencil",
+                        "QuantityOrdered": 1,
+                        "ItemPrice": {
+                          "CurrencyCode": "USD",
+                          "Amount": "100"
+                        },
+                        "ShippingPrice": {
+                          "CurrencyCode": "USD",
+                          "Amount": "20"
+                        },
+                        "GiftWrapPrice": {
+                          "CurrencyCode": "USD",
+                          "Amount": "1"
+                        },
+                        "ShippingDiscount": {
+                          "CurrencyCode": "USD",
+                          "Amount": "10"
+                        },
+                        "PromotionDiscount": {
+                          "CurrencyCode": "USD",
+                          "Amount": "10"
+                        },
+                        "SerialNumbers": [
+                          "23424",
+                          "23423"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "BadShipId"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Shipment ID",
+                      "details": "'BadShipId' is an invalid ShipmentID"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetShipmentDetailsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fba/outbound/brazil/v0/shipments/{shipmentId}/invoice": {
+      "post": {
+        "tags": [
+          "shipmentInvoice"
+        ],
+        "description": "Submits a shipment invoice document for a given shipment.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 1.133 | 25 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "submitInvoice",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "in": "path",
+            "description": "The identifier for the shipment.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubmitInvoiceRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInvoiceResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    },
+                    "body": {
+                      "value": {
+                        "InvoiceContent": "SGF2ZSB0byBkZWFsIHdpdGggQmFzZTY0IGZvcm1hdD8=",
+                        "ContentMD5Value": "9906bd8f227f6a43f1e27db4b9258ad4"
+                      }
+                    }
+                  }
+                },
+                "response": {}
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInvoiceResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "BadIDForShipment"
+                    },
+                    "body": {
+                      "value": {
+                        "InvoiceContent": "NonBase64EncodedValue",
+                        "ContentMD5Value": "8f6df519a2125946820bc34a561164c2"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Shipment ID is invalid",
+                      "details": "InvoiceContent fails encoding. Shipment 'BadIDForShipment' does not exist"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInvoiceResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInvoiceResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInvoiceResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInvoiceResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInvoiceResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInvoiceResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInvoiceResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/fba/outbound/brazil/v0/shipments/{shipmentId}/invoice/status": {
+      "get": {
+        "tags": [
+          "shipmentInvoice"
+        ],
+        "description": "Returns the invoice status for the shipment you specify.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 1.133 | 25 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getInvoiceStatus",
+        "parameters": [
+          {
+            "name": "shipmentId",
+            "in": "path",
+            "description": "The shipment identifier for the shipment.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetInvoiceStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "shipmentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "Shipments": {
+                      "AmazonShipmentId": "shipmentId1",
+                      "InvoiceStatus": "Accepted"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetInvoiceStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "shipmentId": {
+                      "value": "BadShipId"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid Shipment ID",
+                      "details": "'BadShipId' is an invalid ShipmentID"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetInvoiceStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetInvoiceStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetInvoiceStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetInvoiceStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetInvoiceStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetInvoiceStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetInvoiceStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    }
+  },
+  "definitions": {
+    "GetShipmentDetailsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getShipmentDetails operation",
+          "$ref": "#/definitions/ShipmentDetail"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getShipmentDetails operation."
+    },
+    "ShipmentDetail": {
+      "description": "The information required by a selling partner to issue a shipment invoice.",
+      "type": "object",
+      "properties": {
+        "WarehouseId": {
+          "description": "The Amazon-defined identifier for the warehouse.",
+          "type": "string"
+        },
+        "AmazonOrderId": {
+          "description": "The Amazon-defined identifier for the order.",
+          "type": "string"
+        },
+        "AmazonShipmentId": {
+          "description": "The Amazon-defined identifier for the shipment.",
+          "type": "string"
+        },
+        "PurchaseDate": {
+          "description": "The date and time when the order was created.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "ShippingAddress": {
+          "$ref": "#/definitions/Address"
+        },
+        "PaymentMethodDetails": {
+          "$ref": "#/definitions/PaymentMethodDetailItemList"
+        },
+        "MarketplaceId": {
+          "description": "The identifier for the marketplace where the order was placed.",
+          "type": "string"
+        },
+        "SellerId": {
+          "description": "The seller identifier.",
+          "type": "string"
+        },
+        "BuyerName": {
+          "description": "The name of the buyer.",
+          "type": "string"
+        },
+        "BuyerCounty": {
+          "description": "The county of the buyer.",
+          "type": "string"
+        },
+        "BuyerTaxInfo": {
+          "$ref": "#/definitions/BuyerTaxInfo"
+        },
+        "ShipmentItems": {
+          "$ref": "#/definitions/ShipmentItems"
+        }
+      }
+    },
+    "Address": {
+      "description": "The shipping address details of the shipment.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "description": "The name.",
+          "type": "string"
+        },
+        "AddressLine1": {
+          "description": "The street address.",        
+          "type": "string"
+        },
+        "AddressLine2": {
+          "description": "Additional street address information, if required.",
+          "type": "string"
+        },
+        "AddressLine3": {
+          "description": "Additional street address information, if required.",
+          "type": "string"
+        },
+        "City": {
+          "description": "The city.",
+          "type": "string"
+        },
+        "County": {
+          "description": "The county.",
+          "type": "string"
+        },
+        "District": {
+          "description": "The district.",
+          "type": "string"
+        },
+        "StateOrRegion": {
+          "description": "The state or region.",
+          "type": "string"
+        },
+        "PostalCode": {
+          "description": "The postal code.",
+          "type": "string"
+        },
+        "CountryCode": {
+          "description": "The country code.",
+          "type": "string"
+        },
+        "Phone": {
+          "description": "The phone number.",
+          "type": "string"
+        },
+        "AddressType": {
+          "$ref": "#/definitions/AddressTypeEnum"
+        }
+      }
+    },
+    "AddressTypeEnum": {
+      "description": "The shipping address type.",
+      "type": "string",
+      "enum": [
+        "Residential",
+        "Commercial"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "Residential",
+          "description": "The address type is residential."
+        },
+        {
+          "value": "Commercial",
+          "description": "The address type is commercial."
+        }
+      ]
+    },
+    "PaymentMethodDetailItemList": {
+      "description": "The list of payment method details.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "BuyerTaxInfo": {
+      "description": "Tax information about the buyer.",
+      "type": "object",
+      "properties": {
+        "CompanyLegalName": {
+          "description": "The legal name of the company.",
+          "type": "string"
+        },
+        "TaxingRegion": {
+          "description": "The country or region imposing the tax.",
+          "type": "string"
+        },
+        "TaxClassifications": {
+          "$ref": "#/definitions/TaxClassificationList"
+        }
+      }
+    },
+    "TaxClassificationList": {
+      "description": "The list of tax classifications.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TaxClassification"
+      }
+    },
+    "TaxClassification": {
+      "description": "The tax classification for the entity.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "description": "The type of tax.",
+          "type": "string"
+        },
+        "Value": {
+          "description": "The entity's tax identifier.",
+          "type": "string"
+        }
+      }
+    },
+    "ShipmentItems": {
+      "description": "A list of shipment items.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ShipmentItem"
+      }
+    },
+    "ShipmentItem": {
+      "description": "The shipment item information required by a seller to issue a shipment invoice.",
+      "type": "object",
+      "properties": {
+        "ASIN": {
+          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+          "type": "string"
+        },
+        "SellerSKU": {
+          "description": "The seller SKU of the item.",
+          "type": "string"
+        },
+        "OrderItemId": {
+          "description": "The Amazon-defined identifier for the order item.",
+          "type": "string"
+        },
+        "Title": {
+          "description": "The name of the item.",
+          "type": "string"
+        },
+        "QuantityOrdered": {
+          "description": "The number of items ordered.",
+          "type": "number"
+        },
+        "ItemPrice": {
+          "description": "The selling price of the item multiplied by the quantity ordered. Note that ItemPrice excludes ShippingPrice and GiftWrapPrice.",
+          "$ref": "#/definitions/Money"
+        },
+        "ShippingPrice": {
+          "description": "The shipping price of the item.",
+          "$ref": "#/definitions/Money"
+        },
+        "GiftWrapPrice": {
+          "description": "The gift wrap price of the item.",
+          "$ref": "#/definitions/Money"
+        },
+        "ShippingDiscount": {
+          "description": "The discount on the shipping price.",
+          "$ref": "#/definitions/Money"
+        },
+        "PromotionDiscount": {
+          "description": "The total of all promotional discounts in the offer.",
+          "$ref": "#/definitions/Money"
+        },
+        "SerialNumbers": {
+          "description": "The list of serial numbers.",
+          "$ref": "#/definitions/SerialNumbersList"
+        }
+      }
+    },
+    "Money": {
+      "description": "The currency type and amount.",
+      "type": "object",
+      "properties": {
+        "CurrencyCode": {
+          "description": "Three-digit currency code in ISO 4217 format.",
+          "type": "string"
+        },
+        "Amount": {
+          "description": "The currency amount.",
+          "type": "string"
+        }
+      }
+    },
+    "SerialNumbersList": {
+      "description": "The list of serial numbers.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "An error response returned when the request is unsuccessful."
+    },
+    "SubmitInvoiceRequest": {
+      "description": "The request schema for the submitInvoice operation.",
+      "type": "object",
+      "required": [
+        "ContentMD5Value",
+        "InvoiceContent"
+      ],
+      "properties": {
+        "InvoiceContent": {
+          "$ref": "#/definitions/Blob"
+        },
+        "ContentMD5Value": {
+          "description": "MD5 sum for validating the invoice data. For more information about calculating this value, see [Working with Content-MD5 Checksums](https://docs.developer.amazonservices.com/en_US/dev_guide/DG_MD5.html).",
+          "type": "string"
+        }
+      }
+    },
+    "Blob": {
+      "description": "Shipment invoice document content.",
+      "type": "string",
+      "format": "byte"
+    },
+    "SubmitInvoiceResponse": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the submitInvoice operation."
+    },
+    "ShipmentInvoiceStatusInfo": {
+      "description": "The shipment invoice status information.",
+      "type": "object",
+      "properties": {
+        "AmazonShipmentId": {
+          "description": "The Amazon-defined shipment identifier.",
+          "type": "string"
+        },
+        "InvoiceStatus": {
+          "$ref": "#/definitions/ShipmentInvoiceStatus"
+        }
+      }
+    },
+    "ShipmentInvoiceStatus": {
+      "description": "The shipment invoice status.",
+      "type": "string",
+      "enum": [
+        "Processing",
+        "Accepted",
+        "Errored",
+        "NotFound"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "Processing",
+          "description": "The invoice validation process is in progress."
+        },
+        {
+          "value": "Accepted",
+          "description": "The invoice validation process succeeded, and the invoice was successfully ingested."
+        },        
+        {
+          "value": "Errored",
+          "description": "The invoice validation process failed."
+        },        
+        {
+          "value": "NotFound",
+          "description": "The requested invoice was not found."
+        }
+      ]
+    },
+    "ShipmentInvoiceStatusResponse": {
+      "description": "The shipment invoice status response.",
+      "type": "object",
+      "properties": {
+        "Shipments": {
+          "$ref": "#/definitions/ShipmentInvoiceStatusInfo"
+        }
+      }
+    },
+    "GetInvoiceStatusResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getInvoiceStatus operation.",
+          "$ref": "#/definitions/ShipmentInvoiceStatusResponse"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getInvoiceStatus operation."
+    }
+  }
+}
