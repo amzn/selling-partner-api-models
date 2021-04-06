@@ -1,0 +1,960 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Catalog Items provides programmatic access to information about items in the Amazon catalog.",
+    "version": "2020-12-01",
+    "title": "Selling Partner API for Catalog Items",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/catalog/2020-12-01/items/{asin}": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "description": "Retrieves details for an item in the Amazon catalog.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 5 | 5 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getCatalogItem",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "asin",
+            "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "description": "A comma-delimited list of Amazon marketplace identifiers. Data sets in the response contain data only for the specified marketplaces.",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "ATVPDKIKX0DER"
+          },
+          {
+            "name": "includedData",
+            "description": "A comma-delimited list of data sets to include in the response.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "enum": [
+                "attributes",
+                "identifiers",
+                "images",
+                "productTypes",
+                "salesRanks",
+                "summaries",
+                "variations",
+                "vendorDetails"
+              ],
+              "type": "string",
+              "x-docgen-enum-table-extension": [
+                {
+                  "value": "attributes",
+                  "description": "A JSON object that contains structured item attribute data keyed by attribute name. Catalog item attributes are available only to brand owners."
+                },
+                {
+                  "value": "identifiers",
+                  "description": "Identifiers associated with the item in the Amazon catalog, such as UPC and EAN identifiers."
+                },
+                {
+                  "value": "images",
+                  "description": "Images for an item in the Amazon catalog. All image variants are provided to brand owners. Otherwise, a thumbnail of the \"MAIN\" image variant is provided."
+                },
+                {
+                  "value": "productTypes",
+                  "description": "Product types associated with the Amazon catalog item."
+                },
+                {
+                  "value": "salesRanks",
+                  "description": "Sales ranks of an Amazon catalog item."
+                },
+                {
+                  "value": "summaries",
+                  "description": "Summary details of an Amazon catalog item."
+                },
+                {
+                  "value": "variations",
+                  "description": "Variation details of an Amazon catalog item (variation relationships)."
+                },
+                {
+                  "value": "vendorDetails",
+                  "description": "Vendor details associated with an Amazon catalog item. Vendor details are available to vendors only."
+                }
+              ]
+            },
+            "collectionFormat": "csv",
+            "x-example": "summaries",
+            "default": "summaries"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/Item"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "asin": "B07N4M94X4",
+                "identifiers": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "identifiers": [
+                      {
+                        "type": "ean",
+                        "identifier": "0887276302195"
+                      },
+                      {
+                        "type": "upc",
+                        "identifier": "887276302195"
+                      }
+                    ]
+                  }
+                ],
+                "images": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "images": [
+                      {
+                        "variant": "MAIN",
+                        "link": "https://m.media-amazon.com/images/I/51DZzp3w3vL.jpg",
+                        "height": 333,
+                        "width": 500
+                      }
+                    ]
+                  }
+                ],
+                "productTypes": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "productType": "TELEVISION"
+                  }
+                ],
+                "salesRanks": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "ranks": [
+                      {
+                        "title": "OLED TVs",
+                        "link": "http://www.amazon.com/gp/bestsellers/electronics/6463520011",
+                        "rank": 3
+                      },
+                      {
+                        "title": "Electronics",
+                        "link": "http://www.amazon.com/gp/bestsellers/electronics",
+                        "rank": 1544
+                      }
+                    ]
+                  }
+                ],
+                "summaries": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "brandName": "Samsung Electronics",
+                    "browseNode": "6463520011",
+                    "colorName": "Black",
+                    "itemName": "Samsung QN82Q60RAFXZA Flat 82-Inch QLED 4K Q60 Series (2019) Ultra HD Smart TV with HDR and Alexa Compatibility",
+                    "manufacturer": "Samsung",
+                    "modelNumber": "QN82Q60RAFXZA",
+                    "sizeName": "82-Inch",
+                    "styleName": "TV only"
+                  }
+                ],
+                "variations": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "asins": [
+                      "B08J7TQ9FL"
+                    ],
+                    "type": "PARENT"
+                  }
+                ],
+                "vendorDetails": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "brandCode": "SAMF9",
+                    "categoryCode": "50400100",
+                    "manufacturerCode": "SAMF9",
+                    "manufacturerCodeParent": "SAMF9",
+                    "productGroup": "Home Entertainment",
+                    "replenishmentCategory": "NEW_PRODUCT",
+                    "subcategoryCode": "50400150"
+                  }
+                ]
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                  }
+                },
+                "response": {
+                  "asin": "B07N4M94X4",
+                  "identifiers": [
+                    {
+                      "marketplaceId": "ATVPDKIKX0DER",
+                      "identifiers": [
+                        {
+                          "identifierType": "ean",
+                          "identifier": "0887276302195"
+                        },
+                        {
+                          "identifierType": "upc",
+                          "identifier": "887276302195"
+                        }
+                      ]
+                    }
+                  ],
+                  "images": [
+                    {
+                      "marketplaceId": "ATVPDKIKX0DER",
+                      "images": [
+                        {
+                          "variant": "MAIN",
+                          "link": "https://m.media-amazon.com/images/I/51DZzp3w3vL.jpg",
+                          "height": 333,
+                          "width": 500
+                        }
+                      ]
+                    }
+                  ],
+                  "productTypes": [
+                    {
+                      "marketplaceId": "ATVPDKIKX0DER",
+                      "productType": "TELEVISION"
+                    }
+                  ],
+                  "salesRanks": [
+                    {
+                      "marketplaceId": "ATVPDKIKX0DER",
+                      "ranks": [
+                        {
+                          "title": "OLED TVs",
+                          "link": "http://www.amazon.com/gp/bestsellers/electronics/6463520011",
+                          "rank": 3
+                        },
+                        {
+                          "title": "Electronics",
+                          "link": "http://www.amazon.com/gp/bestsellers/electronics",
+                          "rank": 1544
+                        }
+                      ]
+                    }
+                  ],
+                  "summaries": [
+                    {
+                      "marketplaceId": "ATVPDKIKX0DER",
+                      "brandName": "Samsung Electronics",
+                      "browseNode": "6463520011",
+                      "colorName": "Black",
+                      "itemName": "Samsung QN82Q60RAFXZA Flat 82-Inch QLED 4K Q60 Series (2019) Ultra HD Smart TV with HDR and Alexa Compatibility",
+                      "manufacturer": "Samsung",
+                      "modelNumber": "QN82Q60RAFXZA",
+                      "sizeName": "82-Inch",
+                      "styleName": "TV only"
+                    }
+                  ],
+                  "variations": [
+                    {
+                      "marketplaceId": "ATVPDKIKX0DER",
+                      "asins": [
+                        "B08J7TQ9FL"
+                      ],
+                      "variationType": "CHILD"
+                    }
+                  ],
+                  "vendorDetails": [
+                    {
+                      "marketplaceId": "ATVPDKIKX0DER",
+                      "brandCode": "SAMF9",
+                      "categoryCode": "50400100",
+                      "manufacturerCode": "SAMF9",
+                      "manufacturerCodeParent": "SAMF9",
+                      "productGroup": "Home Entertainment",
+                      "replenishmentCategory": "NEW_PRODUCT",
+                      "subcategoryCode": "50400150"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occurred.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "ErrorList": {
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      },
+      "required": [
+        "errors"
+      ]
+    },
+    "Item": {
+      "description": "An item in the Amazon catalog.",
+      "properties": {
+        "asin": {
+          "$ref": "#/definitions/ItemAsin"
+        },
+        "attributes": {
+          "$ref": "#/definitions/ItemAttributes"
+        },
+        "identifiers": {
+          "$ref": "#/definitions/ItemIdentifiers"
+        },
+        "images": {
+          "$ref": "#/definitions/ItemImages"
+        },
+        "productTypes": {
+          "$ref": "#/definitions/ItemProductTypes"
+        },
+        "salesRanks": {
+          "$ref": "#/definitions/ItemSalesRanks"
+        },
+        "summaries": {
+          "$ref": "#/definitions/ItemSummaries"
+        },
+        "variations": {
+          "$ref": "#/definitions/ItemVariations"
+        },
+        "vendorDetails": {
+          "$ref": "#/definitions/ItemVendorDetails"
+        }
+      },
+      "required": [
+        "asin"
+      ],
+      "type": "object"
+    },
+    "ItemAsin": {
+      "description": "Amazon Standard Identification Number (ASIN) is the unique identifier for an item in the Amazon catalog.",
+      "type": "string"
+    },
+    "ItemAttributes": {
+      "description": "A JSON object that contains structured item attribute data keyed by attribute name. Catalog item attributes are available only to brand owners.",
+      "additionalProperties": true,
+      "type": "object"
+    },
+    "ItemIdentifiers": {
+      "description": "Identifiers associated with the item in the Amazon catalog, such as UPC and EAN identifiers.",
+      "items": {
+        "$ref" : "#/definitions/ItemIdentifiersByMarketplace"
+      },
+      "type": "array"
+    },
+    "ItemIdentifiersByMarketplace": {
+      "description": "Identifiers associated with the item in the Amazon catalog for the indicated Amazon marketplace.",
+      "properties": {
+        "marketplaceId": {
+          "description": "Amazon marketplace identifier.",
+          "type": "string"
+        },
+        "identifiers": {
+          "description": "Identifiers associated with the item in the Amazon catalog for the indicated Amazon marketplace.",
+          "items": {
+            "$ref": "#/definitions/ItemIdentifier"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "marketplaceId",
+        "identifiers"
+      ],
+      "type": "object"
+    },
+    "ItemIdentifier": {
+      "description": "Identifier associated with the item in the Amazon catalog, such as a UPC or EAN identifier.",
+      "properties": {
+        "identifierType": {
+          "description": "Type of identifier, such as UPC, EAN, or ISBN.",
+          "type": "string"
+        },
+        "identifier": {
+          "description": "Identifier.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "identifierType",
+        "identifier"
+      ],
+      "type": "object"
+    },
+    "ItemImages": {
+      "description": "Images for an item in the Amazon catalog. All image variants are provided to brand owners. Otherwise, a thumbnail of the \"MAIN\" image variant is provided.",
+      "items": {
+        "$ref": "#/definitions/ItemImagesByMarketplace"
+      },
+      "type": "array"
+    },
+    "ItemImagesByMarketplace": {
+      "description": "Images for an item in the Amazon catalog for the indicated Amazon marketplace.",
+      "properties": {
+        "marketplaceId": {
+          "description": "Amazon marketplace identifier.",
+          "type": "string"
+        },
+        "images": {
+          "description": "Images for an item in the Amazon catalog for the indicated Amazon marketplace.",
+          "items": {
+            "$ref": "#/definitions/ItemImage"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "marketplaceId",
+        "images"
+      ],
+      "type": "object"
+    },
+    "ItemImage": {
+      "description": "Image for an item in the Amazon catalog.",
+      "properties": {
+        "variant": {
+          "description": "Variant of the image, such as MAIN or PT01.",
+          "example": "MAIN",
+          "type": "string",
+          "enum": [
+            "MAIN",
+            "PT01",
+            "PT02",
+            "PT03",
+            "PT04",
+            "PT05",
+            "PT06",
+            "PT07",
+            "PT08",
+            "SWCH"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "MAIN",
+              "description": "Main image for the item."
+            },
+            {
+              "value": "PT01",
+              "description": "Other image #1 for the item."
+            },
+            {
+              "value": "PT02",
+              "description": "Other image #2 for the item."
+            },
+            {
+              "value": "PT03",
+              "description": "Other image #3 for the item."
+            },
+            {
+              "value": "PT04",
+              "description": "Other image #4 for the item."
+            },
+            {
+              "value": "PT05",
+              "description": "Other image #5 for the item."
+            },
+            {
+              "value": "PT06",
+              "description": "Other image #6 for the item."
+            },
+            {
+              "value": "PT07",
+              "description": "Other image #7 for the item."
+            },
+            {
+              "value": "PT08",
+              "description": "Other image #8 for the item."
+            },
+            {
+              "value": "SWCH",
+              "description": "Swatch image for the item."
+            }
+          ]
+        },
+        "link": {
+          "description": "Link, or URL, for the image.",
+          "type": "string"
+        },
+        "height": {
+          "description": "Height of the image in pixels.",
+          "type": "integer"
+        },
+        "width": {
+          "description": "Width of the image in pixels.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "variant",
+        "link",
+        "height",
+        "width"
+      ],
+      "type": "object"
+    },
+    "ItemProductTypes": {
+      "description": "Product types associated with the Amazon catalog item.",
+      "items": {
+        "$ref": "#/definitions/ItemProductTypeByMarketplace"
+      },
+      "type": "array"
+    },
+    "ItemProductTypeByMarketplace": {
+      "description": "Product type associated with the Amazon catalog item for the indicated Amazon marketplace.",
+      "properties": {
+        "marketplaceId": {
+          "description": "Amazon marketplace identifier.",
+          "type": "string"
+        },
+        "productType": {
+          "description": "Name of the product type associated with the Amazon catalog item.",
+          "example": "LUGGAGE",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "ItemSalesRanks": {
+      "description": "Sales ranks of an Amazon catalog item.",
+      "items": {
+        "$ref": "#/definitions/ItemSalesRanksByMarketplace"
+      },
+      "type": "array"
+    },
+    "ItemSalesRanksByMarketplace": {
+      "description": "Sales ranks of an Amazon catalog item for the indicated Amazon marketplace.",
+      "properties": {
+        "marketplaceId": {
+          "description": "Amazon marketplace identifier.",
+          "type": "string"
+        },
+        "ranks": {
+          "description": "Sales ranks of an Amazon catalog item for an Amazon marketplace.",
+          "items": {
+            "$ref": "#/definitions/ItemSalesRank"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "marketplaceId",
+        "ranks"
+      ],
+      "type": "object"
+    },
+    "ItemSalesRank": {
+      "description": "Sales rank of an Amazon catalog item.",
+      "properties": {
+        "title": {
+          "description": "Title, or name, of the sales rank.",
+          "type": "string"
+        },
+        "link": {
+          "description": "Corresponding Amazon retail website link, or URL, for the sales rank.",
+          "type": "string"
+        },
+        "rank": {
+          "description": "Sales rank value.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "title",
+        "rank"
+      ],
+      "type": "object"
+    },
+    "ItemSummaries": {
+      "description": "Summary details of an Amazon catalog item.",
+      "items": {
+        "$ref": "#/definitions/ItemSummaryByMarketplace"
+      },
+      "type": "array"
+    },
+    "ItemSummaryByMarketplace": {
+      "description": "Summary details of an Amazon catalog item for the indicated Amazon marketplace.",
+      "properties": {
+        "marketplaceId": {
+          "description": "Amazon marketplace identifier.",
+          "type": "string"
+        },
+        "brandName": {
+          "description": "Name of the brand associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "browseNode": {
+          "description": "Identifier of the browse node associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "colorName": {
+          "description": "Name of the color associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "itemName": {
+          "description": "Name, or title, associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "manufacturer": {
+          "description": "Name of the manufacturer associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "modelNumber": {
+          "description": "Model number associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "sizeName": {
+          "description": "Name of the size associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "styleName": {
+          "description": "Name of the style associated with an Amazon catalog item.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "marketplaceId"
+      ],
+      "type": "object"
+    },
+    "ItemVariations": {
+      "description": "Variation details by marketplace for an Amazon catalog item (variation relationships).",
+      "items": {
+        "$ref": "#/definitions/ItemVariationsByMarketplace"
+      },
+      "type": "array"
+    },
+    "ItemVariationsByMarketplace": {
+      "description": "Variation details for the Amazon catalog item for the indicated Amazon marketplace.",
+      "properties": {
+        "marketplaceId": {
+          "description": "Amazon marketplace identifier.",
+          "type": "string"
+        },
+        "asins": {
+          "description": "Identifiers (ASINs) of the related items.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "variationType": {
+          "description": "Type of variation relationship of the Amazon catalog item in the request to the related item(s): \"PARENT\" or \"CHILD\".",
+          "example": "PARENT",
+          "enum": [
+            "PARENT",
+            "CHILD"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "PARENT",
+              "description": "The Amazon catalog item in the request is a variation parent of the related item(s) indicated by ASIN."
+            },
+            {
+              "value": "CHILD",
+              "description": "The Amazon catalog item in the request is a variation child of the related item identified by ASIN."
+            }
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "marketplaceId",
+        "asins",
+        "variationType"
+      ],
+      "type": "object"
+    },
+    "ItemVendorDetails": {
+      "description": "Vendor details associated with an Amazon catalog item. Vendor details are available to vendors only.",
+      "items": {
+        "$ref": "#/definitions/ItemVendorDetailsByMarketplace"
+      },
+      "type": "array"
+    },
+    "ItemVendorDetailsByMarketplace": {
+      "description": "Vendor details associated with an Amazon catalog item for the indicated Amazon marketplace.",
+      "properties": {
+        "marketplaceId": {
+          "description": "Amazon marketplace identifier.",
+          "type": "string"
+        },
+        "brandCode": {
+          "description": "Brand code associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "categoryCode": {
+          "description": "Product category associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "manufacturerCode": {
+          "description": "Manufacturer code associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "manufacturerCodeParent": {
+          "description": "Parent vendor code of the manufacturer code.",
+          "type": "string"
+        },
+        "productGroup": {
+          "description": "Product group associated with an Amazon catalog item.",
+          "type": "string"
+        },
+        "replenishmentCategory": {
+          "description": "Replenishment category associated with an Amazon catalog item.",
+          "enum": [
+            "ALLOCATED",
+            "BASIC_REPLENISHMENT",
+            "IN_SEASON",
+            "LIMITED_REPLENISHMENT",
+            "MANUFACTURER_OUT_OF_STOCK",
+            "NEW_PRODUCT",
+            "NON_REPLENISHABLE",
+            "NON_STOCKUPABLE",
+            "OBSOLETE",
+            "PLANNED_REPLENISHMENT"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "ALLOCATED",
+              "description": "Indicates non-automated purchasing of inventory that has been allocated to Amazon by the vendor."
+            },
+            {
+              "value": "BASIC_REPLENISHMENT",
+              "description": "Indicates non-automated purchasing of inventory."
+            },
+            {
+              "value": "IN_SEASON",
+              "description": "Indicates non-automated purchasing of inventory for seasonal items."
+            },
+            {
+              "value": "LIMITED_REPLENISHMENT",
+              "description": "Holding queue replenishment status before an item is NEW_PRODUCT."
+            },
+            {
+              "value": "MANUFACTURER_OUT_OF_STOCK",
+              "description": "Indicates vendor is out of stock for a longer period of time and cannot backorder."
+            },
+            {
+              "value": "NEW_PRODUCT",
+              "description": "Indicates a new item that Amazon does not yet stock in inventory."
+            },
+            {
+              "value": "NON_REPLENISHABLE",
+              "description": "Indicates assortment parent used for detail page display, not actual items."
+            },
+            {
+              "value": "NON_STOCKUPABLE",
+              "description": "Indicates drop ship inventory that Amazon does not stock in its fulfillment centers."
+            },
+            {
+              "value": "OBSOLETE",
+              "description": "Indicates item is obsolete and should not be ordered."
+            },
+            {
+              "value": "PLANNED_REPLENISHMENT",
+              "description": "Indicates active items that should be automatically ordered."
+            }
+          ],
+          "type": "string"
+        },
+        "subcategoryCode": {
+          "description": "Product subcategory associated with an Amazon catalog item.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "marketplaceId"
+      ],
+      "type": "object"
+    }
+  }
+}
