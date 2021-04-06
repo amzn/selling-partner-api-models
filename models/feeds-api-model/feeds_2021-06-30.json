@@ -1,0 +1,1553 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Feeds lets you upload data to Amazon on behalf of a selling partner.",
+    "version": "2021-06-30",
+    "title": "Selling Partner API for Feeds",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/feeds/2021-06-30/feeds": {
+      "get": {
+        "tags": [
+          "feeds"
+        ],
+        "description": "Returns feed details for the feeds that match the filters that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getFeeds",
+        "parameters": [
+          {
+            "name": "feedTypes",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "description": "A list of feed types used to filter feeds. When feedTypes is provided, the other filter parameters (processingStatuses, marketplaceIds, createdSince, createdUntil) and pageSize may also be provided. Either feedTypes or nextToken is required.",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "marketplaceIds",
+            "description": "A list of marketplace identifiers used to filter feeds. The feeds returned will match at least one of the marketplaces that you specify.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "The maximum number of feeds to return in a single call.",
+            "required": false,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          },
+          {
+            "name": "processingStatuses",
+            "in": "query",
+            "description": "A list of processing statuses used to filter feeds.",
+            "required": false,
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "CANCELLED",
+                "DONE",
+                "FATAL",
+                "IN_PROGRESS",
+                "IN_QUEUE"
+              ],
+              "x-docgen-enum-table-extension": [
+                {
+                  "value": "CANCELLED",
+                  "description": "The feed was cancelled before it started processing."
+                },
+                {
+                  "value": "DONE",
+                  "description": "The feed has completed processing. Examine the contents of the result document to determine if there were any errors during processing."
+                },
+                {
+                  "value": "FATAL",
+                  "description": "The feed was aborted due to a fatal error. Some, none, or all of the operations within the feed may have completed successfully."
+                },
+                {
+                  "value": "IN_PROGRESS",
+                  "description": "The feed is being processed."
+                },
+                {
+                  "value": "IN_QUEUE",
+                  "description": "The feed has not yet started processing. It may be waiting for another IN_PROGRESS feed."
+                }
+              ]
+            }
+          },
+          {
+            "name": "createdSince",
+            "in": "query",
+            "description": "The earliest feed creation date and time for feeds included in the response, in ISO 8601 format. The default is 90 days ago. Feeds are retained for a maximum of 90 days.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "createdUntil",
+            "in": "query",
+            "description": "The latest feed creation date and time for feeds included in the response, in ISO 8601 format. The default is now.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "nextToken",
+            "in": "query",
+            "description": "A string token returned in the response to your previous request. nextToken is returned when the number of results exceeds the specified pageSize value. To get the next page of results, call the getFeeds operation and include this token as the only parameter. Specifying nextToken with any other parameters will cause the request to fail.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetFeedsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "feedTypes": {
+                      "value": [
+                        "POST_PRODUCT_DATA"
+                      ]
+                    },
+                    "pageSize": {
+                      "value": 10
+                    },
+                    "processingStatuses": {
+                      "value": [
+                        "CANCELLED",
+                        "DONE"
+                      ]
+                    }
+                  }
+                },
+                "response": {
+                  "feeds": [
+                    {
+                      "feedId": "FeedId1",
+                      "feedType": "POST_PRODUCT_DATA",
+                      "createdTime": "2019-12-11T13:16:24.630Z",
+                      "processingStatus": "CANCELLED",
+                      "processingStartTime": "2019-12-11T13:16:24.630Z",
+                      "processingEndTime": "2019-12-11T13:16:24.630Z"
+                    }
+                  ],
+                  "nextToken": "VGhpcyB0b2tlbiBpcyBvcGFxdWUgYW5kIGludGVudGlvbmFsbHkgb2JmdXNjYXRlZA=="
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "feedTypes": {
+                      "value": [
+                        "POST_PRODUCT_DATA"
+                      ]
+                    },
+                    "processingStatuses": {
+                      "value": [
+                        "BAD_VALUE",
+                        "DONE"
+                      ]
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Dates were not provided"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "415": {
+            "description": "The request's Content-Type header is invalid.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "feeds"
+        ],
+        "description": "Creates a feed. Upload the contents of the feed document before calling this operation.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0083 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "createFeed",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateFeedSpecification"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CreateFeedResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "feedType": "POST_PRODUCT_DATA",
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A1F83G8C2ARO7P"
+                        ],
+                        "inputFeedDocumentId": "3d4e42b5-1d6e-44e8-a89c-2abfca0625bb"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "feedId": "3485934"
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A1F83G8C2ARO7P"
+                        ],
+                        "inputFeedDocumentId": "badDocumentId"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "415": {
+            "description": "The request's Content-Type header is invalid.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/feeds/2021-06-30/feeds/{feedId}": {
+      "delete": {
+        "tags": [
+          "feeds"
+        ],
+        "description": "Cancels the feed that you specify. Only feeds with processingStatus=IN_QUEUE can be cancelled. Cancelled feeds are returned in subsequent calls to the getFeed and getFeeds operations.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "cancelFeed",
+        "parameters": [
+          {
+            "name": "feedId",
+            "in": "path",
+            "description": "The identifier for the feed. This identifier is unique only in combination with a seller ID.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "feedId": {
+                      "value": "ID1"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "feedId": {
+                      "value": "BADID1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "415": {
+            "description": "The request's Content-Type header is invalid.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "feeds"
+        ],
+        "description": "Returns feed details (including the resultDocumentId, if available) for the feed that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2.0 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getFeed",
+        "parameters": [
+          {
+            "name": "feedId",
+            "in": "path",
+            "description": "The identifier for the feed. This identifier is unique only in combination with a seller ID.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/Feed"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "feedId": {
+                      "value": "feedId1"
+                    }
+                  }
+                },
+                "response": {
+                  "feedId": "FeedId1",
+                  "feedType": "POST_PRODUCT_DATA",
+                  "createdTime": "2019-12-11T13:16:24.630Z",
+                  "processingStatus": "CANCELLED",
+                  "processingStartTime": "2019-12-11T13:16:24.630Z",
+                  "processingEndTime": "2019-12-11T13:16:24.630Z"
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "feedId": {
+                      "value": "badFeedId1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "415": {
+            "description": "The request's Content-Type header is invalid.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/feeds/2021-06-30/documents": {
+      "post": {
+        "description": "Creates a feed document for the feed type that you specify. This operation returns a presigned URL for uploading the feed document contents. It also returns a feedDocumentId value that you can pass in with a subsequent call to the createFeed operation.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0083 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "createFeedDocument",
+        "tags": [
+          "feeds"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateFeedDocumentSpecification"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully created a feed document that is ready to receive contents.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateFeedDocumentResponse"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "contentType": "text/tab-separated-values; charset=UTF-8"
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "feedDocumentId": "3d4e42b5-1d6e-44e8-a89c-2abfca0625bb",
+                  "url": "https://d34o8swod1owfl.cloudfront.net/Feed_101__POST_PRODUCT_DATA_%2BKEY%3DFeed_101%2BMode%3DCBC%2BINITVEC%3D8f+6c+cc+56+0d+50+a2+d0+31+ec+80+be+f2+6a+1d+0a"
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {}
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-requestid": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-requestid": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/feeds/2021-06-30/documents/{feedDocumentId}": {
+      "get": {
+        "tags": [
+          "feeds"
+        ],
+        "description": "Returns the information required for retrieving a feed document's contents.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getFeedDocument",
+        "parameters": [
+          {
+            "name": "feedDocumentId",
+            "in": "path",
+            "description": "The identifier of the feed document.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/FeedDocument"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "feedDocumentId": {
+                      "value": "0356cf79-b8b0-4226-b4b9-0ee058ea5760"
+                    }
+                  }
+                },
+                "response": {
+                  "feedDocumentId": "0356cf79-b8b0-4226-b4b9-0ee058ea5760",
+                  "url": "https://d34o8swod1owfl.cloudfront.net/SampleResult%2BKey%3DSample%2BINITVEC%3D58+fa+bf+a7+08+11+95+0f+c1+a8+c6+e0+d5+6f+ae+c8"
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "feedDocumentId": {
+                      "value": "badDocumentId1"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "400",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "415": {
+            "description": "The request's Content-Type header is invalid.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-requestid": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition in a human-readable form."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "An error response returned when the request is unsuccessful."
+    },
+    "ErrorList": {
+      "type": "object",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "CreateFeedResponse": {
+      "type": "object",
+      "required": [
+        "feedId"
+      ],
+      "properties": {
+        "feedId": {
+          "description": "The identifier for the feed. This identifier is unique only in combination with a seller ID.",
+          "type": "string"
+        }
+      }
+    },
+    "Feed": {
+      "type": "object",
+      "required": [
+        "createdTime",
+        "feedId",
+        "feedType",
+        "processingStatus"
+      ],
+      "properties": {
+        "feedId": {
+          "description": "The identifier for the feed. This identifier is unique only in combination with a seller ID.",
+          "type": "string"
+        },
+        "feedType": {
+          "description": "The feed type.",
+          "type": "string"
+        },
+        "marketplaceIds": {
+          "description": "A list of identifiers for the marketplaces that the feed is applied to.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdTime": {
+          "type": "string",
+          "description": "The date and time when the feed was created, in ISO 8601 date time format.",
+          "format": "date-time"
+        },
+        "processingStatus": {
+          "description": "The processing status of the feed.",
+          "type": "string",
+          "enum": [
+            "CANCELLED",
+            "DONE",
+            "FATAL",
+            "IN_PROGRESS",
+            "IN_QUEUE"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "CANCELLED",
+              "description": "The feed was cancelled before it started processing."
+            },
+            {
+              "value": "DONE",
+              "description": "The feed has completed processing. Examine the contents of the result document to determine if there were any errors during processing."
+            },
+            {
+              "value": "FATAL",
+              "description": "The feed was aborted due to a fatal error. Some, none, or all of the operations within the feed may have completed successfully."
+            },
+            {
+              "value": "IN_PROGRESS",
+              "description": "The feed is being processed."
+            },
+            {
+              "value": "IN_QUEUE",
+              "description": "The feed has not yet started processing. It may be waiting for another IN_PROGRESS feed."
+            }
+          ]
+        },
+        "processingStartTime": {
+          "description": "The date and time when feed processing started, in ISO 8601 date time format.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "processingEndTime": {
+          "description": "The date and time when feed processing completed, in ISO 8601 date time format.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "resultFeedDocumentId": {
+          "description": "The identifier for the feed document. This identifier is unique only in combination with a seller ID.",
+          "type": "string"
+        }
+      }
+    },
+    "FeedList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Feed"
+      }
+    },
+    "GetFeedsResponse": {
+      "type": "object",
+      "required": [
+        "feeds"
+      ],
+      "properties": {
+        "feeds": {
+          "description": "The feeds.",
+          "$ref": "#/definitions/FeedList"
+        },
+        "nextToken": {
+          "description": "Returned when the number of results exceeds pageSize. To get the next page of results, call the getFeeds operation with this token as the only parameter.",
+          "type": "string"
+        }
+      },
+      "description": "Response schema."
+    },
+    "FeedDocument": {
+      "type": "object",
+      "required": [
+        "feedDocumentId",
+        "url"
+      ],
+      "properties": {
+        "feedDocumentId": {
+          "description": "The identifier for the feed document. This identifier is unique only in combination with a seller ID.",
+          "type": "string"
+        },
+        "url": {
+          "description": "A presigned URL for the feed document. This URL expires after 5 minutes.",
+          "type": "string"
+        },
+        "compressionAlgorithm": {
+          "description": "If present, the feed document contents are compressed using the indicated algorithm.",
+          "type": "string",
+          "enum": [
+            "GZIP"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "GZIP",
+              "description": "The gzip compression algorithm."
+            }
+          ]
+        }
+      }
+    },
+    "FeedOptions": {
+      "description": "Additional options to control the feed. These vary by feed type.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "CreateFeedSpecification": {
+      "type": "object",
+      "required": [
+        "inputFeedDocumentId",
+        "feedType",
+        "marketplaceIds"
+      ],
+      "properties": {
+        "feedType": {
+          "description": "The feed type.",
+          "type": "string"
+        },
+        "marketplaceIds": {
+          "description": "A list of identifiers for marketplaces that you want the feed to be applied to.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 25,
+          "items": {
+            "type": "string"
+          }
+        },
+        "inputFeedDocumentId": {
+          "description": "The document identifier returned by the createFeedDocument operation. Upload the feed document contents before calling the createFeed operation.",
+          "type": "string"
+        },
+        "feedOptions": {
+          "$ref": "#/definitions/FeedOptions"
+        }
+      }
+    },
+    "CreateFeedDocumentSpecification": {
+      "type": "object",
+      "required": [
+        "contentType"
+      ],
+      "properties": {
+        "contentType": {
+          "description": "The content type of the feed.",
+          "type": "string"
+        }
+      }
+    },
+    "CreateFeedDocumentResponse": {
+      "description": "Information required to upload a feed document's contents.",
+      "type": "object",
+      "required": [
+        "feedDocumentId",
+        "url"
+      ],
+      "properties": {
+        "feedDocumentId": {
+          "description": "The identifier of the feed document.",
+          "type": "string"
+        },
+        "url": {
+          "description": "The presigned URL for uploading the feed contents. This URL expires after 5 minutes.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}
