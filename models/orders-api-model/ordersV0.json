@@ -136,14 +136,15 @@
             "name": "NextToken",
             "in": "query",
             "description": "A string token returned in the response of your previous request.",
+            "required": false,
             "type": "string"
           },
           {
             "name": "AmazonOrderIds",
-            "type": "array",
             "in": "query",
             "description": "A list of AmazonOrderId values. An AmazonOrderId is an Amazon-defined order identifier, in 3-7-7 format.",
             "required": false,
+            "type": "array",
             "items": {
               "type": "string"
             },
@@ -153,6 +154,52 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
+                  "Orders": [
+                    {
+                      "AmazonOrderId": "902-3159896-1390916",
+                      "PurchaseDate": "2017-01-20T19:49:35Z",
+                      "LastUpdateDate": "2017-01-20T19:49:35Z",
+                      "OrderStatus": "Pending",
+                      "FulfillmentChannel": "SellerFulfilled",
+                      "NumberOfItemsShipped": 0,
+                      "NumberOfItemsUnshipped": 0,
+                      "PaymentMethod": "Other",
+                      "PaymentMethodDetails": [
+                        "CreditCard",
+                        "GiftCerificate"
+                      ],
+                      "MarketplaceId": "ATVPDKIKX0DER",
+                      "ShipmentServiceLevelCategory": "Standard",
+                      "OrderType": "StandardOrder",
+                      "EarliestShipDate": "2017-01-20T19:51:16Z",
+                      "LatestShipDate": "2017-01-25T19:49:35Z",
+                      "IsBusinessOrder": false,
+                      "IsPrime": false,
+                      "IsGlobalExpressEnabled": false,
+                      "IsPremiumOrder": false,
+                      "IsSoldByAB": false
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -161,7 +208,9 @@
                       "value": "TEST_CASE_200"
                     },
                     "MarketplaceIds": {
-                      "value": ["ATVPDKIKX0DER"]
+                      "value": [
+                        "ATVPDKIKX0DER"
+                      ]
                     }
                   }
                 },
@@ -200,7 +249,7 @@
                         "IsGlobalExpressEnabled": false,
                         "IsPremiumOrder": false,
                         "IsSoldByAB": false,
-                        "AssignedShipFromLocationAddress":  {
+                        "DefaultShipFromLocationAddress": {
                           "Name": "MFNIntegrationTestMerchant",
                           "AddressLine1": "2201 WESTLAKE AVE",
                           "City": "SEATTLE",
@@ -265,7 +314,7 @@
                 },
                 "response": {
                   "payload": {
-                    "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=",
+                    "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
                     "Orders": [
                       {
                         "AmazonOrderId": "902-3159896-1390916",
@@ -307,7 +356,7 @@
                       ]
                     },
                     "NextToken": {
-                      "value": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4="
+                      "value": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4"
                     }
                   }
                 },
@@ -342,52 +391,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetOrdersResponse"
             },
-            "examples": {
-              "application/json": {
-                "payload": {
-                  "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=",
-                  "Orders": [
-                    {
-                      "AmazonOrderId": "902-3159896-1390916",
-                      "PurchaseDate": "2017-01-20T19:49:35Z",
-                      "LastUpdateDate": "2017-01-20T19:49:35Z",
-                      "OrderStatus": "Pending",
-                      "FulfillmentChannel": "SellerFulfilled",
-                      "NumberOfItemsShipped": 0,
-                      "NumberOfItemsUnshipped": 0,
-                      "PaymentMethod": "Other",
-                      "PaymentMethodDetails": [
-                        "CreditCard",
-                        "GiftCerificate"
-                      ],
-                      "MarketplaceId": "ATVPDKIKX0DER",
-                      "ShipmentServiceLevelCategory": "Standard",
-                      "OrderType": "StandardOrder",
-                      "EarliestShipDate": "2017-01-20T19:51:16Z",
-                      "LatestShipDate": "2017-01-25T19:49:35Z",
-                      "IsBusinessOrder": false,
-                      "IsPrime": false,
-                      "IsGlobalExpressEnabled": false,
-                      "IsPremiumOrder": false,
-                      "IsSoldByAB": false
-                    }
-                  ]
-                }
-              }
-            },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -406,16 +426,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetOrdersResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+            ]
           },
           "403": {
             "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -447,6 +458,10 @@
               "$ref": "#/definitions/GetOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -459,6 +474,10 @@
               "$ref": "#/definitions/GetOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -471,6 +490,10 @@
               "$ref": "#/definitions/GetOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -478,8 +501,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/orders/v0/orders/{orderId}": {
       "get": {
@@ -500,6 +522,60 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "AmazonOrderId": "902-3159896-1390916",
+                  "PurchaseDate": "2017-01-20T19:49:35Z",
+                  "LastUpdateDate": "2017-01-20T19:49:35Z",
+                  "OrderStatus": "Pending",
+                  "FulfillmentChannel": "SellerFulfilled",
+                  "NumberOfItemsShipped": 0,
+                  "NumberOfItemsUnshipped": 0,
+                  "PaymentMethod": "Other",
+                  "PaymentMethodDetails": [
+                    "CreditCard",
+                    "GiftCerificate"
+                  ],
+                  "MarketplaceId": "ATVPDKIKX0DER",
+                  "ShipmentServiceLevelCategory": "Standard",
+                  "OrderType": "StandardOrder",
+                  "EarliestShipDate": "2017-01-20T19:51:16Z",
+                  "LatestShipDate": "2017-01-25T19:49:35Z",
+                  "IsBusinessOrder": false,
+                  "IsPrime": false,
+                  "IsGlobalExpressEnabled": false,
+                  "IsPremiumOrder": false,
+                  "IsSoldByAB": false,
+                  "DefaultShipFromLocationAddress": {
+                    "Name": "MFNIntegrationTestMerchant",
+                    "AddressLine1": "2201 WESTLAKE AVE",
+                    "City": "SEATTLE",
+                    "StateOrRegion": "WA",
+                    "PostalCode": "98121-2778",
+                    "CountryCode": "US",
+                    "Phone": "+1 480-386-0930 ext. 73824",
+                    "AddressType": "Commercial"
+                  },
+                  "FulfillmentInstruction": {
+                    "FulfillmentSupplySourceId": "sampleSupplySourceId"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -541,7 +617,7 @@
                     "IsGlobalExpressEnabled": false,
                     "IsPremiumOrder": false,
                     "IsSoldByAB": false,
-                    "AssignedShipFromLocationAddress":  {
+                    "DefaultShipFromLocationAddress": {
                       "Name": "MFNIntegrationTestMerchant",
                       "AddressLine1": "2201 WESTLAKE AVE",
                       "City": "SEATTLE",
@@ -597,7 +673,7 @@
                     "IsGlobalExpressEnabled": false,
                     "IsPremiumOrder": false,
                     "IsSoldByAB": true,
-                    "AssignedShipFromLocationAddress":  {
+                    "DefaultShipFromLocationAddress": {
                       "Name": "MFNIntegrationTestMerchant",
                       "AddressLine1": "2201 WESTLAKE AVE",
                       "City": "SEATTLE",
@@ -613,60 +689,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetOrderResponse"
             },
-            "examples": {
-              "application/json": {
-                "payload": {
-                  "AmazonOrderId": "902-3159896-1390916",
-                  "PurchaseDate": "2017-01-20T19:49:35Z",
-                  "LastUpdateDate": "2017-01-20T19:49:35Z",
-                  "OrderStatus": "Pending",
-                  "FulfillmentChannel": "SellerFulfilled",
-                  "NumberOfItemsShipped": 0,
-                  "NumberOfItemsUnshipped": 0,
-                  "PaymentMethod": "Other",
-                  "PaymentMethodDetails": [
-                    "CreditCard",
-                    "GiftCerificate"
-                  ],
-                  "MarketplaceId": "ATVPDKIKX0DER",
-                  "ShipmentServiceLevelCategory": "Standard",
-                  "OrderType": "StandardOrder",
-                  "EarliestShipDate": "2017-01-20T19:51:16Z",
-                  "LatestShipDate": "2017-01-25T19:49:35Z",
-                  "IsBusinessOrder": false,
-                  "IsPrime": false,
-                  "IsGlobalExpressEnabled": false,
-                  "IsPremiumOrder": false,
-                  "IsSoldByAB": false,
-                  "AssignedShipFromLocationAddress":  {
-                    "Name": "MFNIntegrationTestMerchant",
-                    "AddressLine1": "2201 WESTLAKE AVE",
-                    "City": "SEATTLE",
-                    "StateOrRegion": "WA",
-                    "PostalCode": "98121-2778",
-                    "CountryCode": "US",
-                    "Phone": "+1 480-386-0930 ext. 73824",
-                    "AddressType": "Commercial"
-                  },
-                  "FulfillmentInstruction": {
-                    "FulfillmentSupplySourceId": "sampleSupplySourceId"
-                  }
-                }
-              }
-            },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -685,16 +724,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetOrderResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+            ]
           },
           "403": {
             "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -726,6 +756,10 @@
               "$ref": "#/definitions/GetOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -738,6 +772,10 @@
               "$ref": "#/definitions/GetOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -750,6 +788,10 @@
               "$ref": "#/definitions/GetOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -757,8 +799,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/orders/v0/orders/{orderId}/buyerInfo": {
       "get": {
@@ -779,24 +820,6 @@
         "responses": {
           "200": {
             "description": "Success.",
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "orderId": {
-                      "value": "TEST_CASE_200"
-                    }
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "AmazonOrderId": "902-1845936-5435065",
-                    "BuyerEmail": "fzyrv6gwkhbb15c@devo-marketplace.amazon.com",
-                    "BuyerName": "MFNIntegrationTestMerchant"
-                  }
-                }
-              }
-            ],
             "schema": {
               "$ref": "#/definitions/GetOrderBuyerInfoResponse"
             },
@@ -814,14 +837,49 @@
               }
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
-            }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "AmazonOrderId": "902-1845936-5435065",
+                    "BuyerEmail": "fzyrv6gwkhbb15c@devo-marketplace.amazon.com",
+                    "BuyerName": "MFNIntegrationTestMerchant"
+                  }
+                }
+              }
+            ]
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderBuyerInfoResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -840,16 +898,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetOrderBuyerInfoResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+            ]
           },
           "403": {
             "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -881,6 +930,10 @@
               "$ref": "#/definitions/GetOrderBuyerInfoResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -893,6 +946,10 @@
               "$ref": "#/definitions/GetOrderBuyerInfoResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -905,6 +962,10 @@
               "$ref": "#/definitions/GetOrderBuyerInfoResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -912,8 +973,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/orders/v0/orders/{orderId}/address": {
       "get": {
@@ -934,6 +994,34 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderAddressResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "AmazonOrderId": "902-3159896-1390916",
+                  "ShippingAddress": {
+                    "Name": "Michigan address",
+                    "AddressLine1": "1 cross st",
+                    "City": "Canton",
+                    "StateOrRegion": "MI",
+                    "PostalCode": "48817",
+                    "CountryCode": "US"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -959,34 +1047,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetOrderAddressResponse"
             },
-            "examples": {
-              "application/json": {
-                "payload": {
-                  "AmazonOrderId": "902-3159896-1390916",
-                  "ShippingAddress": {
-                    "Name": "Michigan address",
-                    "AddressLine1": "1 cross st",
-                    "City": "Canton",
-                    "StateOrRegion": "MI",
-                    "PostalCode": "48817",
-                    "CountryCode": "US"
-                  }
-                }
-              }
-            },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1005,16 +1082,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetOrderAddressResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+            ]
           },
           "403": {
             "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -1046,6 +1114,10 @@
               "$ref": "#/definitions/GetOrderAddressResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1058,6 +1130,10 @@
               "$ref": "#/definitions/GetOrderAddressResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1070,6 +1146,10 @@
               "$ref": "#/definitions/GetOrderAddressResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1077,8 +1157,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/orders/v0/orders/{orderId}/orderItems": {
       "get": {
@@ -1099,60 +1178,13 @@
             "name": "NextToken",
             "in": "query",
             "description": "A string token returned in the response of your previous request.",
+            "required": false,
             "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "Success.",
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "orderId": {
-                      "value": "TEST_CASE_200"
-                    }
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "AmazonOrderId": "902-1845936-5435065",
-                    "OrderItems": [
-                      {
-                        "ASIN": "B00551Q3CS",
-                        "OrderItemId": "05015851154158",
-                        "SellerSKU": "NABetaASINB00551Q3CS",
-                        "Title": "B00551Q3CS [Card Book]",
-                        "QuantityOrdered": 1,
-                        "QuantityShipped": 0,
-                        "ProductInfo": {
-                          "NumberOfItems": 1
-                        },
-                        "ItemPrice": {
-                          "CurrencyCode": "USD",
-                          "Amount": "10.00"
-                        },
-                        "ItemTax": {
-                          "CurrencyCode": "USD",
-                          "Amount": "1.01"
-                        },
-                        "PromotionDiscount": {
-                          "CurrencyCode": "USD",
-                          "Amount": "0.00"
-                        },
-                        "IsGift": false,
-                        "ConditionId": "New",
-                        "ConditionSubtypeId": "New",
-                        "IsTransparency": false,
-                        "SerialNumberRequired": false,
-                        "IossNumber": "",
-                        "DeemedResellerCategory": "IOSS"
-                      }
-                    ]
-                  }
-                }
-              }
-            ],
             "schema": {
               "$ref": "#/definitions/GetOrderItemsResponse"
             },
@@ -1160,7 +1192,7 @@
               "application/json": {
                 "payload": {
                   "AmazonOrderId": "903-1671087-0812628",
-                  "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=",
+                  "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
                   "OrderItems": [
                     {
                       "ASIN": "BT0093TELA",
@@ -1219,14 +1251,79 @@
               }
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
-            }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "orderId": {
+                      "value": "TEST_CASE_200"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "AmazonOrderId": "902-1845936-5435065",
+                    "OrderItems": [
+                      {
+                        "ASIN": "B00551Q3CS",
+                        "OrderItemId": "05015851154158",
+                        "SellerSKU": "NABetaASINB00551Q3CS",
+                        "Title": "B00551Q3CS [Card Book]",
+                        "QuantityOrdered": 1,
+                        "QuantityShipped": 0,
+                        "ProductInfo": {
+                          "NumberOfItems": 1
+                        },
+                        "ItemPrice": {
+                          "CurrencyCode": "USD",
+                          "Amount": "10.00"
+                        },
+                        "ItemTax": {
+                          "CurrencyCode": "USD",
+                          "Amount": "1.01"
+                        },
+                        "PromotionDiscount": {
+                          "CurrencyCode": "USD",
+                          "Amount": "0.00"
+                        },
+                        "IsGift": false,
+                        "ConditionId": "New",
+                        "ConditionSubtypeId": "New",
+                        "IsTransparency": false,
+                        "SerialNumberRequired": false,
+                        "IossNumber": "",
+                        "DeemedResellerCategory": "IOSS"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1245,16 +1342,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetOrderItemsResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+            ]
           },
           "403": {
             "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -1286,6 +1374,10 @@
               "$ref": "#/definitions/GetOrderItemsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1298,6 +1390,10 @@
               "$ref": "#/definitions/GetOrderItemsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1310,6 +1406,10 @@
               "$ref": "#/definitions/GetOrderItemsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1317,8 +1417,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/orders/v0/orders/{orderId}/orderItems/buyerInfo": {
       "get": {
@@ -1339,12 +1438,42 @@
             "name": "NextToken",
             "in": "query",
             "description": "A string token returned in the response of your previous request.",
+            "required": false,
             "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "OrderItemId": "903-1671087-0812628",
+                  "BuyerCustomizedInfo": {
+                    "CustomizedURL": "https://zme-caps.amazon.com/t/bR6qHkzSOxuB/J8nbWhze0Bd3DkajkOdY-XQbWkFralegp2sr_QZiKEE/1"
+                  },
+                  "GiftMessageText": "For you!",
+                  "GiftWrapPrice": {
+                    "CurrencyCode": "JPY",
+                    "Amount": "1.99"
+                  },
+                  "GiftWrapLevel": "Classic"
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1373,35 +1502,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
             },
-            "examples": {
-              "application/json": {
-                "payload": {
-                  "OrderItemId": "903-1671087-0812628",
-                  "BuyerCustomizedInfo": {
-                    "CustomizedURL": "https://zme-caps.amazon.com/t/bR6qHkzSOxuB/J8nbWhze0Bd3DkajkOdY-XQbWkFralegp2sr_QZiKEE/1"
-                  },
-                  "GiftMessageText": "For you!",
-                  "GiftWrapPrice": {
-                    "CurrencyCode": "JPY",
-                    "Amount": "1.99"
-                  },
-                  "GiftWrapLevel": "Classic"
-                }
-              }
-            },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1420,16 +1537,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+            ]
           },
           "403": {
             "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -1461,6 +1569,10 @@
               "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1473,6 +1585,10 @@
               "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1485,6 +1601,10 @@
               "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1492,13 +1612,11 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     }
   },
   "definitions": {
     "GetOrdersResponse": {
-      "description": "The response schema for the getOrders operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -1509,10 +1627,10 @@
           "description": "One or more unexpected errors occurred during the getOrders operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getOrders operation."
     },
     "GetOrderResponse": {
-      "description": "The response schema for the getOrder operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -1523,10 +1641,10 @@
           "description": "One or more unexpected errors occurred during the getOrder operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getOrder operation."
     },
     "GetOrderBuyerInfoResponse": {
-      "description": "The response schema for the getOrderBuyerInfo operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -1537,10 +1655,10 @@
           "description": "One or more unexpected errors occurred during the getOrderBuyerInfo operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getOrderBuyerInfo operation."
     },
     "GetOrderAddressResponse": {
-      "description": "The response schema for the getOrderAddress operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -1551,10 +1669,10 @@
           "description": "One or more unexpected errors occurred during the getOrderAddress operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getOrderAddress operation."
     },
     "GetOrderItemsResponse": {
-      "description": "The response schema for the getOrderItems operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -1565,10 +1683,10 @@
           "description": "One or more unexpected errors occurred during the getOrderItems operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getOrderItems operation."
     },
     "GetOrderItemsBuyerInfoResponse": {
-      "description": "The response schema for the getOrderItemsBuyerInfo operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -1579,10 +1697,10 @@
           "description": "One or more unexpected errors occurred during the getOrderItemsBuyerInfo operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getOrderItemsBuyerInfo operation."
     },
     "OrdersList": {
-      "description": "A list of orders along with additional information to make subsequent API calls.",
       "type": "object",
       "required": [
         "Orders"
@@ -1592,28 +1710,28 @@
           "$ref": "#/definitions/OrderList"
         },
         "NextToken": {
-          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
-          "type": "string"
+          "type": "string",
+          "description": "When present and not empty, pass this string token in the next request to return the next response page."
         },
         "LastUpdatedBefore": {
-          "description": "A date used for selecting orders that were last updated before (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. All dates must be in ISO 8601 format.",
-          "type": "string"
+          "type": "string",
+          "description": "A date used for selecting orders that were last updated before (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. All dates must be in ISO 8601 format."
         },
         "CreatedBefore": {
-          "description": "A date used for selecting orders created before (or at) a specified time. Only orders placed before the specified time are returned. The date must be in ISO 8601 format.",
-          "type": "string"
+          "type": "string",
+          "description": "A date used for selecting orders created before (or at) a specified time. Only orders placed before the specified time are returned. The date must be in ISO 8601 format."
         }
-      }
+      },
+      "description": "A list of orders along with additional information to make subsequent API calls."
     },
     "OrderList": {
-      "description": "A list of orders.",
       "type": "array",
+      "description": "A list of orders.",
       "items": {
         "$ref": "#/definitions/Order"
       }
     },
     "Order": {
-      "description": "Order information.",
       "type": "object",
       "required": [
         "AmazonOrderId",
@@ -1623,24 +1741,24 @@
       ],
       "properties": {
         "AmazonOrderId": {
-          "description": "An Amazon-defined order identifier, in 3-7-7 format.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined order identifier, in 3-7-7 format."
         },
         "SellerOrderId": {
-          "description": "A seller-defined order identifier.",
-          "type": "string"
+          "type": "string",
+          "description": "A seller-defined order identifier."
         },
         "PurchaseDate": {
-          "description": "The date when the order was created.",
-          "type": "string"
+          "type": "string",
+          "description": "The date when the order was created."
         },
         "LastUpdateDate": {
-          "description": "The date when the order was last updated.\n\nNote: LastUpdateDate is returned with an incorrect date for orders that were last updated before 2009-04-01.",
-          "type": "string"
+          "type": "string",
+          "description": "The date when the order was last updated.\n\nNote: LastUpdateDate is returned with an incorrect date for orders that were last updated before 2009-04-01."
         },
         "OrderStatus": {
-          "description": "The current order status.",
           "type": "string",
+          "description": "The current order status.",
           "enum": [
             "Pending",
             "Unshipped",
@@ -1687,8 +1805,8 @@
           ]
         },
         "FulfillmentChannel": {
-          "description": "Whether the order was fulfilled by Amazon (AFN) or by the seller (MFN).",
           "type": "string",
+          "description": "Whether the order was fulfilled by Amazon (AFN) or by the seller (MFN).",
           "enum": [
             "MFN",
             "AFN"
@@ -1705,36 +1823,36 @@
           ]
         },
         "SalesChannel": {
-          "description": "The sales channel of the first item in the order.", 
-          "type": "string"
+          "type": "string",
+          "description": "The sales channel of the first item in the order."
         },
         "OrderChannel": {
-          "description": "The order channel of the first item in the order.",
-          "type": "string"
+          "type": "string",
+          "description": "The order channel of the first item in the order."
         },
         "ShipServiceLevel": {
-          "description": "The shipment service level of the order.",
-          "type": "string"
+          "type": "string",
+          "description": "The shipment service level of the order."
         },
         "OrderTotal": {
           "description": "The total charge for this order.",
           "$ref": "#/definitions/Money"
         },
         "NumberOfItemsShipped": {
-          "description": "The number of items shipped.",
-          "type": "integer"
+          "type": "integer",
+          "description": "The number of items shipped."
         },
         "NumberOfItemsUnshipped": {
-          "description": "The number of items unshipped.",
-          "type": "integer"
+          "type": "integer",
+          "description": "The number of items unshipped."
         },
         "PaymentExecutionDetail": {
           "description": "Information about sub-payment methods for a Cash On Delivery (COD) order.\n\nNote: For a COD order that is paid for using one sub-payment method, one PaymentExecutionDetailItem object is returned, with PaymentExecutionDetailItem/PaymentMethod = COD. For a COD order that is paid for using multiple sub-payment methods, two or more PaymentExecutionDetailItem objects are returned.",
           "$ref": "#/definitions/PaymentExecutionDetailItemList"
         },
         "PaymentMethod": {
-          "description": "The payment method for the order. This property is limited to Cash On Delivery (COD) and Convenience Store (CVS) payment methods. Unless you need the specific COD payment information provided by the PaymentExecutionDetailItem object, we recommend using the PaymentMethodDetails property to get payment method information.",
           "type": "string",
+          "description": "The payment method for the order. This property is limited to Cash On Delivery (COD) and Convenience Store (CVS) payment methods. Unless you need the specific COD payment information provided by the PaymentExecutionDetailItem object, we recommend using the PaymentMethodDetails property to get payment method information.",
           "enum": [
             "COD",
             "CVS",
@@ -1760,24 +1878,24 @@
           "$ref": "#/definitions/PaymentMethodDetailItemList"
         },
         "MarketplaceId": {
-          "description": "The identifier for the marketplace where the order was placed.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the marketplace where the order was placed."
         },
         "ShipmentServiceLevelCategory": {
-          "description": "The shipment service level category of the order.\n\nPossible values: Expedited, FreeEconomy, NextDay, SameDay, SecondDay, Scheduled, Standard.",
-          "type": "string"
+          "type": "string",
+          "description": "The shipment service level category of the order.\n\nPossible values: Expedited, FreeEconomy, NextDay, SameDay, SecondDay, Scheduled, Standard."
         },
         "EasyShipShipmentStatus": {
-          "description": "The status of the Amazon Easy Ship order. This property is included only for Amazon Easy Ship orders.\n\nPossible values: PendingPickUp, LabelCanceled, PickedUp, OutForDelivery, Damaged, Delivered, RejectedByBuyer, Undeliverable, ReturnedToSeller, ReturningToSeller.",
-          "type": "string"
+          "type": "string",
+          "description": "The status of the Amazon Easy Ship order. This property is included only for Amazon Easy Ship orders.\n\nPossible values: PendingPickUp, LabelCanceled, PickedUp, OutForDelivery, Damaged, Delivered, RejectedByBuyer, Undeliverable, ReturnedToSeller, ReturningToSeller."
         },
         "CbaDisplayableShippingLabel": {
-          "description": "Custom ship label for Checkout by Amazon (CBA).",
-          "type": "string"
+          "type": "string",
+          "description": "Custom ship label for Checkout by Amazon (CBA)."
         },
         "OrderType": {
-          "description": "The type of the order.",
           "type": "string",
+          "description": "The type of the order.",
           "enum": [
             "StandardOrder",
             "LongLeadTimeOrder",
@@ -1809,58 +1927,58 @@
           ]
         },
         "EarliestShipDate": {
-          "description":"The start of the time period within which you have committed to ship the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders.\n\nNote: EarliestShipDate might not be returned for orders placed before February 1, 2013.",
-          "type": "string"
+          "type": "string",
+          "description": "The start of the time period within which you have committed to ship the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders.\n\nNote: EarliestShipDate might not be returned for orders placed before February 1, 2013."
         },
         "LatestShipDate": {
-          "description": "The end of the time period within which you have committed to ship the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders.\n\nNote: LatestShipDate might not be returned for orders placed before February 1, 2013.",
-          "type": "string"
+          "type": "string",
+          "description": "The end of the time period within which you have committed to ship the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders.\n\nNote: LatestShipDate might not be returned for orders placed before February 1, 2013."
         },
         "EarliestDeliveryDate": {
-          "description": "The start of the time period within which you have committed to fulfill the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders.",
-          "type": "string"
+          "type": "string",
+          "description": "The start of the time period within which you have committed to fulfill the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders."
         },
         "LatestDeliveryDate": {
-          "description": "The end of the time period within which you have committed to fulfill the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders that do not have a PendingAvailability, Pending, or Canceled status.",
-          "type": "string"
+          "type": "string",
+          "description": "The end of the time period within which you have committed to fulfill the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders that do not have a PendingAvailability, Pending, or Canceled status."
         },
         "IsBusinessOrder": {
-          "description": "When true, the order is an Amazon Business order. An Amazon Business order is an order where the buyer is a Verified Business Buyer.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, the order is an Amazon Business order. An Amazon Business order is an order where the buyer is a Verified Business Buyer."
         },
         "IsPrime": {
-          "description": "When true, the order is a seller-fulfilled Amazon Prime order.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, the order is a seller-fulfilled Amazon Prime order."
         },
         "IsPremiumOrder": {
-          "description": "When true, the order has a Premium Shipping Service Level Agreement. For more information about Premium Shipping orders, see \"Premium Shipping Options\" in the Seller Central Help for your marketplace.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, the order has a Premium Shipping Service Level Agreement. For more information about Premium Shipping orders, see \"Premium Shipping Options\" in the Seller Central Help for your marketplace."
         },
         "IsGlobalExpressEnabled": {
-          "description": "When true, the order is a GlobalExpress order.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, the order is a GlobalExpress order."
         },
         "ReplacedOrderId": {
-          "description": "The order ID value for the order that is being replaced. Returned only if IsReplacementOrder = true.",
-          "type": "string"
+          "type": "string",
+          "description": "The order ID value for the order that is being replaced. Returned only if IsReplacementOrder = true."
         },
         "IsReplacementOrder": {
-          "description": "When true, this is a replacement order.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, this is a replacement order."
         },
         "PromiseResponseDueDate": {
-          "description": "Indicates the date by which the seller must respond to the buyer with an estimated ship date. Returned only for Sourcing on Demand orders.",
-          "type": "string"
+          "type": "string",
+          "description": "Indicates the date by which the seller must respond to the buyer with an estimated ship date. Returned only for Sourcing on Demand orders."
         },
         "IsEstimatedShipDateSet": {
-          "description": "When true, the estimated ship date is set for the order. Returned only for Sourcing on Demand orders.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, the estimated ship date is set for the order. Returned only for Sourcing on Demand orders."
         },
         "IsSoldByAB": {
-          "description": "When true, the item within this order was bought and re-sold by Amazon Business EU SARL (ABEU). By buying and instantly re-selling your items, ABEU becomes the seller of record, making your inventory available for sale to customers who would not otherwise purchase from a third-party seller.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, the item within this order was bought and re-sold by Amazon Business EU SARL (ABEU). By buying and instantly re-selling your items, ABEU becomes the seller of record, making your inventory available for sale to customers who would not otherwise purchase from a third-party seller."
         },
-        "AssignedShipFromLocationAddress": {
+        "DefaultShipFromLocationAddress": {
           "description": "The recommended location for the seller to ship the items from. It is calculated at checkout. The seller may or may not choose to ship from this location.",
           "$ref": "#/definitions/Address"
         },
@@ -1868,115 +1986,115 @@
           "description": "Contains the instructions about the fulfillment like where should it be fulfilled from.",
           "$ref": "#/definitions/FulfillmentInstruction"
         }
-      }
+      },
+      "description": "Order information."
     },
     "OrderBuyerInfo": {
-      "description": "Buyer information for an order.",
       "type": "object",
       "required": [
         "AmazonOrderId"
       ],
       "properties": {
         "AmazonOrderId": {
-          "description": "An Amazon-defined order identifier, in 3-7-7 format.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined order identifier, in 3-7-7 format."
         },
         "BuyerEmail": {
-          "description": "The anonymized email address of the buyer.",
-          "type": "string"
+          "type": "string",
+          "description": "The anonymized email address of the buyer."
         },
         "BuyerName": {
-          "description": "The name of the buyer.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the buyer."
         },
         "BuyerCounty": {
-          "description": "The county of the buyer.",
-          "type": "string"
+          "type": "string",
+          "description": "The county of the buyer."
         },
         "BuyerTaxInfo": {
           "description": "Tax information about the buyer.",
           "$ref": "#/definitions/BuyerTaxInfo"
         },
         "PurchaseOrderNumber": {
-          "description": "The purchase order (PO) number entered by the buyer at checkout. Returned only for orders where the buyer entered a PO number at checkout.",
-          "type": "string"
+          "type": "string",
+          "description": "The purchase order (PO) number entered by the buyer at checkout. Returned only for orders where the buyer entered a PO number at checkout."
         }
-      }
+      },
+      "description": "Buyer information for an order."
     },
     "OrderAddress": {
-      "description": "The shipping address for the order.",
       "type": "object",
       "required": [
         "AmazonOrderId"
       ],
       "properties": {
         "AmazonOrderId": {
-          "description": "An Amazon-defined order identifier, in 3-7-7 format.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined order identifier, in 3-7-7 format."
         },
         "ShippingAddress": {
           "$ref": "#/definitions/Address"
         }
-      }
+      },
+      "description": "The shipping address for the order."
     },
     "Address": {
-      "description": "The shipping address for the order.",
       "type": "object",
       "required": [
         "Name"
       ],
       "properties": {
         "Name": {
-          "description": "The name.",
-          "type": "string"
+          "type": "string",
+          "description": "The name."
         },
         "AddressLine1": {
-          "description": "The street address.",
-          "type": "string"
+          "type": "string",
+          "description": "The street address."
         },
         "AddressLine2": {
-          "description": "Additional street address information, if required.",
-          "type": "string"
+          "type": "string",
+          "description": "Additional street address information, if required."
         },
         "AddressLine3": {
-          "description": "Additional street address information, if required.",
-          "type": "string"
+          "type": "string",
+          "description": "Additional street address information, if required."
         },
         "City": {
-          "description": "The city ",
-          "type": "string"
+          "type": "string",
+          "description": "The city "
         },
         "County": {
-          "description": "The county.",
-          "type": "string"
+          "type": "string",
+          "description": "The county."
         },
         "District": {
-          "description": "The district.",
-          "type": "string"
+          "type": "string",
+          "description": "The district."
         },
         "StateOrRegion": {
-          "description": "The state or region.",
-          "type": "string"
+          "type": "string",
+          "description": "The state or region."
         },
         "Municipality": {
-          "description": "The municipality.",
-          "type": "string"
+          "type": "string",
+          "description": "The municipality."
         },
         "PostalCode": {
-          "description": "The postal code.",
-          "type": "string"
+          "type": "string",
+          "description": "The postal code."
         },
         "CountryCode": {
-          "description": "The country code. A two-character country code, in ISO 3166-1 alpha-2 format.",
-          "type": "string"
+          "type": "string",
+          "description": "The country code. A two-character country code, in ISO 3166-1 alpha-2 format."
         },
         "Phone": {
-          "description": "The phone number. Not returned for Fulfillment by Amazon (FBA) orders.",
-          "type": "string"
+          "type": "string",
+          "description": "The phone number. Not returned for Fulfillment by Amazon (FBA) orders."
         },
         "AddressType": {
-          "description": "The address type of the shipping address.",
           "type": "string",
+          "description": "The address type of the shipping address.",
           "enum": [
             "Residential",
             "Commercial"
@@ -1992,38 +2110,38 @@
             }
           ]
         }
-      }
+      },
+      "description": "The shipping address for the order."
     },
     "Money": {
-      "description": "The monetary value of the order.",
       "type": "object",
       "properties": {
         "CurrencyCode": {
-          "description": "The three-digit currency code. In ISO 4217 format.",
-          "type": "string"
+          "type": "string",
+          "description": "The three-digit currency code. In ISO 4217 format."
         },
         "Amount": {
-          "description": "The currency amount.",
-          "type": "string"
+          "type": "string",
+          "description": "The currency amount."
         }
-      }
+      },
+      "description": "The monetary value of the order."
     },
     "PaymentMethodDetailItemList": {
-      "description": "A list of payment method detail items.",
       "type": "array",
+      "description": "A list of payment method detail items.",
       "items": {
         "type": "string"
       }
     },
     "PaymentExecutionDetailItemList": {
-      "description": "A list of payment execution detail items.",
       "type": "array",
+      "description": "A list of payment execution detail items.",
       "items": {
         "$ref": "#/definitions/PaymentExecutionDetailItem"
       }
     },
     "PaymentExecutionDetailItem": {
-      "description": "Information about a sub-payment method used to pay for a COD order.",
       "type": "object",
       "required": [
         "Payment",
@@ -2034,48 +2152,48 @@
           "$ref": "#/definitions/Money"
         },
         "PaymentMethod": {
-          "description": "A sub-payment method for a COD order.\n\nPossible values:\n\n* COD - Cash On Delivery.\n\n* GC - Gift Card.\n\n* PointsAccount - Amazon Points.",
-          "type": "string"
+          "type": "string",
+          "description": "A sub-payment method for a COD order.\n\nPossible values:\n\n* COD - Cash On Delivery.\n\n* GC - Gift Card.\n\n* PointsAccount - Amazon Points."
         }
-      }
+      },
+      "description": "Information about a sub-payment method used to pay for a COD order."
     },
     "BuyerTaxInfo": {
-      "description": "Tax information about the buyer.",
       "type": "object",
       "properties": {
         "CompanyLegalName": {
-          "description": "The legal name of the company.",
-          "type": "string"
+          "type": "string",
+          "description": "The legal name of the company."
         },
         "TaxingRegion": {
-          "description": "The country or region imposing the tax.",
-          "type": "string"
+          "type": "string",
+          "description": "The country or region imposing the tax."
         },
         "TaxClassifications": {
-          "description": "A list of tax classifications that apply to the order.",
           "type": "array",
+          "description": "A list of tax classifications that apply to the order.",
           "items": {
             "$ref": "#/definitions/TaxClassification"
           }
         }
-      }
+      },
+      "description": "Tax information about the buyer."
     },
     "TaxClassification": {
-      "description": "The tax classification for the order.",
       "type": "object",
       "properties": {
         "Name": {
-          "description": "The type of tax.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of tax."
         },
         "Value": {
-          "description": "The buyer's tax identifier.",
-          "type": "string"
+          "type": "string",
+          "description": "The buyer's tax identifier."
         }
-      }
+      },
+      "description": "The tax classification for the order."
     },
     "OrderItemsList": {
-      "description": "The order items list along with the order ID.",
       "type": "object",
       "required": [
         "AmazonOrderId",
@@ -2086,24 +2204,24 @@
           "$ref": "#/definitions/OrderItemList"
         },
         "NextToken": {
-          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
-          "type": "string"
+          "type": "string",
+          "description": "When present and not empty, pass this string token in the next request to return the next response page."
         },
         "AmazonOrderId": {
-          "description": "An Amazon-defined order identifier, in 3-7-7 format.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined order identifier, in 3-7-7 format."
         }
-      }
+      },
+      "description": "The order items list along with the order ID."
     },
     "OrderItemList": {
-      "description": "A list of order items.",
       "type": "array",
+      "description": "A list of order items.",
       "items": {
         "$ref": "#/definitions/OrderItem"
       }
     },
     "OrderItem": {
-      "description": "A single order item.",
       "type": "object",
       "required": [
         "ASIN",
@@ -2112,31 +2230,31 @@
       ],
       "properties": {
         "ASIN": {
-          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
         },
         "SellerSKU": {
-          "description": "The seller stock keeping unit (SKU) of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller stock keeping unit (SKU) of the item."
         },
         "OrderItemId": {
-          "description": "An Amazon-defined order item identifier.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined order item identifier."
         },
         "Title": {
-          "description": "The name of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the item."
         },
         "QuantityOrdered": {
-          "description": "The number of items in the order. ",
-          "type": "integer"
+          "type": "integer",
+          "description": "The number of items in the order. "
         },
         "QuantityShipped": {
-          "description": "The number of items shipped.",
-          "type": "integer"
+          "type": "integer",
+          "description": "The number of items shipped."
         },
         "ProductInfo": {
-          "description": "Product information for the item.", 
+          "description": "Product information for the item.",
           "$ref": "#/definitions/ProductInfoDetail"
         },
         "PointsGranted": {
@@ -2187,52 +2305,52 @@
           "$ref": "#/definitions/Money"
         },
         "IsGift": {
-          "description": "When true, the item is a gift.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, the item is a gift."
         },
         "ConditionNote": {
-          "description": "The condition of the item as described by the seller.",
-          "type": "string"
+          "type": "string",
+          "description": "The condition of the item as described by the seller."
         },
         "ConditionId": {
-          "description": "The condition of the item.\n\nPossible values: New, Used, Collectible, Refurbished, Preorder, Club.",
-          "type": "string"
+          "type": "string",
+          "description": "The condition of the item.\n\nPossible values: New, Used, Collectible, Refurbished, Preorder, Club."
         },
         "ConditionSubtypeId": {
-          "description": "The subcondition of the item.\n\nPossible values: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty, Refurbished Warranty, Refurbished, Open Box, Any, Other.",
-          "type": "string"
+          "type": "string",
+          "description": "The subcondition of the item.\n\nPossible values: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty, Refurbished Warranty, Refurbished, Open Box, Any, Other."
         },
         "ScheduledDeliveryStartDate": {
-          "description": "The start date of the scheduled delivery window in the time zone of the order destination. In ISO 8601 date time format.",
-          "type": "string"
+          "type": "string",
+          "description": "The start date of the scheduled delivery window in the time zone of the order destination. In ISO 8601 date time format."
         },
         "ScheduledDeliveryEndDate": {
-          "description": "The end date of the scheduled delivery window in the time zone of the order destination. In ISO 8601 date time format.",
-          "type": "string"
+          "type": "string",
+          "description": "The end date of the scheduled delivery window in the time zone of the order destination. In ISO 8601 date time format."
         },
         "PriceDesignation": {
-          "description": "Indicates that the selling price is a special price that is available only for Amazon Business orders. For more information about the Amazon Business Seller Program, see the [Amazon Business website](https://www.amazon.com/b2b/info/amazon-business). \n\nPossible values: BusinessPrice - A special price that is available only for Amazon Business orders.",
-          "type": "string"
+          "type": "string",
+          "description": "Indicates that the selling price is a special price that is available only for Amazon Business orders. For more information about the Amazon Business Seller Program, see the [Amazon Business website](https://www.amazon.com/b2b/info/amazon-business). \n\nPossible values: BusinessPrice - A special price that is available only for Amazon Business orders."
         },
         "TaxCollection": {
           "description": "Information about withheld taxes.",
           "$ref": "#/definitions/TaxCollection"
         },
         "SerialNumberRequired": {
-          "description": "When true, the product type for this item has a serial number.\n\nReturned only for Amazon Easy Ship orders.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, the product type for this item has a serial number.\n\nReturned only for Amazon Easy Ship orders."
         },
         "IsTransparency": {
-          "description": "When true, transparency codes are required.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, transparency codes are required."
         },
         "IossNumber": {
-          "description": "The IOSS number of the seller. Sellers selling in the EU will be assigned a unique IOSS number that must be listed on all packages sent to the EU.",
-          "type": "string"
+          "type": "string",
+          "description": "The IOSS number of the seller. Sellers selling in the EU will be assigned a unique IOSS number that must be listed on all packages sent to the EU."
         },
         "DeemedResellerCategory": {
-          "description": "The category of deemed reseller. This applies to selling partners that are not based in the EU and is used to help them meet the VAT Deemed Reseller tax laws in the EU and UK.",
           "type": "string",
+          "description": "The category of deemed reseller. This applies to selling partners that are not based in the EU and is used to help them meet the VAT Deemed Reseller tax laws in the EU and UK.",
           "enum": [
             "IOSS",
             "UOSS"
@@ -2248,10 +2366,10 @@
             }
           ]
         }
-      }
+      },
+      "description": "A single order item."
     },
     "OrderItemsBuyerInfoList": {
-      "description": "A single order item's buyer information list with the order ID.",
       "type": "object",
       "required": [
         "AmazonOrderId",
@@ -2262,32 +2380,32 @@
           "$ref": "#/definitions/OrderItemBuyerInfoList"
         },
         "NextToken": {
-          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
-          "type": "string"
+          "type": "string",
+          "description": "When present and not empty, pass this string token in the next request to return the next response page."
         },
         "AmazonOrderId": {
-          "description": "An Amazon-defined order identifier, in 3-7-7 format.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined order identifier, in 3-7-7 format."
         }
-      }
+      },
+      "description": "A single order item's buyer information list with the order ID."
     },
     "OrderItemBuyerInfoList": {
-      "description": "A single order item's buyer information list.",
       "type": "array",
+      "description": "A single order item's buyer information list.",
       "items": {
         "$ref": "#/definitions/OrderItemBuyerInfo"
       }
     },
     "OrderItemBuyerInfo": {
-      "description": "A single order item's buyer information.",
       "type": "object",
       "required": [
         "OrderItemId"
       ],
       "properties": {
         "OrderItemId": {
-          "description": "An Amazon-defined order item identifier.",  
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined order item identifier."
         },
         "BuyerCustomizedInfo": {
           "description": "Buyer information for custom orders from the Amazon Custom program.",
@@ -2302,63 +2420,63 @@
           "$ref": "#/definitions/Money"
         },
         "GiftMessageText": {
-          "description": "A gift message provided by the buyer.",
-          "type": "string"
+          "type": "string",
+          "description": "A gift message provided by the buyer."
         },
         "GiftWrapLevel": {
-          "description": "The gift wrap level specified by the buyer.",
-          "type": "string"
+          "type": "string",
+          "description": "The gift wrap level specified by the buyer."
         }
-      }
+      },
+      "description": "A single order item's buyer information."
     },
     "PointsGrantedDetail": {
-      "description": "The number of Amazon Points offered with the purchase of an item, and their monetary value.",
       "type": "object",
       "properties": {
         "PointsNumber": {
-          "description": "The number of Amazon Points granted with the purchase of an item.",
-          "type": "integer"
+          "type": "integer",
+          "description": "The number of Amazon Points granted with the purchase of an item."
         },
         "PointsMonetaryValue": {
           "description": "The monetary value of the Amazon Points granted.",
           "$ref": "#/definitions/Money"
         }
-      }
+      },
+      "description": "The number of Amazon Points offered with the purchase of an item, and their monetary value."
     },
     "ProductInfoDetail": {
-      "description": "Product information on the number of items.",
       "type": "object",
       "properties": {
         "NumberOfItems": {
-          "description": "The total number of items that are included in the ASIN.",
-          "type": "integer"
+          "type": "integer",
+          "description": "The total number of items that are included in the ASIN."
         }
-      }
+      },
+      "description": "Product information on the number of items."
     },
     "PromotionIdList": {
-      "description": "A list of promotion identifiers provided by the seller when the promotions were created.",
       "type": "array",
+      "description": "A list of promotion identifiers provided by the seller when the promotions were created.",
       "items": {
         "type": "string"
       }
     },
     "BuyerCustomizedInfoDetail": {
-      "description": "Buyer information for custom orders from the Amazon Custom program.",
       "type": "object",
       "properties": {
         "CustomizedURL": {
-          "description": "The location of a zip file containing Amazon Custom data.",
-          "type": "string"
+          "type": "string",
+          "description": "The location of a zip file containing Amazon Custom data."
         }
-      }
+      },
+      "description": "Buyer information for custom orders from the Amazon Custom program."
     },
     "TaxCollection": {
-      "description": "Information about withheld taxes.",
       "type": "object",
       "properties": {
         "Model": {
-          "description": "The tax collection model applied to the item.",
           "type": "string",
+          "description": "The tax collection model applied to the item.",
           "enum": [
             "MarketplaceFacilitator"
           ],
@@ -2370,8 +2488,8 @@
           ]
         },
         "ResponsibleParty": {
-          "description": "The party responsible for withholding the taxes and remitting them to the taxing authority.",
           "type": "string",
+          "description": "The party responsible for withholding the taxes and remitting them to the taxing authority.",
           "enum": [
             "Amazon Services, Inc."
           ],
@@ -2382,27 +2500,27 @@
             }
           ]
         }
-      }
+      },
+      "description": "Information about withheld taxes."
     },
     "FulfillmentInstruction": {
-      "description": "Contains the instructions about the fulfillment like where should it be fulfilled from.",
       "type": "object",
       "properties": {
         "FulfillmentSupplySourceId": {
-          "description": "Denotes the recommended sourceId where the order should be fulfilled from.",
-          "type": "string"
+          "type": "string",
+          "description": "Denotes the recommended sourceId where the order should be fulfilled from."
         }
-      }
+      },
+      "description": "Contains the instructions about the fulfillment like where should it be fulfilled from."
     },
     "ErrorList": {
-      "description": "A list of error responses returned when a request is unsuccessful.",
       "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
       "items": {
         "$ref": "#/definitions/Error"
       }
     },
     "Error": {
-      "description": "Error response returned when the request is unsuccessful.",
       "type": "object",
       "required": [
         "code",
@@ -2421,7 +2539,8 @@
           "type": "string",
           "description": "Additional details that can help the caller understand or fix the issue."
         }
-      }
+      },
+      "description": "Error response returned when the request is unsuccessful."
     }
   }
 }
