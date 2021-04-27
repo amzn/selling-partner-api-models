@@ -4,6 +4,9 @@ using RestSharp;
 using Amazon.SellingPartnerAPIAA;
 using System.Text;
 using Moq;
+using Amazon.SecurityToken.Model;
+using Amazon.Runtime;
+using Amazon.SecurityToken;
 
 namespace Amazon.SellingPartnerAPIAATests
 {
@@ -18,6 +21,7 @@ namespace Amazon.SellingPartnerAPIAATests
         private const string TestResourcePath = "iam/user";
         private const string TestHost = "sellingpartnerapi.amazon.com";
         private const string JsonMediaType = "application/json; charset=utf-8";
+        private const string TestSessionToken = "sToken";
 
         private static readonly DateTime SigningDate = DateTime.Parse("2020-05-04 12:12:12");
 
@@ -156,8 +160,8 @@ namespace Amazon.SellingPartnerAPIAATests
         {
             string expectedCanonicalHash = "foo";
             StringBuilder expectedStringBuilder = new StringBuilder();
-            expectedStringBuilder.AppendLine("AWS4-HMAC-SHA256");
-            expectedStringBuilder.AppendLine(ISOSigningDateTime);
+            expectedStringBuilder.Append("AWS4-HMAC-SHA256" + "\n");
+            expectedStringBuilder.Append(ISOSigningDateTime + "\n");
             expectedStringBuilder.AppendFormat("{0}/{1}/execute-api/aws4_request\n", ISOSigningDate, TestRegion);
             expectedStringBuilder.Append(expectedCanonicalHash);
 
@@ -169,14 +173,14 @@ namespace Amazon.SellingPartnerAPIAATests
         [Fact]
         public void TestInitializeHeadersReturnsUtcNow()
         {
-            Assert.Equal(SigningDate, awsSignerHelperUnderTest.InitializeHeaders(new RestRequest(), TestHost));
+            Assert.Equal(SigningDate, awsSignerHelperUnderTest.SetDateAndHostHeaders(new RestRequest(), TestHost));
         }
 
         [Fact]
         public void TestInitializeHeadersSetsUtcNowXAmzDateHeader()
         {
             IRestRequest request = new RestRequest();
-            awsSignerHelperUnderTest.InitializeHeaders(request, TestHost);
+            awsSignerHelperUnderTest.SetDateAndHostHeaders(request, TestHost);
 
             Parameter actualParameter = request.Parameters.Find(parameter =>
                 ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.XAmzDateHeaderName);
@@ -190,7 +194,7 @@ namespace Amazon.SellingPartnerAPIAATests
             IRestRequest request = new RestRequest();
             request.AddHeader(AWSSignerHelper.XAmzDateHeaderName, "foobar");
 
-            awsSignerHelperUnderTest.InitializeHeaders(request, TestHost);
+            awsSignerHelperUnderTest.SetDateAndHostHeaders(request, TestHost);
 
             Parameter actualParameter = request.Parameters.Find(parameter =>
                 ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.XAmzDateHeaderName);
@@ -243,7 +247,7 @@ namespace Amazon.SellingPartnerAPIAATests
         {
             IRestRequest restRequest = new RestRequest();
 
-            awsSignerHelperUnderTest.InitializeHeaders(restRequest, TestHost);
+            awsSignerHelperUnderTest.SetDateAndHostHeaders(restRequest, TestHost);
 
             Parameter actualParamter = restRequest.Parameters.Find(parameter =>
                 ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.HostHeaderName);
@@ -258,12 +262,27 @@ namespace Amazon.SellingPartnerAPIAATests
 
             restRequest.AddHeader(AWSSignerHelper.HostHeaderName, "foobar");
 
-            awsSignerHelperUnderTest.InitializeHeaders(restRequest, TestHost);
+            awsSignerHelperUnderTest.SetDateAndHostHeaders(restRequest, TestHost);
 
             Parameter actualParamter = restRequest.Parameters.Find(parameter =>
                 ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.HostHeaderName);
 
             Assert.Equal(TestHost, actualParamter.Value);
+        }
+
+        [Fact]
+        public void TestSetSessionHeader()
+        {
+            IRestRequest restRequest = new RestRequest();
+
+            restRequest.AddHeader(AWSSignerHelper.SecurityTokenHeaderName, "testName");
+
+            awsSignerHelperUnderTest.SetSessionTokenHeader(restRequest, TestSessionToken);
+
+            Parameter actualParameter = restRequest.Parameters.Find(parameter =>
+                ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.SecurityTokenHeaderName);
+
+            Assert.Equal(TestSessionToken, actualParameter.Value);
         }
     }
 }

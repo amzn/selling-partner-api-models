@@ -42,6 +42,8 @@ Note the IRestRequest reference is treated as **mutable** when signed.
 Signs a request with [AWS Signature Version 4](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html)
 using the provided AWS developer account credentials. 
 
+This implementation of the IAM Role-based Authentication, will work only as long as the initial STS Token is valid (typically for 3600 seconds) and until an instance is able to refresh the STS Token on its own, otherwise, the Token needs to be reinitialized via the AWSSigV4Signer.
+
 *Example*
 ```
 using RestSharp;
@@ -58,7 +60,13 @@ AWSAuthenticationCredentials awsAuthenticationCredentials = new AWSAuthenticatio
     Region = "..."
 };
 
-restRequest = new AWSSigV4Signer(awsAuthenticationCredentials)
+AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider = new AWSAuthenticationCredentialsProvider
+{
+    RoleArn = "...",
+    RoleSessionName = "..."
+};
+
+restRequest = new AWSSigV4Signer(awsAuthenticationCredentials, awsAuthenticationCredentialsProvider)
     .Sign(restRequest, restClient.BaseUrl.Host);
 ```
 Note the IRestRequest reference is treated as **mutable** when signed.

@@ -70,7 +70,14 @@ namespace {{packageName}}.Client
             {{/netStandard}}
 
             lwaAuthorizationSigner = new LWAAuthorizationSigner(Configuration.AuthorizationCredentials);
-            awsSigV4Signer = new AWSSigV4Signer(Configuration.AuthenticationCredentials);
+            if (Configuration.AuthenticationCredentialsProvider!=null)
+            {
+                awsSigV4Signer = new AWSSigV4Signer(configuration.AuthenticationCredentials, Configuration.AuthenticationCredentialsProvider);
+            }
+            else 
+            {
+                awsSigV4Signer = new AWSSigV4Signer(Configuration.AuthenticationCredentials);
+            }
         }
 
         /// <summary>

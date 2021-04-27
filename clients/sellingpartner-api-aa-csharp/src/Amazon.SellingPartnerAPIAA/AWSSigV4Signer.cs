@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Text;
 using RestSharp;
+using Amazon.Runtime;
+using Amazon.SecurityToken;
+using Amazon.SecurityToken.Model;
+using System.Threading;
 
 namespace Amazon.SellingPartnerAPIAA
 {
@@ -9,6 +13,9 @@ namespace Amazon.SellingPartnerAPIAA
     {
         public virtual AWSSignerHelper AwsSignerHelper { get; set; }
         private AWSAuthenticationCredentials awsCredentials;
+        private AssumeRoleResponse assumeRole;
+        public const string SecurityTokenHeaderName = "X-Amz-Security-Token";
+
 
         /// <summary>
         /// Constructor for AWSSigV4Signer
@@ -20,6 +27,29 @@ namespace Amazon.SellingPartnerAPIAA
             AwsSignerHelper = new AWSSignerHelper();
         }
 
+
+        /// <summary>
+        /// Overloaded Constructor for AWSSigV4Signer using IAM Role
+        /// </summary>
+        /// <param name="awsAuthenticationCredentials">AWS Developer Account Credentials</param>
+        /// <param name="awsAuthenticationCredentialsProvider">AWS IAM Role and Session Name container</param>
+        public AWSSigV4Signer(AWSAuthenticationCredentials awsAuthenticationCredentials, 
+            AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider)
+        {
+            awsCredentials = awsAuthenticationCredentials;
+            BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(
+                awsAuthenticationCredentials.AccessKeyId, awsAuthenticationCredentials.SecretKey);
+            AmazonSecurityTokenServiceClient sts = new AmazonSecurityTokenServiceClient(basicAWSCredentials);
+            CancellationTokenSource source = new CancellationTokenSource();
+            CancellationToken cancellationToken = source.Token;
+            assumeRole = sts.AssumeRoleAsync(new AssumeRoleRequest{
+                RoleArn = awsAuthenticationCredentialsProvider.RoleArn,
+                RoleSessionName = awsAuthenticationCredentialsProvider.RoleSessionName
+            }).Result;
+
+            AwsSignerHelper = new AWSSignerHelper();
+        }
+
         /// <summary>
         /// Signs a Request with AWS Signature Version 4
         /// </summary>
@@ -28,7 +58,8 @@ namespace Amazon.SellingPartnerAPIAA
         /// <returns>RestRequest with AWS Signature</returns>
         public IRestRequest Sign(IRestRequest request, string host)
         {
-            DateTime signingDate = AwsSignerHelper.InitializeHeaders(request, host);
+            DateTime signingDate = AwsSignerHelper.SetDateAndHostHeaders(request, host);
+
             string signedHeaders = AwsSignerHelper.ExtractSignedHeaders(request);
 
             string hashedCanonicalRequest = CreateCanonicalRequest(request, signedHeaders);
@@ -37,19 +68,44 @@ namespace Amazon.SellingPartnerAPIAA
                                                                     hashedCanonicalRequest,
                                                                     awsCredentials.Region);
 
-            string signature = AwsSignerHelper.CalculateSignature(stringToSign,
-                                                                  signingDate,
-                                                                  awsCredentials.SecretKey,
-                                                                  awsCredentials.Region);
+            if (assumeRole != null)
+            {
 
-            AwsSignerHelper.AddSignature(request,
-                                         awsCredentials.AccessKeyId,
+                Credentials credentials = assumeRole.Credentials;
+                AwsSignerHelper.SetSessionTokenHeader(request, credentials.SessionToken);
+
+                string signature = AwsSignerHelper.CalculateSignature(stringToSign,
+                                                                  signingDate,
+                                                                  credentials.SecretAccessKey,
+                                                                  awsCredentials.Region);
+                AwsSignerHelper.AddSignature(request,
+                                         credentials.AccessKeyId,
                                          signedHeaders,
                                          signature,
                                          awsCredentials.Region,
                                          signingDate);
 
-            return request;
+                return request;
+            }
+            else
+            {
+
+
+
+                string signature = AwsSignerHelper.CalculateSignature(stringToSign,
+                                                                      signingDate,
+                                                                      awsCredentials.SecretKey,
+                                                                      awsCredentials.Region);
+
+                AwsSignerHelper.AddSignature(request,
+                                             awsCredentials.AccessKeyId,
+                                             signedHeaders,
+                                             signature,
+                                             awsCredentials.Region,
+                                             signingDate);
+
+                return request;
+            }
         }
 
         private string CreateCanonicalRequest(IRestRequest restRequest, string signedHeaders)

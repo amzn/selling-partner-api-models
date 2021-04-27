@@ -5,6 +5,7 @@ using System.Text;
 using RestSharp;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using Amazon.SecurityToken.Model;
 
 namespace Amazon.SellingPartnerAPIAA
 {
@@ -19,6 +20,7 @@ namespace Amazon.SellingPartnerAPIAA
         public const string SignatureSubHeaderName = "Signature";
         public const string SignedHeadersSubHeaderName = "SignedHeaders";
         public const string HostHeaderName = "host";
+        public const string SecurityTokenHeaderName = "X-Amz-Security-Token";
 
         public const string Scheme = "AWS4";
         public const string Algorithm = "HMAC-SHA256";
@@ -168,13 +170,13 @@ namespace Amazon.SellingPartnerAPIAA
         }
 
         /// <summary>
-        /// Sets AWS4 mandated 'x-amz-date' header, returning the date/time that will
+        /// Sets AWS4 mandated 'x-amz-date' and 'host' headers, returning the date/time that will
         /// be used throughout the signing process.
         /// </summary>
         /// <param name="restRequest">RestRequest</param>
         /// <param name="host">Request endpoint</param>
         /// <returns>Date and time used for x-amz-date, in UTC</returns>
-        public virtual DateTime InitializeHeaders(IRestRequest restRequest, string host)
+        public virtual DateTime SetDateAndHostHeaders(IRestRequest restRequest, string host)
         {
             restRequest.Parameters.RemoveAll(parameter => ParameterType.HttpHeader.Equals(parameter.Type)
                                                           && parameter.Name == XAmzDateHeaderName);
@@ -187,6 +189,20 @@ namespace Amazon.SellingPartnerAPIAA
             restRequest.AddHeader(HostHeaderName, host);
 
             return signingDate;
+        }
+
+        /// <summary>
+        /// Sets AWS4 'X-Amz-Security-Token' header, used to pass the STS Token to
+        /// be used throughout the signing process.
+        /// </summary>
+        /// <param name="restRequest">RestRequest</param>
+        /// <param name="sessionToken">STS Session Token</param>
+        public void SetSessionTokenHeader(IRestRequest restRequest, String sessionToken)
+        {
+            restRequest.Parameters.RemoveAll(parameter => ParameterType.HttpHeader.Equals(parameter.Type)
+                                                          && parameter.Name == SecurityTokenHeaderName);
+
+            restRequest.AddHeader(SecurityTokenHeaderName, sessionToken);
         }
 
         /// <summary>

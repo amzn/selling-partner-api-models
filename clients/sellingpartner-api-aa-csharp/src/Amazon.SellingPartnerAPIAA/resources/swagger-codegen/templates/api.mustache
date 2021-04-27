@@ -436,6 +436,7 @@ namespace {{packageName}}.{{apiPackage}}
         {
             private LWAAuthorizationCredentials lwaAuthorizationCredentials;
             private AWSAuthenticationCredentials awsAuthenticationCredentials;
+            private AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider;
 
             public Builder SetLWAAuthorizationCredentials(LWAAuthorizationCredentials lwaAuthorizationCredentials)
             {
@@ -446,6 +447,12 @@ namespace {{packageName}}.{{apiPackage}}
             public Builder SetAWSAuthenticationCredentials(AWSAuthenticationCredentials awsAuthenticationCredentials)
             {
                 this.awsAuthenticationCredentials = awsAuthenticationCredentials;
+                return this;
+            }
+
+            public Builder SetAWSAuthenticationCredentialsProvider(AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider)
+            {
+                this.awsAuthenticationCredentialsProvider = awsAuthenticationCredentialsProvider;
                 return this;
             }
 
@@ -463,6 +470,10 @@ namespace {{packageName}}.{{apiPackage}}
                 
                 {{packageName}}.Client.Configuration configuration = new {{packageName}}.Client.Configuration()
                 {
+                    if (awsAuthenticationCredentialsProvider != null)
+                    {
+                        AuthenticationCredentialsProvider = awsAuthenticationCredentialsProvider,
+                    }
                     AuthorizationCredentials = lwaAuthorizationCredentials,
                     AuthenticationCredentials = awsAuthenticationCredentials
                 };
