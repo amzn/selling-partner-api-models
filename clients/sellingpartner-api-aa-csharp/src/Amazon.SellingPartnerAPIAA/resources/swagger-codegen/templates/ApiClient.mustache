@@ -22,8 +22,6 @@ using RestSharp.Portable.HttpClient;
 using RestSharp;
 {{/netStandard}}
 using Amazon.SellingPartnerAPIAA;
-using RateLimiter;
-using System.Threading;
 
 namespace {{packageName}}.Client
 {
@@ -33,9 +31,8 @@ namespace {{packageName}}.Client
     {{>visibility}} partial class ApiClient
     {
         private LWAAuthorizationSigner lwaAuthorizationSigner;
-        private RateLimitConfiguration rateLimitConfig;
-        private TimeLimiter rateLimiter;
-        
+        private AWSSigV4Signer awsSigV4Signer;
+
         private JsonSerializerSettings serializerSettings = new JsonSerializerSettings
         {
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
@@ -45,10 +42,10 @@ namespace {{packageName}}.Client
         /// Allows for extending request processing for <see cref="ApiClient"/> generated code.
         /// </summary>
         /// <param name="request">The RestSharp request object</param>
-        /// <exception cref="Amazon.SellingPartnerAPIAA.LWAException">Thrown when there is an error during LWA Authorization</exception>
         private void InterceptRequest(IRestRequest request)
         {
             lwaAuthorizationSigner.Sign(request);
+            awsSigV4Signer.Sign(request, RestClient.BaseUrl.Host);
         }
 
         /// <summary>
@@ -73,10 +70,13 @@ namespace {{packageName}}.Client
             {{/netStandard}}
 
             lwaAuthorizationSigner = new LWAAuthorizationSigner(Configuration.AuthorizationCredentials);
-            rateLimitConfig = Configuration.RateLimitConfig;
-            if(rateLimitConfig != null)
-            { 
-               rateLimiter = TimeLimiter.GetFromMaxCountByInterval(rateLimitConfig.getRateLimitPermit(), TimeSpan.FromSeconds(1));
+            if (Configuration.AuthenticationCredentialsProvider!=null)
+            {
+                awsSigV4Signer = new AWSSigV4Signer(configuration.AuthenticationCredentials, Configuration.AuthenticationCredentialsProvider);
+            }
+            else 
+            {
+                awsSigV4Signer = new AWSSigV4Signer(Configuration.AuthenticationCredentials);
             }
         }
 
@@ -141,7 +141,7 @@ namespace {{packageName}}.Client
                 {{/netStandard}}
                 {{^netStandard}}
                 {{^supportsUWP}}
-                request.AddFile(param.Value.Name, param.Value.Writer, param.Value.FileName, param.Value.ContentLength, param.Value.ContentType);
+                request.AddFile(param.Value.Name, param.Value.Writer, param.Value.FileName, param.Value.ContentType);
                 {{/supportsUWP}}
                 {{#supportsUWP}}
                 byte[] paramWriter = null;
@@ -194,22 +194,6 @@ namespace {{packageName}}.Client
             RestClient.UserAgent = Configuration.UserAgent;
 
             InterceptRequest(request);
-            if(rateLimitConfig != null)
-            {
-                var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut());
-                try
-                {
-                    var response = rateLimiter.Enqueue<IRestResponse>(() =>  RestClient.Execute(request), cancellationSource.Token);
-                    InterceptResponse(request, response.Result);
-                    return response.Result;
-                }
-                catch (AggregateException e)
-                {
-                    throw new ApiException(429, "Throttled at client");
-                }
-            }
-            else
-            {
             {{#netStandard}}
             var response = RestClient.Execute(request).Result;
             {{/netStandard}}
@@ -225,7 +209,6 @@ namespace {{packageName}}.Client
             InterceptResponse(request, response);
 
             return (Object) response;
-            }
         }
         {{#supportsAsync}}
         /// <summary>
@@ -251,19 +234,9 @@ namespace {{packageName}}.Client
                 path, method, queryParams, postBody, headerParams, formParams, fileParams,
                 pathParams, contentType);
             InterceptRequest(request);
-            if (rateLimitConfig != null)
-            {
-              var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut());
-              var response =  await rateLimiter.Enqueue<IRestResponse>(() => RestClient.ExecuteTaskAsync(request), cancellationSource.Token);                
-              InterceptResponse(request, response);
-              return response;
-            }
-            else
-            {
-              var response = await RestClient.Execute{{^netStandard}}TaskAsync{{/netStandard}}(request);
-              InterceptResponse(request, response);
-              return (Object)response;	
-            }
+            var response = await RestClient.Execute{{^netStandard}}TaskAsync{{/netStandard}}(request);
+            InterceptResponse(request, response);
+            return (Object)response;
         }{{/supportsAsync}}
 
         /// <summary>
@@ -608,4 +581,3 @@ namespace {{packageName}}.Client
         }
     }
 }
-

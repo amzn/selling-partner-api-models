@@ -38,35 +38,38 @@ restRequest = new LWAAuthorizationSigner(lwaAuthorizationCredentials).Sign(restR
 ```
 Note the IRestRequest reference is treated as **mutable** when signed.
 
-## RateLimitConfiguration
-Interface to set and get rateLimit configurations that are used with RateLimiter. RateLimiter is used on client side to restrict the rate at which requests are made. RateLimiter Configuration takes Permit, rate which requests are made and TimeOut 
+## AWSSigV4Signer
+Signs a request with [AWS Signature Version 4](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html)
+using the provided AWS developer account credentials. 
+
+This implementation of the IAM Role-based Authentication, will work only as long as the initial STS Token is valid (typically for 3600 seconds) and until an instance is able to refresh the STS Token on its own, otherwise, the Token needs to be reinitialized via the AWSSigV4Signer.
 
 *Example*
 ```
-RateLimitConfiguration rateLimitConfig = new RateLimitConfigurationOnRequests
-            {
-                RateLimitPermit = ..,
-                WaitTimeOutInMilliSeconds = ...
-            }; 
+using RestSharp;
+using Amazon.SellingPartnerAPIAA;
 
-```
+string resource = "/my/api/path";
+RestClient restClient = new RestClient("https://...");
+IRestRequest restRequest = new RestRequest(resource, Method.GET);
 
-## Exception 
-This package returns a custom LWAException when there is an error returned during LWA authorization. LWAException provides additional details like errorCode and errorDescription to help fix the issue.
- 
-*Example*
-```
-catch (LWAException e)
-            {
-                Console.WriteLine("LWA Exception when calling Selling partner API");
-                Console.WriteLine(e.getErrorCode());
-                Console.WriteLine(e.getErrorMessage());
-                Console.WriteLine(e.Message);
-            }
-```
+AWSAuthenticationCredentials awsAuthenticationCredentials = new AWSAuthenticationCredentials 
+{
+    AccessKeyId = "..."
+    SecretKey = "..."
+    Region = "..."
+};
 
-## Version
-Selling Partner API Authentication/Authorization Library version 2.0.
+AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider = new AWSAuthenticationCredentialsProvider
+{
+    RoleArn = "...",
+    RoleSessionName = "..."
+};
+
+restRequest = new AWSSigV4Signer(awsAuthenticationCredentials, awsAuthenticationCredentialsProvider)
+    .Sign(restRequest, restClient.BaseUrl.Host);
+```
+Note the IRestRequest reference is treated as **mutable** when signed.
 
 ## Resources
 This package features Mustache templates designed for use with [swagger codegen](https://swagger.io/tools/swagger-codegen/). 
@@ -77,7 +80,7 @@ This package is built as a .NET Standard Library via a Visual Studio Solution wi
 
 ## Dependencies
 All dependencies can be installed via NuGet
-- RestSharp - 106.12.0 
+- RestSharp - 105.1.0
 - Newtonsoft.Json 12.0.3
 - NETStandard.Library 2.0.3 (platform-specific implementation requirements are documented on the [Microsoft .NET Guide](https://docs.microsoft.com/en-us/dotnet/standard/net-standard))
 
