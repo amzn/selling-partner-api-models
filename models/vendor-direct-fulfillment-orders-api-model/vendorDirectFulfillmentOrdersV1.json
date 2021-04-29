@@ -1,0 +1,2691 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Direct Fulfillment Orders provides programmatic access to a direct fulfillment vendor's order data.",
+    "version": "v1",
+    "title": "Selling Partner API for Direct Fulfillment Orders",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/vendor/directFulfillment/orders/v1/purchaseOrders": {
+      "get": {
+        "tags": [
+          "vendorOrders"
+        ],
+        "description": "Returns a list of purchase orders created during the time frame that you specify. You define the time frame using the createdAfter and createdBefore parameters. You must use both parameters. You can choose to get only the purchase order numbers by setting the includeDetails parameter to false. In that case, the operation returns a list of purchase order numbers. You can then call the getOrder operation to return the details of a specific order.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getOrders",
+        "parameters": [
+          {
+            "name": "shipFromPartyId",
+            "in": "query",
+            "description": "The vendor warehouse identifier for the fulfillment warehouse. If not specified, the result will contain orders for all warehouses.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Returns only the purchase orders that match the specified status. If not specified, the result will contain orders that match any status.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NEW",
+              "SHIPPED",
+              "ACCEPTED",
+              "CANCELLED"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "NEW",
+                "description": "Status for newly created purchase orders."
+              },
+              {
+                "value": "SHIPPED",
+                "description": "Status for purchase orders that are already shipped."
+              },
+              {
+                "value": "ACCEPTED",
+                "description": "Status for purchase orders accepted by vendors."
+              },
+              {
+                "value": "CANCELLED",
+                "description": "Status for cancelled purchase orders."
+              }
+            ]
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The limit to the number of purchase orders returned.",
+            "required": false,
+            "type": "integer",
+            "maximum": 100,
+            "minimum": 1,
+            "format": "int64"
+          },
+          {
+            "name": "createdAfter",
+            "in": "query",
+            "description": "Purchase orders that became available after this date and time will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": true,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "createdBefore",
+            "in": "query",
+            "description": "Purchase orders that became available before this date and time will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": true,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Sort the list in ascending or descending order by order creation date.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "ASC",
+                "description": "Sort in ascending order by order creation date."
+              },
+              {
+                "value": "DESC",
+                "description": "Sort in descending order by order creation date."
+              }
+            ]
+          },
+          {
+            "name": "nextToken",
+            "in": "query",
+            "description": "Used for pagination when there are more orders than the specified result size limit. The token value is returned in the previous API call.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "includeDetails",
+            "in": "query",
+            "description": "When true, returns the complete purchase order details. Otherwise, only purchase order numbers are returned.",
+            "required": false,
+            "type": "string",
+            "default": "true",
+            "format": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "examples": {
+              "payload": {
+                "pagination": {
+                  "nextToken": "MDAwMDAwMDAwMQ=="
+                },
+                "orders": [
+                  {
+                    "purchaseOrderNumber": "2JK3S9VC",
+                    "orderDetails": {
+                      "customerOrderNumber": "123-ABC",
+                      "orderDate": "2020-02-20T13:51:00Z",
+                      "orderStatus": "NEW",
+                      "shipmentDetails": {
+                        "isPriorityShipment": false,
+                        "isScheduledDeliveryShipment": false,
+                        "isPslipRequired": true,
+                        "isGift": false,
+                        "shipMethod": "UPS_2ND",
+                        "shipmentDates": {
+                          "requiredShipDate": "2020-02-21T00:00:00Z",
+                          "promisedDeliveryDate": "2020-02-24T00:00:00Z"
+                        },
+                        "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site.Thank you for shopping at Amazon.com"
+                      },
+                      "taxTotal": {
+                        "taxLineItem": [
+                          {
+                            "taxRate": "0.1",
+                            "taxAmount": {
+                              "currencyCode": "USD",
+                              "amount": "190"
+                            },
+                            "type": "TOTAL"
+                          }
+                        ]
+                      },
+                      "sellingParty": {
+                        "partyId": "999US"
+                      },
+                      "shipFromParty": {
+                        "partyId": "ABCD"
+                      },
+                      "shipToParty": {
+                        "name": "ABCD",
+                        "attention": "ABCD",
+                        "addressLine1": "123 XYZ Street",
+                        "addressLine2": "Apt 5",
+                        "city": "San Jose",
+                        "stateOrRegion": "CA",
+                        "postalCode": "94086",
+                        "countryCode": "USA"
+                      },
+                      "billToParty": {
+                        "partyId": "ABCD"
+                      },
+                      "items": [
+                        {
+                          "itemSequenceNumber": "00001",
+                          "buyerProductIdentifier": "B07DFVDRAB",
+                          "vendorProductIdentifier": "8806098286500",
+                          "title": "LG 8 kg Inverter Wi-Fi Fully-Automatic Front Loading Washing Machine (FHT1408SWS, STS-VCM, Inbuilt Heater)",
+                          "orderedQuantity": {
+                            "amount": 1,
+                            "unitOfMeasure": "EACH"
+                          },
+                          "netPrice": {
+                            "currencyCode": "USD",
+                            "amount": "500"
+                          },
+                          "taxDetails": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "50"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "itemSequenceNumber": "00002",
+                          "buyerProductIdentifier": "B07DFYF5AB",
+                          "vendorProductIdentifier": "8806098286123",
+                          "title": "LG 6.5 kg Inverter Fully-Automatic Front Loading Washing Machine (FHT1065SNW, Blue and White, Inbuilt Heater)",
+                          "orderedQuantity": {
+                            "amount": 2,
+                            "unitOfMeasure": "EACH"
+                          },
+                          "netPrice": {
+                            "currencyCode": "USD",
+                            "amount": "700"
+                          },
+                          "taxDetails": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "140"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2020-02-20T00:00:00-08:00"
+                    },
+                    "createdAfter": {
+                      "value": "2020-02-15T14:00:00-08:00"
+                    },
+                    "includeDetails": {
+                      "value": "true"
+                    },
+                    "limit": {
+                      "value": 2
+                    },
+                    "sortOrder": {
+                      "value": "DESC"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "pagination": {
+                      "nextToken": "MDAwMDAwMDAwMQ=="
+                    },
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "2JK3S9VC",
+                        "orderDetails": {
+                          "customerOrderNumber": "123-ABC",
+                          "orderDate": "2020-02-20T13:51:00Z",
+                          "orderStatus": "NEW",
+                          "shipmentDetails": {
+                            "isPriorityShipment": false,
+                            "isScheduledDeliveryShipment": false,
+                            "isPslipRequired": true,
+                            "isGift": false,
+                            "shipMethod": "UPS_2ND",
+                            "shipmentDates": {
+                              "requiredShipDate": "2020-02-21T00:00:00Z",
+                              "promisedDeliveryDate": "2020-02-24T00:00:00Z"
+                            },
+                            "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site.Thank you for shopping at Amazon.com"
+                          },
+                          "taxTotal": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "190"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipFromParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipToParty": {
+                            "name": "ABCD",
+                            "attention": "ABCD",
+                            "addressLine1": "123 XYZ Street",
+                            "addressLine2": "Apt 5",
+                            "city": "San Jose",
+                            "stateOrRegion": "CA",
+                            "postalCode": "94086",
+                            "countryCode": "USA"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "items": [
+                            {
+                              "itemSequenceNumber": "00001",
+                              "buyerProductIdentifier": "B07DFVDRAB",
+                              "vendorProductIdentifier": "8806098286500",
+                              "title": "LG 8 kg Inverter Wi-Fi Fully-Automatic Front Loading Washing Machine (FHT1408SWS, STS-VCM, Inbuilt Heater)",
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "500"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "50"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "itemSequenceNumber": "00002",
+                              "buyerProductIdentifier": "B07DFYF5AB",
+                              "vendorProductIdentifier": "8806098286123",
+                              "title": "LG 6.5 kg Inverter Fully-Automatic Front Loading Washing Machine (FHT1065SNW, Blue and White, Inbuilt Heater)",
+                              "orderedQuantity": {
+                                "amount": 2,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "700"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "140"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "purchaseOrderNumber": "3TRD2IAB",
+                        "orderDetails": {
+                          "customerOrderNumber": "456-ABC",
+                          "orderDate": "2020-02-18T11:47:00Z",
+                          "orderStatus": "NEW",
+                          "shipmentDetails": {
+                            "isPriorityShipment": false,
+                            "isScheduledDeliveryShipment": false,
+                            "isPslipRequired": true,
+                            "isGift": false,
+                            "shipMethod": "UPS_2ND",
+                            "shipmentDates": {
+                              "requiredShipDate": "2020-02-20T00:00:00Z",
+                              "promisedDeliveryDate": "2020-02-22T00:00:00Z"
+                            },
+                            "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site.Thank you for shopping at Amazon.com"
+                          },
+                          "taxTotal": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "2"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipFromParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipToParty": {
+                            "name": "XYZ",
+                            "attention": "XYZ",
+                            "addressLine1": "456 ABC Street",
+                            "city": "Seattle",
+                            "stateOrRegion": "WA",
+                            "postalCode": "98007",
+                            "countryCode": "USA"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "items": [
+                            {
+                              "itemSequenceNumber": "00001",
+                              "buyerProductIdentifier": "B01LNRIIAB",
+                              "vendorProductIdentifier": "8806098286501",
+                              "title": "Baby Dove Baby Wipes Rich Moisture (50 Pieces)",
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "20"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "2"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2020-02-20T00:00:00-08:00"
+                    },
+                    "createdAfter": {
+                      "value": "2020-02-15T14:00:00-08:00"
+                    },
+                    "includeDetails": {
+                      "value": "true"
+                    },
+                    "limit": {
+                      "value": 2
+                    },
+                    "sortOrder": {
+                      "value": "DESC"
+                    },
+                    "nextToken": {
+                      "value": "MDAwMDAwMDAwMQ=="
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "2JK3S9VCD",
+                        "orderDetails": {
+                          "customerOrderNumber": "123-ABC",
+                          "orderDate": "2020-02-20T13:51:00Z",
+                          "orderStatus": "NEW",
+                          "shipmentDetails": {
+                            "isPriorityShipment": false,
+                            "isScheduledDeliveryShipment": false,
+                            "isPslipRequired": true,
+                            "isGift": false,
+                            "shipMethod": "UPS_2ND",
+                            "shipmentDates": {
+                              "requiredShipDate": "2020-02-21T00:00:00Z",
+                              "promisedDeliveryDate": "2020-02-24T00:00:00Z"
+                            },
+                            "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site.Thank you for shopping at Amazon.com"
+                          },
+                          "taxTotal": {
+                            "taxLineItem": [
+                              {
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "190"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipFromParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipToParty": {
+                            "name": "ABCD",
+                            "attention": "ABCD",
+                            "addressLine1": "123 XYZ Street",
+                            "addressLine2": "Apt 5",
+                            "city": "San Jose",
+                            "stateOrRegion": "CA",
+                            "postalCode": "94086",
+                            "countryCode": "USA"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "items": [
+                            {
+                              "itemSequenceNumber": "00001",
+                              "buyerProductIdentifier": "B07DFVDRAB",
+                              "vendorProductIdentifier": "8806098286500",
+                              "title": "LG 8 kg Inverter Wi-Fi Fully-Automatic Front Loading Washing Machine (FHT1408SWS, STS-VCM, Inbuilt Heater)",
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "500"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "50"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "itemSequenceNumber": "00002",
+                              "buyerProductIdentifier": "B07DFYF5AB",
+                              "vendorProductIdentifier": "8806098286123",
+                              "title": "LG 6.5 kg Inverter Fully-Automatic Front Loading Washing Machine (FHT1065SNW, Blue and White, Inbuilt Heater)",
+                              "orderedQuantity": {
+                                "amount": 2,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "700"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "140"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "purchaseOrderNumber": "3TRD2IABC",
+                        "orderDetails": {
+                          "customerOrderNumber": "456-ABC",
+                          "orderDate": "2020-02-18T11:47:00Z",
+                          "orderStatus": "NEW",
+                          "shipmentDetails": {
+                            "isPriorityShipment": false,
+                            "isScheduledDeliveryShipment": false,
+                            "isPslipRequired": true,
+                            "isGift": false,
+                            "shipMethod": "UPS_2ND",
+                            "shipmentDates": {
+                              "requiredShipDate": "2020-02-20T00:00:00Z",
+                              "promisedDeliveryDate": "2020-02-22T00:00:00Z"
+                            },
+                            "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site.Thank you for shopping at Amazon.com"
+                          },
+                          "taxTotal": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "2"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipFromParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipToParty": {
+                            "name": "XYZ",
+                            "attention": "XYZ",
+                            "addressLine1": "456 ABC Street",
+                            "city": "Seattle",
+                            "stateOrRegion": "WA",
+                            "postalCode": "98007",
+                            "countryCode": "USA"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "items": [
+                            {
+                              "itemSequenceNumber": "00001",
+                              "buyerProductIdentifier": "B01LNRIIAB",
+                              "vendorProductIdentifier": "8806098286501",
+                              "title": "Baby Dove Baby Wipes Rich Moisture (50 Pieces)",
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "20"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "2"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2020-02-20T00:00:00-08:00"
+                    },
+                    "createdAfter": {
+                      "value": "2020-02-15T14:00:00-08:00"
+                    },
+                    "includeDetails": {
+                      "value": "true"
+                    },
+                    "limit": {
+                      "value": 2
+                    },
+                    "sortOrder": {
+                      "value": "DESC"
+                    },
+                    "nextToken": {
+                      "value": "MDAwMDAwMDAwMQ=="
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "2JK3S9VCD",
+                        "orderDetails": {
+                          "customerOrderNumber": "123-ABC",
+                          "orderDate": "2020-02-20T13:51:00Z",
+                          "orderStatus": "NEW",
+                          "shipmentDetails": {
+                            "isPriorityShipment": false,
+                            "isScheduledDeliveryShipment": false,
+                            "isPslipRequired": true,
+                            "isGift": false,
+                            "shipMethod": "UPS_2ND",
+                            "shipmentDates": {
+                              "requiredShipDate": "2020-02-21T00:00:00Z",
+                              "promisedDeliveryDate": "2020-02-24T00:00:00Z"
+                            },
+                            "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site.Thank you for shopping at Amazon.com"
+                          },
+                          "taxTotal": {
+                            "taxLineItem": [
+                              {
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "190"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipFromParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipToParty": {
+                            "name": "ABCD",
+                            "attention": "ABCD",
+                            "addressLine1": "123 XYZ Street",
+                            "addressLine2": "Apt 5",
+                            "city": "San Jose",
+                            "stateOrRegion": "CA",
+                            "postalCode": "94086",
+                            "countryCode": "USA"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "items": [
+                            {
+                              "itemSequenceNumber": "00001",
+                              "buyerProductIdentifier": "B07DFVDRAB",
+                              "vendorProductIdentifier": "8806098286500",
+                              "title": "LG 8 kg Inverter Wi-Fi Fully-Automatic Front Loading Washing Machine (FHT1408SWS, STS-VCM, Inbuilt Heater)",
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "500"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "50"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "itemSequenceNumber": "00002",
+                              "buyerProductIdentifier": "B07DFYF5AB",
+                              "vendorProductIdentifier": "8806098286123",
+                              "title": "LG 6.5 kg Inverter Fully-Automatic Front Loading Washing Machine (FHT1065SNW, Blue and White, Inbuilt Heater)",
+                              "orderedQuantity": {
+                                "amount": 2,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "700"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "140"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "purchaseOrderNumber": "3TRD2IABC",
+                        "orderDetails": {
+                          "customerOrderNumber": "456-ABC",
+                          "orderDate": "2020-02-18T11:47:00Z",
+                          "orderStatus": "NEW",
+                          "shipmentDetails": {
+                            "isPriorityShipment": false,
+                            "isScheduledDeliveryShipment": false,
+                            "isPslipRequired": true,
+                            "isGift": false,
+                            "shipMethod": "UPS_2ND",
+                            "shipmentDates": {
+                              "requiredShipDate": "2020-02-20T00:00:00Z",
+                              "promisedDeliveryDate": "2020-02-22T00:00:00Z"
+                            },
+                            "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site.Thank you for shopping at Amazon.com"
+                          },
+                          "taxTotal": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "2"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipFromParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipToParty": {
+                            "name": "XYZ",
+                            "attention": "XYZ",
+                            "addressLine1": "456 ABC Street",
+                            "city": "Seattle",
+                            "stateOrRegion": "WA",
+                            "postalCode": "98007",
+                            "countryCode": "USA"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "items": [
+                            {
+                              "itemSequenceNumber": "00001",
+                              "buyerProductIdentifier": "B01LNRIIAB",
+                              "vendorProductIdentifier": "8806098286501",
+                              "title": "Baby Dove Baby Wipes Rich Moisture (50 Pieces)",
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "20"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "2"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2019-08-21T00:00:00-08:00"
+                    },
+                    "createdAfter": {
+                      "value": "2019-08-20T14:00:00-08:00"
+                    },
+                    "includeDetails": {
+                      "value": "false"
+                    },
+                    "sortOrder": {
+                      "value": "DESC"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "pagination": {
+                      "nextToken": "MDAwMDAwMDAwMQ=="
+                    },
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "2JK3S9VC"
+                      },
+                      {
+                        "purchaseOrderNumber": "3TRD2IAB"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2019-08-21T00:00:00-08:00"
+                    },
+                    "createdAfter": {
+                      "value": "2019-08-20T14:00:00-08:00"
+                    },
+                    "includeDetails": {
+                      "value": "false"
+                    },
+                    "sortOrder": {
+                      "value": "DESC"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "pagination": {
+                      "nextToken": "MDAwMDAwMDAwMQ=="
+                    },
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "2JK3S9VC"
+                      },
+                      {
+                        "purchaseOrderNumber": "3TRD2IAB"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2019-08-21T00:00:00-08:00"
+                    },
+                    "createdAfter": {
+                      "value": "2019-08-20T14:00:00-08:00"
+                    },
+                    "includeDetails": {
+                      "value": "false"
+                    },
+                    "sortOrder": {
+                      "value": "DESC"
+                    },
+                    "nextToken": {
+                      "value": "MDAwMDAwMDAwMQ=="
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "2JK3S9VCD"
+                      },
+                      {
+                        "purchaseOrderNumber": "3TRD2IABC"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {}
+                },
+                "response": {
+                  "payload": {
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "2JK3S9VCD",
+                        "orderDetails": {
+                          "customerOrderNumber": "123-ABC",
+                          "orderDate": "2020-02-20T13:51:00Z",
+                          "orderStatus": "NEW",
+                          "shipmentDetails": {
+                            "isPriorityShipment": false,
+                            "isScheduledDeliveryShipment": false,
+                            "isPslipRequired": true,
+                            "isGift": false,
+                            "shipMethod": "UPS_2ND",
+                            "shipmentDates": {
+                              "requiredShipDate": "2020-02-21T00:00:00Z",
+                              "promisedDeliveryDate": "2020-02-24T00:00:00Z"
+                            },
+                            "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site. Thank you for shopping at Amazon.com."
+                          },
+                          "taxTotal": {
+                            "taxLineItem": [
+                              {
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "190"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipFromParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipToParty": {
+                            "name": "ABCD",
+                            "attention": "ABCD",
+                            "addressLine1": "123 XYZ Street",
+                            "addressLine2": "Apt 5",
+                            "city": "San Jose",
+                            "stateOrRegion": "CA",
+                            "postalCode": "94086",
+                            "countryCode": "USA"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "items": [
+                            {
+                              "itemSequenceNumber": "00001",
+                              "buyerProductIdentifier": "B07DFVDRAB",
+                              "vendorProductIdentifier": "8806098286500",
+                              "title": "LG 8 kg Inverter Wi-Fi Fully-Automatic Front Loading Washing Machine (FHT1408SWS, STS-VCM, Inbuilt Heater)",
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "500"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "50"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "itemSequenceNumber": "00002",
+                              "buyerProductIdentifier": "B07DFYF5AB",
+                              "vendorProductIdentifier": "8806098286123",
+                              "title": "LG 6.5 kg Inverter Fully-Automatic Front Loading Washing Machine (FHT1065SNW, Blue and White, Inbuilt Heater)",
+                              "orderedQuantity": {
+                                "amount": 2,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "700"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "140"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "purchaseOrderNumber": "3TRD2IABC",
+                        "orderDetails": {
+                          "customerOrderNumber": "456-ABC",
+                          "orderDate": "2020-02-18T11:47:00Z",
+                          "orderStatus": "NEW",
+                          "shipmentDetails": {
+                            "isPriorityShipment": false,
+                            "isScheduledDeliveryShipment": false,
+                            "isPslipRequired": true,
+                            "isGift": false,
+                            "shipMethod": "UPS_2ND",
+                            "shipmentDates": {
+                              "requiredShipDate": "2020-02-20T00:00:00Z",
+                              "promisedDeliveryDate": "2020-02-22T00:00:00Z"
+                            },
+                            "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site. Thank you for shopping at Amazon.com."
+                          },
+                          "taxTotal": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "2"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipFromParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipToParty": {
+                            "name": "XYZ",
+                            "attention": "XYZ",
+                            "addressLine1": "456 ABC Street",
+                            "city": "Seattle",
+                            "stateOrRegion": "WA",
+                            "postalCode": "98007",
+                            "countryCode": "USA"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "items": [
+                            {
+                              "itemSequenceNumber": "00001",
+                              "buyerProductIdentifier": "B01LNRIIAB",
+                              "vendorProductIdentifier": "8806098286501",
+                              "title": "Baby Dove Baby Wipes Rich Moisture (50 Pieces)",
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "EACH"
+                              },
+                              "netPrice": {
+                                "currencyCode": "USD",
+                                "amount": "20"
+                              },
+                              "taxDetails": {
+                                "taxLineItem": [
+                                  {
+                                    "taxRate": "0.1",
+                                    "taxAmount": {
+                                      "currencyCode": "USD",
+                                      "amount": "2"
+                                    },
+                                    "type": "TOTAL"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendor/directFulfillment/orders/v1/purchaseOrders/{purchaseOrderNumber}": {
+      "get": {
+        "tags": [
+          "vendorOrders"
+        ],
+        "description": "Returns purchase order information for the purchaseOrderNumber that you specify.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getOrder",
+        "parameters": [
+          {
+            "name": "purchaseOrderNumber",
+            "in": "path",
+            "description": "The order identifier for the purchase order that you want. Formatting Notes: alpha-numeric code.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "purchaseOrderNumber": "2JK3S9VC",
+                  "orderDetails": {
+                    "customerOrderNumber": "123-ABC",
+                    "orderDate": "2020-02-20T13:51:00Z",
+                    "orderStatus": "NEW",
+                    "shipmentDetails": {
+                      "isPriorityShipment": false,
+                      "isScheduledDeliveryShipment": false,
+                      "isPslipRequired": true,
+                      "isGift": false,
+                      "shipMethod": "UPS_2ND",
+                      "shipmentDates": {
+                        "requiredShipDate": "2020-02-21T00:00:00Z",
+                        "promisedDeliveryDate": "2020-02-24T00:00:00Z"
+                      },
+                      "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site.Thank you for shopping at Amazon.com"
+                    },
+                    "taxTotal": {
+                      "taxLineItem": [
+                        {
+                          "taxAmount": {
+                            "currencyCode": "USD",
+                            "amount": "190"
+                          },
+                          "type": "TOTAL"
+                        }
+                      ]
+                    },
+                    "sellingParty": {
+                      "partyId": "999US"
+                    },
+                    "shipFromParty": {
+                      "partyId": "ABCD"
+                    },
+                    "shipToParty": {
+                      "name": "ABCD",
+                      "attention": "ABCD",
+                      "addressLine1": "123 XYZ Street",
+                      "addressLine2": "Apt 5",
+                      "city": "San Jose",
+                      "stateOrRegion": "CA",
+                      "postalCode": "94086",
+                      "countryCode": "USA"
+                    },
+                    "billToParty": {
+                      "partyId": "ABCD"
+                    },
+                    "items": [
+                      {
+                        "itemSequenceNumber": "00001",
+                        "buyerProductIdentifier": "B07DFVDRAB",
+                        "vendorProductIdentifier": "8806098286500",
+                        "title": "LG 8 kg Inverter Wi-Fi Fully-Automatic Front Loading Washing Machine (FHT1408SWS, STS-VCM, Inbuilt Heater)",
+                        "orderedQuantity": {
+                          "amount": 1,
+                          "unitOfMeasure": "EACH"
+                        },
+                        "netPrice": {
+                          "currencyCode": "USD",
+                          "amount": "500"
+                        },
+                        "taxDetails": {
+                          "taxLineItem": [
+                            {
+                              "taxRate": "0.1",
+                              "taxAmount": {
+                                "currencyCode": "USD",
+                                "amount": "50"
+                              },
+                              "type": "TOTAL"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "itemSequenceNumber": "00002",
+                        "buyerProductIdentifier": "B07DFYF5AB",
+                        "vendorProductIdentifier": "8806098286123",
+                        "title": "LG 6.5 kg Inverter Fully-Automatic Front Loading Washing Machine (FHT1065SNW, Blue and White, Inbuilt Heater)",
+                        "orderedQuantity": {
+                          "amount": 2,
+                          "unitOfMeasure": "EACH"
+                        },
+                        "netPrice": {
+                          "currencyCode": "USD",
+                          "amount": "700"
+                        },
+                        "taxDetails": {
+                          "taxLineItem": [
+                            {
+                              "taxRate": "0.1",
+                              "taxAmount": {
+                                "currencyCode": "USD",
+                                "amount": "140"
+                              },
+                              "type": "TOTAL"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "purchaseOrderNumber": {
+                      "value": "2JK3S9VC"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "purchaseOrderNumber": "2JK3S9VC",
+                    "orderDetails": {
+                      "customerOrderNumber": "123-ABC",
+                      "orderDate": "2020-02-20T13:51:00Z",
+                      "orderStatus": "NEW",
+                      "shipmentDetails": {
+                        "isPriorityShipment": false,
+                        "isScheduledDeliveryShipment": false,
+                        "isPslipRequired": true,
+                        "isGift": false,
+                        "shipMethod": "UPS_2ND",
+                        "shipmentDates": {
+                          "requiredShipDate": "2020-02-21T00:00:00Z",
+                          "promisedDeliveryDate": "2020-02-24T00:00:00Z"
+                        },
+                        "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site.Thank you for shopping at Amazon.com"
+                      },
+                      "taxTotal": {
+                        "taxLineItem": [
+                          {
+                            "taxRate": "0.1",
+                            "taxAmount": {
+                              "currencyCode": "USD",
+                              "amount": "190"
+                            },
+                            "type": "TOTAL"
+                          }
+                        ]
+                      },
+                      "sellingParty": {
+                        "partyId": "999US"
+                      },
+                      "shipFromParty": {
+                        "partyId": "ABCD"
+                      },
+                      "shipToParty": {
+                        "name": "ABCD",
+                        "attention": "ABCD",
+                        "addressLine1": "123 XYZ Street",
+                        "addressLine2": "Apt 5",
+                        "city": "San Jose",
+                        "stateOrRegion": "CA",
+                        "postalCode": "94086",
+                        "countryCode": "USA"
+                      },
+                      "billToParty": {
+                        "partyId": "ABCD"
+                      },
+                      "items": [
+                        {
+                          "itemSequenceNumber": "00001",
+                          "buyerProductIdentifier": "B07DFVDRAB",
+                          "vendorProductIdentifier": "8806098286500",
+                          "title": "LG 8 kg Inverter Wi-Fi Fully-Automatic Front Loading Washing Machine (FHT1408SWS, STS-VCM, Inbuilt Heater)",
+                          "orderedQuantity": {
+                            "amount": 1,
+                            "unitOfMeasure": "EACH"
+                          },
+                          "netPrice": {
+                            "currencyCode": "USD",
+                            "amount": "500"
+                          },
+                          "taxDetails": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "50"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "itemSequenceNumber": "00002",
+                          "buyerProductIdentifier": "B07DFYF5AB",
+                          "vendorProductIdentifier": "8806098286123",
+                          "title": "LG 6.5 kg Inverter Fully-Automatic Front Loading Washing Machine (FHT1065SNW, Blue and White, Inbuilt Heater)",
+                          "orderedQuantity": {
+                            "amount": 2,
+                            "unitOfMeasure": "EACH"
+                          },
+                          "netPrice": {
+                            "currencyCode": "USD",
+                            "amount": "700"
+                          },
+                          "taxDetails": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "140"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {}
+                },
+                "response": {
+                  "payload": {
+                    "purchaseOrderNumber": "2JK3S9VCD",
+                    "orderDetails": {
+                      "customerOrderNumber": "123-ABC",
+                      "orderDate": "2020-02-20T13:51:00Z",
+                      "orderStatus": "NEW",
+                      "shipmentDetails": {
+                        "isPriorityShipment": false,
+                        "isScheduledDeliveryShipment": false,
+                        "isPslipRequired": true,
+                        "isGift": false,
+                        "shipMethod": "UPS_2ND",
+                        "shipmentDates": {
+                          "requiredShipDate": "2020-02-21T00:00:00Z",
+                          "promisedDeliveryDate": "2020-02-24T00:00:00Z"
+                        },
+                        "messageToCustomer": "This shipment completes your order. You can always check the status of your orders from the \"Your Account\" link at the top of each page of our site. Thank you for shopping at Amazon.com."
+                      },
+                      "taxTotal": {
+                        "taxLineItem": [
+                          {
+                            "taxAmount": {
+                              "currencyCode": "USD",
+                              "amount": "190"
+                            },
+                            "type": "TOTAL"
+                          }
+                        ]
+                      },
+                      "sellingParty": {
+                        "partyId": "999US"
+                      },
+                      "shipFromParty": {
+                        "partyId": "ABCD"
+                      },
+                      "shipToParty": {
+                        "name": "ABCD",
+                        "attention": "ABCD",
+                        "addressLine1": "123 XYZ Street",
+                        "addressLine2": "Apt 5",
+                        "city": "San Jose",
+                        "stateOrRegion": "CA",
+                        "postalCode": "94086",
+                        "countryCode": "USA"
+                      },
+                      "billToParty": {
+                        "partyId": "ABCD"
+                      },
+                      "items": [
+                        {
+                          "itemSequenceNumber": "00001",
+                          "buyerProductIdentifier": "B07DFVDRAB",
+                          "vendorProductIdentifier": "8806098286500",
+                          "title": "LG 8 kg Inverter Wi-Fi Fully-Automatic Front Loading Washing Machine (FHT1408SWS, STS-VCM, Inbuilt Heater)",
+                          "orderedQuantity": {
+                            "amount": 1,
+                            "unitOfMeasure": "EACH"
+                          },
+                          "netPrice": {
+                            "currencyCode": "USD",
+                            "amount": "500"
+                          },
+                          "taxDetails": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "50"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "itemSequenceNumber": "00002",
+                          "buyerProductIdentifier": "B07DFYF5AB",
+                          "vendorProductIdentifier": "8806098286123",
+                          "title": "LG 6.5 kg Inverter Fully-Automatic Front Loading Washing Machine (FHT1065SNW, Blue and White, Inbuilt Heater)",
+                          "orderedQuantity": {
+                            "amount": 2,
+                            "unitOfMeasure": "EACH"
+                          },
+                          "netPrice": {
+                            "currencyCode": "USD",
+                            "amount": "700"
+                          },
+                          "taxDetails": {
+                            "taxLineItem": [
+                              {
+                                "taxRate": "0.1",
+                                "taxAmount": {
+                                  "currencyCode": "USD",
+                                  "amount": "140"
+                                },
+                                "type": "TOTAL"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendor/directFulfillment/orders/v1/acknowledgements": {
+      "post": {
+        "tags": [
+          "vendorOrders"
+        ],
+        "description": "Submits acknowledgements for one or more purchase orders.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "submitAcknowledgement",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementRequest"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "orderAcknowledgements": [
+                          {
+                            "purchaseOrderNumber": "2JK3S9VC",
+                            "vendorOrderNumber": "ABC",
+                            "acknowledgementDate": "2020-02-20T19:17:34.304Z",
+                            "acknowledgementStatus": {
+                              "code": "00",
+                              "description": "Shipping 100 percent of ordered product"
+                            },
+                            "sellingParty": {
+                              "partyId": "999US"
+                            },
+                            "shipFromParty": {
+                              "partyId": "ABCD"
+                            },
+                            "itemAcknowledgements": [
+                              {
+                                "itemSequenceNumber": "00001",
+                                "buyerProductIdentifier": "B07DFVDRAB",
+                                "vendorProductIdentifier": "8806098286500",
+                                "acknowledgedQuantity": {
+                                  "amount": 1,
+                                  "unitOfMeasure": "Each"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "transactionId": "20190827182357-8725bde9-c61c-49f9-86ac-46efd82d4da5"
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "body": {}
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "transactionId": "mock-TransactionId-20190827182357-8725bde9-c61c-49f9-86ac-46efd82d4da5"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GetOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "A list of purchase orders.",
+          "$ref": "#/definitions/OrderList"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getOrders operation."
+    },
+    "GetOrderResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getOrder operation.",
+          "$ref": "#/definitions/Order"
+        }
+      },
+      "description": "The response schema for the getOrder operation."
+    },
+    "OrderList": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/Pagination"
+        },
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Order"
+          }
+        }
+      }
+    },
+    "Pagination": {
+      "type": "object",
+      "properties": {
+        "nextToken": {
+          "type": "string",
+          "description": "A generated string used to pass information to your next request. If NextToken is returned, pass the value of NextToken to the next request. If NextToken is not returned, there are no more order items to return."
+        }
+      }
+    },
+    "Order": {
+      "type": "object",
+      "required": [
+        "purchaseOrderNumber"
+      ],
+      "properties": {
+        "purchaseOrderNumber": {
+          "type": "string",
+          "description": "The purchase order number for this order. Formatting Notes: alpha-numeric code."
+        },
+        "orderDetails": {
+          "description": "Purchase order details.",
+          "$ref": "#/definitions/OrderDetails"
+        }
+      }
+    },
+    "OrderDetails": {
+      "type": "object",
+      "required": [
+        "billToParty",
+        "customerOrderNumber",
+        "items",
+        "orderDate",
+        "sellingParty",
+        "shipFromParty",
+        "shipToParty",
+        "shipmentDetails"
+      ],
+      "properties": {
+        "customerOrderNumber": {
+          "type": "string",
+          "description": "The customer order number."
+        },
+        "orderDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the order was placed. This field is expected to be in ISO-8601 date/time format, for example:2018-07-16T23:00:00Z/ 2018-07-16T23:00:00-05:00 /2018-07-16T23:00:00-08:00. If no time zone is specified, UTC should be assumed."
+        },
+        "orderStatus": {
+          "type": "string",
+          "description": "Current status of the order.",
+          "enum": [
+            "NEW",
+            "SHIPPED",
+            "ACCEPTED",
+            "CANCELLED"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "NEW",
+              "description": "Status for newly created orders."
+            },
+            {
+              "value": "SHIPPED",
+              "description": "Status for orders that are already shipped."
+            },
+            {
+              "value": "ACCEPTED",
+              "description": "Status for orders accepted by vendors."
+            },
+            {
+              "value": "CANCELLED",
+              "description": "Status for cancelled orders."
+            }
+          ]
+        },
+        "shipmentDetails": {
+          "$ref": "#/definitions/ShipmentDetails"
+        },
+        "taxTotal": {
+          "type": "object",
+          "properties": {
+            "taxLineItem": {
+              "description": "Tax details.",
+              "$ref": "#/definitions/TaxLineItem"
+            }
+          }
+        },
+        "sellingParty": {
+          "description": "PartyID of vendor code.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "shipFromParty": {
+          "description": "PartyID of vendor's warehouse.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "shipToParty": {
+          "description": "Name/Address and tax details of the ship to party.",
+          "$ref": "#/definitions/Address"
+        },
+        "billToParty": {
+          "description": "Name/Address and tax details of the bill to party.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "items": {
+          "type": "array",
+          "description": "A list of items in this purchase order.",
+          "items": {
+            "$ref": "#/definitions/OrderItem"
+          }
+        }
+      },
+      "description": "Details of an order."
+    },
+    "PartyIdentification": {
+      "type": "object",
+      "required": [
+        "partyId"
+      ],
+      "properties": {
+        "partyId": {
+          "type": "string",
+          "description": "Assigned identification for the party. For example, warehouse code or vendor code. Please refer to specific party for more details."
+        },
+        "address": {
+          "description": "Address details of the party.",
+          "$ref": "#/definitions/Address"
+        },
+        "taxInfo": {
+          "description": "Tax registration details of the entity.",
+          "$ref": "#/definitions/TaxRegistrationDetails"
+        }
+      }
+    },
+    "TaxRegistrationDetails": {
+      "type": "object",
+      "required": [
+        "taxRegistrationNumber"
+      ],
+      "properties": {
+        "taxRegistrationType": {
+          "type": "string",
+          "description": "Tax registration type for the entity.",
+          "enum": [
+            "VAT",
+            "GST"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "VAT",
+              "description": "Value-added tax."
+            },
+            {
+              "value": "GST",
+              "description": "Goods and Services tax."
+            }
+          ]
+        },
+        "taxRegistrationNumber": {
+          "type": "string",
+          "description": "Tax registration number for the party. For example, VAT ID."
+        },
+        "taxRegistrationAddress": {
+          "description": "Address associated with the tax registration number.",
+          "$ref": "#/definitions/Address"
+        },
+        "taxRegistrationMessages": {
+          "type": "string",
+          "description": "Tax registration message that can be used for additional tax related details."
+        }
+      },
+      "description": "Tax registration details of the entity."
+    },
+    "Address": {
+      "type": "object",
+      "required": [
+        "addressLine1",
+        "countryCode",
+        "name",
+        "stateOrRegion"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the person, business or institution at that address."
+        },
+        "attention": {
+          "type": "string",
+          "description": "The attention name of the person at that address."
+        },
+        "addressLine1": {
+          "type": "string",
+          "description": "First line of the address."
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "Additional address information, if required."
+        },
+        "addressLine3": {
+          "type": "string",
+          "description": "Additional address information, if required."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city where the person, business or institution is located."
+        },
+        "county": {
+          "type": "string",
+          "description": "The county where person, business or institution is located."
+        },
+        "district": {
+          "type": "string",
+          "description": "The district where person, business or institution is located."
+        },
+        "stateOrRegion": {
+          "type": "string",
+          "description": "The state or region where person, business or institution is located."
+        },
+        "postalCode": {
+          "type": "string",
+          "description": "The postal code of that address. It conatins a series of letters or digits or both, sometimes including spaces or punctuation."
+        },
+        "countryCode": {
+          "type": "string",
+          "description": "The two digit country code. In ISO 3166-1 alpha-2 format."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the person, business or institution located at that address."
+        }
+      },
+      "description": "Address of the party."
+    },
+    "OrderItem": {
+      "type": "object",
+      "required": [
+        "itemSequenceNumber",
+        "netPrice",
+        "orderedQuantity"
+      ],
+      "properties": {
+        "itemSequenceNumber": {
+          "type": "string",
+          "description": "Numbering of the item on the purchase order. The first item will be 1, the second 2, and so on."
+        },
+        "buyerProductIdentifier": {
+          "type": "string",
+          "description": "Buyer's standard identification number (ASIN) of an item."
+        },
+        "vendorProductIdentifier": {
+          "type": "string",
+          "description": "The vendor selected product identification of the item."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title for the item."
+        },
+        "orderedQuantity": {
+          "description": "Item quantity ordered.",
+          "$ref": "#/definitions/ItemQuantity"
+        },
+        "scheduledDeliveryShipment": {
+          "description": "Details for the scheduled delivery shipment.",
+          "$ref": "#/definitions/ScheduledDeliveryShipment"
+        },
+        "giftDetails": {
+          "description": "Gift message and wrapId details.",
+          "$ref": "#/definitions/GiftDetails"
+        },
+        "netPrice": {
+          "description": "Net price (before tax) to vendor with currency details.",
+          "$ref": "#/definitions/Money"
+        },
+        "taxDetails": {
+          "type": "object",
+          "description": "Total tax details for the line item.",
+          "properties": {
+            "taxLineItem": {
+              "description": "Tax details.",
+              "$ref": "#/definitions/TaxLineItem"
+            }
+          }
+        },
+        "totalPrice": {
+          "description": "The price to Amazon each (cost).",
+          "$ref": "#/definitions/Money"
+        }
+      }
+    },
+    "Money": {
+      "type": "object",
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "description": "Three digit currency code in ISO 4217 format. String of length 3."
+        },
+        "amount": {
+          "$ref": "#/definitions/Decimal"
+        }
+      },
+      "description": "An amount of money, including units in the form of currency."
+    },
+    "Decimal": {
+      "type": "string",
+      "description": "A decimal number with no loss of precision. Useful when precision loss is unacceptable, as with currencies. Follows RFC7159 for number representation."
+    },
+    "SubmitAcknowledgementResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the submitAcknowledgement operation.",
+          "$ref": "#/definitions/TransactionId"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the submitAcknowledgement operation."
+    },
+    "TransactionId": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "string",
+          "description": "GUID assigned by Amazon to identify this transaction. This value can be used with the Transaction Status API to return the status of this transaction."
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "SubmitAcknowledgementRequest": {
+      "type": "object",
+      "properties": {
+        "orderAcknowledgements": {
+          "type": "array",
+          "description": "A list of one or more purchase orders.",
+          "items": {
+            "$ref": "#/definitions/OrderAcknowledgementItem"
+          }
+        }
+      },
+      "description": "The request schema for the submitAcknowledgement operation."
+    },
+    "OrderAcknowledgementItem": {
+      "type": "object",
+      "required": [
+        "acknowledgementDate",
+        "acknowledgementStatus",
+        "itemAcknowledgements",
+        "purchaseOrderNumber",
+        "sellingParty",
+        "shipFromParty",
+        "vendorOrderNumber"
+      ],
+      "properties": {
+        "purchaseOrderNumber": {
+          "type": "string",
+          "description": "The purchase order number for this order. Formatting Notes: alpha-numeric code."
+        },
+        "vendorOrderNumber": {
+          "type": "string",
+          "description": "The vendor's order number for this order."
+        },
+        "acknowledgementDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time when the order is acknowledged, in ISO-8601 date/time format. For example: 2018-07-16T23:00:00Z / 2018-07-16T23:00:00-05:00 / 2018-07-16T23:00:00-08:00."
+        },
+        "acknowledgementStatus": {
+          "description": "Status of acknowledgement.",
+          "$ref": "#/definitions/AcknowledgementStatus"
+        },
+        "sellingParty": {
+          "description": "PartyID as vendor code.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "shipFromParty": {
+          "description": "PartyID as the vendor's warehouseId.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "itemAcknowledgements": {
+          "type": "array",
+          "description": "Item details including acknowledged quantity.",
+          "items": {
+            "$ref": "#/definitions/OrderItemAcknowledgement"
+          }
+        }
+      },
+      "description": "Details of an individual order being acknowledged."
+    },
+    "OrderItemAcknowledgement": {
+      "type": "object",
+      "required": [
+        "acknowledgedQuantity",
+        "itemSequenceNumber"
+      ],
+      "properties": {
+        "itemSequenceNumber": {
+          "type": "string",
+          "description": "Line item sequence number for the item."
+        },
+        "buyerProductIdentifier": {
+          "type": "string",
+          "description": "Buyer's standard identification number (ASIN) of an item."
+        },
+        "vendorProductIdentifier": {
+          "type": "string",
+          "description": "The vendor selected product identification of the item. Should be the same as was provided in the purchase order."
+        },
+        "acknowledgedQuantity": {
+          "description": "Details of quantity acknowledged with the above acknowledgement code.",
+          "$ref": "#/definitions/ItemQuantity"
+        }
+      }
+    },
+    "ItemQuantity": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "description": "Acknowledged quantity. This value should not be zero."
+        },
+        "unitOfMeasure": {
+          "type": "string",
+          "description": "Unit of measure for the acknowledged quantity.",
+          "enum": [
+            "Each"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "Each",
+              "description": "Unit of measure to represent individual piece."
+            }
+          ]
+        }
+      },
+      "description": "Details of quantity ordered."
+    },
+    "TaxLineItem": {
+      "type": "array",
+      "description": "A list of tax line items.",
+      "items": {
+        "$ref": "#/definitions/TaxDetails"
+      }
+    },
+    "TaxDetails": {
+      "type": "object",
+      "required": [
+        "taxAmount"
+      ],
+      "properties": {
+        "taxRate": {
+          "$ref": "#/definitions/Decimal"
+        },
+        "taxAmount": {
+          "$ref": "#/definitions/Money"
+        },
+        "taxableAmount": {
+          "$ref": "#/definitions/Money"
+        },
+        "type": {
+          "type": "string",
+          "description": "Tax type.",
+          "enum": [
+            "CONSUMPTION",
+            "GST",
+            "MwSt.",
+            "PST",
+            "TOTAL",
+            "TVA",
+            "VAT"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "CONSUMPTION",
+              "description": "Tax levied on consumption spending on goods and services."
+            },
+            {
+              "value": "GST",
+              "description": "Tax levied on most goods and services sold for domestic consumption."
+            },
+            {
+              "value": "MwSt.",
+              "description": "Mehrwertsteuer, MwSt, is German for value-added tax."
+            },
+            {
+              "value": "PST",
+              "description": "A provincial sales tax (PST) is imposed on consumers of goods and particular services in many Canadian provinces."
+            },
+            {
+              "value": "TOTAL",
+              "description": "Combined total of all the applicable taxes."
+            },
+            {
+              "value": "TVA",
+              "description": "Taxe sur la Valeur Ajout&#233;e (TVA) is French for value-added tax."
+            },
+            {
+              "value": "VAT",
+              "description": "Value-added tax."
+            }
+          ]
+        }
+      }
+    },
+    "AcknowledgementStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Acknowledgement code is a unique two digit value which indicates the status of the acknowledgement. For a list of acknowledgement codes that Amazon supports, see the Vendor Direct Fulfillment APIs Use Case Guide."
+        },
+        "description": {
+          "type": "string",
+          "description": "Reason for the acknowledgement code."
+        }
+      },
+      "description": "Status of acknowledgement."
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    },
+    "ShipmentDetails": {
+      "type": "object",
+      "required": [
+        "isPriorityShipment",
+        "isPslipRequired",
+        "messageToCustomer",
+        "shipMethod",
+        "shipmentDates"
+      ],
+      "properties": {
+        "isPriorityShipment": {
+          "type": "boolean",
+          "description": "When true, this is a priority shipment."
+        },
+        "isScheduledDeliveryShipment": {
+          "type": "boolean",
+          "description": "When true, this order is part of a scheduled delivery program."
+        },
+        "isPslipRequired": {
+          "type": "boolean",
+          "description": "When true, a packing slip is required to be sent to the customer."
+        },
+        "isGift": {
+          "type": "boolean",
+          "description": "When true, the order contain a gift. Include the gift message and gift wrap information."
+        },
+        "shipMethod": {
+          "type": "string",
+          "description": "Ship method to be used for shipping the order. Amazon defines ship method codes indicating the shipping carrier and shipment service level. To see the full list of ship methods in use, including both the code and the friendly name, search the 'Help' section on Vendor Central for 'ship methods'."
+        },
+        "shipmentDates": {
+          "$ref": "#/definitions/ShipmentDates"
+        },
+        "messageToCustomer": {
+          "type": "string",
+          "description": "Message to customer for order status."
+        }
+      },
+      "description": "Shipment details required for the shipment."
+    },
+    "ShipmentDates": {
+      "type": "object",
+      "required": [
+        "requiredShipDate"
+      ],
+      "properties": {
+        "requiredShipDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Time by which the vendor is required to ship the order."
+        },
+        "promisedDeliveryDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Delivery date promised to the Amazon customer."
+        }
+      },
+      "description": "Shipment dates."
+    },
+    "ScheduledDeliveryShipment": {
+      "type": "object",
+      "properties": {
+        "scheduledDeliveryServiceType": {
+          "type": "string",
+          "description": "Scheduled delivery service type."
+        },
+        "earliestNominatedDeliveryDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Earliest nominated delivery date for the scheduled delivery."
+        },
+        "latestNominatedDeliveryDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Latest nominated delivery date for the scheduled delivery."
+        }
+      },
+      "description": "Dates for the scheduled delivery shipments."
+    },
+    "GiftDetails": {
+      "type": "object",
+      "properties": {
+        "giftMessage": {
+          "type": "string",
+          "description": "Gift message to be printed in shipment."
+        },
+        "giftWrapId": {
+          "type": "string",
+          "description": "Gift wrap identifier for the gift wrapping, if any."
+        }
+      },
+      "description": "Gift details for the item."
+    }
+  }
+}

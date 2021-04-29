@@ -1,0 +1,419 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Direct Fulfillment Inventory Updates provides programmatic access to a direct fulfillment vendor's inventory updates.",
+    "version": "v1",
+    "title": "Selling Partner API for Direct Fulfillment Inventory Updates",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/vendor/directFulfillment/inventory/v1/warehouses/{warehouseId}/items": {
+      "post": {
+        "tags": [
+          "updateInventory"
+        ],
+        "description": "Submits inventory updates for the specified warehouse for either a partial or full feed of inventory items.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "submitInventoryUpdate",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubmitInventoryUpdateRequest"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "description": "Identifier for the warehouse for which to update inventory.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInventoryUpdateResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "inventory": {
+                          "sellingParty": {
+                            "partyId": "VENDORID"
+                          },
+                          "isFullUpdate": false,
+                          "items": [
+                            {
+                              "buyerProductIdentifier": "ABCD4562",
+                              "vendorProductIdentifier": "7Q89K11",
+                              "availableQuantity": {
+                                "amount": 10,
+                                "unitOfMeasure": "Each"
+                              },
+                              "isObsolete": false
+                            },
+                            {
+                              "buyerProductIdentifier": "ABCD4563",
+                              "vendorProductIdentifier": "7Q89K12",
+                              "availableQuantity": {
+                                "amount": 15,
+                                "unitOfMeasure": "Each"
+                              },
+                              "isObsolete": false
+                            },
+                            {
+                              "buyerProductIdentifier": "ABCD4564",
+                              "vendorProductIdentifier": "7Q89K13",
+                              "availableQuantity": {
+                                "amount": 20,
+                                "unitOfMeasure": "Each"
+                              },
+                              "isObsolete": false
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "transactionId": "20190905010908-8a3b6901-ef20-412f-9270-21c021796605"
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "body": {}
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "transactionId": "mock-TransactionId-20190905010908-8a3b6901-ef20-412f-9270-21c021796605"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInventoryUpdateResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "warehouseId": {
+                      "value": "DUMMYCODE"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "Invalid transmission ID.",
+                      "details": ""
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInventoryUpdateResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInventoryUpdateResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInventoryUpdateResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInventoryUpdateResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInventoryUpdateResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInventoryUpdateResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/SubmitInventoryUpdateResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    }
+  },
+  "definitions": {
+    "SubmitInventoryUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "inventory": {
+          "description": "Inventory details required to update some or all items for the requested warehouse.",
+          "$ref": "#/definitions/InventoryUpdate"
+        }
+      },
+      "description": "The request body for the submitInventoryUpdate operation."
+    },
+    "InventoryUpdate": {
+      "type": "object",
+      "required": [
+        "isFullUpdate",
+        "items",
+        "sellingParty"
+      ],
+      "properties": {
+        "sellingParty": {
+          "description": "ID of the selling party or vendor.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "isFullUpdate": {
+          "type": "boolean",
+          "description": "When true, this request contains a full feed. Otherwise, this request contains a partial feed. When sending a full feed, you must send information about all items in the warehouse. Any items not in the full feed are updated as not available. When sending a partial feed, only include the items that need an update to inventory. The status of other items will remain unchanged."
+        },
+        "items": {
+          "type": "array",
+          "description": "A list of inventory items with updated details, including quantity available.",
+          "items": {
+            "$ref": "#/definitions/ItemDetails"
+          }
+        }
+      }
+    },
+    "ItemDetails": {
+      "type": "object",
+      "required": [
+        "availableQuantity"
+      ],
+      "properties": {
+        "buyerProductIdentifier": {
+          "type": "string",
+          "description": "The buyer selected product identification of the item. Either buyerProductIdentifier or vendorProductIdentifier should be submitted."
+        },
+        "vendorProductIdentifier": {
+          "type": "string",
+          "description": "The vendor selected product identification of the item. Either buyerProductIdentifier or vendorProductIdentifier should be submitted."
+        },
+        "availableQuantity": {
+          "description": "Total item quantity available in the warehouse.",
+          "$ref": "#/definitions/ItemQuantity"
+        },
+        "isObsolete": {
+          "type": "boolean",
+          "description": "When true, the item is permanently unavailable."
+        }
+      },
+      "description": "Updated inventory details for an item."
+    },
+    "PartyIdentification": {
+      "type": "object",
+      "required": [
+        "partyId"
+      ],
+      "properties": {
+        "partyId": {
+          "type": "string",
+          "description": "Assigned identification for the party."
+        }
+      }
+    },
+    "ItemQuantity": {
+      "type": "object",
+      "required": [
+        "unitOfMeasure"
+      ],
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "description": "Quantity of units available for a specific item."
+        },
+        "unitOfMeasure": {
+          "type": "string",
+          "description": "Unit of measure for the available quantity."
+        }
+      },
+      "description": "Details of item quantity."
+    },
+    "SubmitInventoryUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The response payload for the submitInventoryUpdate operation.",
+          "$ref": "#/definitions/TransactionReference"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the submitInventoryUpdate operation."
+    },
+    "TransactionReference": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "string",
+          "description": "GUID to identify this transaction. This value can be used with the Transaction Status API to return the status of this transaction."
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    }
+  }
+}
