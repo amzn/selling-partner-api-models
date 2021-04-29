@@ -1,0 +1,3666 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Retail Procurement Orders provides programmatic access to vendor orders data.",
+    "version": "v1",
+    "title": "Selling Partner API for Retail Procurement Orders",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/vendor/orders/v1/purchaseOrders": {
+      "get": {
+        "tags": [
+          "vendorOrders"
+        ],
+        "description": "Returns a list of purchase orders created or changed during the time frame that you specify. You define the time frame using the createdAfter, createdBefore, changedAfter and changedBefore parameters. The date range to search must not be more than 7 days. You can choose to get only the purchase order numbers by setting includeDetails to false. You can then use the getPurchaseOrder operation to receive details for a specific purchase order.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getPurchaseOrders",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The limit to the number of records returned. Default value is 100 records.",
+            "required": false,
+            "type": "integer",
+            "maximum": 100,
+            "minimum": 1,
+            "format": "int64"
+          },
+          {
+            "name": "createdAfter",
+            "in": "query",
+            "description": "Purchase orders that became available after this time will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "createdBefore",
+            "in": "query",
+            "description": "Purchase orders that became available before this time will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Sort in ascending or descending order by purchase order creation date.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "ASC",
+                "description": "Sort in ascending order by purchase order creation date."
+              },
+              {
+                "value": "DESC",
+                "description": "Sort in descending order by purchase order creation date."
+              }
+            ]
+          },
+          {
+            "name": "nextToken",
+            "in": "query",
+            "description": "Used for pagination when there is more purchase orders than the specified result size limit. The token value is returned in the previous API call",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "includeDetails",
+            "in": "query",
+            "description": "When true, returns purchase orders with complete details. Otherwise, only purchase order numbers are returned. Default value is true.",
+            "required": false,
+            "type": "string",
+            "format": "boolean"
+          },
+          {
+            "name": "changedAfter",
+            "in": "query",
+            "description": "Purchase orders that changed after this timestamp will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "changedBefore",
+            "in": "query",
+            "description": "Purchase orders that changed before this timestamp will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "poItemState",
+            "in": "query",
+            "description": "Current state of the purchase order item. If this value is Cancelled, this API will return purchase orders which have one or more items cancelled by Amazon with updated item quantity as zero.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "Cancelled"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "Cancelled",
+                "description": "Status for order items cancelled by vendors."
+              }
+            ]
+          },
+          {
+            "name": "isPOChanged",
+            "in": "query",
+            "description": "When true, returns purchase orders which were modified after the order was placed. Vendors are required to pull the changed purchase order and fulfill the updated purchase order and not the original one. Default value is false.",
+            "required": false,
+            "type": "string",
+            "format": "boolean"
+          },
+          {
+            "name": "purchaseOrderState",
+            "in": "query",
+            "description": "Filters purchase orders based on the purchase order state.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "New",
+              "Acknowledged",
+              "Closed"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "New",
+                "description": "Status of the orders that are newly created."
+              },
+              {
+                "value": "Acknowledged",
+                "description": "Status of the orders acknowledged by vendors."
+              },
+              {
+                "value": "Closed",
+                "description": "Status of the orders that are completed."
+              }
+            ]
+          },
+          {
+            "name": "orderingVendorCode",
+            "in": "query",
+            "description": "Filters purchase orders based on the specified ordering vendor code. This value should be same as 'sellingParty.partyId' in the purchase order. If not included in the filter, all purchase orders for all of the vendor codes that exist in the vendor group used to authorize the API client application are returned.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersResponse"
+            },
+            "examples": {
+              "payload": {
+                "pagination": {
+                  "nextToken": "MDAwMDAwMDAwAQ=="
+                },
+                "orders": [
+                  {
+                    "purchaseOrderNumber": "L8266355",
+                    "purchaseOrderState": "New",
+                    "orderDetails": {
+                      "purchaseOrderDate": "2019-05-23T10:00:00Z",
+                      "purchaseOrderChangedDate": "2019-05-24T16:05:00Z",
+                      "purchaseOrderStateChangedDate": "2019-05-23T10:00:00Z",
+                      "purchaseOrderType": "RegularOrder",
+                      "importDetails": {
+                        "methodOfPayment": "PaidByBuyer",
+                        "internationalCommercialTerms": "ExWorks",
+                        "portOfDelivery": "YANTIAN, CHINA",
+                        "importContainers": "1-40'HC, 1-20'",
+                        "shippingInstructions": "PREFERENCE IS PALLET-LOAD, BUT IF CONTAINERS ARE FLOOR-LOADED, THEN PLEASE DO CLAMP-LOAD OR STRAIGHT FLOOR-LOAD. DO NOT USE SLIP SHEET FOR THIS FC DESTINATION. PAYMENT TERMS ARE PER CONTAINER."
+                      },
+                      "dealCode": "BTS",
+                      "paymentMethod": "Invoice",
+                      "buyingParty": {
+                        "partyId": "ABCD",
+                        "address": {
+                          "name": "APPARIO RETAIL PVT.LTD.",
+                          "addressLine1": "3APPARIO RETAIL PVT.LTD.- C/O. AMAZON SELLER SERVIC",
+                          "city": "Siddhapudur",
+                          "stateOrRegion": "Tamil Nadu",
+                          "postalCode": "641044",
+                          "countryCode": "IN",
+                          "phone": "206-266-8000"
+                        }
+                      },
+                      "sellingParty": {
+                        "partyId": "TEST1"
+                      },
+                      "shipToParty": {
+                        "partyId": "ABCD",
+                        "address": {
+                          "name": "APPARIO RETAIL PVT.LTD.",
+                          "addressLine1": "3APPARIO RETAIL PVT.LTD.- C/O. AMAZON SELLER SERVIC",
+                          "city": "Siddhapudur",
+                          "stateOrRegion": "Tamil Nadu",
+                          "postalCode": "641044",
+                          "countryCode": "IN",
+                          "phone": "206-266-8000"
+                        }
+                      },
+                      "billToParty": {
+                        "partyId": "ABCD",
+                        "address": {
+                          "name": "APPARIO RETAIL PVT.LTD.",
+                          "addressLine1": "3APPARIO RETAIL PVT.LTD.- C/O. AMAZON SELLER SERVIC",
+                          "city": "Siddhapudur",
+                          "stateOrRegion": "Tamil Nadu",
+                          "postalCode": "641044",
+                          "countryCode": "IN",
+                          "phone": "206-266-8000"
+                        }
+                      },
+                      "taxInfo": {
+                        "taxType": "GST",
+                        "taxRegistrationNumber": "098522PCA6346DTEDD"
+                      }
+                    },
+                    "deliveryWindow": "2019-05-23T10:00:00Z--2019-05-30T10:00:00Z",
+                    "items": [
+                      {
+                        "itemSequenceNumber": "1",
+                        "amazonProductIdentifier": "ABC123434",
+                        "vendorProductIdentifier": "028877454078",
+                        "orderedQuantity": {
+                          "amount": 2,
+                          "unitOfMeasure": "Cases",
+                          "unitSize": 10
+                        },
+                        "isBackOrderAllowed": true,
+                        "netCost": {
+                          "amount": "1800",
+                          "currencyCode": "INR"
+                        },
+                        "listPrice": {
+                          "amount": "2000",
+                          "currencyCode": "INR"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2019-09-21T00:00:00"
+                    },
+                    "createdAfter": {
+                      "value": "2019-08-20T14:00:00"
+                    },
+                    "includeDetails": {
+                      "value": "true"
+                    },
+                    "limit": {
+                      "value": 2
+                    },
+                    "sortOrder": {
+                      "value": "DESC"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "pagination": {
+                      "nextToken": "MDAwMDAwMDAwMQ=="
+                    },
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "2JK3S9VC",
+                        "purchaseOrderState": "New",
+                        "orderDetails": {
+                          "purchaseOrderDate": "2019-08-20T15:51:00Z",
+                          "purchaseOrderChangedDate": "2019-08-22T16:05:00Z",
+                          "purchaseOrderStateChangedDate": "2019-08-20T15:51:00Z",
+                          "purchaseOrderType": "RegularOrder",
+                          "paymentMethod": "Invoice",
+                          "buyingParty": {
+                            "partyId": "ABCD"
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipWindow": "2019-08-21T07:00:00Z--2019-08-27T07:00:00Z",
+                          "items": [
+                            {
+                              "itemSequenceNumber": "1",
+                              "amazonProductIdentifier": "B07DFVDRAB",
+                              "vendorProductIdentifier": "8806098286500",
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": false,
+                              "netCost": {
+                                "amount": "346.27",
+                                "currencyCode": "USD"
+                              },
+                              "listPrice": {
+                                "amount": "346.27",
+                                "currencyCode": "USD"
+                              }
+                            },
+                            {
+                              "itemSequenceNumber": "2",
+                              "amazonProductIdentifier": "B07DFYF5AB",
+                              "vendorProductIdentifier": "8806098286123",
+                              "orderedQuantity": {
+                                "amount": 2,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": false,
+                              "netCost": {
+                                "amount": "229.47",
+                                "currencyCode": "USD"
+                              },
+                              "listPrice": {
+                                "amount": "229.47",
+                                "currencyCode": "USD"
+                              }
+                            },
+                            {
+                              "itemSequenceNumber": "3",
+                              "amazonProductIdentifier": "B07MC84QAB",
+                              "vendorProductIdentifier": "8806098095123",
+                              "orderedQuantity": {
+                                "amount": 13,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": false,
+                              "netCost": {
+                                "amount": "412.71",
+                                "currencyCode": "USD"
+                              },
+                              "listPrice": {
+                                "amount": "412.71",
+                                "currencyCode": "USD"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "purchaseOrderNumber": "3TRD2IAB",
+                        "purchaseOrderState": "New",
+                        "orderDetails": {
+                          "purchaseOrderDate": "2019-08-20T16:29:00Z",
+                          "purchaseOrderChangedDate": "2019-08-20T16:50:00Z",
+                          "purchaseOrderStateChangedDate": "2019-08-20T16:29:00Z",
+                          "purchaseOrderType": "RegularOrder",
+                          "importDetails": {
+                            "importContainers": "2-20'HC,1-45',1-45'HC",
+                            "internationalCommercialTerms": "FreeOnBoard",
+                            "methodOfPayment": "PrepaidBySeller",
+                            "portOfDelivery": "INDIA",
+                            "shippingInstructions": "PREFERENCE IS PALLET-LOAD, BUT IF CONTAINERS ARE FLOOR-LOADED"
+                          },
+                          "paymentMethod": "Invoice",
+                          "buyingParty": {
+                            "partyId": "ABC1"
+                          },
+                          "sellingParty": {
+                            "partyId": "998US"
+                          },
+                          "shipToParty": {
+                            "partyId": "ABC1"
+                          },
+                          "billToParty": {
+                            "partyId": "ABC1"
+                          },
+                          "shipWindow": "2019-08-21T07:00:00Z--2019-08-27T07:00:00Z",
+                          "items": [
+                            {
+                              "itemSequenceNumber": "1",
+                              "amazonProductIdentifier": "B01LNRIIAB",
+                              "vendorProductIdentifier": "B01LNRIIAB",
+                              "orderedQuantity": {
+                                "amount": 5,
+                                "unitOfMeasure": "CASES",
+                                "unitSize": 10
+                              },
+                              "isBackOrderAllowed": true,
+                              "netCost": {
+                                "amount": "94.97",
+                                "currencyCode": "USD"
+                              },
+                              "listPrice": {
+                                "amount": "94.97",
+                                "currencyCode": "USD"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2019-08-21T00:00:00"
+                    },
+                    "createdAfter": {
+                      "value": "2019-08-20T14:00:00"
+                    },
+                    "includeDetails": {
+                      "value": "false"
+                    },
+                    "sortOrder": {
+                      "value": "DESC"
+                    },
+                    "nextToken": {
+                      "value": "MDAwMDAwMDAwMQ=="
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "2JK3S9XY",
+                        "purchaseOrderState": "New"
+                      },
+                      {
+                        "purchaseOrderNumber": "3TRD2ABC",
+                        "purchaseOrderState": "Acknowledged"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "changedBefore": {
+                      "value": "2020-05-27T13:00:00"
+                    },
+                    "changedAfter": {
+                      "value": "2020-05-25T13:00:00"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "TestPO2",
+                        "purchaseOrderState": "New",
+                        "orderDetails": {
+                          "purchaseOrderDate": "2020-05-25T19:29:23Z",
+                          "purchaseOrderChangedDate": "2020-05-26T16:00:00Z",
+                          "purchaseOrderStateChangedDate": "2020-05-25T19:29:23Z",
+                          "purchaseOrderType": "RegularOrder",
+                          "paymentMethod": "Invoice",
+                          "buyingParty": {
+                            "partyId": "ABCD"
+                          },
+                          "sellingParty": {
+                            "partyId": "API01"
+                          },
+                          "shipToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipWindow": "2020-05-26T07:00:00Z--2020-05-29T07:00:00Z",
+                          "items": [
+                            {
+                              "itemSequenceNumber": "1",
+                              "amazonProductIdentifier": "B01XYZ3Z00",
+                              "vendorProductIdentifier": "8806093095123",
+                              "orderedQuantity": {
+                                "amount": 20,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": true,
+                              "netCost": {
+                                "currencyCode": "USD",
+                                "amount": "70"
+                              },
+                              "listPrice": {
+                                "currencyCode": "USD",
+                                "amount": "70"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "purchaseOrderNumber": "TestPO1",
+                        "purchaseOrderState": "Acknowledged",
+                        "orderDetails": {
+                          "purchaseOrderDate": "2020-05-26T18:49:20Z",
+                          "purchaseOrderChangedDate": "2020-05-27T06:30:00Z",
+                          "purchaseOrderStateChangedDate": "2020-05-26T19:10:00Z",
+                          "purchaseOrderType": "RegularOrder",
+                          "paymentMethod": "Invoice",
+                          "buyingParty": {
+                            "partyId": "ABCD"
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipWindow": "2020-05-27T07:00:00Z--2020-05-30T07:00:00Z",
+                          "items": [
+                            {
+                              "itemSequenceNumber": "1",
+                              "amazonProductIdentifier": "B01XYZ3Z00",
+                              "vendorProductIdentifier": "8806093095123",
+                              "orderedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": true,
+                              "netCost": {
+                                "currencyCode": "USD",
+                                "amount": "70"
+                              },
+                              "listPrice": {
+                                "currencyCode": "USD",
+                                "amount": "70"
+                              }
+                            },
+                            {
+                              "itemSequenceNumber": "2",
+                              "amazonProductIdentifier": "B01XYZ3Z01",
+                              "vendorProductIdentifier": "8806098095124",
+                              "orderedQuantity": {
+                                "amount": 10,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": true,
+                              "netCost": {
+                                "currencyCode": "USD",
+                                "amount": "15"
+                              },
+                              "listPrice": {
+                                "currencyCode": "USD",
+                                "amount": "15"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "changedBefore": {
+                      "value": "2020-05-25T13:00:00"
+                    },
+                    "changedAfter": {
+                      "value": "2020-05-27T13:00:00"
+                    },
+                    "poItemState": {
+                      "value": "Cancelled"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "TestPO1",
+                        "purchaseOrderState": "Acknowledged",
+                        "orderDetails": {
+                          "purchaseOrderDate": "2020-05-26T18:49:20Z",
+                          "purchaseOrderChangedDate": "2020-05-27T06:30:00Z",
+                          "purchaseOrderStateChangedDate": "2020-05-26T19:10:00Z",
+                          "purchaseOrderType": "RegularOrder",
+                          "paymentMethod": "Invoice",
+                          "buyingParty": {
+                            "partyId": "ABCD"
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipWindow": "2020-05-27T07:00:00Z--2020-05-29T07:00:00Z",
+                          "items": [
+                            {
+                              "itemSequenceNumber": "1",
+                              "amazonProductIdentifier": "B01XYZ3Z00",
+                              "vendorProductIdentifier": "8806098095123",
+                              "orderedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": true,
+                              "netCost": {
+                                "currencyCode": "USD",
+                                "amount": "70"
+                              },
+                              "listPrice": {
+                                "currencyCode": "USD",
+                                "amount": "70"
+                              }
+                            },
+                            {
+                              "itemSequenceNumber": "2",
+                              "amazonProductIdentifier": "B01XYZ3Z01",
+                              "vendorProductIdentifier": "8806098095124",
+                              "orderedQuantity": {
+                                "amount": 10,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": true,
+                              "netCost": {
+                                "currencyCode": "USD",
+                                "amount": "15"
+                              },
+                              "listPrice": {
+                                "currencyCode": "USD",
+                                "amount": "15"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2020-05-26T13:00:00"
+                    },
+                    "createdAfter": {
+                      "value": "2020-05-25T13:00:00"
+                    },
+                    "isPOChanged": {
+                      "value": "true"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "TestPO2",
+                        "purchaseOrderState": "New",
+                        "orderDetails": {
+                          "purchaseOrderDate": "2020-05-25T19:29:23Z",
+                          "purchaseOrderChangedDate": "2020-05-26T16:00:00Z",
+                          "purchaseOrderStateChangedDate": "2020-05-25T19:29:23Z",
+                          "purchaseOrderType": "RegularOrder",
+                          "paymentMethod": "Invoice",
+                          "buyingParty": {
+                            "partyId": "ABCD"
+                          },
+                          "sellingParty": {
+                            "partyId": "API01"
+                          },
+                          "shipToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipWindow": "2020-05-26T07:00:00Z--2020-05-29T07:00:00Z",
+                          "items": [
+                            {
+                              "itemSequenceNumber": "1",
+                              "amazonProductIdentifier": "B01XYZ3Z00",
+                              "vendorProductIdentifier": "8806093095123",
+                              "orderedQuantity": {
+                                "amount": 20,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": true,
+                              "netCost": {
+                                "currencyCode": "USD",
+                                "amount": "70"
+                              },
+                              "listPrice": {
+                                "currencyCode": "USD",
+                                "amount": "70"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2020-05-27T13:00:00"
+                    },
+                    "createdAfter": {
+                      "value": "2020-05-25T13:00:00"
+                    },
+                    "purchaseOrderState": {
+                      "value": "New"
+                    },
+                    "orderingVendorCode": {
+                      "value": "API01"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "TestPO2",
+                        "purchaseOrderState": "New",
+                        "orderDetails": {
+                          "purchaseOrderDate": "2020-05-25T19:29:23Z",
+                          "purchaseOrderChangedDate": "2020-05-26T06:00:00Z",
+                          "purchaseOrderStateChangedDate": "2020-05-25T19:29:23Z",
+                          "purchaseOrderType": "RegularOrder",
+                          "paymentMethod": "Invoice",
+                          "buyingParty": {
+                            "partyId": "ABCD"
+                          },
+                          "sellingParty": {
+                            "partyId": "API01"
+                          },
+                          "shipToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "shipWindow": "2020-05-26T07:00:00Z--2020-05-29T07:00:00Z",
+                          "items": [
+                            {
+                              "itemSequenceNumber": "1",
+                              "amazonProductIdentifier": "B01XYZ3Z00",
+                              "vendorProductIdentifier": "8806093095123",
+                              "orderedQuantity": {
+                                "amount": 20,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": true,
+                              "netCost": {
+                                "currencyCode": "USD",
+                                "amount": "70"
+                              },
+                              "listPrice": {
+                                "currencyCode": "USD",
+                                "amount": "70"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "purchaseOrderNumber": "TestPO3",
+                        "purchaseOrderState": "New",
+                        "orderDetails": {
+                          "purchaseOrderDate": "2020-05-26T18:05:23Z",
+                          "purchaseOrderStateChangedDate": "2020-05-26T18:05:23Z",
+                          "purchaseOrderType": "RegularOrder",
+                          "paymentMethod": "Invoice",
+                          "buyingParty": {
+                            "partyId": "ABCF"
+                          },
+                          "sellingParty": {
+                            "partyId": "API01"
+                          },
+                          "shipToParty": {
+                            "partyId": "ABCF"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCF"
+                          },
+                          "shipWindow": "2020-05-26T07:00:00Z--2020-06-03T07:00:00Z",
+                          "items": [
+                            {
+                              "itemSequenceNumber": "1",
+                              "amazonProductIdentifier": "B01XYZ3Z02",
+                              "vendorProductIdentifier": "8806093095125",
+                              "orderedQuantity": {
+                                "amount": 10,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": true,
+                              "netCost": {
+                                "currencyCode": "USD",
+                                "amount": "50"
+                              },
+                              "listPrice": {
+                                "currencyCode": "USD",
+                                "amount": "50"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {}
+                },
+                "response": {
+                  "payload": {
+                    "pagination": {
+                      "nextToken": "MDAwMDAwMDAwMQ=="
+                    },
+                    "orders": [
+                      {
+                        "purchaseOrderNumber": "mock-purchaseOrderNumber1",
+                        "orderDetails": {
+                          "purchaseOrderDate": "2019-08-14T13:51:00Z",
+                          "purchaseOrderType": "RegularOrder",
+                          "paymentMethod": "Invoice",
+                          "buyingParty": {
+                            "partyId": "ABCD"
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "billToParty": {
+                            "partyId": "ABCD"
+                          },
+                          "items": [
+                            {
+                              "itemSequenceNumber": "00001",
+                              "amazonProductIdentifier": "B07DFVDRAB",
+                              "vendorProductIdentifier": "8806098286500",
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": false,
+                              "listPrice": {
+                                "amount": "34366.27",
+                                "currencyCode": "INR"
+                              }
+                            },
+                            {
+                              "itemSequenceNumber": "00002",
+                              "amazonProductIdentifier": "B07DFYF5AB",
+                              "vendorProductIdentifier": "8806098286123",
+                              "orderedQuantity": {
+                                "amount": 2,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": false,
+                              "listPrice": {
+                                "amount": "22798.47",
+                                "currencyCode": "INR"
+                              }
+                            },
+                            {
+                              "itemSequenceNumber": "00003",
+                              "amazonProductIdentifier": "B07MC84QAB",
+                              "vendorProductIdentifier": "8806098095123",
+                              "orderedQuantity": {
+                                "amount": 13,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "isBackOrderAllowed": false,
+                              "listPrice": {
+                                "amount": "4362.71",
+                                "currencyCode": "INR"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "purchaseOrderNumber": "mock-purchaseOrderNumber2",
+                        "orderDetails": {
+                          "purchaseOrderDate": "2019-08-13T06:29:00Z",
+                          "purchaseOrderType": "RegularOrder",
+                          "importDetails": {
+                            "importContainers": "2-20'HC,1-45',1-45'HC",
+                            "internationalCommercialTerms": "FreeOnBoard",
+                            "methodOfPayment": "PrepaidBySeller",
+                            "portOfDelivery": "INDIA",
+                            "shippingInstructions": "PREFERENCE IS PALLET-LOAD, BUT IF CONTAINERS ARE FLOOR-LOADED"
+                          },
+                          "paymentMethod": "Invoice",
+                          "buyingParty": {
+                            "partyId": "ABC1"
+                          },
+                          "sellingParty": {
+                            "partyId": "999US"
+                          },
+                          "shipToParty": {
+                            "partyId": "ABC1"
+                          },
+                          "billToParty": {
+                            "partyId": "ABC1"
+                          },
+                          "items": [
+                            {
+                              "itemSequenceNumber": "00001",
+                              "amazonProductIdentifier": "B01LNRIIAB",
+                              "vendorProductIdentifier": "B01LNRIIAB",
+                              "orderedQuantity": {
+                                "amount": 24,
+                                "unitOfMeasure": "Cases",
+                                "unitSize": 5
+                              },
+                              "isBackOrderAllowed": true,
+                              "netCost": {
+                                "amount": "94.97",
+                                "currencyCode": "INR"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersResponse"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "InvalidRequest",
+                    "message": "The request is invalid."
+                  }
+                ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2019-09-2100:00:00"
+                    },
+                    "createdAfter": {
+                      "value": "2019-08-20T14:00:00"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidRequest",
+                      "message": "The request is invalid.",
+                      "details": ""
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "TPS rate customer is authorized for."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "TPS rate customer is authorized for."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendor/orders/v1/purchaseOrders/{purchaseOrderNumber}": {
+      "get": {
+        "tags": [
+          "vendorOrders"
+        ],
+        "description": "Returns a purchase order based on the purchaseOrderNumber value that you specify.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getPurchaseOrder",
+        "parameters": [
+          {
+            "name": "purchaseOrderNumber",
+            "in": "path",
+            "description": "The purchase order identifier for the order that you want. Formatting Notes: 8-character alpha-numeric code.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrderResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "purchaseOrderNumber": "TestPO3",
+                  "purchaseOrderState": "New",
+                  "orderDetails": {
+                    "purchaseOrderDate": "2020-05-26T18:05:23Z",
+                    "purchaseOrderStateChangedDate": "2020-05-26T18:05:23Z",
+                    "purchaseOrderType": "RegularOrder",
+                    "paymentMethod": "Invoice",
+                    "buyingParty": {
+                      "partyId": "ABCF"
+                    },
+                    "sellingParty": {
+                      "partyId": "API01"
+                    },
+                    "shipToParty": {
+                      "partyId": "ABCF"
+                    },
+                    "billToParty": {
+                      "partyId": "ABCF"
+                    },
+                    "shipWindow": "2020-05-26T07:00:00Z--2020-06-03T07:00:00Z",
+                    "items": [
+                      {
+                        "itemSequenceNumber": "1",
+                        "amazonProductIdentifier": "B01XYZ3Z02",
+                        "vendorProductIdentifier": "8806093095125",
+                        "orderedQuantity": {
+                          "amount": 10,
+                          "unitOfMeasure": "Eaches",
+                          "unitSize": 1
+                        },
+                        "isBackOrderAllowed": true,
+                        "netCost": {
+                          "currencyCode": "USD",
+                          "amount": "50"
+                        },
+                        "listPrice": {
+                          "currencyCode": "USD",
+                          "amount": "50"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "purchaseOrderNumber": {
+                      "value": "4Z32PABC"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "purchaseOrderNumber": "4Z32PABC",
+                    "purchaseOrderState": "Closed",
+                    "orderDetails": {
+                      "purchaseOrderDate": "2019-07-26T11:10:00Z",
+                      "purchaseOrderStateChangedDate": "2019-08-25T19:29:23Z",
+                      "purchaseOrderType": "RegularOrder",
+                      "paymentMethod": "Invoice",
+                      "buyingParty": {
+                        "partyId": "ABCD"
+                      },
+                      "sellingParty": {
+                        "partyId": "999US"
+                      },
+                      "shipToParty": {
+                        "partyId": "ABCD"
+                      },
+                      "billToParty": {
+                        "partyId": "ABCD"
+                      },
+                      "shipWindow": "2019-07-26T07:00:00Z--2019-08-03T07:00:00Z",
+                      "items": [
+                        {
+                          "itemSequenceNumber": "1",
+                          "amazonProductIdentifier": "B0748G1ABC",
+                          "vendorProductIdentifier": "0017817748000",
+                          "orderedQuantity": {
+                            "amount": 37,
+                            "unitOfMeasure": "Eaches",
+                            "unitSize": 1
+                          },
+                          "isBackOrderAllowed": false,
+                          "netCost": {
+                            "amount": "140",
+                            "currencyCode": "USD"
+                          },
+                          "listPrice": {
+                            "amount": "140",
+                            "currencyCode": "USD"
+                          }
+                        },
+                        {
+                          "itemSequenceNumber": "2",
+                          "amazonProductIdentifier": "B0748JMABC",
+                          "vendorProductIdentifier": "0017817748000",
+                          "orderedQuantity": {
+                            "amount": 24,
+                            "unitOfMeasure": "Eaches",
+                            "unitSize": 1
+                          },
+                          "isBackOrderAllowed": false,
+                          "netCost": {
+                            "amount": "15.62",
+                            "currencyCode": "USD"
+                          },
+                          "listPrice": {
+                            "amount": "15.62",
+                            "currencyCode": "USD"
+                          }
+                        },
+                        {
+                          "itemSequenceNumber": "3",
+                          "amazonProductIdentifier": "B076SDSABC",
+                          "vendorProductIdentifier": "0017817755000",
+                          "orderedQuantity": {
+                            "amount": 1,
+                            "unitOfMeasure": "Eaches",
+                            "unitSize": 1
+                          },
+                          "isBackOrderAllowed": false,
+                          "netCost": {
+                            "amount": "110.00",
+                            "currencyCode": "USD"
+                          },
+                          "listPrice": {
+                            "amount": "110.00",
+                            "currencyCode": "USD"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {}
+                },
+                "response": {
+                  "payload": {
+                    "purchaseOrderNumber": "mock-purchaseOrderNumber",
+                    "orderDetails": {
+                      "purchaseOrderDate": "2019-07-26T11:10:00Z",
+                      "purchaseOrderType": "RegularOrder",
+                      "paymentMethod": "Invoice",
+                      "buyingParty": {
+                        "partyId": "ABCD"
+                      },
+                      "sellingParty": {
+                        "partyId": "999US"
+                      },
+                      "shipToParty": {
+                        "partyId": "ABCD"
+                      },
+                      "billToParty": {
+                        "partyId": "ABCD"
+                      },
+                      "items": [
+                        {
+                          "itemSequenceNumber": "00001",
+                          "amazonProductIdentifier": "B0748G1ABC",
+                          "vendorProductIdentifier": "0017817748000",
+                          "orderedQuantity": {
+                            "amount": 37,
+                            "unitOfMeasure": "Eaches",
+                            "unitSize": 1
+                          },
+                          "isBackOrderAllowed": false,
+                          "netCost": {
+                            "amount": "14162.00",
+                            "currencyCode": "INR"
+                          }
+                        },
+                        {
+                          "itemSequenceNumber": "00002",
+                          "amazonProductIdentifier": "B0748JMABC",
+                          "vendorProductIdentifier": "0017817748000",
+                          "orderedQuantity": {
+                            "amount": 24,
+                            "unitOfMeasure": "Eaches",
+                            "unitSize": 1
+                          },
+                          "isBackOrderAllowed": false,
+                          "netCost": {
+                            "amount": "14162.00",
+                            "currencyCode": "INR"
+                          }
+                        },
+                        {
+                          "itemSequenceNumber": "00003",
+                          "amazonProductIdentifier": "B076SDSABC",
+                          "vendorProductIdentifier": "0017817755000",
+                          "orderedQuantity": {
+                            "amount": 1,
+                            "unitOfMeasure": "Eaches",
+                            "unitSize": 1
+                          },
+                          "isBackOrderAllowed": false,
+                          "netCost": {
+                            "amount": "14162.00",
+                            "currencyCode": "INR"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "purchaseOrderNumber": {
+                      "value": "null"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidRequest",
+                      "message": "Request is missing or has invalid parameters",
+                      "details": "purchaseOrderNumber cannot be null"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "TPS rate customer is authorized for."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "TPS rate customer is authorized for."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendor/orders/v1/acknowledgements": {
+      "post": {
+        "tags": [
+          "vendorOrders"
+        ],
+        "description": "Submits acknowledgements for one or more purchase orders.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "submitAcknowledgement",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementRequest",
+              "example": {
+                "payload": {
+                  "acknowledgements": [
+                    {
+                      "purchaseOrderNumber": "L8266355",
+                      "sellingParty": {
+                        "partyId": "999US"
+                      },
+                      "acknowledgementDate": "2019-07-17T19:17:34.304Z",
+                      "items": [
+                        {
+                          "itemSequenceNumber": "1",
+                          "amazonProductIdentifier": "ABC123434",
+                          "vendorProductIdentifier": "028877454078",
+                          "orderedQuantity": {
+                            "amount": 10,
+                            "unitOfMeasure": "Cases"
+                          },
+                          "netCost": {
+                            "currencyCode": "USD",
+                            "amount": "10.2"
+                          },
+                          "listPrice": {
+                            "currencyCode": "USD",
+                            "amount": "22.2"
+                          },
+                          "discountMultiplier": "0.44",
+                          "itemAcknowledgements": [
+                            {
+                              "acknowledgementCode": "Rejected",
+                              "acknowledgedQuantity": {
+                                "amount": 6,
+                                "unitOfMeasure": "Cases",
+                                "unitSize": 2
+                              },
+                              "scheduledShipDate": "2019-07-17T19:17:34.304Z",
+                              "scheduledDeliveryDate": "2019-07-17T19:17:34.304Z",
+                              "rejectionReason": "TemporarilyUnavailable"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "examples": {
+              "application/json": {
+                "payload": {
+                  "transactionId": "20190827182357-8725bde9-c61c-49f9-86ac-46efd82d4da5"
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "acknowledgements": [
+                          {
+                            "purchaseOrderNumber": "TestOrder202"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "transactionId": "20190827182357-8725bde9-c61c-49f9-86ac-46efd82d4da5"
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "body": {}
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "transactionId": "mock-TransactionId-20190827182357-8725bde9-c61c-49f9-86ac-46efd82d4da5"
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "acknowledgements": [
+                          {
+                            "purchaseOrderNumber": "TestOrder400",
+                            "sellingParty": {}
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "The content of element 'sellingParty' is not complete. One of '{partyId, address, taxInfo}' is expected.",
+                      "details": ""
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "TPS rate customer is authorized for."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "TPS rate customer is authorized for."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/SubmitAcknowledgementResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendor/orders/v1/purchaseOrdersStatus": {
+      "get": {
+        "tags": [
+          "vendorOrders"
+        ],
+        "description": "Returns purchase order statuses based on the filters that you specify. Date range to search must not be more than 7 days. You can return a list of purchase order statuses using the available filters, or a single purchase order status by providing the purchase order number.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getPurchaseOrdersStatus",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The limit to the number of records returned. Default value is 100 records.",
+            "required": false,
+            "type": "integer",
+            "maximum": 100,
+            "minimum": 1,
+            "format": "int64"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Sort in ascending or descending order by purchase order creation date.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "ASC",
+                "description": "Sort in ascending order by purchase order creation date."
+              },
+              {
+                "value": "DESC",
+                "description": "Sort in descending order by purchase order creation date."
+              }
+            ]
+          },
+          {
+            "name": "nextToken",
+            "in": "query",
+            "description": "Used for pagination when there are more purchase orders than the specified result size limit.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createdAfter",
+            "in": "query",
+            "description": "Purchase orders that became available after this timestamp will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "createdBefore",
+            "in": "query",
+            "description": "Purchase orders that became available before this timestamp will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "updatedAfter",
+            "in": "query",
+            "description": "Purchase orders for which the last purchase order update happened after this timestamp will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "updatedBefore",
+            "in": "query",
+            "description": "Purchase orders for which the last purchase order update happened before this timestamp will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "purchaseOrderNumber",
+            "in": "query",
+            "description": "Provides purchase order status for the specified purchase order number.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "purchaseOrderStatus",
+            "in": "query",
+            "description": "Filters purchase orders based on the specified purchase order status. If not included in filter, this will return purchase orders for all statuses.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "OPEN",
+                "description": "Buyer has not yet received all of the items in the purchase order."
+              },
+              {
+                "value": "CLOSED",
+                "description": "Buyer has received all of the items in the purchase order."
+              }
+            ]
+          },
+          {
+            "name": "itemConfirmationStatus",
+            "in": "query",
+            "description": "Filters purchase orders based on the specified purchase order item status. If not included in filter, purchase orders for all statuses are included.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ACCEPTED",
+              "PARTIALLY_ACCEPTED",
+              "REJECTED",
+              "UNCONFIRMED"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "ACCEPTED",
+                "description": "Status for orders accepted by vendors."
+              },
+              {
+                "value": "PARTIALLY_ACCEPTED",
+                "description": "Status for orders that are partially accepted by vendors."
+              },
+              {
+                "value": "REJECTED",
+                "description": "Status for orders that are rejected by vendors."
+              },
+              {
+                "value": "UNCONFIRMED",
+                "description": "Status for orders that are yet to be confirmed by vendors."
+              }
+            ]
+          },
+          {
+            "name": "orderingVendorCode",
+            "in": "query",
+            "description": "Filters purchase orders based on the specified ordering vendor code. This value should be same as 'sellingParty.partyId' in the purchase order. If not included in filter, all purchase orders for all the vendor codes that exist in the vendor group used to authorize API client application are returned.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "shipToPartyId",
+            "in": "query",
+            "description": "Filters purchase orders for a specific buyer's Fulfillment Center/warehouse by providing ship to location id here. This value should be same as 'shipToParty.partyId' in the purchase order. If not included in filter, this will return purchase orders for all the buyer's warehouses used for vendor group purchase orders.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2020-08-18T00:00:00"
+                    },
+                    "createdAfter": {
+                      "value": "2020-08-17T14:00:00"
+                    },
+                    "limit": {
+                      "value": 1
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "pagination": {
+                      "nextToken": "MDAwMDAwMDAwMZ=="
+                    },
+                    "ordersStatus": [
+                      {
+                        "purchaseOrderNumber": "2JK3S9VB",
+                        "purchaseOrderStatus": "OPEN",
+                        "purchaseOrderDate": "2020-08-17T20:24:58.193Z",
+                        "lastUpdatedDate": "2020-08-17T21:05:58.193Z",
+                        "sellingParty": {
+                          "partyId": "999US"
+                        },
+                        "shipToParty": {
+                          "partyId": "ABCD"
+                        },
+                        "itemStatus": [
+                          {
+                            "itemSequenceNumber": "1",
+                            "buyerProductIdentifier": "B07DFVDRAB",
+                            "vendorProductIdentifier": "8806098286500",
+                            "netCost": {
+                              "amount": "346.27",
+                              "currencyCode": "USD"
+                            },
+                            "listPrice": {
+                              "amount": "346.27",
+                              "currencyCode": "USD"
+                            },
+                            "orderedQuantity": {
+                              "orderedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "orderedQuantityDetails": [
+                                {
+                                  "updatedDate": "2020-08-17T20:24:58.193Z",
+                                  "orderedQuantity": {
+                                    "amount": 1,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            },
+                            "acknowledgementStatus": {
+                              "confirmationStatus": "ACCEPTED",
+                              "acceptedQuantity": {
+                                "amount": 1,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "rejectedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "acknowledgementStatusDetails": [
+                                {
+                                  "acknowledgementDate": "2020-08-17T21:05:58.193Z",
+                                  "acceptedQuantity": {
+                                    "amount": 1,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  },
+                                  "rejectedQuantity": {
+                                    "amount": 0,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "itemSequenceNumber": "2",
+                            "buyerProductIdentifier": "B07DFYF5AB",
+                            "vendorProductIdentifier": "8806098286123",
+                            "netCost": {
+                              "amount": "229.47",
+                              "currencyCode": "USD"
+                            },
+                            "listPrice": {
+                              "amount": "229.47",
+                              "currencyCode": "USD"
+                            },
+                            "orderedQuantity": {
+                              "orderedQuantity": {
+                                "amount": 20,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "orderedQuantityDetails": [
+                                {
+                                  "updatedDate": "2020-08-17T20:35:00.00Z",
+                                  "orderedQuantity": {
+                                    "amount": 5,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                },
+                                {
+                                  "updatedDate": "2020-08-17T20:24:58.193Z",
+                                  "orderedQuantity": {
+                                    "amount": 15,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            },
+                            "acknowledgementStatus": {
+                              "confirmationStatus": "PARTIALLY_ACCEPTED",
+                              "acceptedQuantity": {
+                                "amount": 15,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "rejectedQuantity": {
+                                "amount": 5,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "acknowledgementStatusDetails": [
+                                {
+                                  "acknowledgementDate": "2020-08-17T21:05:58.193Z",
+                                  "acceptedQuantity": {
+                                    "amount": 15,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  },
+                                  "rejectedQuantity": {
+                                    "amount": 5,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "itemSequenceNumber": "3",
+                            "buyerProductIdentifier": "B07DFYF5XY",
+                            "vendorProductIdentifier": "8806098286789",
+                            "netCost": {
+                              "amount": "20",
+                              "currencyCode": "USD"
+                            },
+                            "listPrice": {
+                              "amount": "20",
+                              "currencyCode": "USD"
+                            },
+                            "orderedQuantity": {
+                              "orderedQuantity": {
+                                "amount": 5,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "orderedQuantityDetails": [
+                                {
+                                  "updatedDate": "2020-08-17T20:24:58.193Z",
+                                  "orderedQuantity": {
+                                    "amount": 5,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            },
+                            "acknowledgementStatus": {
+                              "confirmationStatus": "REJECTED",
+                              "acceptedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "rejectedQuantity": {
+                                "amount": 5,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "acknowledgementStatusDetails": [
+                                {
+                                  "acknowledgementDate": "2020-08-17T21:05:58.193Z",
+                                  "rejectedQuantity": {
+                                    "amount": 5,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "purchaseOrderNumber": {
+                      "value": "TestPO2"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "ordersStatus": [
+                      {
+                        "purchaseOrderNumber": "TestPO2",
+                        "purchaseOrderStatus": "OPEN",
+                        "purchaseOrderDate": "2020-08-17T00:24:00.00Z",
+                        "lastUpdatedDate": "2020-08-17T00:24:00.00Z",
+                        "sellingParty": {
+                          "partyId": "API01"
+                        },
+                        "shipToParty": {
+                          "partyId": "ABC09"
+                        },
+                        "itemStatus": [
+                          {
+                            "itemSequenceNumber": "1",
+                            "buyerProductIdentifier": "B01XYZ3Z00",
+                            "vendorProductIdentifier": "8806093095123",
+                            "netCost": {
+                              "currencyCode": "USD",
+                              "amount": "70"
+                            },
+                            "listPrice": {
+                              "currencyCode": "USD",
+                              "amount": "70"
+                            },
+                            "orderedQuantity": {
+                              "orderedQuantity": {
+                                "amount": 10,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "orderedQuantityDetails": [
+                                {
+                                  "updatedDate": "2020-08-17T00:24:00.00Z",
+                                  "orderedQuantity": {
+                                    "amount": 10,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            },
+                            "acknowledgementStatus": {
+                              "confirmationStatus": "UNCONFIRMED",
+                              "acceptedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "rejectedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "updatedBefore": {
+                      "value": "2020-08-18T00:00:00.00Z"
+                    },
+                    "updatedAfter": {
+                      "value": "2020-08-16T00:00:00.00Z"
+                    },
+                    "itemConfirmationStatus": {
+                      "value": "UNCONFIRMED"
+                    },
+                    "purchaseOrderStatus": {
+                      "value": "OPEN"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "ordersStatus": [
+                      {
+                        "purchaseOrderNumber": "TestPO2",
+                        "purchaseOrderStatus": "OPEN",
+                        "purchaseOrderDate": "2020-08-17T00:24:00.00Z",
+                        "lastUpdatedDate": "2020-08-17T00:24:00.00Z",
+                        "sellingParty": {
+                          "partyId": "API01"
+                        },
+                        "shipToParty": {
+                          "partyId": "ABC09"
+                        },
+                        "itemStatus": [
+                          {
+                            "itemSequenceNumber": "1",
+                            "buyerProductIdentifier": "B01XYZ3Z00",
+                            "vendorProductIdentifier": "8806093095123",
+                            "netCost": {
+                              "currencyCode": "USD",
+                              "amount": "70"
+                            },
+                            "listPrice": {
+                              "currencyCode": "USD",
+                              "amount": "70"
+                            },
+                            "orderedQuantity": {
+                              "orderedQuantity": {
+                                "amount": 10,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "orderedQuantityDetails": [
+                                {
+                                  "updatedDate": "2020-08-17T00:24:00.00Z",
+                                  "orderedQuantity": {
+                                    "amount": 10,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            },
+                            "acknowledgementStatus": {
+                              "confirmationStatus": "UNCONFIRMED",
+                              "acceptedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "rejectedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "purchaseOrderNumber": "TestPO1",
+                        "purchaseOrderStatus": "OPEN",
+                        "purchaseOrderDate": "2020-08-15T05:24:00.00Z",
+                        "lastUpdatedDate": "2020-08-17T05:07:00.00Z",
+                        "sellingParty": {
+                          "partyId": "API01"
+                        },
+                        "shipToParty": {
+                          "partyId": "ABC09"
+                        },
+                        "itemStatus": [
+                          {
+                            "itemSequenceNumber": "1",
+                            "buyerProductIdentifier": "B01XYZ3Z123",
+                            "vendorProductIdentifier": "8806093095999",
+                            "netCost": {
+                              "currencyCode": "USD",
+                              "amount": "25"
+                            },
+                            "listPrice": {
+                              "currencyCode": "USD",
+                              "amount": "25"
+                            },
+                            "orderedQuantity": {
+                              "orderedQuantity": {
+                                "amount": 100,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "orderedQuantityDetails": [
+                                {
+                                  "updatedDate": "2020-08-17T05:07:00.00Z",
+                                  "cancelledQuantity": {
+                                    "amount": 50,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                },
+                                {
+                                  "updatedDate": "2020-08-15T05:24:00.00Z",
+                                  "orderedQuantity": {
+                                    "amount": 150,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            },
+                            "acknowledgementStatus": {
+                              "confirmationStatus": "UNCONFIRMED",
+                              "acceptedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "rejectedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "request": {
+                  "parameters": {}
+                },
+                "response": {
+                  "payload": {
+                    "ordersStatus": [
+                      {
+                        "purchaseOrderNumber": "mock-purchaseOrderNumber1",
+                        "purchaseOrderStatus": "OPEN",
+                        "purchaseOrderDate": "2020-08-17T00:24:00.00Z",
+                        "lastUpdatedDate": "2020-08-17T00:24:00.00Z",
+                        "sellingParty": {
+                          "partyId": "API01"
+                        },
+                        "shipToParty": {
+                          "partyId": "ABC09"
+                        },
+                        "itemStatus": [
+                          {
+                            "itemSequenceNumber": "1",
+                            "buyerProductIdentifier": "B01XYZ3Z00",
+                            "vendorProductIdentifier": "8806093095123",
+                            "netCost": {
+                              "currencyCode": "USD",
+                              "amount": "70"
+                            },
+                            "listPrice": {
+                              "currencyCode": "USD",
+                              "amount": "70"
+                            },
+                            "orderedQuantity": {
+                              "orderedQuantity": {
+                                "amount": 10,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "orderedQuantityDetails": [
+                                {
+                                  "updatedDate": "2020-08-17T00:24:00.00Z",
+                                  "orderedQuantity": {
+                                    "amount": 10,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            },
+                            "acknowledgementStatus": {
+                              "confirmationStatus": "UNCONFIRMED",
+                              "acceptedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "rejectedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "purchaseOrderNumber": "mock-purchaseOrderNumber2",
+                        "purchaseOrderStatus": "OPEN",
+                        "purchaseOrderDate": "2020-08-15T05:24:00.00Z",
+                        "lastUpdatedDate": "2020-08-17T05:07:00.00Z",
+                        "sellingParty": {
+                          "partyId": "API01"
+                        },
+                        "shipToParty": {
+                          "partyId": "ABC09"
+                        },
+                        "itemStatus": [
+                          {
+                            "itemSequenceNumber": "1",
+                            "buyerProductIdentifier": "B01XYZ3Z123",
+                            "vendorProductIdentifier": "8806093095999",
+                            "netCost": {
+                              "currencyCode": "USD",
+                              "amount": "25"
+                            },
+                            "listPrice": {
+                              "currencyCode": "USD",
+                              "amount": "25"
+                            },
+                            "orderedQuantity": {
+                              "orderedQuantity": {
+                                "amount": 100,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "orderedQuantityDetails": [
+                                {
+                                  "updatedDate": "2020-08-17T05:07:00.00Z",
+                                  "cancelledQuantity": {
+                                    "amount": 50,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                },
+                                {
+                                  "updatedDate": "2020-08-15T05:24:00.00Z",
+                                  "orderedQuantity": {
+                                    "amount": 150,
+                                    "unitOfMeasure": "Eaches",
+                                    "unitSize": 1
+                                  }
+                                }
+                              ]
+                            },
+                            "acknowledgementStatus": {
+                              "confirmationStatus": "UNCONFIRMED",
+                              "acceptedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              },
+                              "rejectedQuantity": {
+                                "amount": 0,
+                                "unitOfMeasure": "Eaches",
+                                "unitSize": 1
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "updatedBefore": {
+                      "value": "2019-09-2100:00:00"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidRequest",
+                      "message": "The request is invalid.",
+                      "details": ""
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "TPS rate customer is authorized for."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "TPS rate customer is authorized for."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetPurchaseOrdersStatusResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GetPurchaseOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "A list of orders.",
+          "$ref": "#/definitions/OrderList"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getPurchaseOrders operation."
+    },
+    "GetPurchaseOrderResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The details of the requested order",
+          "$ref": "#/definitions/Order"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getPurchaseOrder operation."
+    },
+    "OrderList": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/Pagination"
+        },
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Order"
+          }
+        }
+      }
+    },
+    "Pagination": {
+      "type": "object",
+      "properties": {
+        "nextToken": {
+          "type": "string",
+          "description": "A generated string used to pass information to your next request. If NextToken is returned, pass the value of NextToken to the next request. If NextToken is not returned, there are no more purchase order items to return."
+        }
+      }
+    },
+    "Order": {
+      "type": "object",
+      "required": [
+        "purchaseOrderNumber",
+        "purchaseOrderState"
+      ],
+      "properties": {
+        "purchaseOrderNumber": {
+          "type": "string",
+          "description": "The purchase order number for this order. Formatting Notes: 8-character alpha-numeric code."
+        },
+        "purchaseOrderState": {
+          "type": "string",
+          "description": "This field will contain the current state of the purchase order.",
+          "enum": [
+            "New",
+            "Acknowledged",
+            "Closed"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "New",
+              "description": "The purchase order is newly created and needs to be acknowledged by vendor."
+            },
+            {
+              "value": "Acknowledged",
+              "description": "The purchase order has been acknowledged by vendor."
+            },
+            {
+              "value": "Closed",
+              "description": "The purchase order is closed and no further action is required from the vendor. PO can be in closed state for many reasons such as order is rejected by vendor, order is cancelled by Amazon or order is fully received by Amazon."
+            }
+          ]
+        },
+        "orderDetails": {
+          "description": "Details of an order.",
+          "$ref": "#/definitions/OrderDetails"
+        }
+      }
+    },
+    "OrderDetails": {
+      "type": "object",
+      "required": [
+        "items",
+        "purchaseOrderDate",
+        "purchaseOrderStateChangedDate"
+      ],
+      "properties": {
+        "purchaseOrderDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the purchase order was placed. Must be in ISO-8601 date/time format."
+        },
+        "purchaseOrderChangedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date when purchase order was last changed by Amazon after the order was placed. This date will be greater than 'purchaseOrderDate'. This means the PO data was changed on that date and vendors are required to fulfill the  updated PO. The PO changes can be related to Item Quantity, Ship to Location, Ship Window etc. This field will not be present in orders that have not changed after creation. Must be in ISO-8601 date/time format."
+        },
+        "purchaseOrderStateChangedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date when current purchase order state was changed. Current purchase order state is available in the field 'purchaseOrderState'. Must be in ISO-8601 date/time format."
+        },
+        "purchaseOrderType": {
+          "type": "string",
+          "description": "Type of purchase order.",
+          "enum": [
+            "RegularOrder",
+            "ConsignedOrder",
+            "NewProductIntroduction",
+            "RushOrder"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "RegularOrder",
+              "description": "A regular purchase order is a method for placing orders for a one-time purchase and payment for line item goods that have a specific quantity and unit price."
+            },
+            {
+              "value": "ConsignedOrder",
+              "description": "A consignment purchase order is an agreement with a vendor that allows the product to be received, but the inventory still belong to the vendor until the product is used."
+            },
+            {
+              "value": "NewProductIntroduction",
+              "description": "A purchase order where a new product is introduced."
+            },
+            {
+              "value": "RushOrder",
+              "description": "Rush orders are purchases of goods that need to be processed and delivered by a certain date that is much sooner than the standard arrival date."
+            }
+          ]
+        },
+        "importDetails": {
+          "description": "If the purchase order is an import order, the details for the import order.",
+          "$ref": "#/definitions/ImportDetails"
+        },
+        "dealCode": {
+          "type": "string",
+          "description": "If requested by the recipient, this field will contain a promotional/deal number. The discount code line is optional. It is used to obtain a price discount on items on the order."
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Payment method used.",
+          "enum": [
+            "Invoice",
+            "Consignment",
+            "CreditCard",
+            "Prepaid"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "Invoice",
+              "description": "An invoice payment is submitted by a business to pay for products and services purchased from vendors."
+            },
+            {
+              "value": "Consignment",
+              "description": "A retail merchandiser acts as a consignor for goods supplied by the consignee. The consignor pays the consignee after the sale and keeps a percentage of the proceeds"
+            },
+            {
+              "value": "CreditCard",
+              "description": "Payment is made using a credit card."
+            },
+            {
+              "value": "Prepaid",
+              "description": "Payment is prepaid."
+            }
+          ]
+        },
+        "buyingParty": {
+          "description": "Name/Address and tax details of the buying party.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "sellingParty": {
+          "description": "Name/Address and tax details of the selling party.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "shipToParty": {
+          "description": "Name/Address and tax details of the ship to party.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "billToParty": {
+          "description": "Name/Address and tax details of the bill to party.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "shipWindow": {
+          "description": "This indicates the ship window. Format is start and end date separated by double hyphen (--). For example, 2007-03-01T13:00:00Z--2007-03-11T15:30:00Z.",
+          "$ref": "#/definitions/DateTimeInterval"
+        },
+        "deliveryWindow": {
+          "description": "This indicates the delivery window. Format is start and end date separated by double hyphen (--). For example, 2007-03-01T13:00:00Z--2007-03-11T15:30:00Z.",
+          "$ref": "#/definitions/DateTimeInterval"
+        },
+        "items": {
+          "type": "array",
+          "description": "A list of items in this purchase order.",
+          "items": {
+            "$ref": "#/definitions/OrderItem"
+          }
+        }
+      },
+      "description": "Details of an order."
+    },
+    "ImportDetails": {
+      "type": "object",
+      "properties": {
+        "methodOfPayment": {
+          "type": "string",
+          "description": "If the recipient requests, contains the shipment method of payment. This is for import PO's only.",
+          "enum": [
+            "PaidByBuyer",
+            "CollectOnDelivery",
+            "DefinedByBuyerAndSeller",
+            "FOBPortOfCall",
+            "PrepaidBySeller",
+            "PaidBySeller"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "PaidByBuyer",
+              "description": "Buyer pays for shipping."
+            },
+            {
+              "value": "CollectOnDelivery",
+              "description": "Buyer pays for shipping on delivery."
+            },
+            {
+              "value": "DefinedByBuyerAndSeller",
+              "description": "Shipping costs paid as agreed upon between buyer and seller."
+            },
+            {
+              "value": "FOBPortOfCall",
+              "description": "Seller pays for transportation including loading and shipping."
+            },
+            {
+              "value": "PrepaidBySeller",
+              "description": "Seller prepays for shipping."
+            },
+            {
+              "value": "PaidBySeller",
+              "description": "Seller pays for shipping."
+            }
+          ]
+        },
+        "internationalCommercialTerms": {
+          "type": "string",
+          "description": "Incoterms (International Commercial Terms) are used to divide transaction costs and responsibilities between buyer and seller and reflect state-of-the-art transportation practices. This is for import purchase orders only. ",
+          "enum": [
+            "ExWorks",
+            "FreeCarrier",
+            "FreeOnBoard",
+            "FreeAlongSideShip",
+            "CarriagePaidTo",
+            "CostAndFreight",
+            "CarriageAndInsurancePaidTo",
+            "CostInsuranceAndFreight",
+            "DeliveredAtTerminal",
+            "DeliveredAtPlace",
+            "DeliverDutyPaid"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "ExWorks",
+              "description": "Places the maximum obligation on the buyer and minimum obligations on the seller. The seller makes the goods available at its premises. The buyer is responsible for all costs of the transportation of the shipment and bears all the risks for bringing the goods to their final destination."
+            },
+            {
+              "value": "FreeCarrier",
+              "description": "The seller hands over the goods, cleared for export, into the disposal of the carrier (named by the buyer). The buyer pays for all the additional costs of transportation and risk passes when the goods are handed over to the carrier."
+            },
+            {
+              "value": "FreeOnBoard",
+              "description": "Ocean shipments only. The seller must deliver the goods alongside the ship at the named port, and clear the goods for export. The buyer pays for all the additional costs of transportation and risk passes when the goods are alongside the ship."
+            },
+            {
+              "value": "FreeAlongSideShip",
+              "description": "Ocean shipments only. The seller must load the goods on board the vessel, cleared for export. The buyer pays for all the additional costs of transportation and risk passes when the goods are loaded on the ship."
+            },
+            {
+              "value": "CarriagePaidTo",
+              "description": "The seller pays for transportation to the named port of destination, but risk transfers to the buyer upon handing goods over to the first carrier. The buyer pays for all destination charges."
+            },
+            {
+              "value": "CostAndFreight",
+              "description": "Ocean shipments only. Seller pays for transportation to the named port of destination, but risk transfers to the buyer once the goods are loaded on the vessel. The buyer pays for all destination charges."
+            },
+            {
+              "value": "CarriageAndInsurancePaidTo",
+              "description": "Seller pays for transportation and insurance to the named port of destination, but risk transfers to the buyer upon handing goods over to the first carrier. The buyer pays for all destination charges."
+            },
+            {
+              "value": "CostInsuranceAndFreight",
+              "description": "Ocean shipments only. Seller pays for transportation and insurance to the named port of destination, but risk transfers to the buyer once the goods are loaded on the vessel. The buyer pays for all destination charges."
+            },
+            {
+              "value": "DeliveredAtTerminal",
+              "description": "Seller pays for transportation up to the destination terminal, and risks up to the point that the goods are unloaded at the terminal. The buyer pays for import clearance, duties & taxes and delivery costs."
+            },
+            {
+              "value": "DeliveredAtPlace",
+              "description": "Seller pays for transportation to the named destination, and risk transfers at the point that the goods are ready for unloading by the buyer. The buyer pays for import clearance, duties & taxes and delivery costs."
+            },
+            {
+              "value": "DeliverDutyPaid",
+              "description": "Seller is responsible for delivering the goods to the named place in the country of the buyer, and pays all costs in bringing the goods to the destination including import duties and taxes. This term places the maximum obligations on the seller and minimum obligations on the buyer."
+            }
+          ]
+        },
+        "portOfDelivery": {
+          "type": "string",
+          "description": "The port where goods on an import purchase order must be delivered by the vendor. This should only be specified when the internationalCommercialTerms is FOB.",
+          "maxLength": 64
+        },
+        "importContainers": {
+          "type": "string",
+          "description": "Types and numbers of container(s) for import purchase orders. Can be a comma-separated list if the shipment has multiple containers. HC signifies a high-capacity container. Free-text field, limited to 64 characters. The format will be a comma-delimited list containing values of the type: $NUMBER_OF_CONTAINERS_OF_THIS_TYPE-$CONTAINER_TYPE. The list of values for the container type is: 40'(40-foot container), 40'HC (40-foot high-capacity container), 45', 45'HC, 30', 30'HC, 20', 20'HC.",
+          "maxLength": 64
+        },
+        "shippingInstructions": {
+          "type": "string",
+          "description": "Special instructions regarding the shipment. This field is for import purchase orders."
+        }
+      },
+      "description": "Import details for an import order."
+    },
+    "DateTimeInterval": {
+      "type": "string",
+      "description": "Defines a date time interval according to ISO8601. Interval is separated by double hyphen (--)."
+    },
+    "PartyIdentification": {
+      "type": "object",
+      "required": [
+        "partyId"
+      ],
+      "properties": {
+        "partyId": {
+          "type": "string",
+          "description": "Assigned identification for the party. For example, warehouse code or vendor code. Please refer to specific party for more details."
+        },
+        "address": {
+          "description": "Identification of the party by address.",
+          "$ref": "#/definitions/Address"
+        },
+        "taxInfo": {
+          "description": "Tax registration details of the party.",
+          "$ref": "#/definitions/TaxRegistrationDetails"
+        }
+      }
+    },
+    "TaxRegistrationDetails": {
+      "type": "object",
+      "required": [
+        "taxRegistrationNumber",
+        "taxRegistrationType"
+      ],
+      "properties": {
+        "taxRegistrationType": {
+          "type": "string",
+          "description": "Tax registration type for the entity.",
+          "enum": [
+            "VAT",
+            "GST"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "VAT",
+              "description": "Value-added tax."
+            },
+            {
+              "value": "GST",
+              "description": "Goods and Services tax."
+            }
+          ]
+        },
+        "taxRegistrationNumber": {
+          "type": "string",
+          "description": "Tax registration number for the entity. For example, VAT ID."
+        }
+      },
+      "description": "Tax registration details of the entity."
+    },
+    "Address": {
+      "type": "object",
+      "required": [
+        "addressLine1",
+        "countryCode",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the person, business or institution at that address."
+        },
+        "addressLine1": {
+          "type": "string",
+          "description": "First line of the address."
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "Additional address information, if required."
+        },
+        "addressLine3": {
+          "type": "string",
+          "description": "Additional address information, if required."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city where the person, business or institution is located."
+        },
+        "county": {
+          "type": "string",
+          "description": "The county where person, business or institution is located."
+        },
+        "district": {
+          "type": "string",
+          "description": "The district where person, business or institution is located."
+        },
+        "stateOrRegion": {
+          "type": "string",
+          "description": "The state or region where person, business or institution is located."
+        },
+        "postalCode": {
+          "type": "string",
+          "description": "The postal code of that address. It conatins a series of letters or digits or both, sometimes including spaces or punctuation."
+        },
+        "countryCode": {
+          "type": "string",
+          "description": "The two digit country code. In ISO 3166-1 alpha-2 format.",
+          "maxLength": 2
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the person, business or institution located at that address."
+        }
+      },
+      "description": "Address of the party."
+    },
+    "OrderItem": {
+      "type": "object",
+      "required": [
+        "isBackOrderAllowed",
+        "itemSequenceNumber",
+        "orderedQuantity"
+      ],
+      "properties": {
+        "itemSequenceNumber": {
+          "type": "string",
+          "description": "Numbering of the item on the purchase order. The first item will be 1, the second 2, and so on."
+        },
+        "amazonProductIdentifier": {
+          "type": "string",
+          "description": "Amazon Standard Identification Number (ASIN) of an item."
+        },
+        "vendorProductIdentifier": {
+          "type": "string",
+          "description": "The vendor selected product identification of the item."
+        },
+        "orderedQuantity": {
+          "description": "Item quantity ordered.",
+          "$ref": "#/definitions/ItemQuantity"
+        },
+        "isBackOrderAllowed": {
+          "type": "boolean",
+          "description": "When true, we will accept backorder confirmations for this item."
+        },
+        "netCost": {
+          "description": "The price to Amazon each (cost).",
+          "$ref": "#/definitions/Money"
+        },
+        "listPrice": {
+          "description": "The price to Amazon each (list).",
+          "$ref": "#/definitions/Money"
+        }
+      }
+    },
+    "Money": {
+      "type": "object",
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "description": "Three digit currency code in ISO 4217 format. String of length 3.",
+          "maxLength": 3
+        },
+        "amount": {
+          "$ref": "#/definitions/Decimal"
+        }
+      },
+      "description": "An amount of money, including units in the form of currency."
+    },
+    "Decimal": {
+      "type": "string",
+      "description": "A decimal number with no loss of precision. Useful when precision loss is unacceptable, as with currencies. Follows RFC7159 for number representation. <br>**Pattern** : `^-?(0|([1-9]\\d*))(\\.\\d+)?([eE][+-]?\\d+)?$`."
+    },
+    "SubmitAcknowledgementResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the submitAcknowledgement operation.",
+          "$ref": "#/definitions/TransactionId"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the submitAcknowledgement operation"
+    },
+    "TransactionId": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "string",
+          "description": "GUID assigned by Amazon to identify this transaction. This value can be used with the Transaction Status API to return the status of this transaction."
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "SubmitAcknowledgementRequest": {
+      "type": "object",
+      "properties": {
+        "acknowledgements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderAcknowledgement"
+          }
+        }
+      },
+      "description": "The request schema for the submitAcknowledgment operation."
+    },
+    "OrderAcknowledgement": {
+      "type": "object",
+      "required": [
+        "acknowledgementDate",
+        "items",
+        "purchaseOrderNumber",
+        "sellingParty"
+      ],
+      "properties": {
+        "purchaseOrderNumber": {
+          "type": "string",
+          "description": "The purchase order number. Formatting Notes: 8-character alpha-numeric code."
+        },
+        "sellingParty": {
+          "description": "Name, address and tax details of the party receiving a shipment of products.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "acknowledgementDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time when the purchase order is acknowledged, in ISO-8601 date/time format."
+        },
+        "items": {
+          "type": "array",
+          "description": "A list of the items being acknowledged with associated details.",
+          "items": {
+            "$ref": "#/definitions/OrderAcknowledgementItem"
+          }
+        }
+      }
+    },
+    "OrderAcknowledgementItem": {
+      "type": "object",
+      "required": [
+        "itemAcknowledgements",
+        "netCost",
+        "orderedQuantity"
+      ],
+      "properties": {
+        "itemSequenceNumber": {
+          "type": "string",
+          "description": "Line item sequence number for the item."
+        },
+        "amazonProductIdentifier": {
+          "type": "string",
+          "description": "Amazon Standard Identification Number (ASIN) of an item."
+        },
+        "vendorProductIdentifier": {
+          "type": "string",
+          "description": "The vendor selected product identification of the item. Should be the same as was sent in the purchase order."
+        },
+        "orderedQuantity": {
+          "description": "The quantity of this item ordered.",
+          "$ref": "#/definitions/ItemQuantity"
+        },
+        "netCost": {
+          "description": "The cost to Amazon, which should match the cost on the invoice. This is a required field. If this is left blank the file will reject in Amazon systems. Price information should not be zero or negative. Indicates a net unit price.",
+          "$ref": "#/definitions/Money"
+        },
+        "listPrice": {
+          "description": "The list price. This is required only if a vendor sells books with a list price.",
+          "$ref": "#/definitions/Money"
+        },
+        "discountMultiplier": {
+          "type": "string",
+          "description": "The discount multiplier that should be applied to the price if a vendor sells books with a list price. This is a multiplier factor to arrive at a final discounted price. A multiplier of .90 would be the factor if a 10% discount is given."
+        },
+        "itemAcknowledgements": {
+          "type": "array",
+          "description": "This is used to indicate acknowledged quantity.",
+          "items": {
+            "$ref": "#/definitions/OrderItemAcknowledgement"
+          }
+        }
+      },
+      "description": "Details of the item being acknowledged."
+    },
+    "OrderItemAcknowledgement": {
+      "type": "object",
+      "required": [
+        "acknowledgedQuantity",
+        "acknowledgementCode"
+      ],
+      "properties": {
+        "acknowledgementCode": {
+          "type": "string",
+          "description": "This indicates the acknowledgement code.",
+          "enum": [
+            "Accepted",
+            "Backordered",
+            "Rejected"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "Accepted",
+              "description": "Vendor accepts to fulfill the order item(s)."
+            },
+            {
+              "value": "Backordered",
+              "description": "Vendor placed a backorder to fulfill the original order and provides a scheduledShipDate or scheduledDeliveryDate which is different than the expectedShipDate or expectedDeliveryDate provided in the purchase order."
+            },
+            {
+              "value": "Rejected",
+              "description": "Vendor rejects to fulfill the order item(s)."
+            }
+          ]
+        },
+        "acknowledgedQuantity": {
+          "description": "Details of quantity acknowledged with the above acknowledgement code.",
+          "$ref": "#/definitions/ItemQuantity"
+        },
+        "scheduledShipDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Estimated ship date per line item. Must be in ISO-8601 date/time format."
+        },
+        "scheduledDeliveryDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Estimated delivery date per line item. Must be in ISO-8601 date/time format."
+        },
+        "rejectionReason": {
+          "type": "string",
+          "description": "Indicates the reason for rejection.",
+          "enum": [
+            "TemporarilyUnavailable",
+            "InvalidProductIdentifier",
+            "ObsoleteProduct"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "TemporarilyUnavailable",
+              "description": "Items are currently not available."
+            },
+            {
+              "value": "InvalidProductIdentifier",
+              "description": "Item cannot be found with the provided identifier."
+            },
+            {
+              "value": "ObsoleteProduct",
+              "description": "Item is no longer sold."
+            }
+          ]
+        }
+      }
+    },
+    "ItemQuantity": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "description": "Acknowledged quantity. This value should not be zero."
+        },
+        "unitOfMeasure": {
+          "type": "string",
+          "description": "Unit of measure for the acknowledged quantity.",
+          "enum": [
+            "Cases",
+            "Eaches"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "Cases",
+              "description": "Packing of individual items into a case."
+            },
+            {
+              "value": "Eaches",
+              "description": "Individual items."
+            }
+          ]
+        },
+        "unitSize": {
+          "type": "integer",
+          "description": "The case size, in the event that we ordered using cases."
+        }
+      },
+      "description": "Details of quantity ordered."
+    },
+    "GetPurchaseOrdersStatusResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Current status of list of purchase orders.",
+          "$ref": "#/definitions/OrderListStatus"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getPurchaseOrdersStatus operation."
+    },
+    "OrderListStatus": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/Pagination"
+        },
+        "ordersStatus": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderStatus"
+          }
+        }
+      }
+    },
+    "OrderStatus": {
+      "type": "object",
+      "required": [
+        "itemStatus",
+        "purchaseOrderDate",
+        "purchaseOrderNumber",
+        "purchaseOrderStatus",
+        "sellingParty",
+        "shipToParty"
+      ],
+      "properties": {
+        "purchaseOrderNumber": {
+          "type": "string",
+          "description": "The buyer's purchase order number for this order. Formatting Notes: 8-character alpha-numeric code."
+        },
+        "purchaseOrderStatus": {
+          "type": "string",
+          "description": "The status of the buyer's purchase order for this order.",
+          "enum": [
+            "OPEN",
+            "CLOSED"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "OPEN",
+              "description": "Buyer has not yet received all of the items in the purchase order."
+            },
+            {
+              "value": "CLOSED",
+              "description": "Buyer has received all of the items in the purchase order."
+            }
+          ]
+        },
+        "purchaseOrderDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the purchase order was placed. Must be in ISO-8601 date/time format."
+        },
+        "lastUpdatedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date when the purchase order was last updated. Must be in ISO-8601 date/time format."
+        },
+        "sellingParty": {
+          "description": "Name/Address and tax details of the selling party.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "shipToParty": {
+          "description": "Name/Address and tax details of the ship to party.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "itemStatus": {
+          "description": "Detailed order status.",
+          "$ref": "#/definitions/ItemStatus"
+        }
+      },
+      "description": "Current status of a purchase order."
+    },
+    "ItemStatus": {
+      "type": "array",
+      "description": "Detailed description of items order status.",
+      "items": {
+        "$ref": "#/definitions/OrderItemStatus"
+      }
+    },
+    "OrderItemStatus": {
+      "type": "object",
+      "required": [
+        "itemSequenceNumber"
+      ],
+      "properties": {
+        "itemSequenceNumber": {
+          "type": "string",
+          "description": "Numbering of the item on the purchase order. The first item will be 1, the second 2, and so on."
+        },
+        "buyerProductIdentifier": {
+          "type": "string",
+          "description": "Buyer's Standard Identification Number (ASIN) of an item."
+        },
+        "vendorProductIdentifier": {
+          "type": "string",
+          "description": "The vendor selected product identification of the item."
+        },
+        "netCost": {
+          "description": "The net cost to Amazon each (cost).",
+          "$ref": "#/definitions/Money"
+        },
+        "listPrice": {
+          "description": "The list Price to Amazon each (list).",
+          "$ref": "#/definitions/Money"
+        },
+        "orderedQuantity": {
+          "type": "object",
+          "description": "Ordered quantity information.",
+          "properties": {
+            "orderedQuantity": {
+              "description": "Item quantity ordered.",
+              "$ref": "#/definitions/ItemQuantity"
+            },
+            "orderedQuantityDetails": {
+              "type": "array",
+              "description": "Details of item quantity ordered.",
+              "items": {
+                "$ref": "#/definitions/OrderedQuantityDetails"
+              }
+            }
+          }
+        },
+        "acknowledgementStatus": {
+          "type": "object",
+          "description": "Acknowledgement status information.",
+          "properties": {
+            "confirmationStatus": {
+              "type": "string",
+              "description": "Confirmation status of line item.",
+              "enum": [
+                "ACCEPTED",
+                "PARTIALLY_ACCEPTED",
+                "REJECTED",
+                "UNCONFIRMED"
+              ],
+              "x-docgen-enum-table-extension": [
+                {
+                  "value": "ACCEPTED",
+                  "description": "Status for orders accepted by vendors."
+                },
+                {
+                  "value": "PARTIALLY_ACCEPTED",
+                  "description": "Status for orders that are partially accepted by vendors."
+                },
+                {
+                  "value": "REJECTED",
+                  "description": "Status for orders that are rejected by vendors."
+                },
+                {
+                  "value": "UNCONFIRMED",
+                  "description": "Status for orders that are yet to be confirmed by vendors."
+                }
+              ]
+            },
+            "acceptedQuantity": {
+              "description": "Item quantities accepted by vendor to be shipped.",
+              "$ref": "#/definitions/ItemQuantity"
+            },
+            "rejectedQuantity": {
+              "description": "Item quantities rejected by vendor.",
+              "$ref": "#/definitions/ItemQuantity"
+            },
+            "acknowledgementStatusDetails": {
+              "type": "array",
+              "description": "Details of item quantity confirmed.",
+              "items": {
+                "$ref": "#/definitions/AcknowledgementStatusDetails"
+              }
+            }
+          }
+        }
+      }
+    },
+    "OrderedQuantityDetails": {
+      "type": "object",
+      "properties": {
+        "updatedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date when the line item quantity was updated by buyer. Must be in ISO-8601 date/time format."
+        },
+        "orderedQuantity": {
+          "description": "Item quantity ordered.",
+          "$ref": "#/definitions/ItemQuantity"
+        },
+        "cancelledQuantity": {
+          "description": "Item quantity ordered.",
+          "$ref": "#/definitions/ItemQuantity"
+        }
+      },
+      "description": "Details of item quantity ordered"
+    },
+    "AcknowledgementStatusDetails": {
+      "type": "object",
+      "properties": {
+        "acknowledgementDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date when the line item was confirmed by vendor. Must be in ISO-8601 date/time format."
+        },
+        "acceptedQuantity": {
+          "description": "Item quantity accepted by vendor to be shipped.",
+          "$ref": "#/definitions/ItemQuantity"
+        },
+        "rejectedQuantity": {
+          "description": "Item quantity rejected by vendor.",
+          "$ref": "#/definitions/ItemQuantity"
+        }
+      },
+      "description": "Details of item quantity ordered"
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    }
+  }
+}
