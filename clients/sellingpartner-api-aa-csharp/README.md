@@ -83,6 +83,8 @@ All dependencies can be installed via NuGet
 - RestSharp - 105.1.0
 - Newtonsoft.Json 12.0.3
 - NETStandard.Library 2.0.3 (platform-specific implementation requirements are documented on the [Microsoft .NET Guide](https://docs.microsoft.com/en-us/dotnet/standard/net-standard))
+- AWSSDK.Core 3.5.1.23
+- AWSSDK.SecurityToken 3.5.1.5
 
 ## License
 Swagger Codegen templates are subject to the [Swagger Codegen License](https://github.com/swagger-api/swagger-codegen#license).
