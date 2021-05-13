@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Selling Partner API for Pricing",
     "description": "The Selling Partner API for Pricing helps you programmatically retrieve product pricing and offer information for Amazon Marketplace products.",
     "version": "v0",
+    "title": "Selling Partner API for Pricing",
     "contact": {
       "name": "Selling Partner API Developer Support",
       "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
@@ -29,7 +29,7 @@
         "tags": [
           "productPricing"
         ],
-        "description": "Returns pricing information for a seller's offer listings based on seller SKU or ASIN.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns pricing information for a seller's offer listings based on seller SKU or ASIN.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 20 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getPricing",
         "parameters": [
           {
@@ -43,6 +43,7 @@
             "name": "Asins",
             "in": "query",
             "description": "A list of up to twenty Amazon Standard Identification Number (ASIN) values used to identify items in the given marketplace.",
+            "required": false,
             "type": "array",
             "items": {
               "type": "string"
@@ -53,6 +54,7 @@
             "name": "Skus",
             "in": "query",
             "description": "A list of up to twenty seller SKU values used to identify items in the given marketplace.",
+            "required": false,
             "type": "array",
             "items": {
               "type": "string"
@@ -84,6 +86,7 @@
             "name": "ItemCondition",
             "in": "query",
             "description": "Filters the offer listings based on item condition. Possible values: New, Used, Collectible, Refurbished, Club.",
+            "required": false,
             "type": "string",
             "enum": [
               "New",
@@ -114,11 +117,45 @@
                 "description": "Club"
               }
             ]
+          },
+          {
+            "name": "OfferType",
+            "in": "query",
+            "description": "Indicates whether to request pricing information for the seller's B2C or B2B offers. Default is B2C.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "B2C",
+              "B2B"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "B2C",
+                "description": "B2C"
+              },
+              {
+                "value": "B2B",
+                "description": "B2B"
+              }
+            ]
           }
         ],
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetPricingResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -332,6 +369,9 @@
                     },
                     "ItemType": {
                       "value": "Asin"
+                    },
+                    "OfferType": {
+                      "value": "B2B"
                     }
                   }
                 },
@@ -352,35 +392,49 @@
                             "SellerSKU": ""
                           }
                         },
-                        "CompetitivePricing": {
-                          "CompetitivePrices": [],
-                          "NumberOfOfferListings": [
-                            {
-                              "Count": 1,
-                              "condition": "New"
+                        "Offers": [
+                          {
+                            "offerType": "B2B",
+                            "BuyingPrice": {
+                              "ListingPrice": {
+                                "CurrencyCode": "USD",
+                                "Amount": 9.50
+                              },
+                              "LandedPrice": {
+                                "CurrencyCode": "USD",
+                                "Amount": 9.50
+                              },
+                              "Shipping": {
+                                "CurrencyCode": "USD",
+                                "Amount": 0.00
+                              }
                             },
-                            {
-                              "Count": 1,
-                              "condition": "Any"
-                            }
-                          ]
-                        },
-                        "SalesRankings": [
-                          {
-                            "ProductCategoryId": "office_product_display_on_website",
-                            "Rank": 19
-                          },
-                          {
-                            "ProductCategoryId": "1069616",
-                            "Rank": 1
-                          },
-                          {
-                            "ProductCategoryId": "705333011",
-                            "Rank": 1
-                          },
-                          {
-                            "ProductCategoryId": "1069242",
-                            "Rank": 17
+                            "RegularPrice": {
+                              "CurrencyCode": "USD",
+                              "Amount": 10.00
+                            },
+                            "quantityDiscountPrices": [
+                              {
+                                "quantityTier": 2,
+                                "quantityDiscountType": "QuantityDiscount",
+                                "price": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 8.0
+                                }
+                              },
+                              {
+                                "quantityTier": 3,
+                                "quantityDiscountType": "QuantityDiscount",
+                                "price": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 7.0
+                                }
+                              }
+                            ],
+                            "FulfillmentChannel": "MERCHANT",
+                            "ItemCondition": "New",
+                            "ItemSubCondition": "New",
+                            "SellerSKU": "NABetaASINB00V5DG6IQ"
                           }
                         ]
                       }
@@ -400,131 +454,31 @@
                             "SellerSKU": ""
                           }
                         },
-                        "CompetitivePricing": {
-                          "CompetitivePrices": [],
-                          "NumberOfOfferListings": [
-                            {
-                              "Count": 1,
-                              "condition": "New"
+                        "Offers": [
+                          {
+                            "offerType": "B2B",
+                            "BuyingPrice": {
+                              "ListingPrice": {
+                                "CurrencyCode": "USD",
+                                "Amount": 8.00
+                              },
+                              "LandedPrice": {
+                                "CurrencyCode": "USD",
+                                "Amount": 8.00
+                              },
+                              "Shipping": {
+                                "CurrencyCode": "USD",
+                                "Amount": 0.00
+                              }
                             },
-                            {
-                              "Count": 1,
-                              "condition": "Any"
-                            }
-                          ]
-                        },
-                        "SalesRankings": [
-                          {
-                            "ProductCategoryId": "464394",
-                            "Rank": 224
-                          },
-                          {
-                            "ProductCategoryId": "12954861",
-                            "Rank": 1057
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "request": {
-                  "parameters": {
-                    "MarketplaceId": {
-                      "value": "ATVPDKIKX0DER"
-                    },
-                    "ItemType": {
-                      "value": "Sku"
-                    }
-                  }
-                },
-                "response": {
-                  "payload": [
-                    {
-                      "status": "Success",
-                      "SellerSKU": "NABetaASINB00V5DG6IQ",
-                      "Product": {
-                        "Identifiers": {
-                          "MarketplaceASIN": {
-                            "MarketplaceId": "ATVPDKIKX0DER",
-                            "ASIN": "B00V5DG6IQ"
-                          },
-                          "SKUIdentifier": {
-                            "MarketplaceId": "ATVPDKIKX0DER",
-                            "SellerId": "A3TH9S8BH6GOGM",
-                            "SellerSKU": "NABetaASINB00V5DG6IQ"
-                          }
-                        },
-                        "CompetitivePricing": {
-                          "CompetitivePrices": [],
-                          "NumberOfOfferListings": [
-                            {
-                              "Count": 1,
-                              "condition": "New"
+                            "RegularPrice": {
+                              "CurrencyCode": "USD",
+                              "Amount": 10.00
                             },
-                            {
-                              "Count": 1,
-                              "condition": "Any"
-                            }
-                          ]
-                        },
-                        "SalesRankings": [
-                          {
-                            "ProductCategoryId": "office_product_display_on_website",
-                            "Rank": 19
-                          },
-                          {
-                            "ProductCategoryId": "1069616",
-                            "Rank": 1
-                          },
-                          {
-                            "ProductCategoryId": "705333011",
-                            "Rank": 1
-                          },
-                          {
-                            "ProductCategoryId": "1069242",
-                            "Rank": 17
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "status": "Success",
-                      "SellerSKU": "NABetaASINB00551Q3CS",
-                      "Product": {
-                        "Identifiers": {
-                          "MarketplaceASIN": {
-                            "MarketplaceId": "ATVPDKIKX0DER",
-                            "ASIN": "B00551Q3CS"
-                          },
-                          "SKUIdentifier": {
-                            "MarketplaceId": "ATVPDKIKX0DER",
-                            "SellerId": "A3TH9S8BH6GOGM",
+                            "FulfillmentChannel": "MERCHANT",
+                            "ItemCondition": "New",
+                            "ItemSubCondition": "New",
                             "SellerSKU": "NABetaASINB00551Q3CS"
-                          }
-                        },
-                        "CompetitivePricing": {
-                          "CompetitivePrices": [],
-                          "NumberOfOfferListings": [
-                            {
-                              "Count": 1,
-                              "condition": "New"
-                            },
-                            {
-                              "Count": 1,
-                              "condition": "Any"
-                            }
-                          ]
-                        },
-                        "SalesRankings": [
-                          {
-                            "ProductCategoryId": "464394",
-                            "Rank": 224
-                          },
-                          {
-                            "ProductCategoryId": "12954861",
-                            "Rank": 1057
                           }
                         ]
                       }
@@ -532,19 +486,23 @@
                   ]
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -563,16 +521,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetPricingResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -580,6 +529,10 @@
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -604,6 +557,10 @@
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -616,6 +573,10 @@
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -628,6 +589,10 @@
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -640,6 +605,10 @@
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -654,7 +623,7 @@
         "tags": [
           "productPricing"
         ],
-        "description": "Returns competitive pricing information for a seller's offer listings based on seller SKU or ASIN.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns competitive pricing information for a seller's offer listings based on seller SKU or ASIN.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 20 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getCompetitivePricing",
         "parameters": [
           {
@@ -668,6 +637,7 @@
             "name": "Asins",
             "in": "query",
             "description": "A list of up to twenty Amazon Standard Identification Number (ASIN) values used to identify items in the given marketplace.",
+            "required": false,
             "type": "array",
             "items": {
               "type": "string"
@@ -678,6 +648,7 @@
             "name": "Skus",
             "in": "query",
             "description": "A list of up to twenty seller SKU values used to identify items in the given marketplace.",
+            "required": false,
             "type": "array",
             "items": {
               "type": "string"
@@ -704,11 +675,45 @@
                 "description": "The seller SKU."
               }
             ]
+          },
+          {
+            "name": "CustomerType",
+            "in": "query",
+            "description": "Indicates whether to request pricing information from the point of view of Consumer or Business buyers. Default is Consumer.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "Consumer",
+              "Business"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "Consumer",
+                "description": "Consumer"
+              },
+              {
+                "value": "Business",
+                "description": "Business"
+              }
+            ]
           }
         ],
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetPricingResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1201,20 +1206,203 @@
                     }
                   ]
                 }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "MarketplaceId": {
+                      "value": "ATVPDKIKX0DER"
+                    },
+                    "ItemType": {
+                      "value": "Asin"
+                    },
+                    "CustomerType": {
+                      "value": "Business"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": [
+                    {
+                      "status": "Success",
+                      "ASIN": "B00V5DG6IQ",
+                      "Product": {
+                        "Identifiers": {
+                          "MarketplaceASIN": {
+                            "MarketplaceId": "ATVPDKIKX0DER",
+                            "ASIN": "B00V5DG6IQ"
+                          },
+                          "SKUIdentifier": {
+                            "MarketplaceId": "",
+                            "SellerId": "",
+                            "SellerSKU": ""
+                          }
+                        },
+                        "CompetitivePricing": {
+                          "CompetitivePrices": [
+                            {
+                              "CompetitivePriceId": "1",
+                              "Price": {
+                                "LandedPrice": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 120
+                                },
+                                "ListingPrice": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 130
+                                },
+                                "Shipping": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 10
+                                },
+                                "Points": {
+                                  "PointsNumber": 130,
+                                  "PointsMonetaryValue": {
+                                    "CurrencyCode": "USD",
+                                    "Amount": 10
+                                  }
+                                }
+                              },
+                              "condition": "new",
+                              "offerType": "B2C",
+                              "sellerId": "A2UIDM8BZ902A",
+                              "belongsToRequester": true
+                            },
+                            {
+                              "CompetitivePriceId": "1",
+                              "Price": {
+                                "ListingPrice": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 115
+                                }
+                              },
+                              "condition": "new",
+                              "offerType": "B2B",
+                              "quantityTier": 3,
+                              "quantityDiscountType": "QuantityDiscount",
+                              "sellerId": "A2UIDM8BZ902A",
+                              "belongsToRequester": true
+                            },
+                            {
+                              "CompetitivePriceId": "1",
+                              "Price": {
+                                "ListingPrice": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 110
+                                }
+                              },
+                              "condition": "new",
+                              "offerType": "B2B",
+                              "quantityTier": 5,
+                              "quantityDiscountType": "QuantityDiscount",
+                              "sellerId": "A2UIDM8BZ902A",
+                              "belongsToRequester": true
+                            }
+                          ],
+                          "NumberOfOfferListings": [
+                            {
+                              "Count": 3,
+                              "condition": "new"
+                            }
+                          ],
+                          "TradeInValue": {
+                            "CurrencyCode": "USD",
+                            "Amount": 10
+                          }
+                        },
+                        "SalesRankings": [
+                          {
+                            "ProductCategoryId": "325345",
+                            "Rank": 1
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "status": "Success",
+                      "ASIN": "B00551Q3CS",
+                      "Product": {
+                        "Identifiers": {
+                          "MarketplaceASIN": {
+                            "MarketplaceId": "ATVPDKIKX0DER",
+                            "ASIN": "B00551Q3CS"
+                          },
+                          "SKUIdentifier": {
+                            "MarketplaceId": "",
+                            "SellerId": "",
+                            "SellerSKU": ""
+                          }
+                        },
+                        "CompetitivePricing": {
+                          "CompetitivePrices": [
+                            {
+                              "CompetitivePriceId": "1",
+                              "Price": {
+                                "LandedPrice": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 10
+                                },
+                                "ListingPrice": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 130
+                                },
+                                "Shipping": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 120
+                                },
+                                "Points": {
+                                  "PointsNumber": 130,
+                                  "PointsMonetaryValue": {
+                                    "CurrencyCode": "USD",
+                                    "Amount": 10
+                                  }
+                                }
+                              },
+                              "condition": "new",
+                              "offerType": "B2B",
+                              "sellerId": "A2UIDM8BZ902A",
+                              "belongsToRequester": true
+                            }
+                          ],
+                          "NumberOfOfferListings": [
+                            {
+                              "Count": 1,
+                              "condition": "new"
+                            }
+                          ],
+                          "TradeInValue": {
+                            "CurrencyCode": "string",
+                            "Amount": 0
+                          }
+                        },
+                        "SalesRankings": [
+                          {
+                            "ProductCategoryId": "54564",
+                            "Rank": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1233,16 +1421,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetPricingResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1250,6 +1429,10 @@
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1274,6 +1457,10 @@
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1286,6 +1473,10 @@
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1298,6 +1489,10 @@
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1310,6 +1505,10 @@
               "$ref": "#/definitions/GetPricingResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1324,7 +1523,7 @@
         "tags": [
           "productPricing"
         ],
-        "description": "Returns the lowest priced offers for a single SKU listing.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns the lowest priced offers for a single SKU listing.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 5 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getListingOffers",
         "parameters": [
           {
@@ -1374,13 +1573,47 @@
             "name": "SellerSKU",
             "in": "path",
             "description": "Identifies an item in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "CustomerType",
+            "in": "query",
+            "description": "Indicates whether to request Consumer or Business offers. Default is Consumer.",
+            "required": false,
             "type": "string",
-            "required": true
+            "enum": [
+              "Consumer",
+              "Business"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "Consumer",
+                "description": "Consumer"
+              },
+              {
+                "value": "Business",
+                "description": "Business"
+              }
+            ]
           }
         ],
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetOffersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1468,20 +1701,197 @@
                     "MarketplaceID": "ATVPDKIKX0DER"
                   }
                 }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "SellerSKU": {
+                      "value": "NABetaASINB00V5DG6IQ"
+                    },
+                    "MarketplaceId": {
+                      "value": "ATVPDKIKX0DER"
+                    },
+                    "CustomerType": {
+                      "value": "Business"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "SKU": "NABetaASINB00V5DG6IQ",
+                    "status": "Success",
+                    "ItemCondition": "New",
+                    "Identifier": {
+                      "MarketplaceId": "ATVPDKIKX0DER",
+                      "ItemCondition": "New",
+                      "SellerSKU": "NABetaASINB00V5DG6IQ"
+                    },
+                    "Summary": {
+                      "LowestPrices": [
+                        {
+                          "condition": "new",
+                          "fulfillmentChannel": "Merchant",
+                          "offerType": "B2B",
+                          "LandedPrice": {
+                            "CurrencyCode": "USD",
+                            "Amount": 10.00
+                          },
+                          "ListingPrice": {
+                            "CurrencyCode": "USD",
+                            "Amount": 10.00
+                          },
+                          "Shipping": {
+                            "CurrencyCode": "USD",
+                            "Amount": 0.00
+                          }
+                        },
+                        {
+                          "condition": "new",
+                          "fulfillmentChannel": "Merchant",
+                          "offerType": "B2B",
+                          "quantityTier": 20,
+                          "quantityDiscountType": "QuantityDiscount",
+                          "ListingPrice": {
+                            "CurrencyCode": "USD",
+                            "Amount": 8.00
+                          }
+                        },
+                        {
+                          "condition": "new",
+                          "fulfillmentChannel": "Merchant",
+                          "offerType": "B2B",
+                          "quantityTier": 30,
+                          "quantityDiscountType": "QuantityDiscount",
+                          "ListingPrice": {
+                            "CurrencyCode": "USD",
+                            "Amount": 6.00
+                          }
+                        }
+                      ],
+                      "NumberOfOffers": [
+                        {
+                          "condition": "new",
+                          "fulfillmentChannel": "Merchant"
+                        }
+                      ],
+                      "BuyBoxEligibleOffers": [
+                        {
+                          "condition": "new",
+                          "fulfillmentChannel": "Merchant"
+                        }
+                      ],
+                      "BuyBoxPrices": [
+                        {
+                          "condition": "new",
+                          "offerType": "B2B",
+                          "ListingPrice": {
+                            "Amount": 9.00,
+                            "CurrencyCode": "USD"
+                          },
+                          "Shipping": {
+                            "Amount": 0.00,
+                            "CurrencyCode": "USD"
+                          },
+                          "LandedPrice": {
+                            "Amount": 9.00,
+                            "CurrencyCode": "USD"
+                          },
+                          "sellerId": "A2VUIDM8BZ902A"
+                        },
+                        {
+                          "condition": "new",
+                          "offerType": "B2B",
+                          "quantityTier": 20,
+                          "quantityDiscountType": "QuantityDiscount",
+                          "ListingPrice": {
+                            "Amount": 8.00,
+                            "CurrencyCode": "USD"
+                          },
+                          "sellerId": "A2VUIDM8BZ902A"
+                        },
+                        {
+                          "condition": "new",
+                          "offerType": "B2B",
+                          "quantityTier": 30,
+                          "quantityDiscountType": "QuantityDiscount",
+                          "ListingPrice": {
+                            "Amount": 7.00,
+                            "CurrencyCode": "USD"
+                          },
+                          "sellerId": "A2VUIDM8BZ902A"
+                        }
+                      ],
+                      "TotalOfferCount": 4
+                    },
+                    "Offers": [
+                      {
+                        "sellerId": "A2VUIDM8BZ902A",
+                        "Shipping": {
+                          "CurrencyCode": "USD",
+                          "Amount": 0.00
+                        },
+                        "ListingPrice": {
+                          "CurrencyCode": "USD",
+                          "Amount": 10.00
+                        },
+                        "quantityDiscountPrices": [
+                          {
+                            "quantityTier": 2,
+                            "quantityDiscountType": "QuantityDiscount",
+                            "price": {
+                              "Amount": 8.00,
+                              "CurrencyCode": "USD"
+                            }
+                          },
+                          {
+                            "quantityTier": 3,
+                            "quantityDiscountType": "QuantityDiscount",
+                            "price": {
+                              "Amount": 7.00,
+                              "CurrencyCode": "USD"
+                            }
+                          }
+                        ],
+                        "ShippingTime": {
+                          "maximumHours": 48,
+                          "minimumHours": 24,
+                          "availabilityType": "NOW"
+                        },
+                        "SellerFeedbackRating": {
+                          "FeedbackCount": 0,
+                          "SellerPositiveFeedbackRating": 0.0
+                        },
+                        "ShipsFrom": {
+                          "State": "WA",
+                          "Country": "US"
+                        },
+                        "SubCondition": "new",
+                        "IsFeaturedMerchant": false,
+                        "MyOffer": true,
+                        "IsFulfilledByAmazon": false
+                      }
+                    ],
+                    "MarketplaceID": "ATVPDKIKX0DER"
+                  }
+                }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1500,16 +1910,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetOffersResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1517,6 +1918,10 @@
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1541,6 +1946,10 @@
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1553,6 +1962,10 @@
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1565,6 +1978,10 @@
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1577,6 +1994,10 @@
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1591,7 +2012,7 @@
         "tags": [
           "productPricing"
         ],
-        "description": "Returns the lowest priced offers for a single item based on ASIN.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns the lowest priced offers for a single item based on ASIN.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 5 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getItemOffers",
         "parameters": [
           {
@@ -1641,13 +2062,47 @@
             "name": "Asin",
             "in": "path",
             "description": "The Amazon Standard Identification Number (ASIN) of the item.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "CustomerType",
+            "in": "query",
+            "description": "Indicates whether to request Consumer or Business offers. Default is Consumer.",
+            "required": false,
             "type": "string",
-            "required": true
+            "enum": [
+              "Consumer",
+              "Business"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "Consumer",
+                "description": "Consumer"
+              },
+              {
+                "value": "Business",
+                "description": "Business"
+              }
+            ]
           }
         ],
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetOffersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1734,20 +2189,197 @@
                     "MarketplaceID": "ATVPDKIKX0DER"
                   }
                 }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "Asin": {
+                      "value": "B00V5DG6IQ"
+                    },
+                    "MarketplaceId": {
+                      "value": "ATVPDKIKX0DER"
+                    },
+                    "CustomerType": {
+                      "value": "Business"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "ASIN": "B00V5DG6IQ",
+                    "status": "Success",
+                    "ItemCondition": "New",
+                    "Identifier": {
+                      "MarketplaceId": "ATVPDKIKX0DER",
+                      "ItemCondition": "New",
+                      "ASIN": "B00V5DG6IQ"
+                    },
+                    "Summary": {
+                      "LowestPrices": [
+                        {
+                          "condition": "new",
+                          "fulfillmentChannel": "Merchant",
+                          "offerType": "B2B",
+                          "LandedPrice": {
+                            "CurrencyCode": "USD",
+                            "Amount": 10.00
+                          },
+                          "ListingPrice": {
+                            "CurrencyCode": "USD",
+                            "Amount": 10.00
+                          },
+                          "Shipping": {
+                            "CurrencyCode": "USD",
+                            "Amount": 0.00
+                          }
+                        },
+                        {
+                          "condition": "new",
+                          "fulfillmentChannel": "Merchant",
+                          "offerType": "B2B",
+                          "quantityTier": 20,
+                          "quantityDiscountType": "QuantityDiscount",
+                          "ListingPrice": {
+                            "CurrencyCode": "USD",
+                            "Amount": 8.00
+                          }
+                        },
+                        {
+                          "condition": "new",
+                          "fulfillmentChannel": "Merchant",
+                          "offerType": "B2B",
+                          "quantityTier": 30,
+                          "quantityDiscountType": "QuantityDiscount",
+                          "ListingPrice": {
+                            "CurrencyCode": "USD",
+                            "Amount": 6.00
+                          }
+                        }
+                      ],
+                      "NumberOfOffers": [
+                        {
+                          "condition": "new",
+                          "fulfillmentChannel": "Merchant"
+                        }
+                      ],
+                      "BuyBoxEligibleOffers": [
+                        {
+                          "condition": "new",
+                          "fulfillmentChannel": "Merchant"
+                        }
+                      ],
+                      "BuyBoxPrices": [
+                        {
+                          "condition": "new",
+                          "offerType": "B2B",
+                          "ListingPrice": {
+                            "Amount": 9.00,
+                            "CurrencyCode": "USD"
+                          },
+                          "Shipping": {
+                            "Amount": 0.00,
+                            "CurrencyCode": "USD"
+                          },
+                          "LandedPrice": {
+                            "Amount": 9.00,
+                            "CurrencyCode": "USD"
+                          },
+                          "sellerId": "A2VUIDM8BZ902A"
+                        },
+                        {
+                          "condition": "new",
+                          "offerType": "B2B",
+                          "quantityTier": 20,
+                          "quantityDiscountType": "QuantityDiscount",
+                          "ListingPrice": {
+                            "Amount": 8.00,
+                            "CurrencyCode": "USD"
+                          },
+                          "sellerId": "A2VUIDM8BZ902A"
+                        },
+                        {
+                          "condition": "new",
+                          "offerType": "B2B",
+                          "quantityTier": 30,
+                          "quantityDiscountType": "QuantityDiscount",
+                          "ListingPrice": {
+                            "Amount": 7.00,
+                            "CurrencyCode": "USD"
+                          },
+                          "sellerId": "A2VUIDM8BZ902A"
+                        }
+                      ],
+                      "TotalOfferCount": 4
+                    },
+                    "Offers": [
+                      {
+                        "sellerId": "A2VUIDM8BZ902A",
+                        "Shipping": {
+                          "CurrencyCode": "USD",
+                          "Amount": 0.00
+                        },
+                        "ListingPrice": {
+                          "CurrencyCode": "USD",
+                          "Amount": 10.00
+                        },
+                        "quantityDiscountPrices": [
+                          {
+                            "quantityTier": 20,
+                            "quantityDiscountType": "QuantityDiscount",
+                            "price": {
+                              "Amount": 8.00,
+                              "CurrencyCode": "USD"
+                            }
+                          },
+                          {
+                            "quantityTier": 30,
+                            "quantityDiscountType": "QuantityDiscount",
+                            "price": {
+                              "Amount": 7.00,
+                              "CurrencyCode": "USD"
+                            }
+                          }
+                        ],
+                        "ShippingTime": {
+                          "maximumHours": 48,
+                          "minimumHours": 24,
+                          "availabilityType": "NOW"
+                        },
+                        "SellerFeedbackRating": {
+                          "FeedbackCount": 0,
+                          "SellerPositiveFeedbackRating": 0.0
+                        },
+                        "ShipsFrom": {
+                          "State": "WA",
+                          "Country": "US"
+                        },
+                        "SubCondition": "new",
+                        "IsFeaturedMerchant": false,
+                        "MyOffer": true,
+                        "IsFulfilledByAmazon": false
+                      }
+                    ],
+                    "MarketplaceID": "ATVPDKIKX0DER"
+                  }
+                }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1766,16 +2398,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetOffersResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1783,6 +2406,10 @@
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1807,6 +2434,10 @@
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1819,6 +2450,10 @@
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1831,6 +2466,10 @@
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1843,6 +2482,10 @@
               "$ref": "#/definitions/GetOffersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1855,7 +2498,6 @@
   },
   "definitions": {
     "GetPricingResponse": {
-      "description": "The response schema for the getPricing and getCompetitivePricing operations.",
       "type": "object",
       "properties": {
         "payload": {
@@ -1866,10 +2508,10 @@
           "description": "One or more unexpected errors occurred during the operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getPricing and getCompetitivePricing operations."
     },
     "GetOffersResponse": {
-      "description": "The response schema for the getListingOffers and getItemOffers operations.",
       "type": "object",
       "properties": {
         "payload": {
@@ -1880,7 +2522,8 @@
           "description": "One or more unexpected errors occurred during the operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getListingOffers and getItemOffers operations."
     },
     "PriceList": {
       "type": "array",
@@ -1896,29 +2539,29 @@
         "ItemCondition",
         "MarketplaceID",
         "Offers",
-        "status",
-        "Summary"
+        "Summary",
+        "status"
       ],
       "properties": {
         "MarketplaceID": {
-          "description": "A marketplace identifier.",
-          "type": "string"
+          "type": "string",
+          "description": "A marketplace identifier."
         },
         "ASIN": {
-          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
-          "type":"string"
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
         },
         "SKU": {
-          "description": "The stock keeping unit (SKU) of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The stock keeping unit (SKU) of the item."
         },
         "ItemCondition": {
           "description": "The condition of the item.",
           "$ref": "#/definitions/ConditionType"
         },
         "status": {
-          "description": "The status of the operation.",
-          "type": "string"
+          "type": "string",
+          "description": "The status of the operation."
         },
         "Identifier": {
           "description": "Metadata that identifies the item.",
@@ -1928,9 +2571,9 @@
           "description": "Pricing information about the item.",
           "$ref": "#/definitions/Summary"
         },
-        "Offers" : {
+        "Offers": {
           "description": "A list of offer details. The list is the same length as the TotalOfferCount in the Summary or 20, whichever is less.",
-          "$ref" : "#/definitions/OfferDetailList"
+          "$ref": "#/definitions/OfferDetailList"
         }
       }
     },
@@ -1941,16 +2584,16 @@
       ],
       "properties": {
         "status": {
-          "description": "The status of the operation.",
-          "type": "string"
+          "type": "string",
+          "description": "The status of the operation."
         },
         "SellerSKU": {
-          "description": "The seller stock keeping unit (SKU) of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller stock keeping unit (SKU) of the item."
         },
         "ASIN": {
-          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
         },
         "Product": {
           "$ref": "#/definitions/Product"
@@ -1958,279 +2601,391 @@
       }
     },
     "Product": {
-      "description": "An item.",
       "type": "object",
       "required": [
         "Identifiers"
       ],
       "properties": {
-        "Identifiers" : {
-          "$ref" : "#/definitions/IdentifierType"
+        "Identifiers": {
+          "$ref": "#/definitions/IdentifierType"
         },
-        "AttributeSets" : {
-          "$ref" : "#/definitions/AttributeSetList"
+        "AttributeSets": {
+          "$ref": "#/definitions/AttributeSetList"
         },
-        "Relationships" : {
-          "$ref" : "#/definitions/RelationshipList"
+        "Relationships": {
+          "$ref": "#/definitions/RelationshipList"
         },
-        "CompetitivePricing" : {
-          "$ref" : "#/definitions/CompetitivePricingType"
+        "CompetitivePricing": {
+          "$ref": "#/definitions/CompetitivePricingType"
         },
-        "SalesRankings" : {
-          "$ref" : "#/definitions/SalesRankList"
+        "SalesRankings": {
+          "$ref": "#/definitions/SalesRankList"
         },
-        "Offers" : {
-          "$ref" : "#/definitions/OffersList"
+        "Offers": {
+          "$ref": "#/definitions/OffersList"
         }
-      }
+      },
+      "description": "An item."
     },
-    "IdentifierType" : {
-      "description": "Specifies the identifiers used to uniquely identify an item.",
-      "type" : "object",
+    "IdentifierType": {
+      "type": "object",
       "required": [
         "MarketplaceASIN"
       ],
-      "properties" : {
-        "MarketplaceASIN" : {
+      "properties": {
+        "MarketplaceASIN": {
           "description": "Indicates the item is identified by MarketPlaceId and ASIN.",
-          "$ref" : "#/definitions/ASINIdentifier"
+          "$ref": "#/definitions/ASINIdentifier"
         },
-        "SKUIdentifier" : {
+        "SKUIdentifier": {
           "description": "Indicates the item is identified by MarketPlaceId, SellerId, and SellerSKU.",
-          "$ref" : "#/definitions/SellerSKUIdentifier"
+          "$ref": "#/definitions/SellerSKUIdentifier"
         }
-      }
+      },
+      "description": "Specifies the identifiers used to uniquely identify an item."
     },
     "ASINIdentifier": {
       "type": "object",
-      "required" : [ "MarketplaceId", "ASIN" ],
-      "properties" : {
-        "MarketplaceId" : {
-          "description": "A marketplace identifier.",
-          "type" : "string"
+      "required": [
+        "ASIN",
+        "MarketplaceId"
+      ],
+      "properties": {
+        "MarketplaceId": {
+          "type": "string",
+          "description": "A marketplace identifier."
         },
-        "ASIN" : {
-          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
-          "type" : "string"
+        "ASIN": {
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
         }
       }
     },
     "SellerSKUIdentifier": {
-      "type" : "object",
-      "required" : [ "MarketplaceId", "SellerId", "SellerSKU" ],
-      "properties" : {
-        "MarketplaceId" : {
-          "description": "A marketplace identifier.",
-          "type" : "string"
+      "type": "object",
+      "required": [
+        "MarketplaceId",
+        "SellerId",
+        "SellerSKU"
+      ],
+      "properties": {
+        "MarketplaceId": {
+          "type": "string",
+          "description": "A marketplace identifier."
         },
-        "SellerId" : {
-          "description": "The seller identifier submitted for the operation.",
-          "type" : "string"
+        "SellerId": {
+          "type": "string",
+          "description": "The seller identifier submitted for the operation."
         },
-        "SellerSKU" : {
-          "description": "The seller stock keeping unit (SKU) of the item.",
-          "type" : "string"
+        "SellerSKU": {
+          "type": "string",
+          "description": "The seller stock keeping unit (SKU) of the item."
         }
       }
     },
-    "AttributeSetList" : {
+    "AttributeSetList": {
+      "type": "array",
       "description": "A list of product attributes if they are applicable to the product that is returned.",
-      "type" : "array",
-      "items" : {
-        "type" : "object"
+      "items": {
+        "type": "object"
       }
     },
-    "RelationshipList" : {
+    "RelationshipList": {
+      "type": "array",
       "description": "A list that contains product variation information, if applicable.",
-      "type" : "array",
-      "items" : {
-        "type" : "object"
+      "items": {
+        "type": "object"
       }
     },
-    "CompetitivePricingType" : {
-      "description": "Competitive pricing information for the item.",
-      "type" : "object",
-      "required" : [ "CompetitivePrices", "NumberOfOfferListings" ],
-      "properties" : {
-        "CompetitivePrices" : {
-          "$ref" : "#/definitions/CompetitivePriceList"
+    "CompetitivePricingType": {
+      "type": "object",
+      "required": [
+        "CompetitivePrices",
+        "NumberOfOfferListings"
+      ],
+      "properties": {
+        "CompetitivePrices": {
+          "$ref": "#/definitions/CompetitivePriceList"
         },
-        "NumberOfOfferListings" : {
-          "$ref" : "#/definitions/NumberOfOfferListingsList"
+        "NumberOfOfferListings": {
+          "$ref": "#/definitions/NumberOfOfferListingsList"
         },
-        "TradeInValue" : {
+        "TradeInValue": {
           "description": "The trade-in value of the item in the trade-in program.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         }
-      }
+      },
+      "description": "Competitive pricing information for the item."
     },
-    "CompetitivePriceList" : {
+    "CompetitivePriceList": {
+      "type": "array",
       "description": "A list of competitive pricing information.",
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/CompetitivePriceType"
+      "items": {
+        "$ref": "#/definitions/CompetitivePriceType"
       }
     },
-    "CompetitivePriceType" : {
-      "type" : "object",
-      "required" : [ "CompetitivePriceId", "Price" ],
-      "properties" : {
-        "CompetitivePriceId" : {
-          "description": "The pricing model for each price that is returned.\n\nPossible values:\n\n* 1 - New Buy Box Price.\n* 2 - Used Buy Box Price.",
-          "type" : "string"
+    "CompetitivePriceType": {
+      "type": "object",
+      "required": [
+        "CompetitivePriceId",
+        "Price"
+      ],
+      "properties": {
+        "CompetitivePriceId": {
+          "type": "string",
+          "description": "The pricing model for each price that is returned.\n\nPossible values:\n\n* 1 - New Buy Box Price.\n* 2 - Used Buy Box Price."
         },
-        "Price" : {
+        "Price": {
           "description": "Pricing information for a given CompetitivePriceId value.",
-          "$ref" : "#/definitions/PriceType"
+          "$ref": "#/definitions/PriceType"
         },
-        "condition" : {
-          "description": "Indicates the condition of the item whose pricing information is returned. Possible values are: New, Used, Collectible, Refurbished, or Club.",
-          "type" : "string"
+        "condition": {
+          "type": "string",
+          "description": "Indicates the condition of the item whose pricing information is returned. Possible values are: New, Used, Collectible, Refurbished, or Club."
         },
-        "subcondition" : {
-          "description": "Indicates the subcondition of the item whose pricing information is returned. Possible values are: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty, Refurbished Warranty, Refurbished, Open Box, or Other.",
-          "type" : "string"
+        "subcondition": {
+          "type": "string",
+          "description": "Indicates the subcondition of the item whose pricing information is returned. Possible values are: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty, Refurbished Warranty, Refurbished, Open Box, or Other."
         },
-        "belongsToRequester" : {
-          "description": " Indicates whether or not the pricing information is for an offer listing that belongs to the requester. The requester is the seller associated with the SellerId that was submitted with the request. Possible values are: true and false.",
-          "type" : "boolean"
+        "offerType": {
+          "description": "Indicates the type of customer that the offer is valid for.",
+          "$ref": "#/definitions/OfferCustomerType"
+        },
+        "quantityTier": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Indicates at what quantity this price becomes active."
+        },
+        "quantityDiscountType": {
+          "description": "Indicates the type of quantity discount this price applies to.",
+          "$ref": "#/definitions/QuantityDiscountType"
+        },
+        "sellerId": {
+          "type": "string",
+          "description": "The seller identifier for the offer."
+        },
+        "belongsToRequester": {
+          "type": "boolean",
+          "description": " Indicates whether or not the pricing information is for an offer listing that belongs to the requester. The requester is the seller associated with the SellerId that was submitted with the request. Possible values are: true and false."
         }
       }
     },
-    "NumberOfOfferListingsList" : {
+    "NumberOfOfferListingsList": {
+      "type": "array",
       "description": "The number of active offer listings for the item that was submitted. The listing count is returned by condition, one for each listing condition value that is returned.",
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/OfferListingCountType"
+      "items": {
+        "$ref": "#/definitions/OfferListingCountType"
       }
     },
-    "OfferListingCountType" : {
-      "description": "The number of offer listings with the specified condition.",
-      "type" : "object",
-      "required" : [ "Count", "condition" ],
-      "properties" : {
-        "Count" : {
-          "description": "The number of offer listings.",
-          "type" : "integer",
-          "format": "int32"
+    "OfferListingCountType": {
+      "type": "object",
+      "required": [
+        "Count",
+        "condition"
+      ],
+      "properties": {
+        "Count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of offer listings."
         },
-        "condition" : {
-          "description": "The condition of the item.",
-          "type" : "string"
+        "condition": {
+          "type": "string",
+          "description": "The condition of the item."
+        }
+      },
+      "description": "The number of offer listings with the specified condition."
+    },
+    "MoneyType": {
+      "type": "object",
+      "properties": {
+        "CurrencyCode": {
+          "type": "string",
+          "description": "The currency code in ISO 4217 format."
+        },
+        "Amount": {
+          "type": "number",
+          "description": "The monetary value."
         }
       }
     },
-    "MoneyType" : {
-      "type" : "object",
-      "properties" : {
-        "CurrencyCode" : {
-          "description": "The currency code in ISO 4217 format.",
-          "type" : "string"
-        },
-        "Amount" : {
-          "description": "The monetary value.",
-          "type" : "number"
-        }
-      }
-    },
-    "SalesRankList" : {
+    "SalesRankList": {
+      "type": "array",
       "description": "A list of sales rank information for the item, by category.",
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/SalesRankType"
+      "items": {
+        "$ref": "#/definitions/SalesRankType"
       }
     },
-    "SalesRankType" : {
-      "type" : "object",
-      "required" : [ "ProductCategoryId", "Rank" ],
-      "properties" : {
-        "ProductCategoryId" : {
-          "description": " Identifies the item category from which the sales rank is taken.",
-          "type" : "string"
+    "SalesRankType": {
+      "type": "object",
+      "required": [
+        "ProductCategoryId",
+        "Rank"
+      ],
+      "properties": {
+        "ProductCategoryId": {
+          "type": "string",
+          "description": " Identifies the item category from which the sales rank is taken."
         },
-        "Rank" : {
-          "description": "The sales rank of the item within the item category.",
-          "type" : "integer",
-          "format": "int32"
+        "Rank": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The sales rank of the item within the item category."
         }
       }
     },
-    "PriceType" : {
-      "type" : "object",
-      "required" : [ "ListingPrice" ],
-      "properties" : {
-        "LandedPrice" : {
+    "PriceType": {
+      "type": "object",
+      "required": [
+        "ListingPrice"
+      ],
+      "properties": {
+        "LandedPrice": {
           "description": "The value calculated by adding ListingPrice + Shipping - Points. Note that if the landed price is not returned, the listing price represents the product with the lowest landed price.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "ListingPrice" : {
+        "ListingPrice": {
           "description": "The listing price of the item including any promotions that apply.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "Shipping" : {
+        "Shipping": {
           "description": "The shipping cost of the product. Note that the shipping cost is not always available.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "Points" : {
+        "Points": {
           "description": "The number of Amazon Points offered with the purchase of an item, and their monetary value.",
-          "$ref" : "#/definitions/Points"
+          "$ref": "#/definitions/Points"
         }
       }
     },
-    "OffersList" : {
+    "OffersList": {
+      "type": "array",
       "description": "A list of offers.",
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/OfferType"
+      "items": {
+        "$ref": "#/definitions/OfferType"
       }
     },
-    "OfferType" : {
-      "type" : "object",
-      "required" : [ "BuyingPrice", "RegularPrice", "FulfillmentChannel", "ItemCondition", "ItemSubCondition", "SellerSKU" ],
-      "properties" : {
-        "BuyingPrice" : {
+    "OfferType": {
+      "type": "object",
+      "required": [
+        "BuyingPrice",
+        "FulfillmentChannel",
+        "ItemCondition",
+        "ItemSubCondition",
+        "RegularPrice",
+        "SellerSKU"
+      ],
+      "properties": {
+        "offerType": {
+          "description": "Indicates the type of customer that the offer is valid for.",
+          "$ref": "#/definitions/OfferCustomerType"
+        },
+        "BuyingPrice": {
           "description": "Contains pricing information that includes promotions and contains the shipping cost.",
-          "$ref" : "#/definitions/PriceType"
+          "$ref": "#/definitions/PriceType"
         },
-        "RegularPrice" : {
+        "RegularPrice": {
           "description": "The current price excluding any promotions that apply to the product. Excludes the shipping cost.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "FulfillmentChannel" : {
-          "description": "The fulfillment channel for the offer listing. Possible values:\n\n* Amazon - Fulfilled by Amazon.\n* Merchant - Fulfilled by the seller.",
-          "type" : "string"
+        "businessPrice": {
+          "description": "The current listing price for Business buyers.",
+          "$ref": "#/definitions/MoneyType"
         },
-        "ItemCondition" : {
-          "description": "The item condition for the offer listing. Possible values: New, Used, Collectible, Refurbished, or Club.",
-          "type" : "string"
+        "quantityDiscountPrices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QuantityDiscountPriceType"
+          }
         },
-        "ItemSubCondition" : {
-          "description": "The item subcondition for the offer listing. Possible values: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty, Refurbished Warranty, Refurbished, Open Box, or Other.",
-          "type" : "string"
+        "FulfillmentChannel": {
+          "type": "string",
+          "description": "The fulfillment channel for the offer listing. Possible values:\n\n* Amazon - Fulfilled by Amazon.\n* Merchant - Fulfilled by the seller."
         },
-        "SellerSKU" : {
-          "description": "The seller stock keeping unit (SKU) of the item.",
-          "type" : "string"
+        "ItemCondition": {
+          "type": "string",
+          "description": "The item condition for the offer listing. Possible values: New, Used, Collectible, Refurbished, or Club."
+        },
+        "ItemSubCondition": {
+          "type": "string",
+          "description": "The item subcondition for the offer listing. Possible values: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty, Refurbished Warranty, Refurbished, Open Box, or Other."
+        },
+        "SellerSKU": {
+          "type": "string",
+          "description": "The seller stock keeping unit (SKU) of the item."
         }
       }
     },
-    "Points" : {
-      "type" : "object",
-      "properties" : {
-        "PointsNumber" : {
-          "description": "The number of points.",
-          "type" : "integer",
-          "format": "int32"
+    "OfferCustomerType": {
+      "type": "string",
+      "enum": [
+        "B2C",
+        "B2B"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "B2C",
+          "description": "B2C"
         },
-        "PointsMonetaryValue" : {
+        {
+          "value": "B2B",
+          "description": "B2B"
+        }
+      ]
+    },
+    "QuantityDiscountPriceType": {
+      "type": "object",
+      "description": "Contains pricing information that includes special pricing when buying in bulk.",
+      "required": [
+        "quantityTier",
+        "quantityDiscountType",
+        "price"
+      ],
+      "properties": {
+        "quantityTier": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Indicates at what quantity this price becomes active."
+        },
+        "quantityDiscountType": {
+          "description": "Indicates the type of quantity discount this price applies to.",
+          "$ref": "#/definitions/QuantityDiscountType"
+        },
+        "price": {
+          "description": "The price at this quantity tier.",
+          "$ref": "#/definitions/MoneyType"
+        }
+      }
+    },
+    "QuantityDiscountType": {
+      "type": "string",
+      "enum": [
+        "QuantityDiscount"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "QuantityDiscount",
+          "description": "Quantity Discount"
+        }
+      ]
+    },
+    "Points": {
+      "type": "object",
+      "properties": {
+        "PointsNumber": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of points."
+        },
+        "PointsMonetaryValue": {
           "description": "The monetary value of the points.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         }
       }
     },
     "ConditionType": {
-      "description": "Indicates the condition of the item. Possible values: New, Used, Collectible, Refurbished, Club.",
       "type": "string",
+      "description": "Indicates the condition of the item. Possible values: New, Used, Collectible, Refurbished, Club.",
       "enum": [
         "New",
         "Used",
@@ -2262,120 +3017,124 @@
       ]
     },
     "ItemIdentifier": {
-      "description": "Information that identifies an item.",
       "type": "object",
       "required": [
-        "MarketplaceId",
-        "ItemCondition"
+        "ItemCondition",
+        "MarketplaceId"
       ],
       "properties": {
         "MarketplaceId": {
-          "description": "A marketplace identifier. Specifies the marketplace from which prices are returned.",
-          "type": "string"
+          "type": "string",
+          "description": "A marketplace identifier. Specifies the marketplace from which prices are returned."
         },
         "ASIN": {
-          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
         },
         "SellerSKU": {
-          "description": "The seller stock keeping unit (SKU) of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller stock keeping unit (SKU) of the item."
         },
         "ItemCondition": {
           "description": "The condition of the item.",
           "$ref": "#/definitions/ConditionType"
         }
-      }
+      },
+      "description": "Information that identifies an item."
     },
-    "Summary" : {
-      "description": "Contains price information about the product, including the LowestPrices and BuyBoxPrices, the ListPrice, the SuggestedLowerPricePlusShipping, and NumberOfOffers and NumberOfBuyBoxEligibleOffers.",
-      "type" : "object",
-      "required" : [ "TotalOfferCount" ],
-      "properties" : {
-        "TotalOfferCount" : {
-          "description": "The number of unique offers contained in NumberOfOffers.",
-          "type" : "integer",
-          "format": "int32"
+    "Summary": {
+      "type": "object",
+      "required": [
+        "TotalOfferCount"
+      ],
+      "properties": {
+        "TotalOfferCount": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of unique offers contained in NumberOfOffers."
         },
-        "NumberOfOffers" : {
+        "NumberOfOffers": {
           "description": "A list that contains the total number of offers for the item for the given conditions and fulfillment channels.",
-          "$ref" : "#/definitions/NumberOfOffers"
+          "$ref": "#/definitions/NumberOfOffers"
         },
-        "LowestPrices" : {
+        "LowestPrices": {
           "description": "A list of the lowest prices for the item.",
-          "$ref" : "#/definitions/LowestPrices"
+          "$ref": "#/definitions/LowestPrices"
         },
-        "BuyBoxPrices" : {
+        "BuyBoxPrices": {
           "description": "A list of item prices.",
-          "$ref" : "#/definitions/BuyBoxPrices"
+          "$ref": "#/definitions/BuyBoxPrices"
         },
-        "ListPrice" : {
+        "ListPrice": {
           "description": "The list price of the item as suggested by the manufacturer.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "SuggestedLowerPricePlusShipping" : {
+        "SuggestedLowerPricePlusShipping": {
           "description": "The suggested lower price of the item, including shipping and Amazon Points. The suggested lower price is based on a range of factors, including historical selling prices, recent Buy Box-eligible prices, and input from customers for your products.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "BuyBoxEligibleOffers" : {
+        "BuyBoxEligibleOffers": {
           "description": "A list that contains the total number of offers that are eligible for the Buy Box for the given conditions and fulfillment channels.",
-          "$ref" : "#/definitions/BuyBoxEligibleOffers"
+          "$ref": "#/definitions/BuyBoxEligibleOffers"
         },
-        "OffersAvailableTime" : {
-          "description": "When the status is ActiveButTooSoonForProcessing, this is the time when the offers will be available for processing.",
-          "type" : "string",
-          "format": "date-time"
+        "OffersAvailableTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the status is ActiveButTooSoonForProcessing, this is the time when the offers will be available for processing."
         }
+      },
+      "description": "Contains price information about the product, including the LowestPrices and BuyBoxPrices, the ListPrice, the SuggestedLowerPricePlusShipping, and NumberOfOffers and NumberOfBuyBoxEligibleOffers."
+    },
+    "BuyBoxEligibleOffers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OfferCountType"
       }
     },
-    "BuyBoxEligibleOffers" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/OfferCountType"
+    "BuyBoxPrices": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/BuyBoxPriceType"
       }
     },
-    "BuyBoxPrices" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/BuyBoxPriceType"
+    "LowestPrices": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/LowestPriceType"
       }
     },
-    "LowestPrices" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/LowestPriceType"
+    "NumberOfOffers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OfferCountType"
       }
     },
-    "NumberOfOffers" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/OfferCountType"
-      }
-    },
-    "OfferCountType" : {
-      "description": "The total number of offers for the specified condition and fulfillment channel.",
-      "type" : "object",
-      "properties" : {
-        "condition" : {
-          "description": "Indicates the condition of the item. For example: New, Used, Collectible, Refurbished, or Club.",
-          "type" : "string"
+    "OfferCountType": {
+      "type": "object",
+      "properties": {
+        "condition": {
+          "type": "string",
+          "description": "Indicates the condition of the item. For example: New, Used, Collectible, Refurbished, or Club."
         },
-        "fulfillmentChannel" : {
+        "fulfillmentChannel": {
           "description": "Indicates whether the item is fulfilled by Amazon or by the seller.",
-          "$ref" : "#/definitions/FulfillmentChannelType"
+          "$ref": "#/definitions/FulfillmentChannelType"
         },
-        "OfferCount" : {
-          "description": "The number of offers in a fulfillment channel that meet a specific condition.",
-          "type" : "integer",
-          "format": "int32"
+        "OfferCount": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The number of offers in a fulfillment channel that meet a specific condition."
         }
-      }
+      },
+      "description": "The total number of offers for the specified condition and fulfillment channel."
     },
-    "FulfillmentChannelType":
-    {
-      "description": "Indicates whether the item is fulfilled by Amazon or by the seller (merchant).",
+    "FulfillmentChannelType": {
       "type": "string",
-      "enum": ["Amazon", "Merchant"],
+      "description": "Indicates whether the item is fulfilled by Amazon or by the seller (merchant).",
+      "enum": [
+        "Amazon",
+        "Merchant"
+      ],
       "x-docgen-enum-table-extension": [
         {
           "value": "Amazon",
@@ -2387,66 +3146,107 @@
         }
       ]
     },
-    "LowestPriceType" : {
-      "type" : "object",
-      "required" : [ "condition", "fulfillmentChannel", "LandedPrice", "ListingPrice", "Shipping" ],
-      "properties" : {
-        "condition" : {
-          "description": "Indicates the condition of the item. For example: New, Used, Collectible, Refurbished, or Club.",
-          "type" : "string"
+    "LowestPriceType": {
+      "type": "object",
+      "required": [
+        "LandedPrice",
+        "ListingPrice",
+        "Shipping",
+        "condition",
+        "fulfillmentChannel"
+      ],
+      "properties": {
+        "condition": {
+          "type": "string",
+          "description": "Indicates the condition of the item. For example: New, Used, Collectible, Refurbished, or Club."
         },
-        "fulfillmentChannel" : {
-          "description": "Indicates whether the item is fulfilled by Amazon or by the seller.",
-          "type" : "string"
+        "fulfillmentChannel": {
+          "type": "string",
+          "description": "Indicates whether the item is fulfilled by Amazon or by the seller."
         },
-        "LandedPrice" : {
+        "offerType": {
+          "description": "Indicates the type of customer that the offer is valid for.",
+          "$ref": "#/definitions/OfferCustomerType"
+        },
+        "quantityTier": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Indicates at what quantity this price becomes active."
+        },
+        "quantityDiscountType": {
+          "description": "Indicates the type of quantity discount this price applies to.",
+          "$ref": "#/definitions/QuantityDiscountType"
+        },
+        "LandedPrice": {
           "description": "The value calculated by adding ListingPrice + Shipping - Points.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "ListingPrice" : {
+        "ListingPrice": {
           "description": "The price of the item.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "Shipping" : {
+        "Shipping": {
           "description": "The shipping cost.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "Points" : {
+        "Points": {
           "description": "The number of Amazon Points offered with the purchase of an item.",
-          "$ref" : "#/definitions/Points"
+          "$ref": "#/definitions/Points"
         }
       }
     },
-    "BuyBoxPriceType" : {
-      "type" : "object",
-      "required" : [ "condition", "LandedPrice", "ListingPrice", "Shipping" ],
-      "properties" : {
-        "condition" : {
-          "description": "Indicates the condition of the item. For example: New, Used, Collectible, Refurbished, or Club.",
-          "type" : "string"
+    "BuyBoxPriceType": {
+      "type": "object",
+      "required": [
+        "LandedPrice",
+        "ListingPrice",
+        "Shipping",
+        "condition"
+      ],
+      "properties": {
+        "condition": {
+          "type": "string",
+          "description": "Indicates the condition of the item. For example: New, Used, Collectible, Refurbished, or Club."
         },
-        "LandedPrice" : {
+        "offerType": {
+          "description": "Indicates the type of customer that the offer is valid for.",
+          "$ref": "#/definitions/OfferCustomerType"
+        },
+        "quantityTier": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Indicates at what quantity this price becomes active."
+        },
+        "quantityDiscountType": {
+          "description": "Indicates the type of quantity discount this price applies to.",
+          "$ref": "#/definitions/QuantityDiscountType"
+        },
+        "LandedPrice": {
           "description": "The value calculated by adding ListingPrice + Shipping - Points.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "ListingPrice" : {
+        "ListingPrice": {
           "description": "The price of the item.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "Shipping" : {
+        "Shipping": {
           "description": "The shipping cost.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "Points" : {
+        "Points": {
           "description": "The number of Amazon Points offered with the purchase of an item.",
-          "$ref" : "#/definitions/Points"
+          "$ref": "#/definitions/Points"
+        },
+        "sellerId": {
+          "type": "string",
+          "description": "The seller identifier for the offer."
         }
       }
     },
-    "OfferDetailList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/OfferDetail"
+    "OfferDetailList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OfferDetail"
       },
       "maxItems": 20
     },
@@ -2460,68 +3260,84 @@
         "SubCondition"
       ],
       "properties": {
+        "sellerId": {
+          "type": "string",
+          "description": "The seller identifier for the offer."
+        },
         "MyOffer": {
-          "description": "When true, this is the seller's offer.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, this is the seller's offer."
         },
-        "SubCondition" : {
-          "description": "The subcondition of the item. Subcondition values: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty, Refurbished Warranty, Refurbished, Open Box, or Other.",
-          "type" : "string"
+        "offerType": {
+          "description": "Indicates the type of customer that the offer is valid for.",
+          "$ref": "#/definitions/OfferCustomerType"
         },
-        "SellerFeedbackRating" : {
+        "SubCondition": {
+          "type": "string",
+          "description": "The subcondition of the item. Subcondition values: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty, Refurbished Warranty, Refurbished, Open Box, or Other."
+        },
+        "SellerFeedbackRating": {
           "description": "Information about the seller's feedback, including the percentage of positive feedback, and the total number of ratings received.",
-          "$ref" : "#/definitions/SellerFeedbackType"
+          "$ref": "#/definitions/SellerFeedbackType"
         },
-        "ShippingTime" : {
+        "ShippingTime": {
           "description": "The maximum time within which the item will likely be shipped once an order has been placed.",
-          "$ref" : "#/definitions/DetailedShippingTimeType"
+          "$ref": "#/definitions/DetailedShippingTimeType"
         },
-        "ListingPrice" : {
+        "ListingPrice": {
           "description": "The price of the item.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "Points" : {
+        "quantityDiscountPrices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QuantityDiscountPriceType"
+          }
+        },
+        "Points": {
           "description": "The number of Amazon Points offered with the purchase of an item.",
-          "$ref" : "#/definitions/Points"
+          "$ref": "#/definitions/Points"
         },
-        "Shipping" : {
+        "Shipping": {
           "description": "The shipping cost.",
-          "$ref" : "#/definitions/MoneyType"
+          "$ref": "#/definitions/MoneyType"
         },
-        "ShipsFrom" : {
+        "ShipsFrom": {
           "description": "The state and country from where the item is shipped.",
-          "$ref" : "#/definitions/ShipsFromType"
+          "$ref": "#/definitions/ShipsFromType"
         },
-        "IsFulfilledByAmazon" : {
-          "description": "When true, the offer is fulfilled by Amazon.",
-          "type" : "boolean"
+        "IsFulfilledByAmazon": {
+          "type": "boolean",
+          "description": "When true, the offer is fulfilled by Amazon."
         },
-        "IsBuyBoxWinner" : {
-          "description": "When true, the offer is currently in the Buy Box. There can be up to two Buy Box winners at any time per ASIN, one that is eligible for Prime and one that is not eligible for Prime.",
-          "type" : "boolean"
+        "IsBuyBoxWinner": {
+          "type": "boolean",
+          "description": "When true, the offer is currently in the Buy Box. There can be up to two Buy Box winners at any time per ASIN, one that is eligible for Prime and one that is not eligible for Prime."
         },
-        "IsFeaturedMerchant" : {
-          "description": "When true, the seller of the item is eligible to win the Buy Box.",
-          "type" : "boolean"
+        "IsFeaturedMerchant": {
+          "type": "boolean",
+          "description": "When true, the seller of the item is eligible to win the Buy Box."
         }
       }
     },
-    "SellerFeedbackType" : {
-      "description": "Information about the seller's feedback, including the percentage of positive feedback, and the total number of ratings received.",
-      "type" : "object",
-      "required" : [ "FeedbackCount" ],
-      "properties" : {
-        "SellerPositiveFeedbackRating" : {
-          "description": "The percentage of positive feedback for the seller in the past 365 days.",
-          "type" : "number",
-          "format": "double"
+    "SellerFeedbackType": {
+      "type": "object",
+      "required": [
+        "FeedbackCount"
+      ],
+      "properties": {
+        "SellerPositiveFeedbackRating": {
+          "type": "number",
+          "format": "double",
+          "description": "The percentage of positive feedback for the seller in the past 365 days."
         },
-        "FeedbackCount" : {
-          "description": "The number of ratings received about the seller.",
-          "type" : "integer",
-          "format": "int64"
+        "FeedbackCount": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The number of ratings received about the seller."
         }
-      }
+      },
+      "description": "Information about the seller's feedback, including the percentage of positive feedback, and the total number of ratings received."
     },
     "ErrorList": {
       "type": "array",
@@ -2530,27 +3346,26 @@
         "$ref": "#/definitions/Error"
       }
     },
-    "DetailedShippingTimeType" : {
-      "description": "The time range in which an item will likely be shipped once an order has been placed.",
-      "type" : "object",
-      "properties" : {
-        "minimumHours" : {
-          "description": "The minimum time, in hours, that the item will likely be shipped after the order has been placed.",
-          "type" : "integer",
-          "format": "int64"
+    "DetailedShippingTimeType": {
+      "type": "object",
+      "properties": {
+        "minimumHours": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The minimum time, in hours, that the item will likely be shipped after the order has been placed."
         },
-        "maximumHours" : {
-          "description": "The maximum time, in hours, that the item will likely be shipped after the order has been placed.",
-          "type" : "integer",
-          "format": "int64"
+        "maximumHours": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The maximum time, in hours, that the item will likely be shipped after the order has been placed."
         },
-        "availableDate" : {
-          "description": "The date when the item will be available for shipping. Only displayed for items that are not currently available for shipping.",
-          "type" : "number"
+        "availableDate": {
+          "type": "number",
+          "description": "The date when the item will be available for shipping. Only displayed for items that are not currently available for shipping."
         },
-        "availabilityType" : {
+        "availabilityType": {
+          "type": "string",
           "description": "Indicates whether the item is available for shipping now, or on a known or an unknown date in the future. If known, the availableDate property indicates the date that the item will be available for shipping. Possible values: NOW, FUTURE_WITHOUT_DATE, FUTURE_WITH_DATE.",
-          "type" : "string",
           "enum": [
             "NOW",
             "FUTURE_WITHOUT_DATE",
@@ -2571,24 +3386,24 @@
             }
           ]
         }
-      }
+      },
+      "description": "The time range in which an item will likely be shipped once an order has been placed."
     },
-    "ShipsFromType" : {
-      "description": "The state and country from where the item is shipped.",
-      "type" : "object",
-      "properties" : {
-        "State" : {
-          "description": "The state from where the item is shipped.",
-          "type" : "string"
+    "ShipsFromType": {
+      "type": "object",
+      "properties": {
+        "State": {
+          "type": "string",
+          "description": "The state from where the item is shipped."
         },
-        "Country" : {
-          "description": "The country from where the item is shipped.",
-          "type" : "string"
+        "Country": {
+          "type": "string",
+          "description": "The country from where the item is shipped."
         }
-      }
+      },
+      "description": "The state and country from where the item is shipped."
     },
     "Error": {
-      "description": "Error response returned when the request is unsuccessful.",
       "type": "object",
       "required": [
         "code",
@@ -2607,7 +3422,8 @@
           "type": "string",
           "description": "Additional information that can help the caller understand or fix the issue."
         }
-      }
+      },
+      "description": "Error response returned when the request is unsuccessful."
     }
   }
 }

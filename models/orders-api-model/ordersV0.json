@@ -29,7 +29,7 @@
         "tags": [
           "ordersV0"
         ],
-        "description": "Returns orders created or updated during the time frame indicated by the specified parameters. You can also apply a range of filtering criteria to narrow the list of orders returned. If NextToken is present, that will be used to retrieve the orders instead of other criteria.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns orders created or updated during the time frame indicated by the specified parameters. You can also apply a range of filtering criteria to narrow the list of orders returned. If NextToken is present, that will be used to retrieve the orders instead of other criteria.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 0.0055 | 20 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getOrders",
         "parameters": [
           {
@@ -149,6 +149,27 @@
               "type": "string"
             },
             "maxItems": 50
+          },
+          {
+            "name": "ActualFulfillmentSupplySourceId",
+            "in": "query",
+            "description": "Denotes the recommended sourceId where the order should be fulfilled from.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "IsISPU",
+            "in": "query",
+            "description": "When true, this order is marked to be picked up from a store rather than delivered.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "StoreChainStoreId",
+            "in": "query",
+            "description": "The store chain store identifier. Linked to a specific store in a store chain.",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -261,7 +282,8 @@
                         },
                         "FulfillmentInstruction": {
                           "FulfillmentSupplySourceId": "sampleSupplySourceId"
-                        }
+                        },
+                        "IsISPU": false
                       },
                       {
                         "AmazonOrderId": "902-8745147-1934268",
@@ -446,6 +468,10 @@
               "$ref": "#/definitions/GetOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -508,7 +534,7 @@
         "tags": [
           "ordersV0"
         ],
-        "description": "Returns the order indicated by the specified order ID.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns the order indicated by the specified order ID.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 0.0055 | 20 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getOrder",
         "parameters": [
           {
@@ -562,7 +588,8 @@
                   },
                   "FulfillmentInstruction": {
                     "FulfillmentSupplySourceId": "sampleSupplySourceId"
-                  }
+                  },
+                  "IsISPU": false
                 }
               }
             },
@@ -629,7 +656,8 @@
                     },
                     "FulfillmentInstruction": {
                       "FulfillmentSupplySourceId": "sampleSupplySourceId"
-                    }
+                    },
+                    "IsISPU": false
                   }
                 }
               },
@@ -685,7 +713,8 @@
                     },
                     "FulfillmentInstruction": {
                       "FulfillmentSupplySourceId": "sampleSupplySourceId"
-                    }
+                    },
+                    "IsISPU": false
                   }
                 }
               }
@@ -744,6 +773,10 @@
               "$ref": "#/definitions/GetOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -806,7 +839,7 @@
         "tags": [
           "ordersV0"
         ],
-        "description": "Returns buyer information for the order indicated by the specified order ID.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns buyer information for the order indicated by the specified order ID.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 0.0055 | 20 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getOrderBuyerInfo",
         "parameters": [
           {
@@ -918,6 +951,10 @@
               "$ref": "#/definitions/GetOrderBuyerInfoResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -980,7 +1017,7 @@
         "tags": [
           "ordersV0"
         ],
-        "description": "Returns the shipping address for the order indicated by the specified order ID.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns the shipping address for the order indicated by the specified order ID.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 0.0055 | 20 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getOrderAddress",
         "parameters": [
           {
@@ -1102,6 +1139,10 @@
               "$ref": "#/definitions/GetOrderAddressResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1164,7 +1205,7 @@
         "tags": [
           "ordersV0"
         ],
-        "description": "Returns detailed order item information for the order indicated by the specified order ID. If NextToken is provided, it's used to retrieve the next page of order items.\n\nNote: When an order is in the Pending state (the order has been placed but payment has not been authorized), the getOrderItems operation does not return information about pricing, taxes, shipping charges, gift status or promotions for the order items in the order. After an order leaves the Pending state (this occurs when payment has been authorized) and enters the Unshipped, Partially Shipped, or Shipped state, the getOrderItems operation returns information about pricing, taxes, shipping charges, gift status and promotions for the order items in the order.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns detailed order item information for the order indicated by the specified order ID. If NextToken is provided, it's used to retrieve the next page of order items.\n\nNote: When an order is in the Pending state (the order has been placed but payment has not been authorized), the getOrderItems operation does not return information about pricing, taxes, shipping charges, gift status or promotions for the order items in the order. After an order leaves the Pending state (this occurs when payment has been authorized) and enters the Unshipped, Partially Shipped, or Shipped state, the getOrderItems operation returns information about pricing, taxes, shipping charges, gift status and promotions for the order items in the order.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 0.0055 | 20 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getOrderItems",
         "parameters": [
           {
@@ -1301,7 +1342,8 @@
                         "IsTransparency": false,
                         "SerialNumberRequired": false,
                         "IossNumber": "",
-                        "DeemedResellerCategory": "IOSS"
+                        "DeemedResellerCategory": "IOSS",
+                        "StoreChainStoreId": "ISPU_StoreId"
                       }
                     ]
                   }
@@ -1362,6 +1404,10 @@
               "$ref": "#/definitions/GetOrderItemsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1424,7 +1470,7 @@
         "tags": [
           "ordersV0"
         ],
-        "description": "Returns buyer information in the order items of the order indicated by the specified order ID.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns buyer information in the order items of the order indicated by the specified order ID.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 0.0055 | 20 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getOrderItemsBuyerInfo",
         "parameters": [
           {
@@ -1557,6 +1603,10 @@
               "$ref": "#/definitions/GetOrderItemsBuyerInfoResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1985,6 +2035,10 @@
         "FulfillmentInstruction": {
           "description": "Contains the instructions about the fulfillment like where should it be fulfilled from.",
           "$ref": "#/definitions/FulfillmentInstruction"
+        },
+        "IsISPU": {
+          "type": "boolean",
+          "description": "When true, this order is marked to be picked up from a store rather than delivered."
         }
       },
       "description": "Order information."
@@ -2347,6 +2401,10 @@
         "IossNumber": {
           "type": "string",
           "description": "The IOSS number of the seller. Sellers selling in the EU will be assigned a unique IOSS number that must be listed on all packages sent to the EU."
+        },
+        "StoreChainStoreId": {
+          "type": "string",
+          "description": "The store chain store identifier. Linked to a specific store in a store chain."
         },
         "DeemedResellerCategory": {
           "type": "string",
