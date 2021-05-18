@@ -1210,7 +1210,30 @@
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "createdBefore": {
+                      "value": "2021-01-2100:00:00"
+                    },
+                    "createdAfter": {
+                      "value": "2021-02-20T14:00:00"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidRequest",
+                      "message": "The request is invalid.",
+                      "details": ""
+                    }
+                  ]
+                }
+              }
+            ]
           },
           "403": {
             "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -1230,6 +1253,10 @@
               "$ref": "#/definitions/GetOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1687,7 +1714,27 @@
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "purchaseOrderNumber": {
+                      "value": "null"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidRequest",
+                      "message": "Request is missing or has invalid parameters",
+                      "details": "purchaseOrderNumber cannot be null"
+                    }
+                  ]
+                }
+              }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1723,6 +1770,10 @@
               "$ref": "#/definitions/GetOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1901,7 +1952,34 @@
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                      "value": {
+                        "orderAcknowledgements": [
+                          {
+                            "purchaseOrderNumber": "TestOrder400",
+                            "sellingParty": {}
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "InvalidInput",
+                      "message": "The content of element 'sellingParty' is not complete. One of '{partyId, address, taxInfo}' is expected.",
+                      "details": ""
+                    }
+                  ]
+                }
+              }
+            ]
           },
           "403": {
             "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -1921,6 +1999,10 @@
               "$ref": "#/definitions/SubmitAcknowledgementResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2031,6 +2113,9 @@
         "payload": {
           "description": "The payload for the getOrder operation.",
           "$ref": "#/definitions/Order"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
         }
       },
       "description": "The response schema for the getOrder operation."
