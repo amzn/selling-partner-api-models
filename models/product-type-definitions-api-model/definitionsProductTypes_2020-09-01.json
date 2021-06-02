@@ -1,0 +1,1077 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Product Type Definitions provides programmatic access to attribute and data requirements for product types in the Amazon catalog. Use this API to return the JSON Schema for a product type that you can then use with other Selling Partner APIs, such as the Selling Partner API for Listings Items, the Selling Partner API for Catalog Items, and the Selling Partner API for Feeds (for JSON-based listing feeds).",
+    "version": "2020-09-01",
+    "title": "Selling Partner API for Product Type Definitions",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/definitions/2020-09-01/productTypes": {
+      "get": {
+        "tags": [
+          "definitions"
+        ],
+        "description": "Search for and return a list of Amazon product types that have definitions available.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 5 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "searchDefinitionsProductTypes",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "keywords",
+            "in": "query",
+            "description": "A comma-delimited list of keywords to search product types by.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "LUGGAGE"
+          },
+          {
+            "name": "marketplaceIds",
+            "in": "query",
+            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "ATVPDKIKX0DER"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a list of Amazon product types that have definitions available.",
+            "schema": {
+              "$ref": "#/definitions/ProductTypeList"
+            },
+            "examples": {
+              "application/json": {
+                "productTypes": [
+                  {
+                    "name": "LUGGAGE",
+                    "marketplaceIds": [
+                      "ATVPDKIKX0DER"
+                    ]
+                  }
+                ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {}
+                },
+                "response": {
+                  "productTypes": [
+                    {
+                      "name": "LUGGAGE",
+                      "marketplaceIds": [
+                        "ATVPDKIKX0DER"
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "keywords": {
+                      "value": [
+                        "Invalid Request"
+                      ]
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "BAD_REQUEST",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/definitions/2020-09-01/productTypes/{productType}": {
+      "get": {
+        "tags": [
+          "definitions"
+        ],
+        "description": "Retrieve an Amazon product type definition.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 5 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getDefinitionsProductType",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "productType",
+            "in": "path",
+            "description": "The Amazon product type name.",
+            "required": true,
+            "type": "string",
+            "x-example": "LUGGAGE"
+          },
+          {
+            "name": "sellerId",
+            "in": "query",
+            "description": "A selling partner identifier. When provided, seller-specific requirements and values are populated within the product type definition schema, such as brand names associated with the selling partner.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "in": "query",
+            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "ATVPDKIKX0DER"
+          },
+          {
+            "name": "productTypeVersion",
+            "in": "query",
+            "description": "The version of the Amazon product type to retrieve. Defaults to \"LATEST\",. Prerelease versions of product type definitions may be retrieved with \"RELEASE_CANDIDATE\". If no prerelease version is currently available, the \"LATEST\" live version will be provided.",
+            "required": false,
+            "type": "string",
+            "default": "LATEST",
+            "x-example": "LATEST"
+          },
+          {
+            "name": "requirements",
+            "in": "query",
+            "description": "The name of the requirements set to retrieve requirements for.",
+            "required": false,
+            "type": "string",
+            "default": "LISTING",
+            "enum": [
+              "LISTING",
+              "LISTING_PRODUCT_ONLY",
+              "LISTING_OFFER_ONLY"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "LISTING",
+                "description": "Request schema containing product facts and sales terms."
+              },
+              {
+                "value": "LISTING_PRODUCT_ONLY",
+                "description": "Request schema containing product facts only."
+              },
+              {
+                "value": "LISTING_OFFER_ONLY",
+                "description": "Request schema containing sales terms only."
+              }
+            ],
+            "x-example": "LISTING"
+          },
+          {
+            "name": "requirementsEnforced",
+            "in": "query",
+            "description": "Identifies if the required attributes for a requirements set are enforced by the product type definition schema. Non-enforced requirements enable structural validation of individual attributes without all the required attributes being present (such as for partial updates).",
+            "required": false,
+            "type": "string",
+            "default": "ENFORCED",
+            "enum": [
+              "ENFORCED",
+              "NOT_ENFORCED"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "ENFORCED",
+                "description": "Request schema with required and conditionally required attributes enforced (used for full payload validation)."
+              },
+              {
+                "value": "NOT_ENFORCED",
+                "description": "Request schema with required and conditionally required attributes not enforced (used for partial payload validation, such as for single attributes)."
+              }
+            ],
+            "x-example": "ENFORCED"
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "description": "Locale for retrieving display labels and other presentation details. Defaults to the default language of the first marketplace in the request.",
+            "required": false,
+            "type": "string",
+            "default": "DEFAULT",
+            "enum": [
+              "DEFAULT",
+              "ar",
+              "ar_AE",
+              "de",
+              "de_DE",
+              "en",
+              "en_AE",
+              "en_AU",
+              "en_CA",
+              "en_GB",
+              "en_IN",
+              "en_SG",
+              "en_US",
+              "es",
+              "es_ES",
+              "es_MX",
+              "es_US",
+              "fr",
+              "fr_CA",
+              "fr_FR",
+              "it",
+              "it_IT",
+              "ja",
+              "ja_JP",
+              "nl",
+              "nl_NL",
+              "pl",
+              "pl_PL",
+              "pt",
+              "pt_BR",
+              "pt_PT",
+              "sv",
+              "sv_SE",
+              "tr",
+              "tr_TR",
+              "zh",
+              "zh_CN",
+              "zh_TW"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "DEFAULT",
+                "description": "Default locale of the requested Amazon marketplace."
+              },
+              {
+                "value": "ar",
+                "description": "Arabic"
+              },
+              {
+                "value": "ar_AE",
+                "description": "Arabic (U.A.E.)"
+              },
+              {
+                "value": "de",
+                "description": "German"
+              },
+              {
+                "value": "de_DE",
+                "description": "German (Germany)"
+              },
+              {
+                "value": "en",
+                "description": "English"
+              },
+              {
+                "value": "en_AE",
+                "description": "English (U.A.E.)"
+              },
+              {
+                "value": "en_AU",
+                "description": "English (Australia)"
+              },
+              {
+                "value": "en_CA",
+                "description": "English (Canada)"
+              },
+              {
+                "value": "en_GB",
+                "description": "English (United Kingdom)"
+              },
+              {
+                "value": "en_IN",
+                "description": "English (India)"
+              },
+              {
+                "value": "en_SG",
+                "description": "English (Singapore)"
+              },
+              {
+                "value": "en_US",
+                "description": "English (United States)"
+              },
+              {
+                "value": "es",
+                "description": "Spanish"
+              },
+              {
+                "value": "es_ES",
+                "description": "Spanish (Spain)"
+              },
+              {
+                "value": "es_MX",
+                "description": "Spanish (Mexico)"
+              },
+              {
+                "value": "es_US",
+                "description": "Spanish (United States)"
+              },
+              {
+                "value": "fr",
+                "description": "French"
+              },
+              {
+                "value": "fr_CA",
+                "description": "French (Canada)"
+              },
+              {
+                "value": "fr_FR",
+                "description": "French (France)"
+              },
+              {
+                "value": "it",
+                "description": "Italian"
+              },
+              {
+                "value": "it_IT",
+                "description": "Italian (Italy)"
+              },
+              {
+                "value": "ja",
+                "description": "Japanese"
+              },
+              {
+                "value": "ja_JP",
+                "description": "Japanese (Japan)"
+              },
+              {
+                "value": "nl",
+                "description": "Dutch"
+              },
+              {
+                "value": "nl_NL",
+                "description": "Dutch (Netherlands)"
+              },
+              {
+                "value": "pl",
+                "description": "Polish"
+              },
+              {
+                "value": "pl_PL",
+                "description": "Polish (Poland)"
+              },
+              {
+                "value": "pt",
+                "description": "Portuguese"
+              },
+              {
+                "value": "pt_BR",
+                "description": "Portuguese (Brazil)"
+              },
+              {
+                "value": "pt_PT",
+                "description": "Portuguese (Portugal)"
+              },
+              {
+                "value": "sv",
+                "description": "Swedish"
+              },
+              {
+                "value": "sv_SE",
+                "description": "Swedish (Sweden)"
+              },
+              {
+                "value": "tr",
+                "description": "Turkish"
+              },
+              {
+                "value": "tr_TR",
+                "description": "Turkish (Turkey)"
+              },
+              {
+                "value": "zh",
+                "description": "Chinese"
+              },
+              {
+                "value": "zh_CN",
+                "description": "Chinese (Simplified)"
+              },
+              {
+                "value": "zh_TW",
+                "description": "Chinese (Traditional)"
+              }
+            ],
+            "x-example": "DEFAULT"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved an Amazon product type definition.",
+            "schema": {
+              "$ref": "#/definitions/ProductTypeDefinition"
+            },
+            "examples": {
+              "application/json": {
+                "metaSchema": {
+                  "link": {
+                    "resource": "https://meta-schema-url",
+                    "verb": "GET"
+                  },
+                  "checksum": "c7af9479ca7261645cea9db56c5f720d"
+                },
+                "schema": {
+                  "link": {
+                    "resource": "https://schema-url",
+                    "verb": "GET"
+                  },
+                  "checksum": "c7af9479ca7261645cea9db56c5f720d"
+                },
+                "requirements": "LISTING",
+                "requirementsEnforced": "ENFORCED",
+                "propertyGroups": {
+                  "product_identity": {
+                    "title": "Product Identity",
+                    "description": "Information to uniquely identify your product (e.g., UPC, EAN, GTIN, Product Type, Brand)",
+                    "propertyNames": [
+                      "item_name",
+                      "brand",
+                      "external_product_id",
+                      "gtin_exemption_reason",
+                      "merchant_suggested_asin",
+                      "product_type",
+                      "product_category",
+                      "product_subcategory",
+                      "item_type_keyword"
+                    ]
+                  }
+                },
+                "locale": "en_US",
+                "marketplaceIds": [
+                  "ATVPDKIKX0DER"
+                ],
+                "productType": "LUGGAGE",
+                "productTypeVersion": {
+                  "version": "UHqSqmb4FNUk=",
+                  "latest": true,
+                  "releaseCandidate": false
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {}
+                },
+                "response": {
+                  "metaSchema": {
+                    "link": {
+                      "resource": "https://meta-schema-url",
+                      "verb": "GET"
+                    },
+                    "checksum": "c7af9479ca7261645cea9db56c5f720d"
+                  },
+                  "schema": {
+                    "link": {
+                      "resource": "https://schema-url",
+                      "verb": "GET"
+                    },
+                    "checksum": "c7af9479ca7261645cea9db56c5f720d"
+                  },
+                  "requirements": "LISTING",
+                  "requirementsEnforced": "ENFORCED",
+                  "propertyGroups": {
+                    "product_identity": {
+                      "title": "Product Identity",
+                      "description": "Information to uniquely identify your product (e.g., UPC, EAN, GTIN, Product Type, Brand)",
+                      "propertyNames": [
+                        "item_name",
+                        "brand",
+                        "external_product_id",
+                        "gtin_exemption_reason",
+                        "merchant_suggested_asin",
+                        "product_type",
+                        "product_category",
+                        "product_subcategory",
+                        "item_type_keyword"
+                      ]
+                    }
+                  },
+                  "locale": "en_US",
+                  "marketplaceIds": [
+                    "ATVPDKIKX0DER"
+                  ],
+                  "productType": "LUGGAGE",
+                  "productTypeVersion": {
+                    "version": "UHqSqmb4FNUk=",
+                    "latest": true,
+                    "releaseCandidate": false
+                  }
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "productType": {
+                      "value": "INVALID"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "BAD_REQUEST",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    }
+  },
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    },
+    "ErrorList": {
+      "type": "object",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      },
+      "description": "A list of error responses returned when a request is unsuccessful."
+    },
+    "SchemaLink": {
+      "type": "object",
+      "required": [
+        "checksum",
+        "link"
+      ],
+      "properties": {
+        "link": {
+          "type": "object",
+          "description": "Link to retrieve the schema.",
+          "properties": {
+            "resource": {
+              "type": "string",
+              "description": "URI resource for the link."
+            },
+            "verb": {
+              "type": "string",
+              "description": "HTTP method for the link operation.",
+              "enum": [
+                "GET"
+              ],
+              "x-docgen-enum-table-extension": [
+                {
+                  "value": "GET",
+                  "description": "The provided resource is accessed with the HTTP GET method."
+                }
+              ]
+            }
+          },
+          "required": [
+            "resource",
+            "verb"
+          ]
+        },
+        "checksum": {
+          "type": "string",
+          "description": "Checksum hash of the schema (Base64 MD5). Can be used to verify schema contents, identify changes between schema versions, and for caching."
+        }
+      }
+    },
+    "ProductTypeDefinition": {
+      "type": "object",
+      "required": [
+        "locale",
+        "marketplaceIds",
+        "productType",
+        "productTypeVersion",
+        "propertyGroups",
+        "requirements",
+        "requirementsEnforced",
+        "schema"
+      ],
+      "properties": {
+        "metaSchema": {
+          "description": "Link to meta-schema describing the vocabulary used by the product type schema.",
+          "$ref": "#/definitions/SchemaLink"
+        },
+        "schema": {
+          "description": "Link to schema describing the attributes and requirements for the product type.",
+          "$ref": "#/definitions/SchemaLink"
+        },
+        "requirements": {
+          "type": "string",
+          "description": "Name of the requirements set represented in this product type definition.",
+          "enum": [
+            "LISTING",
+            "LISTING_PRODUCT_ONLY",
+            "LISTING_OFFER_ONLY"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "LISTING",
+              "description": "Indicates the schema contains product facts and sales terms."
+            },
+            {
+              "value": "LISTING_PRODUCT_ONLY",
+              "description": "Indicates the schema data contains product facts only."
+            },
+            {
+              "value": "LISTING_OFFER_ONLY",
+              "description": "Indicates the schema data contains sales terms only."
+            }
+          ]
+        },
+        "requirementsEnforced": {
+          "type": "string",
+          "description": "Identifies if the required attributes for a requirements set are enforced by the product type definition schema. Non-enforced requirements enable structural validation of individual attributes without all of the required attributes being present (such as for partial updates).",
+          "enum": [
+            "ENFORCED",
+            "NOT_ENFORCED"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "ENFORCED",
+              "description": "Schema enforces required and conditionally required attributes (used for full payload validation)."
+            },
+            {
+              "value": "NOT_ENFORCED",
+              "description": "Schema does not enforce required and conditionally required attributes (used for partial payload validation, such as for single attributes)."
+            }
+          ]
+        },
+        "propertyGroups": {
+          "type": "object",
+          "description": "Mapping of property group names to property groups. Property groups represent logical groupings of schema properties that can be used for display or informational purposes.",
+          "additionalProperties": {
+            "$ref": "#/definitions/PropertyGroup"
+          }
+        },
+        "locale": {
+          "type": "string",
+          "description": "Locale of the display elements contained in the product type definition."
+        },
+        "marketplaceIds": {
+          "type": "array",
+          "description": "Amazon marketplace identifiers for which the product type definition is applicable.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "productType": {
+          "type": "string",
+          "description": "The name of the Amazon product type that this product type definition applies to."
+        },
+        "productTypeVersion": {
+          "description": "The version details for the Amazon product type.",
+          "$ref": "#/definitions/ProductTypeVersion"
+        }
+      },
+      "description": "A product type definition represents the attributes and data requirements for a product type in the Amazon catalog. Product type definitions are used interchangeably between the Selling Partner API for Listings Items, Selling Partner API for Catalog Items, and JSON-based listings feeds in the Selling Partner API for Feeds."
+    },
+    "PropertyGroup": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The display label of the property group."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the property group."
+        },
+        "propertyNames": {
+          "type": "array",
+          "description": "The names of the schema properties for the property group.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "A property group represents a logical grouping of schema properties that can be used for display or informational purposes."
+    },
+    "ProductTypeVersion": {
+      "type": "object",
+      "required": [
+        "latest",
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Version identifier."
+        },
+        "latest": {
+          "type": "boolean",
+          "description": "When true, the version indicated by the version identifier is the latest available for the Amazon product type."
+        },
+        "releaseCandidate": {
+          "type": "boolean",
+          "description": "When true, the version indicated by the version identifier is the prerelease (release candidate) for the Amazon product type."
+        }
+      },
+      "description": "The version details for an Amazon product type."
+    },
+    "ProductType": {
+      "type": "object",
+      "required": [
+        "marketplaceIds",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the Amazon product type."
+        },
+        "marketplaceIds": {
+          "type": "array",
+          "description": "The Amazon marketplace identifiers for which the product type definition is available.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "An Amazon product type with a definition available."
+    },
+    "ProductTypeList": {
+      "type": "object",
+      "required": [
+        "productTypes"
+      ],
+      "properties": {
+        "productTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProductType"
+          }
+        }
+      },
+      "description": "A list of Amazon product types with definitions available."
+    }
+  }
+}
