@@ -1,0 +1,941 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Listings Items (Listings Items API) provides programmatic access to selling partner listings on Amazon. Use this API in collaboration with the Selling Partner API for Product Type Definitions, which you use to retrieve the information about Amazon product types needed to use the Listings Items API.",
+    "version": "2020-09-01",
+    "title": "Selling Partner API for Listings Items",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/listings/2020-09-01/items/{sellerId}/{sku}": {
+      "delete": {
+        "tags": [
+          "listings"
+        ],
+        "description": "Delete a listings item for a selling partner.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 5 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "deleteListingsItem",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sellerId",
+            "description": "A selling partner identifier, such as a merchant account or vendor code.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sku",
+            "description": "A selling partner provided identifier for an Amazon listing.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "ATVPDKIKX0DER"
+          },
+          {
+            "name": "issueLocale",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: \"en_US\", \"fr_CA\", \"fr_FR\". Localized messages default to \"en_US\" when a localization is not available in the specified locale.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-example": "en_US"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully understood the listings item delete request. See the response to determine whether the submission has been accepted.",
+            "schema": {
+              "$ref": "#/definitions/ListingsItemSubmissionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "sku":"GM-ZDPI-9B4E",
+                "status":"ACCEPTED",
+                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
+                "issues":[]
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                  }
+                },
+                "response": {
+                  "sku": "GM-ZDPI-9B4E",
+                  "status": "ACCEPTED",
+                  "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+                  "issues": []
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "sku": {
+                      "value": "BadSKU"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "BAD_REQUEST",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "listings"
+        ],
+        "description": "Partially update (patch) a listings item for a selling partner. Only top-level listings item attributes can be patched. Patching nested attributes is not supported.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 5 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "patchListingsItem",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sellerId",
+            "description": "A selling partner identifier, such as a merchant account or vendor code.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sku",
+            "description": "A selling partner provided identifier for an Amazon listing.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "ATVPDKIKX0DER"
+          },
+          {
+            "name": "issueLocale",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: \"en_US\", \"fr_CA\", \"fr_FR\". Localized messages default to \"en_US\" when a localization is not available in the specified locale.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-example": "en_US"
+          },
+          {
+            "name": "body",
+            "description": "The request body schema for the patchListingsItem operation.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListingsItemPatchRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully understood the listings item patch request. See the response to determine if the submission was accepted.",
+            "schema": {
+              "$ref": "#/definitions/ListingsItemSubmissionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "sku":"GM-ZDPI-9B4E",
+                "status":"ACCEPTED",
+                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
+                "issues":[]
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                    }
+                  }
+                },
+                "response": {
+                  "sku": "GM-ZDPI-9B4E",
+                  "status": "ACCEPTED",
+                  "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+                  "issues": []
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "sku": {
+                      "value": "BadSKU"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "BAD_REQUEST",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "listings"
+        ],
+        "description": "Creates a new or fully-updates an existing listings item for a selling partner.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 5 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "putListingsItem",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sellerId",
+            "description": "A selling partner identifier, such as a merchant account or vendor code.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sku",
+            "description": "A selling partner provided identifier for an Amazon listing.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "ATVPDKIKX0DER"
+          },
+          {
+            "name": "issueLocale",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: \"en_US\", \"fr_CA\", \"fr_FR\". Localized messages default to \"en_US\" when a localization is not available in the specified locale.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-example": "en_US"
+          },
+          {
+            "name": "body",
+            "description": "The request body schema for the putListingsItem operation.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListingsItemPutRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully understood the request to create or fully-update a listings item. See the response to determine if the submission has been accepted.",
+            "schema": {
+              "$ref": "#/definitions/ListingsItemSubmissionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "sku":"GM-ZDPI-9B4E",
+                "status":"ACCEPTED",
+                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
+                "issues":[]
+              }
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "body": {
+                    }
+                  }
+                },
+                "response": {
+                  "sku": "GM-ZDPI-9B4E",
+                  "status": "ACCEPTED",
+                  "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+                  "issues": []
+                }
+              }
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amazon-spds-sandbox-behaviors": [
+              {
+                "request": {
+                  "parameters": {
+                    "sku": {
+                      "value": "BadSKU"
+                    }
+                  }
+                },
+                "response": {
+                  "errors": [
+                    {
+                      "code": "BAD_REQUEST",
+                      "message": "Invalid input",
+                      "details": "Invalid input"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occurred.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "ErrorList": {
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      },
+      "required": [
+        "errors"
+      ]
+    },
+    "Issue": {
+      "description": "An issue with a listings item.",
+      "properties": {
+        "code": {
+          "description": "An issue code that identifies the type of issue.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the issue.",
+          "type": "string"
+        },
+        "severity": {
+          "description": "The severity of the issue.",
+          "enum": [
+            "ERROR",
+            "WARNING",
+            "INFO"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "ERROR",
+              "description": "Indicates an issue has occurred preventing the submission from processing, such as a validation error."
+            },
+            {
+              "value": "WARNING",
+              "description": "Indicates an issue has occurred that should be reviewed, but has not prevented the submission from processing."
+            },
+            {
+              "value": "INFO",
+              "description": "Indicates additional information has been provided that should be reviewed."
+            }
+          ],
+          "type": "string"
+        },
+        "attributeName": {
+          "description": "Name of the attribute associated with the issue, if applicable.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "severity"
+      ],
+      "type": "object"
+    },
+    "PatchOperation": {
+      "description": "Individual JSON Patch operation for an HTTP PATCH request.",
+      "properties": {
+        "op": {
+          "description": "Type of JSON Patch operation. Supported JSON Patch operations include add, replace, and delete. See <https://tools.ietf.org/html/rfc6902>.",
+          "enum": [
+            "add",
+            "replace",
+            "delete"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "add",
+              "description": "The \"add\" operation adds or replaces the target property."
+            },
+            {
+              "value": "replace",
+              "description": "The \"replace\" operation adds or replaces the target property."
+            },
+            {
+              "value": "delete",
+              "description": "The \"delete\" operation removes the target property."
+            }
+          ],
+          "type": "string"
+        },
+        "path": {
+          "description": "JSON Pointer path of the element to patch. See <https://tools.ietf.org/html/rfc6902>.",
+          "type": "string"
+        },
+        "value": {
+          "description": "JSON value to add, replace, or delete.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": [
+        "op",
+        "path"
+      ],
+      "type": "object"
+    },
+    "ListingsItemPatchRequest": {
+      "description": "The request body schema for the patchListingsItem operation.",
+      "properties": {
+        "productType": {
+          "description": "The Amazon product type of the listings item.",
+          "type": "string"
+        },
+        "patches": {
+          "description": "One or more JSON Patch operations to perform on the listings item.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PatchOperation"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "productType",
+        "patches"
+      ],
+      "type": "object"
+    },
+    "ListingsItemPutRequest": {
+      "description": "The request body schema for the putListingsItem operation.",
+      "properties": {
+        "productType": {
+          "description": "The Amazon product type of the listings item.",
+          "type": "string"
+        },
+        "requirements": {
+          "description": "The name of the requirements set for the provided data.",
+          "enum": [
+            "LISTING",
+            "LISTING_PRODUCT_ONLY",
+            "LISTING_OFFER_ONLY"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "LISTING",
+              "description": "Indicates the submitted data contains product facts and sales terms."
+            },
+            {
+              "value": "LISTING_PRODUCT_ONLY",
+              "description": "Indicates the submitted data contains product facts only."
+            },
+            {
+              "value": "LISTING_OFFER_ONLY",
+              "description": "Indicates the submitted data contains sales terms only."
+            }
+          ],
+          "type": "string"
+        },
+        "attributes": {
+          "description": "JSON object containing structured listings item attribute data keyed by attribute name.",
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "productType",
+        "attributes"
+      ],
+      "type": "object"
+    },
+    "ListingsItemSubmissionResponse": {
+      "description": "Response containing the results of a submission to the Selling Partner API for Listings Items.",
+      "properties": {
+        "sku": {
+          "description": "A selling partner provided identifier for an Amazon listing.",
+          "type": "string"
+        },
+        "status": {
+          "description": "The status of the listings item submission.",
+          "enum": [
+            "ACCEPTED",
+            "INVALID"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "ACCEPTED",
+              "description": "The listings submission was accepted for processing."
+            },
+            {
+              "value": "INVALID",
+              "description": "The listings submission was not valid and was not accepted for processing."
+            }
+          ],
+          "type": "string"
+        },
+        "submissionId": {
+          "description": "The unique identifier of the listings item submission.",
+          "type": "string"
+        },
+        "issues": {
+          "description": "Listings item issues related to the listings item submission.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Issue"
+          }
+        }
+      },
+      "required": [
+        "sku",
+        "status",
+        "submissionId"
+      ],
+      "type": "object"
+    }
+  }
+}
