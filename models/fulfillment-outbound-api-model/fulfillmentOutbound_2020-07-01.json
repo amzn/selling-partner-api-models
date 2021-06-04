@@ -44,6 +44,9 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetFulfillmentPreviewResponse"
+            },
             "examples": {
               "payload": {
                 "fulfillmentPreviews": [
@@ -88,11 +91,25 @@
                     "featureConstraints": [
                       {
                         "featureName": "BLANK_BOX",
-                        "featureFulfillmentPolicy": "REQUIRED"
+                        "featureFulfillmentPolicy": "NotRequired"
+                      },
+                      {
+                        "featureName": "BLOCK_AMZL",
+                        "featureFulfillmentPolicy": "Required"
                       }
                     ]
                   }
                 ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
             "x-amazon-spds-sandbox-behaviors": [
@@ -123,7 +140,11 @@
                         "featureConstraints": [
                           {
                             "featureName": "BLANK_BOX",
-                            "featureFulfillmentPolicy": "REQUIRED"
+                            "featureFulfillmentPolicy": "Required"
+                          },
+                          {
+                            "featureName": "BLOCK_AMZL",
+                            "featureFulfillmentPolicy": "Required"
                           }
                         ]
                       }
@@ -174,7 +195,11 @@
                         "featureConstraints": [
                           {
                             "featureName": "BLANK_BOX",
-                            "featureFulfillmentPolicy": "REQUIRED"
+                            "featureFulfillmentPolicy": "Required"
+                          },
+                          {
+                            "featureName": "BLOCK_AMZL",
+                            "featureFulfillmentPolicy": "Required"
                           }
                         ]
                       }
@@ -182,19 +207,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetFulfillmentPreviewResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -233,16 +262,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetFulfillmentPreviewResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -250,6 +270,10 @@
               "$ref": "#/definitions/GetFulfillmentPreviewResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -274,6 +298,10 @@
               "$ref": "#/definitions/GetFulfillmentPreviewResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -286,6 +314,10 @@
               "$ref": "#/definitions/GetFulfillmentPreviewResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -298,6 +330,10 @@
               "$ref": "#/definitions/GetFulfillmentPreviewResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -310,6 +346,10 @@
               "$ref": "#/definitions/GetFulfillmentPreviewResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -317,8 +357,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/fba/outbound/2020-07-01/fulfillmentOrders": {
       "get": {
@@ -330,16 +369,16 @@
         "parameters": [
           {
             "name": "queryStartDate",
-            "description": "A date used to select fulfillment orders that were last updated after (or at) a specified time. An update is defined as any change in fulfillment order status, including the creation of a new fulfillment order.",
             "in": "query",
+            "description": "A date used to select fulfillment orders that were last updated after (or at) a specified time. An update is defined as any change in fulfillment order status, including the creation of a new fulfillment order.",
             "required": false,
             "type": "string",
             "format": "date-time"
           },
           {
             "name": "nextToken",
-            "description": "A string token returned in the response to your previous request.",
             "in": "query",
+            "description": "A string token returned in the response to your previous request.",
             "required": false,
             "type": "string"
           }
@@ -347,6 +386,9 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListAllFulfillmentOrdersResponse"
+            },
             "examples": {
               "payload": {
                 "fulfillmentOrders": [
@@ -373,7 +415,11 @@
                     "featureConstraints": [
                       {
                         "featureName": "BLANK_BOX",
-                        "featureFulfillmentPolicy": "REQUIRED"
+                        "featureFulfillmentPolicy": "Required"
+                      },
+                      {
+                        "featureName": "BLOCK_AMZL",
+                        "featureFulfillmentPolicy": "Required"
                       }
                     ]
                   },
@@ -400,6 +446,16 @@
                     "featureConstraints": null
                   }
                 ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
             "x-amazon-spds-sandbox-behaviors": [
@@ -436,7 +492,11 @@
                         "featureConstraints": [
                           {
                             "featureName": "BLANK_BOX",
-                            "featureFulfillmentPolicy": "NOT_REQUIRED"
+                            "featureFulfillmentPolicy": "NotRequired"
+                          },
+                          {
+                            "featureName": "BLOCK_AMZL",
+                            "featureFulfillmentPolicy": "NotRequired"
                           }
                         ]
                       },
@@ -463,7 +523,11 @@
                         "featureConstraints": [
                           {
                             "featureName": "BLANK_BOX",
-                            "featureFulfillmentPolicy": "REQUIRED"
+                            "featureFulfillmentPolicy": "NotRequired"
+                          },
+                          {
+                            "featureName": "BLOCK_AMZL",
+                            "featureFulfillmentPolicy": "Required"
                           }
                         ]
                       },
@@ -778,19 +842,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/ListAllFulfillmentOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -810,16 +878,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/ListAllFulfillmentOrdersResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -827,6 +886,10 @@
               "$ref": "#/definitions/ListAllFulfillmentOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -851,6 +914,10 @@
               "$ref": "#/definitions/ListAllFulfillmentOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -863,6 +930,10 @@
               "$ref": "#/definitions/ListAllFulfillmentOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -875,6 +946,10 @@
               "$ref": "#/definitions/ListAllFulfillmentOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -887,6 +962,10 @@
               "$ref": "#/definitions/ListAllFulfillmentOrdersResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -914,6 +993,19 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CreateFulfillmentOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -978,19 +1070,23 @@
                 },
                 "response": {}
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/CreateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1131,16 +1227,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/CreateFulfillmentOrderResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1148,6 +1235,10 @@
               "$ref": "#/definitions/CreateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1172,6 +1263,10 @@
               "$ref": "#/definitions/CreateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1184,6 +1279,10 @@
               "$ref": "#/definitions/CreateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1196,6 +1295,10 @@
               "$ref": "#/definitions/CreateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1208,6 +1311,10 @@
               "$ref": "#/definitions/CreateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1215,8 +1322,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/fba/outbound/2020-07-01/tracking": {
       "get": {
@@ -1228,8 +1334,8 @@
         "parameters": [
           {
             "name": "packageNumber",
-            "description": "The unencrypted package identifier returned by the getFulfillmentOrder operation.",
             "in": "query",
+            "description": "The unencrypted package identifier returned by the getFulfillmentOrder operation.",
             "required": true,
             "type": "integer",
             "format": "int32"
@@ -1238,6 +1344,9 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetPackageTrackingDetailsResponse"
+            },
             "examples": {
               "payload": {
                 "packageNumber": 212794778,
@@ -1279,6 +1388,16 @@
                     "eventDescription": "In transit to pickup location"
                   }
                 ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
             "x-amazon-spds-sandbox-behaviors": [
@@ -1325,19 +1444,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetPackageTrackingDetailsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1357,16 +1480,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetPackageTrackingDetailsResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1374,6 +1488,10 @@
               "$ref": "#/definitions/GetPackageTrackingDetailsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1398,6 +1516,10 @@
               "$ref": "#/definitions/GetPackageTrackingDetailsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1410,6 +1532,10 @@
               "$ref": "#/definitions/GetPackageTrackingDetailsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1422,6 +1548,10 @@
               "$ref": "#/definitions/GetPackageTrackingDetailsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1434,6 +1564,10 @@
               "$ref": "#/definitions/GetPackageTrackingDetailsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1441,8 +1575,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/fba/outbound/2020-07-01/returnReasonCodes": {
       "get": {
@@ -1454,29 +1587,29 @@
         "parameters": [
           {
             "name": "sellerSku",
-            "description": "The seller SKU for which return reason codes are required.",
             "in": "query",
+            "description": "The seller SKU for which return reason codes are required.",
             "required": true,
             "type": "string"
           },
           {
             "name": "marketplaceId",
-            "description": "The marketplace for which the seller wants return reason codes.",
             "in": "query",
+            "description": "The marketplace for which the seller wants return reason codes.",
             "required": false,
             "type": "string"
           },
           {
             "name": "sellerFulfillmentOrderId",
-            "description": "The identifier assigned to the item by the seller when the fulfillment order was created. The service uses this value to determine the marketplace for which the seller wants return reason codes.",
             "in": "query",
+            "description": "The identifier assigned to the item by the seller when the fulfillment order was created. The service uses this value to determine the marketplace for which the seller wants return reason codes.",
             "required": false,
             "type": "string"
           },
           {
             "name": "language",
-            "description": "The language that the TranslatedDescription property of the ReasonCodeDetails response object should be translated into.",
             "in": "query",
+            "description": "The language that the TranslatedDescription property of the ReasonCodeDetails response object should be translated into.",
             "required": true,
             "type": "string"
           }
@@ -1484,6 +1617,9 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListReturnReasonCodesResponse"
+            },
             "examples": {
               "payload": {
                 "reasonCodeDetails": [
@@ -1536,6 +1672,16 @@
                     "description": "Unauthorized purchase"
                   }
                 ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
             "x-amazon-spds-sandbox-behaviors": [
@@ -1605,19 +1751,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/ListReturnReasonCodesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1637,16 +1787,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/ListReturnReasonCodesResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1654,6 +1795,10 @@
               "$ref": "#/definitions/ListReturnReasonCodesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1678,6 +1823,10 @@
               "$ref": "#/definitions/ListReturnReasonCodesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1690,6 +1839,10 @@
               "$ref": "#/definitions/ListReturnReasonCodesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1702,6 +1855,10 @@
               "$ref": "#/definitions/ListReturnReasonCodesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1714,6 +1871,10 @@
               "$ref": "#/definitions/ListReturnReasonCodesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1721,8 +1882,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/fba/outbound/2020-07-01/fulfillmentOrders/{sellerFulfillmentOrderId}/return": {
       "put": {
@@ -1742,8 +1902,8 @@
           },
           {
             "name": "sellerFulfillmentOrderId",
-            "description": "An identifier assigned by the seller to the fulfillment order at the time it was created. The seller uses their own records to find the correct SellerFulfillmentOrderId value based on the buyer's request to return items.",
             "in": "path",
+            "description": "An identifier assigned by the seller to the fulfillment order at the time it was created. The seller uses their own records to find the correct SellerFulfillmentOrderId value based on the buyer's request to return items.",
             "required": true,
             "type": "string"
           }
@@ -1751,6 +1911,9 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CreateFulfillmentReturnResponse"
+            },
             "examples": {
               "payload": {
                 "returnItems": [
@@ -1783,6 +1946,16 @@
                     "rmaPageURL": "https://www.amazon.com/gp/orc/rml/D50WttPHRRMA"
                   }
                 ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
             "x-amazon-spds-sandbox-behaviors": [
@@ -1841,19 +2014,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/CreateFulfillmentReturnResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -1886,16 +2063,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/CreateFulfillmentReturnResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1903,6 +2071,10 @@
               "$ref": "#/definitions/CreateFulfillmentReturnResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1915,6 +2087,10 @@
               "$ref": "#/definitions/CreateFulfillmentReturnResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1927,6 +2103,10 @@
               "$ref": "#/definitions/CreateFulfillmentReturnResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1939,6 +2119,10 @@
               "$ref": "#/definitions/CreateFulfillmentReturnResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1951,6 +2135,10 @@
               "$ref": "#/definitions/CreateFulfillmentReturnResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1963,6 +2151,10 @@
               "$ref": "#/definitions/CreateFulfillmentReturnResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1970,8 +2162,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/fba/outbound/2020-07-01/fulfillmentOrders/{sellerFulfillmentOrderId}": {
       "get": {
@@ -1983,8 +2174,8 @@
         "parameters": [
           {
             "name": "sellerFulfillmentOrderId",
-            "description": "The identifier assigned to the item by the seller when the fulfillment order was created.",
             "in": "path",
+            "description": "The identifier assigned to the item by the seller when the fulfillment order was created.",
             "required": true,
             "type": "string",
             "maxLength": 40
@@ -1993,6 +2184,9 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetFulfillmentOrderResponse"
+            },
             "examples": {
               "payload": {
                 "fulfillmentOrder": {
@@ -2081,6 +2275,16 @@
                 ],
                 "returnItems": [],
                 "returnAuthorizations": []
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
             "x-amazon-spds-sandbox-behaviors": [
@@ -2182,19 +2386,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -2214,16 +2422,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetFulfillmentOrderResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -2231,6 +2430,10 @@
               "$ref": "#/definitions/GetFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2255,6 +2458,10 @@
               "$ref": "#/definitions/GetFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2267,6 +2474,10 @@
               "$ref": "#/definitions/GetFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2279,6 +2490,10 @@
               "$ref": "#/definitions/GetFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2291,6 +2506,10 @@
               "$ref": "#/definitions/GetFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2316,8 +2535,8 @@
           },
           {
             "name": "sellerFulfillmentOrderId",
-            "description": "The identifier assigned to the item by the seller when the fulfillment order was created.",
             "in": "path",
+            "description": "The identifier assigned to the item by the seller when the fulfillment order was created.",
             "required": true,
             "type": "string",
             "maxLength": 40
@@ -2326,6 +2545,19 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/UpdateFulfillmentOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -2358,19 +2590,23 @@
                 },
                 "response": {}
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/UpdateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -2411,16 +2647,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/UpdateFulfillmentOrderResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -2428,6 +2655,10 @@
               "$ref": "#/definitions/UpdateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2452,6 +2683,10 @@
               "$ref": "#/definitions/UpdateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2464,6 +2699,10 @@
               "$ref": "#/definitions/UpdateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2476,6 +2715,10 @@
               "$ref": "#/definitions/UpdateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2488,6 +2731,10 @@
               "$ref": "#/definitions/UpdateFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2495,8 +2742,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/fba/outbound/2020-07-01/fulfillmentOrders/{sellerFulfillmentOrderId}/cancel": {
       "put": {
@@ -2508,8 +2754,8 @@
         "parameters": [
           {
             "name": "sellerFulfillmentOrderId",
-            "description": "The identifier assigned to the item by the seller when the fulfillment order was created.",
             "in": "path",
+            "description": "The identifier assigned to the item by the seller when the fulfillment order was created.",
             "required": true,
             "type": "string",
             "maxLength": 40
@@ -2518,6 +2764,19 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CancelFulfillmentOrderResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -2529,19 +2788,23 @@
                 },
                 "response": {}
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/CancelFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -2561,16 +2824,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/CancelFulfillmentOrderResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -2578,6 +2832,10 @@
               "$ref": "#/definitions/CancelFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2602,6 +2860,10 @@
               "$ref": "#/definitions/CancelFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2614,6 +2876,10 @@
               "$ref": "#/definitions/CancelFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2626,6 +2892,10 @@
               "$ref": "#/definitions/CancelFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2638,6 +2908,10 @@
               "$ref": "#/definitions/CancelFulfillmentOrderResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2645,8 +2919,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/fba/outbound/2020-07-01/features": {
       "get": {
@@ -2658,8 +2931,8 @@
         "parameters": [
           {
             "name": "marketplaceId",
-            "description": "The marketplace for which to return the list of features.",
             "in": "query",
+            "description": "The marketplace for which to return the list of features.",
             "required": true,
             "type": "string"
           }
@@ -2667,6 +2940,9 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetFeaturesResponse"
+            },
             "examples": {
               "payload": {
                 "features": [
@@ -2682,6 +2958,16 @@
                   }
                 ],
                 "schema": null
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
             "x-amazon-spds-sandbox-behaviors": [
@@ -2706,19 +2992,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetFeaturesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -2738,16 +3028,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetFeaturesResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -2755,6 +3036,10 @@
               "$ref": "#/definitions/GetFeaturesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2779,6 +3064,10 @@
               "$ref": "#/definitions/GetFeaturesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2791,6 +3080,10 @@
               "$ref": "#/definitions/GetFeaturesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2803,6 +3096,10 @@
               "$ref": "#/definitions/GetFeaturesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2815,6 +3112,10 @@
               "$ref": "#/definitions/GetFeaturesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2822,8 +3123,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/fba/outbound/2020-07-01/features/inventory/{featureName}": {
       "get": {
@@ -2835,22 +3135,22 @@
         "parameters": [
           {
             "name": "marketplaceId",
-            "description": "The marketplace for which to return a list of the inventory that is eligible for the specified feature.",
             "in": "query",
+            "description": "The marketplace for which to return a list of the inventory that is eligible for the specified feature.",
             "required": true,
             "type": "string"
           },
           {
             "name": "featureName",
-            "description": "The name of the feature for which to return a list of eligible inventory.",
             "in": "path",
+            "description": "The name of the feature for which to return a list of eligible inventory.",
             "required": true,
             "type": "string"
           },
           {
             "name": "nextToken",
-            "description": "A string token returned in the response to your previous request that is used to return the next response page. A value of null will return the first page.",
             "in": "query",
+            "description": "A string token returned in the response to your previous request that is used to return the next response page. A value of null will return the first page.",
             "required": false,
             "type": "string"
           }
@@ -2858,6 +3158,9 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetFeatureInventoryResponse"
+            },
             "examples": {
               "payload": {
                 "marketplaceId": "ATVPDKIKX0DER",
@@ -2887,6 +3190,16 @@
                     ]
                   }
                 ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
             "x-amazon-spds-sandbox-behaviors": [
@@ -2929,19 +3242,23 @@
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetFeatureInventoryResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -2961,16 +3278,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetFeatureInventoryResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -2978,6 +3286,10 @@
               "$ref": "#/definitions/GetFeatureInventoryResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3002,6 +3314,10 @@
               "$ref": "#/definitions/GetFeatureInventoryResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3014,6 +3330,10 @@
               "$ref": "#/definitions/GetFeatureInventoryResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3026,6 +3346,10 @@
               "$ref": "#/definitions/GetFeatureInventoryResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3038,6 +3362,10 @@
               "$ref": "#/definitions/GetFeatureInventoryResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3045,8 +3373,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/fba/outbound/2020-07-01/features/inventory/{featureName}/{sellerSku}": {
       "get": {
@@ -3058,22 +3385,22 @@
         "parameters": [
           {
             "name": "marketplaceId",
-            "description": "The marketplace for which to return the count.",
             "in": "query",
+            "description": "The marketplace for which to return the count.",
             "required": true,
             "type": "string"
           },
           {
             "name": "featureName",
-            "description": "The name of the feature.",
             "in": "path",
+            "description": "The name of the feature.",
             "required": true,
             "type": "string"
           },
           {
             "name": "sellerSku",
-            "description": "Used to identify an item in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit.",
             "in": "path",
+            "description": "Used to identify an item in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit.",
             "required": true,
             "type": "string"
           }
@@ -3081,6 +3408,9 @@
         "responses": {
           "200": {
             "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetFeatureSkuResponse"
+            },
             "examples": {
               "payload": {
                 "marketplaceId": "ATVPDKIKX0DER",
@@ -3093,6 +3423,16 @@
                   "asin": "TEST_asin",
                   "skuCount": 33
                 }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
             "x-amazon-spds-sandbox-behaviors": [
@@ -3138,24 +3478,30 @@
                     "marketplaceId": "ATVPDKIKX0DER",
                     "featureName": "BLANK_BOX",
                     "isEligible": false,
-                    "ineligibleReasons": ["SKU_NOT_ELIGIBLE"],
+                    "ineligibleReasons": [
+                      "SKU_NOT_ELIGIBLE"
+                    ],
                     "skuInfo": {}
                   }
                 }
               }
-            ],
+            ]
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/GetFeatureSkuResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -3175,16 +3521,7 @@
                   ]
                 }
               }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetFeatureSkuResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
+            ]
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -3192,6 +3529,10 @@
               "$ref": "#/definitions/GetFeatureSkuResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3216,6 +3557,10 @@
               "$ref": "#/definitions/GetFeatureSkuResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3228,6 +3573,10 @@
               "$ref": "#/definitions/GetFeatureSkuResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3240,6 +3589,10 @@
               "$ref": "#/definitions/GetFeatureSkuResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3252,6 +3605,10 @@
               "$ref": "#/definitions/GetFeatureSkuResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3259,8 +3616,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     }
   },
   "definitions": {
@@ -3294,67 +3650,66 @@
       }
     },
     "Address": {
-      "description": "A physical address.",
       "type": "object",
       "required": [
-        "name",
         "addressLine1",
+        "countryCode",
         "stateOrRegion",
-        "countryCode"
+        "name"
       ],
       "properties": {
         "name": {
-          "description": "The name of the person, business or institution at the address.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the person, business or institution at the address."
         },
         "addressLine1": {
-          "description": "The first line of the address.",
-          "type": "string"
+          "type": "string",
+          "description": "The first line of the address."
         },
         "addressLine2": {
-          "description": "Additional address information, if required.",
-          "type": "string"
+          "type": "string",
+          "description": "Additional address information, if required."
         },
         "addressLine3": {
-          "description": "Additional address information, if required.",
-          "type": "string"
+          "type": "string",
+          "description": "Additional address information, if required."
         },
         "city": {
-          "description": "The city where the person, business, or institution is located.",
-          "type": "string"
+          "type": "string",
+          "description": "The city where the person, business, or institution is located."
         },
         "districtOrCounty": {
-          "description": "The district or county where the person, business, or institution is located.",
-          "type": "string"
+          "type": "string",
+          "description": "The district or county where the person, business, or institution is located."
         },
         "stateOrRegion": {
-          "description": "The state or region where the person, business or institution is located.",
-          "type": "string"
+          "type": "string",
+          "description": "The state or region where the person, business or institution is located."
         },
         "postalCode": {
-          "description": "The postal code of the address.",
-          "type": "string"
+          "type": "string",
+          "description": "The postal code of the address."
         },
         "countryCode": {
-          "description": "The two digit country code. In ISO 3166-1 alpha-2 format.",
-          "type": "string"
+          "type": "string",
+          "description": "The two digit country code. In ISO 3166-1 alpha-2 format."
         },
         "phone": {
-          "description": "The phone number of the person, business, or institution located at the address.",
-          "type": "string"
+          "type": "string",
+          "description": "The phone number of the person, business, or institution located at the address."
         }
-      }
+      },
+      "description": "A physical address."
     },
     "CODSettings": {
-      "description": "The COD (Cash On Delivery) charges that you associate with a COD fulfillment order.",
       "type": "object",
       "required": [
         "isCodRequired"
       ],
       "properties": {
         "isCodRequired": {
-          "description": "When true, this fulfillment order requires a COD (Cash On Delivery) payment.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, this fulfillment order requires a COD (Cash On Delivery) payment."
         },
         "codCharge": {
           "description": "The amount of the COD charge to be collected from the recipient for a COD order.",
@@ -3372,10 +3727,10 @@
           "description": "The amount of the tax on the shipping charge to be collected from the recipient for a COD order.",
           "$ref": "#/definitions/Money"
         }
-      }
+      },
+      "description": "The COD (Cash On Delivery) charges that you associate with a COD fulfillment order."
     },
     "CreateFulfillmentOrderItem": {
-      "description": "Item information for creating a fulfillment order.",
       "type": "object",
       "required": [
         "quantity",
@@ -3384,31 +3739,31 @@
       ],
       "properties": {
         "sellerSku": {
-          "description": "The seller SKU of the item.",
           "type": "string",
+          "description": "The seller SKU of the item.",
           "maxLength": 50
         },
         "sellerFulfillmentOrderItemId": {
-          "description": "A fulfillment order item identifier that the seller creates to track fulfillment order items. Used to disambiguate multiple fulfillment items that have the same SellerSKU. For example, the seller might assign different SellerFulfillmentOrderItemId values to two items in a fulfillment order that share the same SellerSKU but have different GiftMessage values.",
           "type": "string",
+          "description": "A fulfillment order item identifier that the seller creates to track fulfillment order items. Used to disambiguate multiple fulfillment items that have the same SellerSKU. For example, the seller might assign different SellerFulfillmentOrderItemId values to two items in a fulfillment order that share the same SellerSKU but have different GiftMessage values.",
           "maxLength": 50
         },
         "quantity": {
           "$ref": "#/definitions/Quantity"
         },
         "giftMessage": {
-          "description": "A message to the gift recipient, if applicable.",
           "type": "string",
+          "description": "A message to the gift recipient, if applicable.",
           "maxLength": 512
         },
         "displayableComment": {
-          "description": "Item-specific text that displays in recipient-facing materials such as the outbound shipment packing slip.",
           "type": "string",
+          "description": "Item-specific text that displays in recipient-facing materials such as the outbound shipment packing slip.",
           "maxLength": 250
         },
         "fulfillmentNetworkSku": {
-          "description": "Amazon's fulfillment network SKU of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "Amazon's fulfillment network SKU of the item."
         },
         "perUnitDeclaredValue": {
           "description": "The monetary value assigned by the seller to this item.",
@@ -3422,18 +3777,19 @@
           "description": "The tax on the amount to be collected from the recipient for this item in a COD (Cash On Delivery) order.",
           "$ref": "#/definitions/Money"
         }
-      }
+      },
+      "description": "Item information for creating a fulfillment order."
     },
     "CreateFulfillmentOrderItemList": {
-      "description": "An array of item information for creating a fulfillment order.",
       "type": "array",
+      "description": "An array of item information for creating a fulfillment order.",
       "items": {
         "$ref": "#/definitions/CreateFulfillmentOrderItem"
       }
     },
     "FulfillmentPolicy": {
-      "description": "The FulfillmentPolicy value specified when you submitted the createFulfillmentOrder operation.",
       "type": "string",
+      "description": "The FulfillmentPolicy value specified when you submitted the createFulfillmentOrder operation.",
       "enum": [
         "FillOrKill",
         "FillAll",
@@ -3455,8 +3811,8 @@
       ]
     },
     "FulfillmentOrderStatus": {
-      "description": "The current status of the fulfillment order.",
       "type": "string",
+      "description": "The current status of the fulfillment order.",
       "enum": [
         "New",
         "Received",
@@ -3508,7 +3864,6 @@
       ]
     },
     "CreateFulfillmentOrderRequest": {
-      "description": "The request body schema for the createFulfillmentOrder operation.",
       "type": "object",
       "required": [
         "destinationAddress",
@@ -3521,17 +3876,17 @@
       ],
       "properties": {
         "marketplaceId": {
-          "description": "The marketplace the fulfillment order is placed against.",
-          "type": "string"
+          "type": "string",
+          "description": "The marketplace the fulfillment order is placed against."
         },
         "sellerFulfillmentOrderId": {
-          "description": "A fulfillment order identifier that the seller creates to track their fulfillment order. The SellerFulfillmentOrderId must be unique for each fulfillment order that a seller creates. If the seller's system already creates unique order identifiers, then these might be good values for them to use.",
           "type": "string",
+          "description": "A fulfillment order identifier that the seller creates to track their fulfillment order. The SellerFulfillmentOrderId must be unique for each fulfillment order that a seller creates. If the seller's system already creates unique order identifiers, then these might be good values for them to use.",
           "maxLength": 40
         },
         "displayableOrderId": {
-          "description": "A fulfillment order identifier that the seller creates. This value displays as the order identifier in recipient-facing materials such as the outbound shipment packing slip. The value of DisplayableOrderId should match the order identifier that the seller provides to the recipient. The seller can use the SellerFulfillmentOrderId for this value or they can specify an alternate value if they want the recipient to reference an alternate order identifier.\n\nThe value must be an alpha-numeric or ISO 8859-1 compliant string from one to 40 characters in length. Cannot contain two spaces in a row. Leading and trailing white space is removed.",
           "type": "string",
+          "description": "A fulfillment order identifier that the seller creates. This value displays as the order identifier in recipient-facing materials such as the outbound shipment packing slip. The value of DisplayableOrderId should match the order identifier that the seller provides to the recipient. The seller can use the SellerFulfillmentOrderId for this value or they can specify an alternate value if they want the recipient to reference an alternate order identifier.\n\nThe value must be an alpha-numeric or ISO 8859-1 compliant string from one to 40 characters in length. Cannot contain two spaces in a row. Leading and trailing white space is removed.",
           "maxLength": 40
         },
         "displayableOrderDate": {
@@ -3539,8 +3894,8 @@
           "$ref": "#/definitions/Timestamp"
         },
         "displayableOrderComment": {
-          "description": "Order-specific text that appears in recipient-facing materials such as the outbound shipment packing slip.",
           "type": "string",
+          "description": "Order-specific text that appears in recipient-facing materials such as the outbound shipment packing slip.",
           "maxLength": 1000
         },
         "shippingSpeedCategory": {
@@ -3564,15 +3919,15 @@
           "$ref": "#/definitions/CODSettings"
         },
         "shipFromCountryCode": {
-          "description": "The two-character country code for the country from which the fulfillment order ships. Must be in ISO 3166-1 alpha-2 format.",
-          "type": "string"
+          "type": "string",
+          "description": "The two-character country code for the country from which the fulfillment order ships. Must be in ISO 3166-1 alpha-2 format."
         },
         "notificationEmails": {
           "$ref": "#/definitions/NotificationEmailList"
         },
         "featureConstraints": {
-          "description": "A list of features and their fulfillment policies to apply to the order.",
           "type": "array",
+          "description": "A list of features and their fulfillment policies to apply to the order.",
           "items": {
             "$ref": "#/definitions/FeatureSettings"
           }
@@ -3581,10 +3936,10 @@
           "description": "A list of items to include in the fulfillment order preview, including quantity.",
           "$ref": "#/definitions/CreateFulfillmentOrderItemList"
         }
-      }
+      },
+      "description": "The request body schema for the createFulfillmentOrder operation."
     },
     "CreateFulfillmentReturnRequest": {
-      "description": "The createFulfillmentReturn operation creates a fulfillment return for items that were fulfilled using the createFulfillmentOrder operation. For calls to createFulfillmentReturn, you must include ReturnReasonCode values returned by a previous call to the listReturnReasonCodes operation.",
       "type": "object",
       "required": [
         "items"
@@ -3593,7 +3948,8 @@
         "items": {
           "$ref": "#/definitions/CreateReturnItemList"
         }
-      }
+      },
+      "description": "The createFulfillmentReturn operation creates a fulfillment return for items that were fulfilled using the createFulfillmentOrder operation. For calls to createFulfillmentReturn, you must include ReturnReasonCode values returned by a previous call to the listReturnReasonCodes operation."
     },
     "CreateFulfillmentReturnResult": {
       "type": "object",
@@ -3610,7 +3966,6 @@
       }
     },
     "CreateFulfillmentReturnResponse": {
-      "description": "The response schema for the createFulfillmentReturn operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -3621,10 +3976,10 @@
           "description": "One or more unexpected errors occurred during the createFulfillmentReturn operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the createFulfillmentReturn operation."
     },
     "CreateReturnItem": {
-      "description": "An item that Amazon accepted for return.",
       "type": "object",
       "required": [
         "amazonShipmentId",
@@ -3634,59 +3989,59 @@
       ],
       "properties": {
         "sellerReturnItemId": {
-          "description": "An identifier assigned by the seller to the return item.",
           "type": "string",
+          "description": "An identifier assigned by the seller to the return item.",
           "maxLength": 80
         },
         "sellerFulfillmentOrderItemId": {
-          "description": "The identifier assigned to the item by the seller when the fulfillment order was created.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier assigned to the item by the seller when the fulfillment order was created."
         },
         "amazonShipmentId": {
-          "description": "The identifier for the shipment that is associated with the return item.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the shipment that is associated with the return item."
         },
         "returnReasonCode": {
-          "description": "The return reason code assigned to the return item by the seller.",
-          "type": "string"
+          "type": "string",
+          "description": "The return reason code assigned to the return item by the seller."
         },
         "returnComment": {
-          "description": "An optional comment about the return item.",
           "type": "string",
+          "description": "An optional comment about the return item.",
           "maxLength": 1000
         }
-      }
+      },
+      "description": "An item that Amazon accepted for return."
     },
     "CreateReturnItemList": {
-      "description": "An array of items to be returned.",
       "type": "array",
+      "description": "An array of items to be returned.",
       "items": {
         "$ref": "#/definitions/CreateReturnItem"
       }
     },
     "Money": {
-      "description": "An amount of money, including units in the form of currency.",
+      "type": "object",
+      "required": [
+        "currencyCode",
+        "value"
+      ],
       "properties": {
         "currencyCode": {
-          "description": "Three digit currency code in ISO 4217 format.",
-          "type": "string"
+          "type": "string",
+          "description": "Three digit currency code in ISO 4217 format."
         },
         "value": {
           "$ref": "#/definitions/Decimal"
         }
       },
-      "required": [
-        "value",
-        "currencyCode"
-      ],
-      "type": "object"
+      "description": "An amount of money, including units in the form of currency."
     },
     "Decimal": {
-      "description": "A decimal number with no loss of precision. Useful when precision loss is unacceptable, as with currencies. Follows RFC7159 for number representation.",
-      "type": "string"
+      "type": "string",
+      "description": "A decimal number with no loss of precision. Useful when precision loss is unacceptable, as with currencies. Follows RFC7159 for number representation."
     },
     "DeliveryWindow": {
-      "description": "The time range within which a Scheduled Delivery fulfillment order should be delivered.",
       "type": "object",
       "required": [
         "endDate",
@@ -3701,17 +4056,17 @@
           "description": "The date and time of the end of the Scheduled Delivery window, in ISO 8601 date time format.",
           "$ref": "#/definitions/Timestamp"
         }
-      }
+      },
+      "description": "The time range within which a Scheduled Delivery fulfillment order should be delivered."
     },
     "DeliveryWindowList": {
-      "description": "An array of delivery windows.",
       "type": "array",
+      "description": "An array of delivery windows.",
       "items": {
         "$ref": "#/definitions/DeliveryWindow"
       }
     },
     "Fee": {
-      "description": "Fee type and cost.",
       "type": "object",
       "required": [
         "amount",
@@ -3719,8 +4074,8 @@
       ],
       "properties": {
         "name": {
-          "description": "The type of fee.",
           "type": "string",
+          "description": "The type of fee.",
           "enum": [
             "FBAPerUnitFulfillmentFee",
             "FBAPerOrderFulfillmentFee",
@@ -3750,18 +4105,19 @@
           "description": "The amount of the fee.",
           "$ref": "#/definitions/Money"
         }
-      }
+      },
+      "description": "Fee type and cost."
     },
     "FeeList": {
-      "description": "An array of fee type and cost pairs.",
       "type": "array",
+      "description": "An array of fee type and cost pairs.",
       "items": {
         "$ref": "#/definitions/Fee"
       }
     },
     "FulfillmentAction": {
-      "description": "Specifies whether the fulfillment order should ship now or have an order hold put on it.",
       "type": "string",
+      "description": "Specifies whether the fulfillment order should ship now or have an order hold put on it.",
       "enum": [
         "Ship",
         "Hold"
@@ -3778,7 +4134,6 @@
       ]
     },
     "FulfillmentOrder": {
-      "description": "General information about a fulfillment order, including its status.",
       "type": "object",
       "required": [
         "destinationAddress",
@@ -3794,24 +4149,24 @@
       ],
       "properties": {
         "sellerFulfillmentOrderId": {
-          "description": "The fulfillment order identifier submitted with the createFulfillmentOrder operation.",
-          "type": "string"
+          "type": "string",
+          "description": "The fulfillment order identifier submitted with the createFulfillmentOrder operation."
         },
         "marketplaceId": {
-          "description": "The identifier for the marketplace the fulfillment order is placed against.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the marketplace the fulfillment order is placed against."
         },
         "displayableOrderId": {
-          "description": "A fulfillment order identifier submitted with the createFulfillmentOrder operation. Displays as the order identifier in recipient-facing materials such as the packing slip.",
-          "type": "string"
+          "type": "string",
+          "description": "A fulfillment order identifier submitted with the createFulfillmentOrder operation. Displays as the order identifier in recipient-facing materials such as the packing slip."
         },
         "displayableOrderDate": {
           "description": "A date and time submitted with the createFulfillmentOrder operation. Displays as the order date in recipient-facing materials such as the packing slip.",
           "$ref": "#/definitions/Timestamp"
         },
         "displayableOrderComment": {
-          "description": "A text block submitted with the createFulfillmentOrder operation. Displays in recipient-facing materials such as the packing slip.",
-          "type": "string"
+          "type": "string",
+          "description": "A text block submitted with the createFulfillmentOrder operation. Displays in recipient-facing materials such as the packing slip."
         },
         "shippingSpeedCategory": {
           "$ref": "#/definitions/ShippingSpeedCategory"
@@ -3847,16 +4202,16 @@
           "$ref": "#/definitions/NotificationEmailList"
         },
         "featureConstraints": {
-          "description": "A list of features and their fulfillment policies to apply to the order.",
           "type": "array",
+          "description": "A list of features and their fulfillment policies to apply to the order.",
           "items": {
             "$ref": "#/definitions/FeatureSettings"
           }
         }
-      }
+      },
+      "description": "General information about a fulfillment order, including its status."
     },
     "FulfillmentOrderItem": {
-      "description": "Item information for a fulfillment order.",
       "type": "object",
       "required": [
         "cancelledQuantity",
@@ -3867,31 +4222,31 @@
       ],
       "properties": {
         "sellerSku": {
-          "description": "The seller SKU of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller SKU of the item."
         },
         "sellerFulfillmentOrderItemId": {
-          "description": "A fulfillment order item identifier submitted with a call to the createFulfillmentOrder operation.",
-          "type": "string"
+          "type": "string",
+          "description": "A fulfillment order item identifier submitted with a call to the createFulfillmentOrder operation."
         },
         "quantity": {
           "$ref": "#/definitions/Quantity"
         },
         "giftMessage": {
-          "description": "A message to the gift recipient, if applicable.",
-          "type": "string"
+          "type": "string",
+          "description": "A message to the gift recipient, if applicable."
         },
         "displayableComment": {
-          "description": "Item-specific text that displays in recipient-facing materials such as the outbound shipment packing slip.",
-          "type": "string"
+          "type": "string",
+          "description": "Item-specific text that displays in recipient-facing materials such as the outbound shipment packing slip."
         },
         "fulfillmentNetworkSku": {
-          "description": "Amazon's fulfillment network SKU of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "Amazon's fulfillment network SKU of the item."
         },
         "orderItemDisposition": {
-          "description": "Indicates whether the item is sellable or unsellable.",
-          "type": "string"
+          "type": "string",
+          "description": "Indicates whether the item is sellable or unsellable."
         },
         "cancelledQuantity": {
           "description": "The item quantity that was cancelled by the seller.",
@@ -3921,17 +4276,17 @@
           "description": "The monetary value assigned by the seller to this item.",
           "$ref": "#/definitions/Money"
         }
-      }
+      },
+      "description": "Item information for a fulfillment order."
     },
     "FulfillmentOrderItemList": {
-      "description": "An array of fulfillment order item information.",
       "type": "array",
+      "description": "An array of fulfillment order item information.",
       "items": {
         "$ref": "#/definitions/FulfillmentOrderItem"
       }
     },
     "FulfillmentPreview": {
-      "description": "Information about a fulfillment order preview, including delivery and fee information based on shipping method.",
       "type": "object",
       "required": [
         "isCODCapable",
@@ -3947,12 +4302,12 @@
           "$ref": "#/definitions/ScheduledDeliveryInfo"
         },
         "isFulfillable": {
-          "description": "When true, this fulfillment order preview is fulfillable.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, this fulfillment order preview is fulfillable."
         },
         "isCODCapable": {
-          "description": "When true, this fulfillment order preview is for COD (Cash On Delivery).",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, this fulfillment order preview is for COD (Cash On Delivery)."
         },
         "estimatedShippingWeight": {
           "description": "Estimated shipping weight for this fulfillment order preview.",
@@ -3973,20 +4328,20 @@
           "$ref": "#/definitions/StringList"
         },
         "marketplaceId": {
-          "description": "The marketplace the fulfillment order is placed against.",
-          "type": "string"
+          "type": "string",
+          "description": "The marketplace the fulfillment order is placed against."
         },
         "featureConstraints": {
-          "description": "A list of features and their fulfillment policies to apply to the order.",
           "type": "array",
+          "description": "A list of features and their fulfillment policies to apply to the order.",
           "items": {
             "$ref": "#/definitions/FeatureSettings"
           }
         }
-      }
+      },
+      "description": "Information about a fulfillment order preview, including delivery and fee information based on shipping method."
     },
     "FulfillmentPreviewItem": {
-      "description": "Item information for a shipment in a fulfillment order preview.",
       "type": "object",
       "required": [
         "quantity",
@@ -3995,24 +4350,24 @@
       ],
       "properties": {
         "sellerSku": {
-          "description": "The seller SKU of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller SKU of the item."
         },
         "quantity": {
           "description": "The item quantity.",
           "$ref": "#/definitions/Quantity"
         },
         "sellerFulfillmentOrderItemId": {
-          "description": "A fulfillment order item identifier that the seller created with a call to the createFulfillmentOrder operation.",
-          "type": "string"
+          "type": "string",
+          "description": "A fulfillment order item identifier that the seller created with a call to the createFulfillmentOrder operation."
         },
         "estimatedShippingWeight": {
           "description": "The estimated shipping weight of the item quantity for a single item, as identified by sellerSku, in a shipment.",
           "$ref": "#/definitions/Weight"
         },
         "shippingWeightCalculationMethod": {
-          "description": "The method used to calculate the estimated shipping weight.",
           "type": "string",
+          "description": "The method used to calculate the estimated shipping weight.",
           "enum": [
             "Package",
             "Dimensional"
@@ -4028,24 +4383,24 @@
             }
           ]
         }
-      }
+      },
+      "description": "Item information for a shipment in a fulfillment order preview."
     },
     "FulfillmentPreviewItemList": {
-      "description": "An array of fulfillment preview item information.",
       "type": "array",
+      "description": "An array of fulfillment preview item information.",
       "items": {
         "$ref": "#/definitions/FulfillmentPreviewItem"
       }
     },
     "FulfillmentPreviewList": {
-      "description": "An array of fulfillment preview information.",
       "type": "array",
+      "description": "An array of fulfillment preview information.",
       "items": {
         "$ref": "#/definitions/FulfillmentPreview"
       }
     },
     "FulfillmentPreviewShipment": {
-      "description": "Delivery and item information for a shipment in a fulfillment order preview.",
       "type": "object",
       "required": [
         "fulfillmentPreviewItems"
@@ -4068,8 +4423,8 @@
           "$ref": "#/definitions/Timestamp"
         },
         "shippingNotes": {
-          "description": "Provides additional insight into the shipment timeline when exact delivery dates are not able to be precomputed.",
           "type": "array",
+          "description": "Provides additional insight into the shipment timeline when exact delivery dates are not able to be precomputed.",
           "items": {
             "type": "string"
           }
@@ -4078,18 +4433,19 @@
           "description": "Information about the items in the shipment.",
           "$ref": "#/definitions/FulfillmentPreviewItemList"
         }
-      }
+      },
+      "description": "Delivery and item information for a shipment in a fulfillment order preview."
     },
     "FulfillmentPreviewShipmentList": {
-      "description": "An array of fulfillment preview shipment information.",
       "type": "array",
+      "description": "An array of fulfillment preview shipment information.",
       "items": {
         "$ref": "#/definitions/FulfillmentPreviewShipment"
       }
     },
     "FulfillmentReturnItemStatus": {
-      "description": "Indicates if the return item has been processed by a fulfillment center.",
       "type": "string",
+      "description": "Indicates if the return item has been processed by a fulfillment center.",
       "enum": [
         "New",
         "Processed"
@@ -4106,7 +4462,6 @@
       ]
     },
     "FulfillmentShipment": {
-      "description": "Delivery and item information for a shipment in a fulfillment order.",
       "type": "object",
       "required": [
         "amazonShipmentId",
@@ -4116,16 +4471,16 @@
       ],
       "properties": {
         "amazonShipmentId": {
-          "description": "A shipment identifier assigned by Amazon.",
-          "type": "string"
+          "type": "string",
+          "description": "A shipment identifier assigned by Amazon."
         },
         "fulfillmentCenterId": {
-          "description": "An identifier for the fulfillment center that the shipment will be sent from.",
-          "type": "string"
+          "type": "string",
+          "description": "An identifier for the fulfillment center that the shipment will be sent from."
         },
         "fulfillmentShipmentStatus": {
-          "description": "The current status of the shipment.",
           "type": "string",
+          "description": "The current status of the shipment.",
           "enum": [
             "PENDING",
             "SHIPPED",
@@ -4160,8 +4515,8 @@
           "$ref": "#/definitions/Timestamp"
         },
         "shippingNotes": {
-          "description": "Provides additional insight into shipment timeline. Primairly used to communicate that actual delivery dates aren't available.",
           "type": "array",
+          "description": "Provides additional insight into shipment timeline. Primairly used to communicate that actual delivery dates aren't available.",
           "items": {
             "type": "string"
           }
@@ -4172,10 +4527,10 @@
         "fulfillmentShipmentPackage": {
           "$ref": "#/definitions/FulfillmentShipmentPackageList"
         }
-      }
+      },
+      "description": "Delivery and item information for a shipment in a fulfillment order."
     },
     "FulfillmentShipmentItem": {
-      "description": "Item information for a shipment in a fulfillment order.",
       "type": "object",
       "required": [
         "quantity",
@@ -4184,43 +4539,43 @@
       ],
       "properties": {
         "sellerSku": {
-          "description": "The seller SKU of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller SKU of the item."
         },
         "sellerFulfillmentOrderItemId": {
-          "description": "The fulfillment order item identifier that the seller created and submitted with a call to the createFulfillmentOrder operation.",
-          "type": "string"
+          "type": "string",
+          "description": "The fulfillment order item identifier that the seller created and submitted with a call to the createFulfillmentOrder operation."
         },
         "quantity": {
           "$ref": "#/definitions/Quantity"
         },
         "packageNumber": {
-          "description": "An identifier for the package that contains the item quantity.",
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "An identifier for the package that contains the item quantity."
         },
         "serialNumber": {
-          "description": "The serial number of the shipped item.",
-          "type": "string"
+          "type": "string",
+          "description": "The serial number of the shipped item."
         }
-      }
+      },
+      "description": "Item information for a shipment in a fulfillment order."
     },
     "FulfillmentShipmentItemList": {
-      "description": "An array of fulfillment shipment item information.",
       "type": "array",
+      "description": "An array of fulfillment shipment item information.",
       "items": {
         "$ref": "#/definitions/FulfillmentShipmentItem"
       }
     },
     "FulfillmentShipmentList": {
-      "description": "An array of fulfillment shipment information.",
       "type": "array",
+      "description": "An array of fulfillment shipment information.",
       "items": {
         "$ref": "#/definitions/FulfillmentShipment"
       }
     },
     "FulfillmentShipmentPackage": {
-      "description": "Package information for a shipment in a fulfillment order.",
       "type": "object",
       "required": [
         "carrierCode",
@@ -4228,27 +4583,28 @@
       ],
       "properties": {
         "packageNumber": {
-          "description": "Identifies a package in a shipment.",
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "Identifies a package in a shipment."
         },
         "carrierCode": {
-          "description": "Identifies the carrier who will deliver the shipment to the recipient.",
-          "type": "string"
+          "type": "string",
+          "description": "Identifies the carrier who will deliver the shipment to the recipient."
         },
         "trackingNumber": {
-          "description": "The tracking number, if provided, can be used to obtain tracking and delivery information.",
-          "type": "string"
+          "type": "string",
+          "description": "The tracking number, if provided, can be used to obtain tracking and delivery information."
         },
         "estimatedArrivalDate": {
           "description": "The estimated arrival date and time of the package, in ISO 8601 date time format.",
           "$ref": "#/definitions/Timestamp"
         }
-      }
+      },
+      "description": "Package information for a shipment in a fulfillment order."
     },
     "FulfillmentShipmentPackageList": {
-      "description": "An array of fulfillment shipment package information.",
       "type": "array",
+      "description": "An array of fulfillment shipment package information.",
       "items": {
         "$ref": "#/definitions/FulfillmentShipmentPackage"
       }
@@ -4280,7 +4636,6 @@
       }
     },
     "GetFulfillmentOrderResponse": {
-      "description": "The response schema for the getFulfillmentOrder operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -4291,10 +4646,10 @@
           "description": "One or more unexpected errors occurred during the getFulfillmentOrder operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getFulfillmentOrder operation."
     },
     "GetFulfillmentPreviewItem": {
-      "description": "Item information for a fulfillment order preview.",
       "type": "object",
       "required": [
         "quantity",
@@ -4303,8 +4658,8 @@
       ],
       "properties": {
         "sellerSku": {
-          "description": "The seller SKU of the item.",
           "type": "string",
+          "description": "The seller SKU of the item.",
           "maxLength": 50
         },
         "quantity": {
@@ -4315,21 +4670,21 @@
           "$ref": "#/definitions/Money"
         },
         "sellerFulfillmentOrderItemId": {
-          "description": "A fulfillment order item identifier that the seller creates to track items in the fulfillment preview.",
           "type": "string",
+          "description": "A fulfillment order item identifier that the seller creates to track items in the fulfillment preview.",
           "maxLength": 50
         }
-      }
+      },
+      "description": "Item information for a fulfillment order preview."
     },
     "GetFulfillmentPreviewItemList": {
-      "description": "An array of fulfillment preview item information.",
       "type": "array",
+      "description": "An array of fulfillment preview item information.",
       "items": {
         "$ref": "#/definitions/GetFulfillmentPreviewItem"
       }
     },
     "GetFulfillmentPreviewRequest": {
-      "description": "The request body schema for the getFulfillmentPreview operation.",
       "type": "object",
       "required": [
         "address",
@@ -4337,8 +4692,8 @@
       ],
       "properties": {
         "marketplaceId": {
-          "description": "The marketplace the fulfillment order is placed against.",
-          "type": "string"
+          "type": "string",
+          "description": "The marketplace the fulfillment order is placed against."
         },
         "address": {
           "description": "The destination address for the fulfillment order preview.",
@@ -4353,33 +4708,33 @@
           "$ref": "#/definitions/ShippingSpeedCategoryList"
         },
         "includeCODFulfillmentPreview": {
-          "description": "Specifies whether to return fulfillment order previews that are for COD (Cash On Delivery).\n\nPossible values:\n\n* true - Returns all fulfillment order previews (both for COD and not for COD).\n* false - Returns only fulfillment order previews that are not for COD.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Specifies whether to return fulfillment order previews that are for COD (Cash On Delivery).\n\nPossible values:\n\n* true - Returns all fulfillment order previews (both for COD and not for COD).\n* false - Returns only fulfillment order previews that are not for COD."
         },
         "includeDeliveryWindows": {
-          "description": "Specifies whether to return the ScheduledDeliveryInfo response object, which contains the available delivery windows for a Scheduled Delivery. The ScheduledDeliveryInfo response object can only be returned for fulfillment order previews with ShippingSpeedCategories = ScheduledDelivery.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Specifies whether to return the ScheduledDeliveryInfo response object, which contains the available delivery windows for a Scheduled Delivery. The ScheduledDeliveryInfo response object can only be returned for fulfillment order previews with ShippingSpeedCategories = ScheduledDelivery."
         },
         "featureConstraints": {
-          "description": "A list of features and their fulfillment policies to apply to the order.",
           "type": "array",
+          "description": "A list of features and their fulfillment policies to apply to the order.",
           "items": {
             "$ref": "#/definitions/FeatureSettings"
           }
         }
-      }
+      },
+      "description": "The request body schema for the getFulfillmentPreview operation."
     },
     "GetFulfillmentPreviewResult": {
-      "description": "A list of fulfillment order previews, including estimated shipping weights, estimated shipping fees, and estimated ship dates and arrival dates.",
       "type": "object",
       "properties": {
         "fulfillmentPreviews": {
           "$ref": "#/definitions/FulfillmentPreviewList"
         }
-      }
+      },
+      "description": "A list of fulfillment order previews, including estimated shipping weights, estimated shipping fees, and estimated ship dates and arrival dates."
     },
     "GetFulfillmentPreviewResponse": {
-      "description": "The response schema for the getFulfillmentPreview operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -4390,11 +4745,12 @@
           "description": "One or more unexpected errors occurred during the getFulfillmentPreview operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getFulfillmentPreview operation."
     },
     "InvalidItemReasonCode": {
-      "description": "A code for why the item is invalid for return.",
       "type": "string",
+      "description": "A code for why the item is invalid for return.",
       "enum": [
         "InvalidValues",
         "DuplicateRequest",
@@ -4421,7 +4777,6 @@
       ]
     },
     "InvalidItemReason": {
-      "description": "The reason that the item is invalid for return.",
       "type": "object",
       "required": [
         "description",
@@ -4432,13 +4787,13 @@
           "$ref": "#/definitions/InvalidItemReasonCode"
         },
         "description": {
-          "description": "A human readable description of the invalid item reason code.",
-          "type": "string"
+          "type": "string",
+          "description": "A human readable description of the invalid item reason code."
         }
-      }
+      },
+      "description": "The reason that the item is invalid for return."
     },
     "InvalidReturnItem": {
-      "description": "An item that is invalid for return.",
       "type": "object",
       "required": [
         "invalidItemReason",
@@ -4447,21 +4802,22 @@
       ],
       "properties": {
         "sellerReturnItemId": {
-          "description": "An identifier assigned by the seller to the return item.",
-          "type": "string"
+          "type": "string",
+          "description": "An identifier assigned by the seller to the return item."
         },
         "sellerFulfillmentOrderItemId": {
-          "description": "The identifier assigned to the item by the seller when the fulfillment order was created.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier assigned to the item by the seller when the fulfillment order was created."
         },
         "invalidItemReason": {
           "$ref": "#/definitions/InvalidItemReason"
         }
-      }
+      },
+      "description": "An item that is invalid for return."
     },
     "InvalidReturnItemList": {
-      "description": "An array of invalid return item information.",
       "type": "array",
+      "description": "An array of invalid return item information.",
       "items": {
         "$ref": "#/definitions/InvalidReturnItem"
       }
@@ -4470,12 +4826,12 @@
       "type": "object",
       "properties": {
         "nextToken": {
-          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
-          "type": "string"
+          "type": "string",
+          "description": "When present and not empty, pass this string token in the next request to return the next response page."
         },
         "fulfillmentOrders": {
-          "description": "An array of fulfillment order information.",
           "type": "array",
+          "description": "An array of fulfillment order information.",
           "items": {
             "$ref": "#/definitions/FulfillmentOrder"
           }
@@ -4483,7 +4839,6 @@
       }
     },
     "ListAllFulfillmentOrdersResponse": {
-      "description": "The response schema for the listAllFulfillmentOrders operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -4494,7 +4849,8 @@
           "description": "One or more unexpected errors occurred during the listAllFulfillmentOrders operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the listAllFulfillmentOrders operation."
     },
     "ListReturnReasonCodesResult": {
       "type": "object",
@@ -4505,7 +4861,6 @@
       }
     },
     "ListReturnReasonCodesResponse": {
-      "description": "The response schema for the listReturnReasonCodes operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -4516,19 +4871,20 @@
           "description": "One or more unexpected errors occurred during the listReturnReasonCodes operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the listReturnReasonCodes operation."
     },
     "NotificationEmailList": {
-      "description": "A list of email addresses that the seller provides that are used by Amazon to send ship-complete notifications to recipients on behalf of the seller.",
       "type": "array",
+      "description": "A list of email addresses that the seller provides that are used by Amazon to send ship-complete notifications to recipients on behalf of the seller.",
       "items": {
         "type": "string",
         "maxLength": 64
       }
     },
     "CurrentStatus": {
-      "description": "The current delivery status of the package.",
       "type": "string",
+      "description": "The current delivery status of the package.",
       "enum": [
         "IN_TRANSIT",
         "DELIVERED",
@@ -4575,8 +4931,8 @@
       ]
     },
     "AdditionalLocationInfo": {
-      "description": "Additional location information.",
       "type": "string",
+      "description": "Additional location information.",
       "enum": [
         "AS_INSTRUCTED",
         "CARPORT",
@@ -4719,29 +5075,29 @@
       ],
       "properties": {
         "packageNumber": {
-          "description": "The package identifier.",
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "The package identifier."
         },
         "trackingNumber": {
-          "description": "The tracking number for the package.",
-          "type": "string"
+          "type": "string",
+          "description": "The tracking number for the package."
         },
         "customerTrackingLink": {
-          "description": "Link on swiship.com that allows customers to track the package.",
-          "type": "string"
+          "type": "string",
+          "description": "Link on swiship.com that allows customers to track the package."
         },
         "carrierCode": {
-          "description": "The name of the carrier.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the carrier."
         },
         "carrierPhoneNumber": {
-          "description": "The phone number of the carrier.",
-          "type": "string"
+          "type": "string",
+          "description": "The phone number of the carrier."
         },
         "carrierURL": {
-          "description": "The URL of the carrier’s website.",
-          "type": "string"
+          "type": "string",
+          "description": "The URL of the carrier’s website."
         },
         "shipDate": {
           "description": "The shipping date for the package.",
@@ -4759,12 +5115,12 @@
           "$ref": "#/definitions/CurrentStatus"
         },
         "currentStatusDescription": {
-          "description": "Description corresponding to the CurrentStatus value.",
-          "type": "string"
+          "type": "string",
+          "description": "Description corresponding to the CurrentStatus value."
         },
         "signedForBy": {
-          "description": "The name of the person who signed for the package.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the person who signed for the package."
         },
         "additionalLocationInfo": {
           "$ref": "#/definitions/AdditionalLocationInfo"
@@ -4775,7 +5131,6 @@
       }
     },
     "GetPackageTrackingDetailsResponse": {
-      "description": "The response schema for the getPackageTrackingDetails operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -4786,10 +5141,10 @@
           "description": "One or more unexpected errors occurred during the getPackageTrackingDetails operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getPackageTrackingDetails operation."
     },
     "ReasonCodeDetails": {
-      "description": "A return reason code, a description, and an optional description translation.",
       "type": "object",
       "required": [
         "description",
@@ -4797,28 +5152,28 @@
       ],
       "properties": {
         "returnReasonCode": {
-          "description": "A code that indicates a valid return reason.",
-          "type": "string"
+          "type": "string",
+          "description": "A code that indicates a valid return reason."
         },
         "description": {
-          "description": "A human readable description of the return reason code.",
-          "type": "string"
+          "type": "string",
+          "description": "A human readable description of the return reason code."
         },
         "translatedDescription": {
-          "description": "A translation of the description. The translation is in the language specified in the Language request parameter.",
-          "type": "string"
+          "type": "string",
+          "description": "A translation of the description. The translation is in the language specified in the Language request parameter."
         }
-      }
+      },
+      "description": "A return reason code, a description, and an optional description translation."
     },
     "ReasonCodeDetailsList": {
-      "description": "An array of return reason code details.",
       "type": "array",
+      "description": "An array of return reason code details.",
       "items": {
         "$ref": "#/definitions/ReasonCodeDetails"
       }
     },
     "ReturnAuthorization": {
-      "description": "Return authorization information for items accepted for return.",
       "type": "object",
       "required": [
         "amazonRmaId",
@@ -4829,36 +5184,36 @@
       ],
       "properties": {
         "returnAuthorizationId": {
-          "description": "An identifier for the return authorization. This identifier associates return items with the return authorization used to return them.",
-          "type": "string"
+          "type": "string",
+          "description": "An identifier for the return authorization. This identifier associates return items with the return authorization used to return them."
         },
         "fulfillmentCenterId": {
-          "description": "An identifier for the Amazon fulfillment center that the return items should be sent to.",
-          "type": "string"
+          "type": "string",
+          "description": "An identifier for the Amazon fulfillment center that the return items should be sent to."
         },
         "returnToAddress": {
           "description": "The address of the Amazon fulfillment center that the return items should be sent to.",
           "$ref": "#/definitions/Address"
         },
         "amazonRmaId": {
-          "description": "The return merchandise authorization (RMA) that Amazon needs to process the return.",
-          "type": "string"
+          "type": "string",
+          "description": "The return merchandise authorization (RMA) that Amazon needs to process the return."
         },
         "rmaPageURL": {
-          "description": "A URL for a web page that contains the return authorization barcode and the mailing label. This does not include pre-paid shipping.",
-          "type": "string"
+          "type": "string",
+          "description": "A URL for a web page that contains the return authorization barcode and the mailing label. This does not include pre-paid shipping."
         }
-      }
+      },
+      "description": "Return authorization information for items accepted for return."
     },
     "ReturnAuthorizationList": {
-      "description": "An array of return authorization information.",
       "type": "array",
+      "description": "An array of return authorization information.",
       "items": {
         "$ref": "#/definitions/ReturnAuthorization"
       }
     },
     "ReturnItem": {
-      "description": "An item that Amazon accepted for return.",
       "type": "object",
       "required": [
         "amazonShipmentId",
@@ -4870,28 +5225,28 @@
       ],
       "properties": {
         "sellerReturnItemId": {
-          "description": "An identifier assigned by the seller to the return item.",
-          "type": "string"
+          "type": "string",
+          "description": "An identifier assigned by the seller to the return item."
         },
         "sellerFulfillmentOrderItemId": {
-          "description": "The identifier assigned to the item by the seller when the fulfillment order was created.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier assigned to the item by the seller when the fulfillment order was created."
         },
         "amazonShipmentId": {
-          "description": "The identifier for the shipment that is associated with the return item.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the shipment that is associated with the return item."
         },
         "sellerReturnReasonCode": {
-          "description": "The return reason code assigned to the return item by the seller.",
-          "type": "string"
+          "type": "string",
+          "description": "The return reason code assigned to the return item by the seller."
         },
         "returnComment": {
-          "description": "An optional comment about the return item.",
-          "type": "string"
+          "type": "string",
+          "description": "An optional comment about the return item."
         },
         "amazonReturnReasonCode": {
-          "description": "The return reason code that the Amazon fulfillment center assigned to the return item.",
-          "type": "string"
+          "type": "string",
+          "description": "The return reason code that the Amazon fulfillment center assigned to the return item."
         },
         "status": {
           "description": "Indicates if the return item has been processed by an Amazon fulfillment center.",
@@ -4902,21 +5257,22 @@
           "$ref": "#/definitions/Timestamp"
         },
         "returnAuthorizationId": {
-          "description": "Identifies the return authorization used to return this item. See ReturnAuthorization.",
-          "type": "string"
+          "type": "string",
+          "description": "Identifies the return authorization used to return this item. See ReturnAuthorization."
         },
         "returnReceivedCondition": {
           "$ref": "#/definitions/ReturnItemDisposition"
         },
         "fulfillmentCenterId": {
-          "description": "The identifier for the Amazon fulfillment center that processed the return item.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the Amazon fulfillment center that processed the return item."
         }
-      }
+      },
+      "description": "An item that Amazon accepted for return."
     },
     "ReturnItemDisposition": {
-      "description": "The condition of the return item when received by an Amazon fulfillment center.",
       "type": "string",
+      "description": "The condition of the return item when received by an Amazon fulfillment center.",
       "enum": [
         "Sellable",
         "Defective",
@@ -4948,14 +5304,13 @@
       ]
     },
     "ReturnItemList": {
-      "description": "An array of items that Amazon accepted for return. Returns empty if no items were accepted for return.",
       "type": "array",
+      "description": "An array of items that Amazon accepted for return. Returns empty if no items were accepted for return.",
       "items": {
         "$ref": "#/definitions/ReturnItem"
       }
     },
     "ScheduledDeliveryInfo": {
-      "description": "Delivery information for a scheduled delivery.",
       "type": "object",
       "required": [
         "deliveryTimeZone",
@@ -4963,14 +5318,15 @@
       ],
       "properties": {
         "deliveryTimeZone": {
-          "description": "The time zone of the destination address for the fulfillment order preview. Must be an IANA time zone name. Example: Asia/Tokyo.",
-          "type": "string"
+          "type": "string",
+          "description": "The time zone of the destination address for the fulfillment order preview. Must be an IANA time zone name. Example: Asia/Tokyo."
         },
         "deliveryWindows": {
           "description": "An array of time ranges that are available for scheduled delivery.",
           "$ref": "#/definitions/DeliveryWindowList"
         }
-      }
+      },
+      "description": "Delivery information for a scheduled delivery."
     },
     "ShippingSpeedCategoryList": {
       "type": "array",
@@ -4989,7 +5345,6 @@
       "format": "date-time"
     },
     "TrackingAddress": {
-      "description": "Address information for tracking the package.",
       "type": "object",
       "required": [
         "city",
@@ -4998,25 +5353,26 @@
       ],
       "properties": {
         "city": {
-          "description": "The city.",
           "type": "string",
+          "description": "The city.",
           "maxLength": 150
         },
         "state": {
-          "description": "The state.",
           "type": "string",
+          "description": "The state.",
           "maxLength": 150
         },
         "country": {
-          "description": "The country.",
           "type": "string",
+          "description": "The country.",
           "maxLength": 6
         }
-      }
+      },
+      "description": "Address information for tracking the package."
     },
     "EventCode": {
-      "description": "The event code for the delivery event.",
       "type": "string",
+      "description": "The event code for the delivery event.",
       "enum": [
         "EVENT_101",
         "EVENT_102",
@@ -5188,13 +5544,12 @@
       ]
     },
     "TrackingEvent": {
-      "description": "Information for tracking package deliveries.",
       "type": "object",
       "required": [
         "eventAddress",
         "eventCode",
-        "eventDescription",
-        "eventDate"
+        "eventDate",
+        "eventDescription"
       ],
       "properties": {
         "eventDate": {
@@ -5210,20 +5565,20 @@
           "$ref": "#/definitions/EventCode"
         },
         "eventDescription": {
-          "description": "A description for the corresponding event code.",
-          "type": "string"
+          "type": "string",
+          "description": "A description for the corresponding event code."
         }
-      }
+      },
+      "description": "Information for tracking package deliveries."
     },
     "TrackingEventList": {
-      "description": "An array of tracking event information.",
       "type": "array",
+      "description": "An array of tracking event information.",
       "items": {
         "$ref": "#/definitions/TrackingEvent"
       }
     },
     "UnfulfillablePreviewItem": {
-      "description": "Information about unfulfillable items in a fulfillment order preview.",
       "type": "object",
       "required": [
         "quantity",
@@ -5232,33 +5587,33 @@
       ],
       "properties": {
         "sellerSku": {
-          "description": "The seller SKU of the item.",
           "type": "string",
+          "description": "The seller SKU of the item.",
           "maxLength": 50
         },
         "quantity": {
           "$ref": "#/definitions/Quantity"
         },
         "sellerFulfillmentOrderItemId": {
-          "description": "A fulfillment order item identifier created with a call to the getFulfillmentPreview operation.",
           "type": "string",
+          "description": "A fulfillment order item identifier created with a call to the getFulfillmentPreview operation.",
           "maxLength": 50
         },
         "itemUnfulfillableReasons": {
           "description": "Error codes associated with the fulfillment order preview that indicate why the item is unfulfillable.",
           "$ref": "#/definitions/StringList"
         }
-      }
+      },
+      "description": "Information about unfulfillable items in a fulfillment order preview."
     },
     "UnfulfillablePreviewItemList": {
-      "description": "An array of unfulfillable preview item information.",
       "type": "array",
+      "description": "An array of unfulfillable preview item information.",
       "items": {
         "$ref": "#/definitions/UnfulfillablePreviewItem"
       }
     },
     "UpdateFulfillmentOrderItem": {
-      "description": "Item information for updating a fulfillment order.",
       "type": "object",
       "required": [
         "quantity",
@@ -5266,34 +5621,34 @@
       ],
       "properties": {
         "sellerSku": {
-          "description": "The seller SKU of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller SKU of the item."
         },
         "sellerFulfillmentOrderItemId": {
-          "description": "Identifies the fulfillment order item to update. Created with a previous call to the createFulfillmentOrder operation.",
           "type": "string",
+          "description": "Identifies the fulfillment order item to update. Created with a previous call to the createFulfillmentOrder operation.",
           "maxLength": 50
         },
         "quantity": {
           "$ref": "#/definitions/Quantity"
         },
         "giftMessage": {
-          "description": "A message to the gift recipient, if applicable.",
           "type": "string",
+          "description": "A message to the gift recipient, if applicable.",
           "maxLength": 512
         },
         "displayableComment": {
-          "description": "Item-specific text that displays in recipient-facing materials such as the outbound shipment packing slip.",
           "type": "string",
+          "description": "Item-specific text that displays in recipient-facing materials such as the outbound shipment packing slip.",
           "maxLength": 250
         },
         "fulfillmentNetworkSku": {
-          "description": "Amazon's fulfillment network SKU of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "Amazon's fulfillment network SKU of the item."
         },
         "orderItemDisposition": {
-          "description": "Indicates whether the item is sellable or unsellable.",
-          "type": "string"
+          "type": "string",
+          "description": "Indicates whether the item is sellable or unsellable."
         },
         "perUnitDeclaredValue": {
           "description": "The monetary value assigned by the seller to this item.",
@@ -5307,11 +5662,12 @@
           "description": "The tax on the amount to be collected from the recipient for this item in a COD (Cash On Delivery) order.",
           "$ref": "#/definitions/Money"
         }
-      }
+      },
+      "description": "Item information for updating a fulfillment order."
     },
     "UpdateFulfillmentOrderItemList": {
-      "description": "An array of fulfillment order item information for updating a fulfillment order.",
       "type": "array",
+      "description": "An array of fulfillment order item information for updating a fulfillment order.",
       "items": {
         "$ref": "#/definitions/UpdateFulfillmentOrderItem"
       }
@@ -5320,12 +5676,12 @@
       "type": "object",
       "properties": {
         "marketplaceId": {
-          "description": "The marketplace the fulfillment order is placed against.",
-          "type": "string"
+          "type": "string",
+          "description": "The marketplace the fulfillment order is placed against."
         },
         "displayableOrderId": {
-          "description": "A fulfillment order identifier that the seller creates. This value displays as the order identifier in recipient-facing materials such as the outbound shipment packing slip. The value of DisplayableOrderId should match the order identifier that the seller provides to the recipient. The seller can use the SellerFulfillmentOrderId for this value or they can specify an alternate value if they want the recipient to reference an alternate order identifier.",
           "type": "string",
+          "description": "A fulfillment order identifier that the seller creates. This value displays as the order identifier in recipient-facing materials such as the outbound shipment packing slip. The value of DisplayableOrderId should match the order identifier that the seller provides to the recipient. The seller can use the SellerFulfillmentOrderId for this value or they can specify an alternate value if they want the recipient to reference an alternate order identifier.",
           "maxLength": 40
         },
         "displayableOrderDate": {
@@ -5333,8 +5689,8 @@
           "$ref": "#/definitions/Timestamp"
         },
         "displayableOrderComment": {
-          "description": "Order-specific text that appears in recipient-facing materials such as the outbound shipment packing slip.",
           "type": "string",
+          "description": "Order-specific text that appears in recipient-facing materials such as the outbound shipment packing slip.",
           "maxLength": 1000
         },
         "shippingSpeedCategory": {
@@ -5351,15 +5707,15 @@
           "$ref": "#/definitions/FulfillmentPolicy"
         },
         "shipFromCountryCode": {
-          "description": "The two-character country code for the country from which the fulfillment order ships. Must be in ISO 3166-1 alpha-2 format.",
-          "type": "string"
+          "type": "string",
+          "description": "The two-character country code for the country from which the fulfillment order ships. Must be in ISO 3166-1 alpha-2 format."
         },
         "notificationEmails": {
           "$ref": "#/definitions/NotificationEmailList"
         },
         "featureConstraints": {
-          "description": "A list of features and their fulfillment policies to apply to the order.",
           "type": "array",
+          "description": "A list of features and their fulfillment policies to apply to the order.",
           "items": {
             "$ref": "#/definitions/FeatureSettings"
           }
@@ -5371,37 +5727,36 @@
       }
     },
     "UpdateFulfillmentOrderResponse": {
-      "description": "The response schema for the updateFulfillmentOrder operation.",
       "type": "object",
       "properties": {
         "errors": {
           "description": "One or more unexpected errors occurred during the updateFulfillmentOrder operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the updateFulfillmentOrder operation."
     },
     "CreateFulfillmentOrderResponse": {
-      "description": "The response schema for the createFulfillmentOrder operation.",
       "type": "object",
       "properties": {
         "errors": {
           "description": "One or more unexpected errors occurred during the createFulfillmentOrder operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the createFulfillmentOrder operation."
     },
     "CancelFulfillmentOrderResponse": {
-      "description": "The response schema for the cancelFulfillmentOrder operation.",
       "type": "object",
       "properties": {
         "errors": {
           "description": "One or more unexpected errors occurred during the cancelFulfillmentOrder operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the cancelFulfillmentOrder operation."
     },
     "Weight": {
-      "description": "The weight.",
       "type": "object",
       "required": [
         "unit",
@@ -5409,8 +5764,8 @@
       ],
       "properties": {
         "unit": {
-          "description": "The unit of weight.",
           "type": "string",
+          "description": "The unit of weight.",
           "enum": [
             "KG",
             "LB"
@@ -5427,19 +5782,20 @@
           ]
         },
         "value": {
-          "description": "The weight value.",
-          "type": "string"
+          "type": "string",
+          "description": "The weight value."
         }
-      }
+      },
+      "description": "The weight."
     },
     "Quantity": {
-      "description": "The item quantity.",
       "type": "integer",
-      "format": "int32"
+      "format": "int32",
+      "description": "The item quantity."
     },
     "ShippingSpeedCategory": {
-      "description": "The shipping method used for the fulfillment order.",
       "type": "string",
+      "description": "The shipping method used for the fulfillment order.",
       "enum": [
         "Standard",
         "Expedited",
@@ -5466,7 +5822,6 @@
       ]
     },
     "GetFeatureInventoryResponse": {
-      "description": "The breakdown of eligibility inventory by feature.",
       "type": "object",
       "properties": {
         "payload": {
@@ -5476,68 +5831,68 @@
           "description": "One or more unexpected errors occurred during the getFeatureInventory operation.",
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The breakdown of eligibility inventory by feature."
     },
     "GetFeatureInventoryResult": {
-      "description": "The payload for the getEligibileInventory operation.",
       "type": "object",
       "required": [
-        "marketplaceId",
-        "featureName"
+        "featureName",
+        "marketplaceId"
       ],
       "properties": {
         "marketplaceId": {
-          "description": "The requested marketplace.",
-          "type": "string"
+          "type": "string",
+          "description": "The requested marketplace."
         },
         "featureName": {
-          "description": "The name of the feature.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the feature."
         },
         "nextToken": {
-          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
-          "type": "string"
+          "type": "string",
+          "description": "When present and not empty, pass this string token in the next request to return the next response page."
         },
         "featureSkus": {
-          "description": "An array of SKUs eligible for this feature and the quantity available.",
           "type": "array",
+          "description": "An array of SKUs eligible for this feature and the quantity available.",
           "items": {
             "$ref": "#/definitions/FeatureSku"
           }
         }
-      }
+      },
+      "description": "The payload for the getEligibileInventory operation."
     },
     "FeatureSku": {
-      "description": "Information about an SKU, including the count available, identifiers, and a list of overlapping SKUs that share the same inventory pool.",
       "type": "object",
       "properties": {
         "sellerSku": {
-          "description": "Used to identify an item in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit.",
-          "type": "string"
+          "type": "string",
+          "description": "Used to identify an item in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit."
         },
         "fnSku": {
-          "description": "The unique SKU used by Amazon's fulfillment network.",
-          "type": "string"
+          "type": "string",
+          "description": "The unique SKU used by Amazon's fulfillment network."
         },
         "asin": {
-          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
         },
         "skuCount": {
-          "description": "The number of SKUs available for this service.",
-          "type": "number"
+          "type": "number",
+          "description": "The number of SKUs available for this service."
         },
         "overlappingSkus": {
-          "description": "Other seller SKUs that are shared across the same inventory.",
           "type": "array",
+          "description": "Other seller SKUs that are shared across the same inventory.",
           "items": {
             "type": "string"
           }
         }
-      }
+      },
+      "description": "Information about an SKU, including the count available, identifiers, and a list of overlapping SKUs that share the same inventory pool."
     },
     "GetFeaturesResponse": {
-      "description": "The response schema for the getFeatures operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -5546,10 +5901,10 @@
         "errors": {
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getFeatures operation."
     },
     "GetFeaturesResult": {
-      "description": "The payload for the getFeatures operation.",
       "type": "object",
       "required": [
         "features"
@@ -5558,39 +5913,39 @@
         "features": {
           "$ref": "#/definitions/Features"
         }
-      }
+      },
+      "description": "The payload for the getFeatures operation."
     },
     "Features": {
-      "description": "An array of features.",
       "type": "array",
+      "description": "An array of features.",
       "items": {
         "$ref": "#/definitions/Feature"
       }
     },
     "Feature": {
-      "description": "A Multi-Channel Fulfillment feature.",
       "type": "object",
       "required": [
-        "featureName",
-        "featureDescription"
+        "featureDescription",
+        "featureName"
       ],
       "properties": {
         "featureName": {
-          "description": "The feature name.",
-          "type": "string"
+          "type": "string",
+          "description": "The feature name."
         },
         "featureDescription": {
-          "description": "The feature description.",
-          "type": "string"
+          "type": "string",
+          "description": "The feature description."
         },
         "sellerEligible": {
-          "description": "When true, indicates that the seller is eligible to use the feature.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, indicates that the seller is eligible to use the feature."
         }
-      }
+      },
+      "description": "A Multi-Channel Fulfillment feature."
     },
     "GetFeatureSkuResponse": {
-      "description": "The response schema for the getFeatureSKU operation.",
       "type": "object",
       "properties": {
         "payload": {
@@ -5599,32 +5954,32 @@
         "errors": {
           "$ref": "#/definitions/ErrorList"
         }
-      }
+      },
+      "description": "The response schema for the getFeatureSKU operation."
     },
     "GetFeatureSkuResult": {
-      "description": "The payload for the getFeatureSKU operation.",
       "type": "object",
       "required": [
-        "marketplaceId",
         "featureName",
-        "isEligible"
+        "isEligible",
+        "marketplaceId"
       ],
       "properties": {
         "marketplaceId": {
-          "description": "The requested marketplace.",
-          "type": "string"
+          "type": "string",
+          "description": "The requested marketplace."
         },
         "featureName": {
-          "description": "The name of the feature.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the feature."
         },
         "isEligible": {
-          "description": "When true, the seller SKU is eligible for the requested feature.",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, the seller SKU is eligible for the requested feature."
         },
         "ineligibleReasons": {
-          "description": "A list of one or more reasons that the seller SKU is ineligibile for the feature.\n\nPossible values:\n* MERCHANT_NOT_ENROLLED - The merchant isn't enrolled for the feature.\n* SKU_NOT_ELIGIBLE - The SKU doesn't reside in a warehouse that supports the feature.\n* INVALID_SKU - There is an issue with the SKU provided.",
           "type": "array",
+          "description": "A list of one or more reasons that the seller SKU is ineligibile for the feature.\n\nPossible values:\n* MERCHANT_NOT_ENROLLED - The merchant isn't enrolled for the feature.\n* SKU_NOT_ELIGIBLE - The SKU doesn't reside in a warehouse that supports the feature.\n* INVALID_SKU - There is an issue with the SKU provided.",
           "items": {
             "type": "string"
           }
@@ -5633,19 +5988,19 @@
           "description": "Information about the SKU, including the count available, identifiers, and a list of overlapping SKUs that share the same inventory pool.",
           "$ref": "#/definitions/FeatureSku"
         }
-      }
+      },
+      "description": "The payload for the getFeatureSKU operation."
     },
     "FeatureSettings": {
-      "description": "Settings to apply to an order that includes the specified fulfillment feature.",
       "type": "object",
       "properties": {
         "featureName": {
-          "description": "The name of the feature.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the feature."
         },
         "featureFulfillmentPolicy": {
-          "description": "Specifies the policy to use when fulfilling an order.",
           "type": "string",
+          "description": "Specifies the policy to use when fulfilling an order.",
           "enum": [
             "Required",
             "NotRequired"
@@ -5661,7 +6016,8 @@
             }
           ]
         }
-      }
+      },
+      "description": "FeatureSettings allows users to apply fulfillment features to an order. To block an order from being shipped using Amazon Logistics (AMZL) and an AMZL tracking number, use featureName as BLOCK_AMZL and featureFulfillmentPolicy as Required. Blocking AMZL will incur an additional fee surcharge on your MCF orders and increase the risk of some of your orders being unfulfilled or delivered late if there are no alternative carriers available. Using BLOCK_AMZL in an order request will take precedence over your Seller Central account setting."
     }
   }
 }
