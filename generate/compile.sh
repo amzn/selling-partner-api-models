@@ -31,3 +31,7 @@ do
         --artifact-id "selling-partner-api" \
         --additional-properties dateLibrary=java8
 done
+
+cp -r generate/pom.xml generated/spapi
+cd generated/spapi
+mvn clean package
