@@ -32,6 +32,11 @@ do
         --additional-properties dateLibrary=java8
 done
 
+cd clients/sellingpartner-api-aa-java
+mvn clean package
+mvn install:install-file -Dfile=target/sellingpartnerapi-aa-java-1.0.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=sellingpartnerapi-aa-java -Dversion=1.0 -Dpackaging=jar
+
+cd ../..
 cp -r generate/pom.xml generated/spapi
 cd generated/spapi
 mvn clean package
