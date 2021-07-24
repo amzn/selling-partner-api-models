@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Selling Partner API for FBA Inventory",
-    "description": "The Selling Partner API for FBA Inventory lets you programmatically retrieve information about inventory in Amazon's fulfillment network. Today this API is available only in the North America region. In 2021 we plan to release this API in the Europe and Far East regions.",
+    "description": "The Selling Partner API for FBA Inventory lets you programmatically retrieve information about inventory in Amazon's fulfillment network.",
     "version": "v1",
+    "title": "Selling Partner API for FBA Inventory",
     "contact": {
       "name": "Selling Partner API Developer Support",
       "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
@@ -23,305 +23,103 @@
   "produces": [
     "application/json"
   ],
-  "definitions": {
-    "Granularity": {
-      "type": "object",
-      "description": "Describes a granularity at which inventory data can be aggregated. For example, if you use Marketplace granularity, the fulfillable quantity will reflect inventory that could be fulfilled in the given marketplace.",
-      "properties": {
-        "granularityType": {
-          "description": "The granularity type for the inventory aggregation level.",
-          "type": "string",
-          "enum": [
-            "Marketplace"
-          ],
-          "x-docgen-enum-table-extension": [
-            {
-              "value": "Marketplace",
-              "description": "Marketplace"
-            }
-          ]
-        },
-        "granularityId":
-        {
-          "description": "The granularity ID for the specified granularity type. When granularityType is Marketplace, specify the marketplaceId.",
-          "type": "string"
-        }
-      }
-    },
-    "ReservedQuantity":{
-      "description": "The quantity of reserved inventory.",
-      "type": "object",
-      "properties": {
-        "totalReservedQuantity":{
-          "description": "The total number of units in Amazon's fulfillment network that are currently being picked, packed, and shipped; or are sidelined for measurement, sampling, or other internal processes.",
-          "type": "integer"
-        },
-        "pendingCustomerOrderQuantity":{
-          "description": "The number of units reserved for customer orders.",
-          "type": "integer"
-        },
-        "pendingTransshipmentQuantity":{
-          "description": "The number of units being transferred from one fulfillment center to another.",
-          "type": "integer"
-        },
-        "fcProcessingQuantity":{
-          "description": "The number of units that have been sidelined at the fulfillment center for additional processing.",
-          "type": "integer"
-        }
-      }
-    },
-    "ResearchingQuantityEntry": {
-      "description": "The misplaced or warehouse damaged inventory that is actively being confirmed at our fulfillment centers.",
-      "type": "object",
-      "properties":
-      {
-        "name":
-        {
-          "description": "The duration of the research.",
-          "type": "string",
-          "enum": [
-            "researchingQuantityInShortTerm",
-            "researchingQuantityInMidTerm",
-            "researchingQuantityInLongTerm"
-          ],
-          "x-docgen-enum-table-extension": [
-            {
-              "value": "researchingQuantityInShortTerm",
-              "description": "Short Term for 1-10 days."
-            },
-            {
-              "value": "researchingQuantityInMidTerm",
-              "description": "Mid Term for 11-20 days."
-            },
-            {
-              "value": "researchingQuantityInLongTerm",
-              "description": "Long Term for 21 days or longer."
-            }
-          ]
-        },
-        "quantity": {
-          "description": "The number of units.",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "name",
-        "quantity"
-      ]
-    },
-    "ResearchingQuantity": {
-      "description": "The number of misplaced or warehouse damaged units that are actively being confirmed at our fulfillment centers.",
-      "type": "object",
-      "properties": {
-        "totalResearchingQuantity": {
-          "description": "The total number of units currently being researched in Amazon's fulfillment network.",
-          "type": "integer"
-        },
-        "researchingQuantityBreakdown": {
-          "description": "A list of quantity details for items currently being researched.",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ResearchingQuantityEntry"
-          }
-        }
-      }
-    },
-    "UnfulfillableQuantity":{
-      "description": "The quantity of unfulfillable inventory.",
-      "type": "object",
-      "properties": {
-        "totalUnfulfillableQuantity":{
-          "description": "The total number of units in Amazon's fulfillment network in unsellable condition.",
-          "type": "integer"
-        },
-        "customerDamagedQuantity":{
-          "description": "The number of units in customer damaged disposition.",
-          "type": "integer"
-        },
-        "warehouseDamagedQuantity":{
-          "description": "The number of units in warehouse damaged disposition.",
-          "type": "integer"
-        },
-        "distributorDamagedQuantity":{
-          "description": "The number of units in distributor damaged disposition.",
-          "type": "integer"
-        },
-        "carrierDamagedQuantity":{
-          "description": "The number of units in carrier damaged disposition.",
-          "type": "integer"
-        },
-        "defectiveQuantity":{
-          "description": "The number of units in defective disposition.",
-          "type": "integer"
-        },
-        "expiredQuantity":{
-          "description": "The number of units in expired disposition.",
-          "type": "integer"
-        }
-      }
-    },
-    "InventoryDetails": {
-      "description": "Summarized inventory details. This object will not appear if the details parameter in the request is false.",
-      "type": "object",
-      "properties": {
-        "fulfillableQuantity": {
-          "description": "The item quantity that can be picked, packed, and shipped.",
-          "type": "integer"
-        },
-        "inboundWorkingQuantity": {
-          "description": "The number of units in an inbound shipment for which you have notified Amazon.",
-          "type": "integer"
-        },
-        "inboundShippedQuantity": {
-          "description": "The number of units in an inbound shipment that you have notified Amazon about and have provided a tracking number.",
-          "type": "integer"
-        },
-        "inboundReceivingQuantity": {
-          "description": "The number of units that have not yet been received at an Amazon fulfillment center for processing, but are part of an inbound shipment with some units that have already been received and processed.",
-          "type": "integer"
-        },
-        "reservedQuantity":{
-          "$ref": "#/definitions/ReservedQuantity"
-        },
-        "researchingQuantity":{
-          "$ref": "#/definitions/ResearchingQuantity"
-        },
-        "unfulfillableQuantity":{
-          "$ref": "#/definitions/UnfulfillableQuantity"
-        }
-      }
-    },
-    "InventorySummary": {
-      "type": "object",
-      "description": "Inventory summary for a specific item.",
-      "properties": {
-        "asin": {
-          "description": "The Amazon Standard Identification Number (ASIN) of an item.",
-          "type": "string"
-        },
-        "fnSku": {
-          "description": "Amazon's fulfillment network SKU identifier.",
-          "type": "string"
-        },
-        "sellerSku": {
-          "description": "The seller SKU of the item.",
-          "type": "string"
-        },
-        "condition": {
-          "description": "The condition of the item as described by the seller (for example, New Item).",
-          "type": "string"
-        },
-        "inventoryDetails": {
-          "$ref": "#/definitions/InventoryDetails"
-        },
-        "lastUpdatedTime" : {
-          "description": "The date and time that any quantity was last updated.",
-          "type": "string",
-          "format": "date-time"
-        },
-        "productName": {
-          "description": "The localized language product title of the item within the specific marketplace.",
-          "type": "string"
-        },
-        "totalQuantity": {
-          "description": "The total number of units in an inbound shipment or in Amazon fulfillment centers.",
-          "type": "integer"
-        }
-      }
-    },
-    "InventorySummaries": {
-      "description": "A list of inventory summaries.",
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/InventorySummary"
-      }
-    },
-    "Pagination": {
-      "description": "The process of returning the results to a request in batches of a defined size called pages. This is done to exercise some control over result size and overall throughput. It's a form of traffic management.",
-      "type": "object",
-      "properties": {
-        "nextToken": {
-          "description": "A generated string used to retrieve the next page of the result. If nextToken is returned, pass the value of nextToken to the next request. If nextToken is not returned, there are no more items to return.",
-          "type": "string"
-        }
-      }
-    },
-    "GetInventorySummariesResult": {
-      "description": "The payload schema for the getInventorySummaries operation.",
-      "type": "object",
-      "properties": {
-        "granularity": {
-          "$ref": "#/definitions/Granularity"
-        },
-        "inventorySummaries": {
-          "$ref": "#/definitions/InventorySummaries"
-        }
-      },
-      "required": [
-        "granularity",
-        "inventorySummaries"
-      ]
-    },
-    "GetInventorySummariesResponse": {
-      "description": "The Response schema.",
-      "type": "object",
-      "properties": {
-        "payload": {
-          "description": "The payload for the getInventorySummaries operation.",
-          "$ref": "#/definitions/GetInventorySummariesResult"
-        },
-        "pagination": {
-          "$ref": "#/definitions/Pagination"
-        },
-        "errors": {
-          "description": "One or more unexpected errors occurred during the getInventorySummaries operation.",
-          "$ref": "#/definitions/ErrorList"
-        }
-      }
-    },
-    "Error": {
-      "description": "An error response returned when the request is unsuccessful.",
-      "properties": {
-        "code": {
-          "description": "An error code that identifies the type of error that occurred.",
-          "type": "string"
-        },
-        "message": {
-          "description": "A message that describes the error condition in a human-readable form.",
-          "type": "string"
-        },
-        "details": {
-          "description": "Additional information that can help the caller understand or fix the issue.",
-          "type": "string"
-        }
-      },
-      "required": [
-        "code"
-      ],
-      "type": "object"
-    },
-    "ErrorList": {
-      "description": "A list of error responses returned when a request is unsuccessful.",
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Error"
-      }
-    }
-  },
   "paths": {
     "/fba/inventory/v1/summaries": {
       "get": {
         "tags": [
           "fbaInventory"
         ],
-        "description": "Returns a list of inventory summaries. The summaries returned depend on the presence or absence of the startDateTime and sellerSkus parameters:\n\n- All inventory summaries with available details are returned when the startDateTime and sellerSkus parameters are omitted.\n- When startDateTime is provided, the operation returns inventory summaries that have had changes after the date and time specified. The sellerSkus parameter is ignored.\n- When the sellerSkus parameter is provided, the operation returns inventory summaries for only the specified sellerSkus.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 90 | 150 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns a list of inventory summaries. The summaries returned depend on the presence or absence of the startDateTime and sellerSkus parameters:\n\n- All inventory summaries with available details are returned when the startDateTime and sellerSkus parameters are omitted.\n- When startDateTime is provided, the operation returns inventory summaries that have had changes after the date and time specified. The sellerSkus parameter is ignored.\n- When the sellerSkus parameter is provided, the operation returns inventory summaries for only the specified sellerSkus.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getInventorySummaries",
         "produces": [
           "application/json"
         ],
+        "parameters": [
+          {
+            "name": "details",
+            "in": "query",
+            "description": "true to return inventory summaries with additional summarized inventory details and quantities. Otherwise, returns inventory summaries only (default value).",
+            "required": false,
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "granularityType",
+            "in": "query",
+            "description": "The granularity type for the inventory aggregation level.",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "Marketplace"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "Marketplace",
+                "description": "Marketplace"
+              }
+            ]
+          },
+          {
+            "name": "granularityId",
+            "in": "query",
+            "description": "The granularity ID for the inventory aggregation level.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDateTime",
+            "in": "query",
+            "description": "A start date and time in ISO8601 format. If specified, all inventory summaries that have changed since then are returned. You must specify a date and time that is no earlier than 18 months prior to the date and time when you call the API. Note: Changes in inboundWorkingQuantity, inboundShippedQuantity and inboundReceivingQuantity are not detected.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "sellerSkus",
+            "in": "query",
+            "description": "A list of seller SKUs for which to return inventory summaries. You may specify up to 50 SKUs.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50
+          },
+          {
+            "name": "nextToken",
+            "in": "query",
+            "description": "String token returned in the response of your previous request.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "in": "query",
+            "description": "The marketplace ID for the marketplace for which to return inventory summaries.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/GetInventorySummariesResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            },
             "x-amazon-spds-sandbox-behaviors": [
               {
                 "request": {
@@ -336,7 +134,9 @@
                       "value": "ATVPDKIKX0DER"
                     },
                     "marketplaceIds": {
-                      "value": ["ATVPDKIKX0DER"]
+                      "value": [
+                        "ATVPDKIKX0DER"
+                      ]
                     }
                   }
                 },
@@ -469,71 +269,81 @@
                   }
                 }
               }
-            ],
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference ID.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/GetInventorySummariesResponse"
-            }
+            ]
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference ID.",
-                "type": "string"
-              }
-            },
             "schema": {
               "$ref": "#/definitions/GetInventorySummariesResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
             }
           },
           "403": {
             "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference ID.",
-                "type": "string"
-              }
-            },
             "schema": {
               "$ref": "#/definitions/GetInventorySummariesResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
             }
           },
           "404": {
             "description": "The specified resource does not exist.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference ID.",
-                "type": "string"
-              }
-            },
             "schema": {
               "$ref": "#/definitions/GetInventorySummariesResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
             }
           },
           "429": {
             "description": "The frequency of requests was greater than allowed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference ID.",
-                "type": "string"
-              }
-            },
             "schema": {
               "$ref": "#/definitions/GetInventorySummariesResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
             }
           },
           "500": {
             "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetInventorySummariesResponse"
+            },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
-                "description": "Unique request reference ID.",
-                "type": "string"
+                "type": "string",
+                "description": "Unique request reference ID."
               }
             },
             "x-amazon-spds-sandbox-behaviors": [
@@ -541,102 +351,319 @@
                 "request": {
                   "parameters": {
                     "marketplaceIds": {
-                      "value": ["1"]
+                      "value": [
+                        "1"
+                      ]
                     }
                   }
                 },
                 "response": {
-                  "errors": [{
-                    "message": "We encountered an internal error. Please try again.",
-                    "code": "InternalFailure"
-                  }]
+                  "errors": [
+                    {
+                      "message": "We encountered an internal error. Please try again.",
+                      "code": "InternalFailure"
+                    }
+                  ]
                 }
-              }
-            ],
-            "schema": {
-              "$ref": "#/definitions/GetInventorySummariesResponse"
-            }
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference ID.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/GetInventorySummariesResponse"
-            }
-          }
-
-        },
-        "parameters": [
-          {
-            "description": "true to return inventory summaries with additional summarized inventory details and quantities. Otherwise, returns inventory summaries only (default value).",
-            "type": "boolean",
-            "in": "query",
-            "name": "details",
-            "default": "false"
-          },
-          {
-            "description": "The granularity type for the inventory aggregation level.",
-            "type": "string",
-            "in": "query",
-            "name": "granularityType",
-            "required": true,
-            "enum": [
-              "Marketplace"
-            ],
-            "x-docgen-enum-table-extension": [
-              {
-                "value": "Marketplace",
-                "description": "Marketplace"
               }
             ]
           },
-          {
-            "description": "The granularity ID for the inventory aggregation level.",
-            "type": "string",
-            "in": "query",
-            "name": "granularityId",
-            "required": true
-          },
-          {
-            "description": "A start date and time in ISO8601 format. If specified, all inventory summaries that have changed since then are returned. You must specify a date and time that is no earlier than 18 months prior to the date and time when you call the API. Note: Changes in inboundWorkingQuantity, inboundShippedQuantity and inboundReceivingQuantity are not detected.", 
-            "in": "query",
-            "name": "startDateTime",
-            "type": "string",
-            "format": "date-time"
-          },
-          {
-            "description": "A list of seller SKUs for which to return inventory summaries. You may specify up to 50 SKUs.",
-            "type": "array",
-            "items": {
-              "type": "string"
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetInventorySummariesResponse"
             },
-            "in": "query",
-            "name": "sellerSkus",
-            "maxItems": 50
-          },
-          {
-            "description": "String token returned in the response of your previous request.",
-            "type": "string",
-            "in": "query",
-            "name": "nextToken"
-          },
-          {
-            "description": "The marketplace ID for the marketplace for which to return inventory summaries.",
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "in": "query",
-            "name": "marketplaceIds",
-            "required": true,
-            "maxItems": 1
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference ID."
+              }
+            }
           }
-        ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Granularity": {
+      "type": "object",
+      "properties": {
+        "granularityType": {
+          "type": "string",
+          "description": "The granularity type for the inventory aggregation level.",
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "Marketplace",
+              "description": "Marketplace"
+            }
+          ]
+        },
+        "granularityId": {
+          "type": "string",
+          "description": "The granularity ID for the specified granularity type. When granularityType is Marketplace, specify the marketplaceId."
+        }
+      },
+      "description": "Describes a granularity at which inventory data can be aggregated. For example, if you use Marketplace granularity, the fulfillable quantity will reflect inventory that could be fulfilled in the given marketplace."
+    },
+    "ReservedQuantity": {
+      "type": "object",
+      "properties": {
+        "totalReservedQuantity": {
+          "type": "integer",
+          "description": "The total number of units in Amazon's fulfillment network that are currently being picked, packed, and shipped; or are sidelined for measurement, sampling, or other internal processes."
+        },
+        "pendingCustomerOrderQuantity": {
+          "type": "integer",
+          "description": "The number of units reserved for customer orders."
+        },
+        "pendingTransshipmentQuantity": {
+          "type": "integer",
+          "description": "The number of units being transferred from one fulfillment center to another."
+        },
+        "fcProcessingQuantity": {
+          "type": "integer",
+          "description": "The number of units that have been sidelined at the fulfillment center for additional processing."
+        }
+      },
+      "description": "The quantity of reserved inventory."
+    },
+    "ResearchingQuantityEntry": {
+      "type": "object",
+      "required": [
+        "name",
+        "quantity"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The duration of the research.",
+          "enum": [
+            "researchingQuantityInShortTerm",
+            "researchingQuantityInMidTerm",
+            "researchingQuantityInLongTerm"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "researchingQuantityInShortTerm",
+              "description": "Short Term for 1-10 days."
+            },
+            {
+              "value": "researchingQuantityInMidTerm",
+              "description": "Mid Term for 11-20 days."
+            },
+            {
+              "value": "researchingQuantityInLongTerm",
+              "description": "Long Term for 21 days or longer."
+            }
+          ]
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "The number of units."
+        }
+      },
+      "description": "The misplaced or warehouse damaged inventory that is actively being confirmed at our fulfillment centers."
+    },
+    "ResearchingQuantity": {
+      "type": "object",
+      "properties": {
+        "totalResearchingQuantity": {
+          "type": "integer",
+          "description": "The total number of units currently being researched in Amazon's fulfillment network."
+        },
+        "researchingQuantityBreakdown": {
+          "type": "array",
+          "description": "A list of quantity details for items currently being researched.",
+          "items": {
+            "$ref": "#/definitions/ResearchingQuantityEntry"
+          }
+        }
+      },
+      "description": "The number of misplaced or warehouse damaged units that are actively being confirmed at our fulfillment centers."
+    },
+    "UnfulfillableQuantity": {
+      "type": "object",
+      "properties": {
+        "totalUnfulfillableQuantity": {
+          "type": "integer",
+          "description": "The total number of units in Amazon's fulfillment network in unsellable condition."
+        },
+        "customerDamagedQuantity": {
+          "type": "integer",
+          "description": "The number of units in customer damaged disposition."
+        },
+        "warehouseDamagedQuantity": {
+          "type": "integer",
+          "description": "The number of units in warehouse damaged disposition."
+        },
+        "distributorDamagedQuantity": {
+          "type": "integer",
+          "description": "The number of units in distributor damaged disposition."
+        },
+        "carrierDamagedQuantity": {
+          "type": "integer",
+          "description": "The number of units in carrier damaged disposition."
+        },
+        "defectiveQuantity": {
+          "type": "integer",
+          "description": "The number of units in defective disposition."
+        },
+        "expiredQuantity": {
+          "type": "integer",
+          "description": "The number of units in expired disposition."
+        }
+      },
+      "description": "The quantity of unfulfillable inventory."
+    },
+    "InventoryDetails": {
+      "type": "object",
+      "properties": {
+        "fulfillableQuantity": {
+          "type": "integer",
+          "description": "The item quantity that can be picked, packed, and shipped."
+        },
+        "inboundWorkingQuantity": {
+          "type": "integer",
+          "description": "The number of units in an inbound shipment for which you have notified Amazon."
+        },
+        "inboundShippedQuantity": {
+          "type": "integer",
+          "description": "The number of units in an inbound shipment that you have notified Amazon about and have provided a tracking number."
+        },
+        "inboundReceivingQuantity": {
+          "type": "integer",
+          "description": "The number of units that have not yet been received at an Amazon fulfillment center for processing, but are part of an inbound shipment with some units that have already been received and processed."
+        },
+        "reservedQuantity": {
+          "$ref": "#/definitions/ReservedQuantity"
+        },
+        "researchingQuantity": {
+          "$ref": "#/definitions/ResearchingQuantity"
+        },
+        "unfulfillableQuantity": {
+          "$ref": "#/definitions/UnfulfillableQuantity"
+        }
+      },
+      "description": "Summarized inventory details. This object will not appear if the details parameter in the request is false."
+    },
+    "InventorySummary": {
+      "type": "object",
+      "properties": {
+        "asin": {
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of an item."
+        },
+        "fnSku": {
+          "type": "string",
+          "description": "Amazon's fulfillment network SKU identifier."
+        },
+        "sellerSku": {
+          "type": "string",
+          "description": "The seller SKU of the item."
+        },
+        "condition": {
+          "type": "string",
+          "description": "The condition of the item as described by the seller (for example, New Item)."
+        },
+        "inventoryDetails": {
+          "$ref": "#/definitions/InventoryDetails"
+        },
+        "lastUpdatedTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time that any quantity was last updated."
+        },
+        "productName": {
+          "type": "string",
+          "description": "The localized language product title of the item within the specific marketplace."
+        },
+        "totalQuantity": {
+          "type": "integer",
+          "description": "The total number of units in an inbound shipment or in Amazon fulfillment centers."
+        }
+      },
+      "description": "Inventory summary for a specific item."
+    },
+    "InventorySummaries": {
+      "type": "array",
+      "description": "A list of inventory summaries.",
+      "items": {
+        "$ref": "#/definitions/InventorySummary"
+      }
+    },
+    "Pagination": {
+      "type": "object",
+      "properties": {
+        "nextToken": {
+          "type": "string",
+          "description": "A generated string used to retrieve the next page of the result. If nextToken is returned, pass the value of nextToken to the next request. If nextToken is not returned, there are no more items to return."
+        }
+      },
+      "description": "The process of returning the results to a request in batches of a defined size called pages. This is done to exercise some control over result size and overall throughput. It's a form of traffic management."
+    },
+    "GetInventorySummariesResult": {
+      "type": "object",
+      "required": [
+        "granularity",
+        "inventorySummaries"
+      ],
+      "properties": {
+        "granularity": {
+          "$ref": "#/definitions/Granularity"
+        },
+        "inventorySummaries": {
+          "$ref": "#/definitions/InventorySummaries"
+        }
+      },
+      "description": "The payload schema for the getInventorySummaries operation."
+    },
+    "GetInventorySummariesResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getInventorySummaries operation.",
+          "$ref": "#/definitions/GetInventorySummariesResult"
+        },
+        "pagination": {
+          "$ref": "#/definitions/Pagination"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getInventorySummaries operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The Response schema."
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition in a human-readable form."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional information that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "An error response returned when the request is unsuccessful."
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
       }
     }
   }
