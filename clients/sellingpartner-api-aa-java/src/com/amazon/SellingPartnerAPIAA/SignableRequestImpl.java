@@ -73,13 +73,8 @@ class SignableRequestImpl implements SignableRequest<Request> {
 
     @Override
     public String getResourcePath() {
-        try {
-            return originalRequest.url()
-                    .toURI()
-                    .getPath();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return originalRequest.url()
+                .getPath();
     }
 
     @Override
