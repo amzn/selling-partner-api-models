@@ -96,6 +96,18 @@ namespace Amazon.SellingPartnerAPIAATests
         }
 
         [Fact]
+        public void TestExtractCanonicalQueryString_ParameterArray()
+        {
+            IRestRequest request = new RestRequest();
+            //Add parameters in non-alphabetical order
+            request.AddQueryParameter("Statuses", "New");
+            request.AddQueryParameter("Statuses", "Complete");
+            string result = awsSignerHelperUnderTest.ExtractCanonicalQueryString(request);
+            //Expect result in alphabetical order
+            Assert.Equal("Statuses=Complete&Statuses=New", result);
+        }
+
+        [Fact]
         public void TestExtractCanonicalHeaders()
         {
             IRestRequest request = new RestRequest();
