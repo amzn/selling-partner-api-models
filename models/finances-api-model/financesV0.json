@@ -35,9 +35,9 @@
             "description": "The maximum number of results to return per page.",
             "required": false,
             "type": "integer",
+            "default": 100,
             "maximum": 100,
             "minimum": 1,
-            "default": 100,
             "format": "int32"
           },
           {
@@ -70,17 +70,18 @@
             "schema": {
               "$ref": "#/definitions/ListFinancialEventGroupsResponse"
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "MaxResultsPerPage": {
-                      "value": 1
-                    },
-                    "FinancialEventGroupStartedBefore": {
-                      "value": "2019-10-31"
-                    },
-                    "FinancialEventGroupStartedAfter": {
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "MaxResultsPerPage": {
+                        "value": 1
+                      },
+                      "FinancialEventGroupStartedBefore": {
+                        "value": "2019-10-31"
+                      },
+                      "FinancialEventGroupStartedAfter": {
                       "value": "2019-10-13"
                     }
                   }
@@ -114,33 +115,36 @@
                     ]
                   }
                 }
-              }
-            ]
+                }
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/ListFinancialEventGroupsResponse"
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "MaxResultsPerPage": {
-                      "value": 10
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "MaxResultsPerPage": {
+                        "value": 10
+                      }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Date range is invalid."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Date range is invalid."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "403": {
             "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -160,6 +164,10 @@
               "$ref": "#/definitions/ListFinancialEventGroupsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -172,6 +180,10 @@
               "$ref": "#/definitions/ListFinancialEventGroupsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -184,6 +196,10 @@
               "$ref": "#/definitions/ListFinancialEventGroupsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -196,6 +212,10 @@
               "$ref": "#/definitions/ListFinancialEventGroupsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -203,8 +223,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/finances/v0/financialEventGroups/{eventGroupId}/financialEvents": {
       "get": {
@@ -217,9 +236,9 @@
             "description": "The maximum number of results to return per page.",
             "required": false,
             "type": "integer",
+            "default": 100,
             "maximum": 100,
             "minimum": 1,
-            "default": 100,
             "format": "int32"
           },
           {
@@ -243,17 +262,18 @@
             "schema": {
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "MaxResultsPerPage": {
-                      "value": 10
-                    },
-                    "eventGroupId": {
-                      "value": "485734534857"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "MaxResultsPerPage": {
+                        "value": 10
+                      },
+                      "eventGroupId": {
+                        "value": "485734534857"
+                      }
                     }
-                  }
                 },
                 "response": {
                   "payload": {
@@ -563,37 +583,74 @@
                             "CurrencyAmount": 25.37
                           }
                         }
+                      ],
+                      "TrialShipmentEventList": [
+                        {
+                          "AmazonOrderId": "444-555-3343433",
+                          "FinancialEventGroupId": "1",
+                          "PostedDate": "2020-02-05T13:56:00.363Z",
+                          "SKU": "456454455464",
+                          "FeeList": [
+                            {
+                              "FeeType": "FixedClosingFee",
+                              "FeeAmount": {
+                                "CurrencyCode": "USD",
+                                "CurrencyAmount": 25.37
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "TaxWithholdingEventList": [
+                        {
+                          "PostedDate": "2020-02-05T13:56:00.363Z",
+                          "BaseAmount": {
+                            "CurrencyCode": "USD",
+                            "CurrencyAmount": 25.37
+                          },
+                          "WithheldAmount": {
+                            "CurrencyCode": "USD",
+                            "CurrencyAmount": 25.37
+                          },
+                          "TaxWithholdingPeriod": {
+                            "StartDate": "2020-02-05T13:56:00.363Z",
+                            "EndDate": "2020-02-05T13:56:00.363Z"
+                          }
+                        }
                       ]
                     }
                   }
                 }
-              }
-            ]
+                }
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "eventGroupId": {
-                      "value": "BADID"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "eventGroupId": {
+                        "value": "BADID"
+                      }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Bad event group ID provided."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Bad event group ID provided."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "403": {
             "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -613,6 +670,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -625,6 +686,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -637,6 +702,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -649,6 +718,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -656,8 +729,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/finances/v0/orders/{orderId}/financialEvents": {
       "get": {
@@ -677,9 +749,9 @@
             "description": "The maximum number of results to return per page.",
             "required": false,
             "type": "integer",
+            "default": 100,
             "maximum": 100,
             "minimum": 1,
-            "default": 100,
             "format": "int32"
           },
           {
@@ -696,17 +768,18 @@
             "schema": {
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "MaxResultsPerPage": {
-                      "value": 10
-                    },
-                    "orderId": {
-                      "value": "485-734-5434857"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "MaxResultsPerPage": {
+                        "value": 10
+                      },
+                      "orderId": {
+                        "value": "485-734-5434857"
+                      }
                     }
-                  }
                 },
                 "response": {
                   "payload": {
@@ -832,33 +905,36 @@
                     }
                   }
                 }
-              }
-            ]
+                }
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "orderId": {
-                      "value": "BAD-ORDER"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "orderId": {
+                        "value": "BAD-ORDER"
+                      }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Bad order ID provided."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Bad order ID provided."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "403": {
             "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -878,6 +954,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -890,6 +970,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -902,6 +986,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -914,6 +1002,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -921,8 +1013,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/finances/v0/financialEvents": {
       "get": {
@@ -935,9 +1026,9 @@
             "description": "The maximum number of results to return per page.",
             "required": false,
             "type": "integer",
+            "default": 100,
             "maximum": 100,
             "minimum": 1,
-            "default": 100,
             "format": "int32"
           },
           {
@@ -970,17 +1061,18 @@
             "schema": {
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "MaxResultsPerPage": {
-                      "value": 10
-                    },
-                    "NextToken": {
-                      "value": "jehgri34yo7jr9e8f984tr9i4o"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "MaxResultsPerPage": {
+                        "value": 10
+                      },
+                      "NextToken": {
+                        "value": "jehgri34yo7jr9e8f984tr9i4o"
+                      }
                     }
-                  }
                 },
                 "response": {
                   "payload": {
@@ -1102,33 +1194,36 @@
                     }
                   }
                 }
-              }
-            ]
+                }
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
             "schema": {
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "MaxResultsPerPage": {
-                      "value": 2
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "MaxResultsPerPage": {
+                        "value": 2
+                      }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Input not valid."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Input not valid."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "403": {
             "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -1148,6 +1243,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1160,6 +1259,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1172,6 +1275,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1184,6 +1291,10 @@
               "$ref": "#/definitions/ListFinancialEventsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1191,18 +1302,16 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     }
   },
   "definitions": {
     "AdjustmentEvent": {
-      "description": "An adjustment to the seller's account.",
       "type": "object",
       "properties": {
         "AdjustmentType": {
-          "description": "The type of adjustment.\n\nPossible values:\n\n* FBAInventoryReimbursement - An FBA inventory reimbursement to a seller's account. This occurs if a seller's inventory is damaged.\n\n* ReserveEvent - A reserve event that is generated at the time of a settlement period closing. This occurs when some money from a seller's account is held back.\n\n* PostageBilling - The amount paid by a seller for shipping labels.\n\n* PostageRefund - The reimbursement of shipping labels purchased for orders that were canceled or refunded.\n\n* LostOrDamagedReimbursement - An Amazon Easy Ship reimbursement to a seller's account for a package that we lost or damaged.\n\n* CanceledButPickedUpReimbursement - An Amazon Easy Ship reimbursement to a seller's account. This occurs when a package is picked up and the order is subsequently canceled. This value is used only in the India marketplace.\n\n* ReimbursementClawback - An Amazon Easy Ship reimbursement clawback from a seller's account. This occurs when a prior reimbursement is reversed. This value is used only in the India marketplace.\n\n* SellerRewards - An award credited to a seller's account for their participation in an offer in the Seller Rewards program. Applies only to the India marketplace.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of adjustment.\n\nPossible values:\n\n* FBAInventoryReimbursement - An FBA inventory reimbursement to a seller's account. This occurs if a seller's inventory is damaged.\n\n* ReserveEvent - A reserve event that is generated at the time of a settlement period closing. This occurs when some money from a seller's account is held back.\n\n* PostageBilling - The amount paid by a seller for shipping labels.\n\n* PostageRefund - The reimbursement of shipping labels purchased for orders that were canceled or refunded.\n\n* LostOrDamagedReimbursement - An Amazon Easy Ship reimbursement to a seller's account for a package that we lost or damaged.\n\n* CanceledButPickedUpReimbursement - An Amazon Easy Ship reimbursement to a seller's account. This occurs when a package is picked up and the order is subsequently canceled. This value is used only in the India marketplace.\n\n* ReimbursementClawback - An Amazon Easy Ship reimbursement clawback from a seller's account. This occurs when a prior reimbursement is reversed. This value is used only in the India marketplace.\n\n* SellerRewards - An award credited to a seller's account for their participation in an offer in the Seller Rewards program. Applies only to the India marketplace."
         },
         "PostedDate": {
           "description": "The date and time when the financial event was posted.",
@@ -1216,22 +1325,22 @@
           "description": "A list of information about adjustments to an account.",
           "$ref": "#/definitions/AdjustmentItemList"
         }
-      }
+      },
+      "description": "An adjustment to the seller's account."
     },
     "AdjustmentEventList": {
-      "description": "A list of adjustment event information for the seller's account.",
       "type": "array",
+      "description": "A list of adjustment event information for the seller's account.",
       "items": {
         "$ref": "#/definitions/AdjustmentEvent"
       }
     },
     "AdjustmentItem": {
-      "description": "An item in an adjustment to the seller's account.",
       "type": "object",
       "properties": {
         "Quantity": {
-          "description": "Represents the number of units in the seller's inventory when the AdustmentType is FBAInventoryReimbursement.",
-          "type": "string"
+          "type": "string",
+          "description": "Represents the number of units in the seller's inventory when the AdustmentType is FBAInventoryReimbursement."
         },
         "PerUnitAmount": {
           "description": "The per unit value of the item.",
@@ -1242,32 +1351,32 @@
           "$ref": "#/definitions/Currency"
         },
         "SellerSKU": {
-          "description": "The seller SKU of the item. The seller SKU is qualified by the seller's seller ID, which is included with every call to the Selling Partner API.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller SKU of the item. The seller SKU is qualified by the seller's seller ID, which is included with every call to the Selling Partner API."
         },
         "FnSKU": {
-          "description": "A unique identifier assigned to products stored in and fulfilled from a fulfillment center.",
-          "type": "string"
+          "type": "string",
+          "description": "A unique identifier assigned to products stored in and fulfilled from a fulfillment center."
         },
         "ProductDescription": {
-          "description": "A short description of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "A short description of the item."
         },
         "ASIN": {
-          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
         }
-      }
+      },
+      "description": "An item in an adjustment to the seller's account."
     },
     "AdjustmentItemList": {
-      "description": "A list of information about items in an adjustment to the seller's account.",
       "type": "array",
+      "description": "A list of information about items in an adjustment to the seller's account.",
       "items": {
         "$ref": "#/definitions/AdjustmentItem"
       }
     },
     "AffordabilityExpenseEvent": {
-      "description": "An expense related to an affordability promotion.",
       "type": "object",
       "required": [
         "TaxTypeCGST",
@@ -1276,20 +1385,20 @@
       ],
       "properties": {
         "AmazonOrderId": {
-          "description": "An Amazon-defined identifier for an order.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined identifier for an order."
         },
         "PostedDate": {
           "description": "The date and time when the financial event was created.",
           "$ref": "#/definitions/Date"
         },
         "MarketplaceId": {
-          "description": "An encrypted, Amazon-defined marketplace identifier.",
-          "type": "string"
+          "type": "string",
+          "description": "An encrypted, Amazon-defined marketplace identifier."
         },
         "TransactionType": {
-          "description": "Indicates the type of transaction. \n\nPossible values:\n\n* Charge - For an affordability promotion expense.\n\n* Refund - For an affordability promotion expense reversal.",
-          "type": "string"
+          "type": "string",
+          "description": "Indicates the type of transaction. \n\nPossible values:\n\n* Charge - For an affordability promotion expense.\n\n* Refund - For an affordability promotion expense reversal."
         },
         "BaseExpense": {
           "description": "The amount charged for clicks incurred under the Sponsored Products program.",
@@ -1311,11 +1420,12 @@
           "description": "The total amount charged to the seller. TotalExpense = BaseExpense + TaxTypeIGST + TaxTypeCGST + TaxTypeSGST.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "An expense related to an affordability promotion."
     },
     "AffordabilityExpenseEventList": {
-      "description": "A list of expense information related to an affordability promotion.",
       "type": "array",
+      "description": "A list of expense information related to an affordability promotion.",
       "items": {
         "$ref": "#/definitions/AffordabilityExpenseEvent"
       }
@@ -1324,53 +1434,52 @@
       "type": "number"
     },
     "ChargeComponent": {
-      "description": "A charge on the seller's account.\n\nPossible values:\n\n* Principal - The selling price of the order item, equal to the selling price of the item multiplied by the quantity ordered.\n\n* Tax - The tax collected by the seller on the Principal.\n\n* MarketplaceFacilitatorTax-Principal - The tax withheld on the Principal.\n\n* MarketplaceFacilitatorTax-Shipping - The tax withheld on the ShippingCharge.\n\n* MarketplaceFacilitatorTax-Giftwrap - The tax withheld on the Giftwrap charge.\n\n* MarketplaceFacilitatorTax-Other - The tax withheld on other miscellaneous charges.\n\n* Discount - The promotional discount for an order item.\n\n* TaxDiscount - The tax amount deducted for promotional rebates.\n\n* CODItemCharge - The COD charge for an order item.\n\n* CODItemTaxCharge - The tax collected by the seller on a CODItemCharge.\n\n* CODOrderCharge - The COD charge for an order.\n\n* CODOrderTaxCharge - The tax collected by the seller on a CODOrderCharge.\n\n* CODShippingCharge - Shipping charges for a COD order.\n\n* CODShippingTaxCharge - The tax collected by the seller on a CODShippingCharge.\n\n* ShippingCharge - The shipping charge.\n\n* ShippingTax - The tax collected by the seller on a ShippingCharge.\n\n* Goodwill - The amount given to a buyer as a gesture of goodwill or to compensate for pain and suffering in the buying experience.\n\n* Giftwrap - The gift wrap charge.\n\n* GiftwrapTax - The tax collected by the seller on a Giftwrap charge.\n\n* RestockingFee - The charge applied to the buyer when returning a product in certain categories.\n\n* ReturnShipping - The amount given to the buyer to compensate for shipping the item back in the event we are at fault.\n\n* PointsFee - The value of Amazon Points deducted from the refund if the buyer does not have enough Amazon Points to cover the deduction.\n\n* GenericDeduction - A generic bad debt deduction.\n\n* FreeReplacementReturnShipping - The compensation for return shipping when a buyer receives the wrong item, requests a free replacement, and returns the incorrect item.\n\n* PaymentMethodFee - The fee collected for certain payment methods in certain marketplaces.\n\n* ExportCharge - The export duty that is charged when an item is shipped to an international destination as part of the Amazon Global program.\n\n* SAFE-TReimbursement - The SAFE-T claim amount for the item.\n\n* TCS-CGST - Tax Collected at Source (TCS) for Central Goods and Services Tax (CGST).\n\n* TCS-SGST - Tax Collected at Source for State Goods and Services Tax (SGST).\n\n* TCS-IGST - Tax Collected at Source for Integrated Goods and Services Tax (IGST).\n\n* TCS-UTGST - Tax Collected at Source for Union Territories Goods and Services Tax (UTGST).",
       "type": "object",
       "properties": {
         "ChargeType": {
-          "description": "The type of charge.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of charge."
         },
         "ChargeAmount": {
           "description": "The amount of the charge.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "A charge on the seller's account.\n\nPossible values:\n\n* Principal - The selling price of the order item, equal to the selling price of the item multiplied by the quantity ordered.\n\n* Tax - The tax collected by the seller on the Principal.\n\n* MarketplaceFacilitatorTax-Principal - The tax withheld on the Principal.\n\n* MarketplaceFacilitatorTax-Shipping - The tax withheld on the ShippingCharge.\n\n* MarketplaceFacilitatorTax-Giftwrap - The tax withheld on the Giftwrap charge.\n\n* MarketplaceFacilitatorTax-Other - The tax withheld on other miscellaneous charges.\n\n* Discount - The promotional discount for an order item.\n\n* TaxDiscount - The tax amount deducted for promotional rebates.\n\n* CODItemCharge - The COD charge for an order item.\n\n* CODItemTaxCharge - The tax collected by the seller on a CODItemCharge.\n\n* CODOrderCharge - The COD charge for an order.\n\n* CODOrderTaxCharge - The tax collected by the seller on a CODOrderCharge.\n\n* CODShippingCharge - Shipping charges for a COD order.\n\n* CODShippingTaxCharge - The tax collected by the seller on a CODShippingCharge.\n\n* ShippingCharge - The shipping charge.\n\n* ShippingTax - The tax collected by the seller on a ShippingCharge.\n\n* Goodwill - The amount given to a buyer as a gesture of goodwill or to compensate for pain and suffering in the buying experience.\n\n* Giftwrap - The gift wrap charge.\n\n* GiftwrapTax - The tax collected by the seller on a Giftwrap charge.\n\n* RestockingFee - The charge applied to the buyer when returning a product in certain categories.\n\n* ReturnShipping - The amount given to the buyer to compensate for shipping the item back in the event we are at fault.\n\n* PointsFee - The value of Amazon Points deducted from the refund if the buyer does not have enough Amazon Points to cover the deduction.\n\n* GenericDeduction - A generic bad debt deduction.\n\n* FreeReplacementReturnShipping - The compensation for return shipping when a buyer receives the wrong item, requests a free replacement, and returns the incorrect item.\n\n* PaymentMethodFee - The fee collected for certain payment methods in certain marketplaces.\n\n* ExportCharge - The export duty that is charged when an item is shipped to an international destination as part of the Amazon Global program.\n\n* SAFE-TReimbursement - The SAFE-T claim amount for the item.\n\n* TCS-CGST - Tax Collected at Source (TCS) for Central Goods and Services Tax (CGST).\n\n* TCS-SGST - Tax Collected at Source for State Goods and Services Tax (SGST).\n\n* TCS-IGST - Tax Collected at Source for Integrated Goods and Services Tax (IGST).\n\n* TCS-UTGST - Tax Collected at Source for Union Territories Goods and Services Tax (UTGST)."
     },
     "ChargeComponentList": {
-      "description": "A list of charge information on the seller's account.",
       "type": "array",
+      "description": "A list of charge information on the seller's account.",
       "items": {
         "$ref": "#/definitions/ChargeComponent"
       }
     },
     "ChargeInstrument": {
-      "description": "A payment instrument.",
       "type": "object",
       "properties": {
         "Description": {
-          "description": "A short description of the charge instrument.",
-          "type": "string"
+          "type": "string",
+          "description": "A short description of the charge instrument."
         },
         "Tail": {
-          "description": "The account tail (trailing digits) of the charge instrument.",
-          "type": "string"
+          "type": "string",
+          "description": "The account tail (trailing digits) of the charge instrument."
         },
         "Amount": {
           "description": "The amount charged to this charge instrument.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "A payment instrument."
     },
     "ChargeInstrumentList": {
-      "description": "A list of payment instruments.",
       "type": "array",
+      "description": "A list of payment instruments.",
       "items": {
         "$ref": "#/definitions/ChargeInstrument"
       }
     },
     "CouponPaymentEvent": {
-      "description": "An event related to coupon payments.",
       "type": "object",
       "properties": {
         "PostedDate": {
@@ -1378,21 +1487,21 @@
           "$ref": "#/definitions/Date"
         },
         "CouponId": {
-          "description": "A coupon identifier.",
-          "type": "string"
+          "type": "string",
+          "description": "A coupon identifier."
         },
         "SellerCouponDescription": {
-          "description": "The description provided by the seller when they created the coupon.",
-          "type": "string"
+          "type": "string",
+          "description": "The description provided by the seller when they created the coupon."
         },
         "ClipOrRedemptionCount": {
-          "description": "The number of coupon clips or redemptions.",
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "description": "The number of coupon clips or redemptions."
         },
         "PaymentEventId": {
-          "description": "A payment event identifier.",
-          "type": "string"
+          "type": "string",
+          "description": "A payment event identifier."
         },
         "FeeComponent": {
           "$ref": "#/definitions/FeeComponent"
@@ -1404,40 +1513,40 @@
           "description": "The FeeComponent value plus the ChargeComponent value.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "An event related to coupon payments."
     },
     "CouponPaymentEventList": {
-      "description": "A list of coupon payment event information.",
       "type": "array",
+      "description": "A list of coupon payment event information.",
       "items": {
         "$ref": "#/definitions/CouponPaymentEvent"
       }
     },
     "Currency": {
-      "description": "A currency type and amount.",
       "type": "object",
       "properties": {
         "CurrencyCode": {
-          "description": "The three-digit currency code in ISO 4217 format.",
-          "type": "string"
+          "type": "string",
+          "description": "The three-digit currency code in ISO 4217 format."
         },
         "CurrencyAmount": {
           "description": "The monetary value.",
           "$ref": "#/definitions/BigDecimal"
         }
-      }
+      },
+      "description": "A currency type and amount."
     },
     "Date": {
       "type": "string",
       "format": "date-time"
     },
     "DebtRecoveryEvent": {
-      "description": "A debt payment or debt adjustment.",
       "type": "object",
       "properties": {
         "DebtRecoveryType": {
-          "description": "The debt recovery type.\n\nPossible values:\n\n* DebtPayment\n\n* DebtPaymentFailure\n\n*DebtAdjustment",
-          "type": "string"
+          "type": "string",
+          "description": "The debt recovery type.\n\nPossible values:\n\n* DebtPayment\n\n* DebtPaymentFailure\n\n*DebtAdjustment"
         },
         "RecoveryAmount": {
           "description": "The amount applied for recovery.",
@@ -1453,17 +1562,17 @@
         "ChargeInstrumentList": {
           "$ref": "#/definitions/ChargeInstrumentList"
         }
-      }
+      },
+      "description": "A debt payment or debt adjustment."
     },
     "DebtRecoveryEventList": {
-      "description": "A list of debt recovery event information.",
       "type": "array",
+      "description": "A list of debt recovery event information.",
       "items": {
         "$ref": "#/definitions/DebtRecoveryEvent"
       }
     },
     "DebtRecoveryItem": {
-      "description": "An item of a debt payment or debt adjustment.",
       "type": "object",
       "properties": {
         "RecoveryAmount": {
@@ -1482,38 +1591,38 @@
           "description": "The ending date and time of the financial event group that contains the debt. In ISO 8601 date time format.",
           "$ref": "#/definitions/Date"
         }
-      }
+      },
+      "description": "An item of a debt payment or debt adjustment."
     },
     "DebtRecoveryItemList": {
-      "description": "A list of debt recovery item information.",
       "type": "array",
+      "description": "A list of debt recovery item information.",
       "items": {
         "$ref": "#/definitions/DebtRecoveryItem"
       }
     },
     "DirectPayment": {
-      "description": "A payment made directly to a seller.",
       "type": "object",
       "properties": {
         "DirectPaymentType": {
-          "description": "The type of payment.\n\nPossible values:\n\n* StoredValueCardRevenue - The amount that is deducted from the seller's account because the seller received money through a stored value card.\n\n* StoredValueCardRefund - The amount that Amazon returns to the seller if the order that is bought using a stored value card is refunded.\n\n* PrivateLabelCreditCardRevenue - The amount that is deducted from the seller's account because the seller received money through a private label credit card offered by Amazon.\n\n* PrivateLabelCreditCardRefund - The amount that Amazon returns to the seller if the order that is bought using a private label credit card offered by Amazon is refunded.\n\n* CollectOnDeliveryRevenue - The COD amount that the seller collected directly from the buyer.\n\n* CollectOnDeliveryRefund - The amount that Amazon refunds to the buyer if an order paid for by COD is refunded.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of payment.\n\nPossible values:\n\n* StoredValueCardRevenue - The amount that is deducted from the seller's account because the seller received money through a stored value card.\n\n* StoredValueCardRefund - The amount that Amazon returns to the seller if the order that is bought using a stored value card is refunded.\n\n* PrivateLabelCreditCardRevenue - The amount that is deducted from the seller's account because the seller received money through a private label credit card offered by Amazon.\n\n* PrivateLabelCreditCardRefund - The amount that Amazon returns to the seller if the order that is bought using a private label credit card offered by Amazon is refunded.\n\n* CollectOnDeliveryRevenue - The COD amount that the seller collected directly from the buyer.\n\n* CollectOnDeliveryRefund - The amount that Amazon refunds to the buyer if an order paid for by COD is refunded."
         },
         "DirectPaymentAmount": {
           "description": "The amount of the direct payment.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "A payment made directly to a seller."
     },
     "DirectPaymentList": {
-      "description": "A list of direct payment information.",
       "type": "array",
+      "description": "A list of direct payment information.",
       "items": {
         "$ref": "#/definitions/DirectPayment"
       }
     },
     "FBALiquidationEvent": {
-      "description": "A payment event for Fulfillment by Amazon (FBA) inventory liquidation. This event is used only in the US marketplace.",
       "type": "object",
       "properties": {
         "PostedDate": {
@@ -1521,8 +1630,8 @@
           "$ref": "#/definitions/Date"
         },
         "OriginalRemovalOrderId": {
-          "description": "The identifier for the original removal order.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the original removal order."
         },
         "LiquidationProceedsAmount": {
           "description": "The amount paid by the liquidator for the seller's inventory. The seller receives this amount minus LiquidationFeeAmount.",
@@ -1532,51 +1641,51 @@
           "description": "The fee charged to the seller by Amazon for liquidating the seller's FBA inventory.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "A payment event for Fulfillment by Amazon (FBA) inventory liquidation. This event is used only in the US marketplace."
     },
     "FBALiquidationEventList": {
-      "description": "A list of FBA inventory liquidation payment events.",
       "type": "array",
+      "description": "A list of FBA inventory liquidation payment events.",
       "items": {
         "$ref": "#/definitions/FBALiquidationEvent"
       }
     },
     "FeeComponent": {
-      "description": "A fee associated with the event.",
       "type": "object",
       "properties": {
         "FeeType": {
-          "description": "The type of fee. For more information about Selling on Amazon fees, see [Selling on Amazon Fee Schedule](https://sellercentral.amazon.com/gp/help/200336920) on Seller Central. For more information about Fulfillment by Amazon fees, see [FBA features, services and fees](https://sellercentral.amazon.com/gp/help/201074400) on Seller Central.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of fee. For more information about Selling on Amazon fees, see [Selling on Amazon Fee Schedule](https://sellercentral.amazon.com/gp/help/200336920) on Seller Central. For more information about Fulfillment by Amazon fees, see [FBA features, services and fees](https://sellercentral.amazon.com/gp/help/201074400) on Seller Central."
         },
         "FeeAmount": {
           "description": "The amount of the fee.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "A fee associated with the event."
     },
     "FeeComponentList": {
-      "description": "A list of fee component information.",
       "type": "array",
+      "description": "A list of fee component information.",
       "items": {
         "$ref": "#/definitions/FeeComponent"
       }
     },
     "FinancialEventGroup": {
-      "description": "Information related to a financial event group.",
       "type": "object",
       "properties": {
         "FinancialEventGroupId": {
-          "description": "A unique identifier for the financial event group.",
-          "type": "string"
+          "type": "string",
+          "description": "A unique identifier for the financial event group."
         },
         "ProcessingStatus": {
-          "description": "The processing status of the financial event group indicates whether the balance of the financial event group is settled.\n\nPossible values:\n\n* Open\n\n* Closed",
-          "type": "string"
+          "type": "string",
+          "description": "The processing status of the financial event group indicates whether the balance of the financial event group is settled.\n\nPossible values:\n\n* Open\n\n* Closed"
         },
         "FundTransferStatus": {
-          "description": "The status of the fund transfer.",
-          "type": "string"
+          "type": "string",
+          "description": "The status of the fund transfer."
         },
         "OriginalTotal": {
           "description": "The total amount in the currency of the marketplace in which the transactions occurred.",
@@ -1591,12 +1700,12 @@
           "$ref": "#/definitions/Date"
         },
         "TraceId": {
-          "description": "The trace identifier used by sellers to look up transactions externally.",
-          "type": "string"
+          "type": "string",
+          "description": "The trace identifier used by sellers to look up transactions externally."
         },
         "AccountTail": {
-          "description": "The account tail of the payment instrument.",
-          "type": "string"
+          "type": "string",
+          "description": "The account tail of the payment instrument."
         },
         "BeginningBalance": {
           "description": "The balance at the beginning of the settlement period.",
@@ -1610,17 +1719,17 @@
           "description": "The date and time at which the financial event group is closed. In ISO 8601 date time format.",
           "$ref": "#/definitions/Date"
         }
-      }
+      },
+      "description": "Information related to a financial event group."
     },
     "FinancialEventGroupList": {
-      "description": "A list of financial event group information.",
       "type": "array",
+      "description": "A list of financial event group information.",
       "items": {
         "$ref": "#/definitions/FinancialEventGroup"
       }
     },
     "FinancialEvents": {
-      "description": "Contains all information related to a financial event.",
       "type": "object",
       "properties": {
         "ShipmentEventList": {
@@ -1692,20 +1801,35 @@
         },
         "AffordabilityExpenseReversalEventList": {
           "$ref": "#/definitions/AffordabilityExpenseEventList"
+        },
+        "TrialShipmentEventList": {
+          "$ref": "#/definitions/TrialShipmentEventList"
+        },
+        "ShipmentSettleEventList": {
+          "$ref": "#/definitions/ShipmentSettleEventList"
+        },
+        "TaxWithholdingEventList": {
+          "$ref": "#/definitions/TaxWithholdingEventList"
+        },
+        "RemovalShipmentEventList": {
+          "$ref": "#/definitions/RemovalShipmentEventList"
+        },
+        "RemovalShipmentAdjustmentEventList": {
+          "$ref": "#/definitions/RemovalShipmentAdjustmentEventList"
         }
-      }
+      },
+      "description": "Contains all information related to a financial event."
     },
     "ImagingServicesFeeEvent": {
-      "description": "A fee event related to Amazon Imaging services.",
       "type": "object",
       "properties": {
         "ImagingRequestBillingItemID": {
-          "description": "The identifier for the imaging services request.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the imaging services request."
         },
         "ASIN": {
-          "description": "The Amazon Standard Identification Number (ASIN) of the item for which the imaging service was requested.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item for which the imaging service was requested."
         },
         "PostedDate": {
           "description": "The date and time when the financial event was posted.",
@@ -1715,11 +1839,12 @@
           "description": "A list of fees associated with the event.",
           "$ref": "#/definitions/FeeComponentList"
         }
-      }
+      },
+      "description": "A fee event related to Amazon Imaging services."
     },
     "ImagingServicesFeeEventList": {
-      "description": "A list of fee events related to Amazon Imaging services.",
       "type": "array",
+      "description": "A list of fee events related to Amazon Imaging services.",
       "items": {
         "$ref": "#/definitions/ImagingServicesFeeEvent"
       }
@@ -1728,8 +1853,8 @@
       "type": "object",
       "properties": {
         "NextToken": {
-          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
-          "type": "string"
+          "type": "string",
+          "description": "When present and not empty, pass this string token in the next request to return the next response page."
         },
         "FinancialEventGroupList": {
           "$ref": "#/definitions/FinancialEventGroupList"
@@ -1752,17 +1877,17 @@
       "description": "The response schema for the listFinancialEventGroups operation."
     },
     "ListFinancialEventsPayload": {
-     "description": "The payload for the listFinancialEvents operation.",
       "type": "object",
       "properties": {
         "NextToken": {
-          "description": "When present and not empty, pass this string token in the next request to return the next response page.",
-          "type": "string"
+          "type": "string",
+          "description": "When present and not empty, pass this string token in the next request to return the next response page."
         },
         "FinancialEvents": {
           "$ref": "#/definitions/FinancialEvents"
         }
-      }
+      },
+      "description": "The payload for the listFinancialEvents operation."
     },
     "ListFinancialEventsResponse": {
       "type": "object",
@@ -1779,7 +1904,6 @@
       "description": "The response schema for the listFinancialEvents operation."
     },
     "LoanServicingEvent": {
-      "description": "A loan advance, loan payment, or loan refund.",
       "type": "object",
       "properties": {
         "LoanAmount": {
@@ -1787,45 +1911,45 @@
           "$ref": "#/definitions/Currency"
         },
         "SourceBusinessEventType": {
-          "description": "The type of event.\n\nPossible values:\n\n* LoanAdvance\n\n* LoanPayment\n\n* LoanRefund",
-          "type": "string"
+          "type": "string",
+          "description": "The type of event.\n\nPossible values:\n\n* LoanAdvance\n\n* LoanPayment\n\n* LoanRefund"
         }
-      }
+      },
+      "description": "A loan advance, loan payment, or loan refund."
     },
     "LoanServicingEventList": {
-      "description": "A list of loan servicing events.",
       "type": "array",
+      "description": "A list of loan servicing events.",
       "items": {
         "$ref": "#/definitions/LoanServicingEvent"
       }
     },
     "NetworkComminglingTransactionEvent": {
-      "description": "A network commingling transaction event.",
       "type": "object",
       "properties": {
         "TransactionType": {
-          "description": "The type of network item swap.\n\nPossible values:\n\n* NetCo - A Fulfillment by Amazon inventory pooling transaction. Available only in the India marketplace.\n\n* ComminglingVAT - A commingling VAT transaction. Available only in the UK, Spain, France, Germany, and Italy marketplaces.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of network item swap.\n\nPossible values:\n\n* NetCo - A Fulfillment by Amazon inventory pooling transaction. Available only in the India marketplace.\n\n* ComminglingVAT - A commingling VAT transaction. Available only in the UK, Spain, France, Germany, and Italy marketplaces."
         },
         "PostedDate": {
           "description": "The date and time when the financial event was posted.",
           "$ref": "#/definitions/Date"
         },
         "NetCoTransactionID": {
-          "description": "The identifier for the network item swap.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the network item swap."
         },
         "SwapReason": {
-          "description": "The reason for the network item swap.",
-          "type": "string"
+          "type": "string",
+          "description": "The reason for the network item swap."
         },
         "ASIN": {
-          "description": "The Amazon Standard Identification Number (ASIN) of the swapped item.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the swapped item."
         },
         "MarketplaceId": {
-          "description": "The marketplace in which the event took place.",
-          "type": "string"
+          "type": "string",
+          "description": "The marketplace in which the event took place."
         },
         "TaxExclusiveAmount": {
           "description": "The price of the swapped item minus TaxAmount.",
@@ -1835,34 +1959,34 @@
           "description": "The tax on the network item swap paid by the seller.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "A network commingling transaction event."
     },
     "NetworkComminglingTransactionEventList": {
-      "description": "A list of network commingling transaction events.",
       "type": "array",
+      "description": "A list of network commingling transaction events.",
       "items": {
         "$ref": "#/definitions/NetworkComminglingTransactionEvent"
       }
     },
     "PayWithAmazonEvent": {
-      "description": "An event related to the seller's Pay with Amazon account.",
       "type": "object",
       "properties": {
         "SellerOrderId": {
-          "description": "An order identifier that is specified by the seller.",
-          "type": "string"
+          "type": "string",
+          "description": "An order identifier that is specified by the seller."
         },
         "TransactionPostedDate": {
           "description": "The date and time when the payment transaction is posted. In ISO 8601 date time format.",
           "$ref": "#/definitions/Date"
         },
         "BusinessObjectType": {
-          "description": "The type of business object.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of business object."
         },
         "SalesChannel": {
-          "description": "The sales channel for the transaction.",
-          "type": "string"
+          "type": "string",
+          "description": "The sales channel for the transaction."
         },
         "Charge": {
           "description": "The charge associated with the event.",
@@ -1873,32 +1997,32 @@
           "$ref": "#/definitions/FeeComponentList"
         },
         "PaymentAmountType": {
-          "description": "The type of payment.\n\nPossible values:\n\n* Sales",
-          "type": "string"
+          "type": "string",
+          "description": "The type of payment.\n\nPossible values:\n\n* Sales"
         },
         "AmountDescription": {
-          "description": "A short description of this payment event.",
-          "type": "string"
+          "type": "string",
+          "description": "A short description of this payment event."
         },
         "FulfillmentChannel": {
-          "description": "The fulfillment channel.\n\nPossible values:\n\n* AFN - Amazon Fulfillment Network (Fulfillment by Amazon)\n\n* MFN - Merchant Fulfillment Network (self-fulfilled)",
-          "type": "string"
+          "type": "string",
+          "description": "The fulfillment channel.\n\nPossible values:\n\n* AFN - Amazon Fulfillment Network (Fulfillment by Amazon)\n\n* MFN - Merchant Fulfillment Network (self-fulfilled)"
         },
         "StoreName": {
-          "description": "The store name where the event occurred.",
-          "type": "string"
+          "type": "string",
+          "description": "The store name where the event occurred."
         }
-      }
+      },
+      "description": "An event related to the seller's Pay with Amazon account."
     },
     "PayWithAmazonEventList": {
-      "description": "A list of events related to the seller's Pay with Amazon account.",
       "type": "array",
+      "description": "A list of events related to the seller's Pay with Amazon account.",
       "items": {
         "$ref": "#/definitions/PayWithAmazonEvent"
       }
     },
     "ProductAdsPaymentEvent": {
-      "description": "A Sponsored Products payment event.",
       "type": "object",
       "properties": {
         "postedDate": {
@@ -1906,12 +2030,12 @@
           "$ref": "#/definitions/Date"
         },
         "transactionType": {
-          "description": "Indicates if the transaction is for a charge or a refund.\n\nPossible values:\n\n* charge - Charge\n\n* refund - Refund",
-          "type": "string"
+          "type": "string",
+          "description": "Indicates if the transaction is for a charge or a refund.\n\nPossible values:\n\n* charge - Charge\n\n* refund - Refund"
         },
         "invoiceId": {
-          "description": "Identifier for the invoice that the transaction appears in.",
-          "type": "string"
+          "type": "string",
+          "description": "Identifier for the invoice that the transaction appears in."
         },
         "baseValue": {
           "description": "Base amount of the transaction, before tax.",
@@ -1925,89 +2049,93 @@
           "description": "The total amount of the transaction. Equal to baseValue + taxValue.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "A Sponsored Products payment event."
     },
     "ProductAdsPaymentEventList": {
-      "description": "A list of sponsored products payment events.",
       "type": "array",
+      "description": "A list of sponsored products payment events.",
       "items": {
         "$ref": "#/definitions/ProductAdsPaymentEvent"
       }
     },
     "Promotion": {
-      "description": "A promotion applied to an item.",
       "type": "object",
       "properties": {
         "PromotionType": {
-          "description": "The type of promotion.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of promotion."
         },
         "PromotionId": {
-          "description": "The seller-specified identifier for the promotion.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller-specified identifier for the promotion."
         },
         "PromotionAmount": {
           "description": "The amount of promotional discount applied to the item.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "A promotion applied to an item."
     },
     "PromotionList": {
-      "description": "A list of promotions.",
       "type": "array",
+      "description": "A list of promotions.",
       "items": {
         "$ref": "#/definitions/Promotion"
       }
     },
     "RemovalShipmentEvent": {
-      "description": "A removal shipment event for a removal order.",
       "type": "object",
       "properties": {
         "PostedDate": {
           "description": "The date and time when the financial event was posted.",
           "$ref": "#/definitions/Date"
         },
+        "MerchantOrderId": {
+          "type": "string",
+          "description": "The merchant removal orderId."
+        },
         "OrderId": {
-          "description": "The identifier for the removal shipment order.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the removal shipment order."
         },
         "TransactionType": {
-          "description": "The type of removal order.\n\nPossible values:\n\n* WHOLESALE_LIQUIDATION",
-          "type": "string"
+          "type": "string",
+          "description": "The type of removal order.\n\nPossible values:\n\n* WHOLESALE_LIQUIDATION"
         },
         "RemovalShipmentItemList": {
           "description": "A list of removal shipment items.",
           "$ref": "#/definitions/RemovalShipmentItemList"
         }
-      }
+      },
+      "description": "A removal shipment event for a removal order."
     },
     "RemovalShipmentEventList": {
-      "description": "A list of removal shipment event information.",
       "type": "array",
+      "description": "A list of removal shipment event information.",
       "items": {
         "$ref": "#/definitions/RemovalShipmentEvent"
       }
     },
     "RemovalShipmentItem": {
-      "description": "Item-level information for a removal shipment.",
       "type": "object",
       "properties": {
         "RemovalShipmentItemId": {
-          "description": "An identifier for an item in a removal shipment.",
-          "type": "string"
+          "type": "string",
+          "description": "An identifier for an item in a removal shipment."
         },
         "TaxCollectionModel": {
-          "description": "The tax collection model applied to the item.\n\nPossible values:\n\n* MarketplaceFacilitator - Tax is withheld and remitted to the taxing authority by Amazon on behalf of the seller.\n\n* Standard - Tax is paid to the seller and not remitted to the taxing authority by Amazon.",
-          "type": "string"
+          "type": "string",
+          "description": "The tax collection model applied to the item.\n\nPossible values:\n\n* MarketplaceFacilitator - Tax is withheld and remitted to the taxing authority by Amazon on behalf of the seller.\n\n* Standard - Tax is paid to the seller and not remitted to the taxing authority by Amazon."
         },
         "FulfillmentNetworkSKU": {
-          "description": "The Amazon fulfillment network SKU for the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon fulfillment network SKU for the item."
         },
         "Quantity": {
-          "description": "The quantity of the item.",
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "The quantity of the item."
         },
         "Revenue": {
           "description": "The total amount paid to the seller for the removed item.",
@@ -2025,31 +2153,106 @@
           "description": "The tax withheld and remitted to the taxing authority by Amazon on behalf of the seller. If TaxCollectionModel=MarketplaceFacilitator, then TaxWithheld=TaxAmount (except the TaxWithheld amount is a negative number). Otherwise TaxWithheld=0.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "Item-level information for a removal shipment."
     },
     "RemovalShipmentItemList": {
-      "description": "A list of information about removal shipment items.",
       "type": "array",
+      "description": "A list of information about removal shipment items.",
       "items": {
         "$ref": "#/definitions/RemovalShipmentItem"
       }
     },
+    "RemovalShipmentAdjustmentEvent": {
+      "type": "object",
+      "properties": {
+        "PostedDate": {
+          "description": "The date when the financial event was posted.",
+          "$ref": "#/definitions/Date"
+        },
+        "AdjustmentEventId": {
+          "type": "string",
+          "description": "The unique identifier for the adjustment event."
+        },
+        "MerchantOrderId": {
+          "type": "string",
+          "description": "The merchant removal orderId."
+        },
+        "OrderId": {
+          "type": "string",
+          "description": "The orderId for shipping inventory."
+        },
+        "TransactionType": {
+          "type": "string",
+          "description": "The type of removal order.\n\nPossible values:\n\n* WHOLESALE_LIQUIDATION."
+        },
+        "RemovalShipmentItemAdjustmentList": {
+          "type": "array",
+          "description": "A comma-delimited list of Removal shipmentItemAdjustment details for FBA inventory.",
+          "items": {
+            "$ref": "#/definitions/RemovalShipmentItemAdjustment"
+          }
+        }
+      },
+      "description": "A financial adjustment event for FBA liquidated inventory.\n\nPossible adjustment:\n\n* Positive values - Buyer needs to pay more amount to Amazon. E.g. charge was wrongly calculated 0$ instead of 100$ due to system error. \n\n* Negative Values - Buyer get refund. E.g. Buyer receives less items or damaged items and as part of their adjustment buyer gets refund."
+    },
+    "RemovalShipmentAdjustmentEventList": {
+      "type": "array",
+      "description": "A comma-delimited list of Removal shipmentAdjustment details for FBA inventory.",
+      "items": {
+        "$ref": "#/definitions/RemovalShipmentAdjustmentEvent"
+      }
+    },
+    "RemovalShipmentItemAdjustment": {
+      "type": "object",
+      "properties": {
+        "RemovalShipmentItemId": {
+          "type": "string",
+          "description": "An identifier for an item in a removal shipment."
+        },
+        "TaxCollectionModel": {
+          "type": "string",
+          "description": "The tax collection model applied to the item.\n\nPossible values:\n\n* MarketplaceFacilitator - Tax is withheld and remitted to the taxing authority by Amazon on behalf of the seller.\n\n* Standard - Tax is paid to the seller and not remitted to the taxing authority by Amazon."
+        },
+        "FulfillmentNetworkSKU": {
+          "type": "string",
+          "description": "The Amazon fulfillment network SKU for the item."
+        },
+        "AdjustedQuantity": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Adjusted quantity of removal shipmentItemAdjustment items."
+        },
+        "RevenueAdjustment": {
+          "description": "The total amount adjusted for disputed items.",
+          "$ref": "#/definitions/Currency"
+        },
+        "TaxAmountAdjustment": {
+          "description": "Adjustment on the Tax collected amount on the adjusted revenue.",
+          "$ref": "#/definitions/Currency"
+        },
+        "TaxWithheldAdjustment": {
+          "description": "Adjustment the tax withheld and remitted to the taxing authority by Amazon on behalf of the seller. If TaxCollectionModel=MarketplaceFacilitator, then TaxWithheld=TaxAmount (except the TaxWithheld amount is a negative number). Otherwise TaxWithheld=0.",
+          "$ref": "#/definitions/Currency"
+        }
+      },
+      "description": "Item-level information for a removal shipment item adjustment."
+    },
     "RentalTransactionEvent": {
-      "description": "An event related to a rental transaction.",
       "type": "object",
       "properties": {
         "AmazonOrderId": {
-          "description": "An Amazon-defined identifier for an order.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined identifier for an order."
         },
         "RentalEventType": {
-          "description": "The type of rental event.\n\nPossible values:\n\n* RentalCustomerPayment-Buyout - Transaction type that represents when the customer wants to buy out a rented item.\n\n* RentalCustomerPayment-Extension - Transaction type that represents when the customer wants to extend the rental period.\n\n* RentalCustomerRefund-Buyout - Transaction type that represents when the customer requests a refund for the buyout of the rented item.\n\n* RentalCustomerRefund-Extension - Transaction type that represents when the customer requests a refund over the extension on the rented item.\n\n* RentalHandlingFee - Transaction type that represents the fee that Amazon charges sellers who rent through Amazon.\n\n* RentalChargeFailureReimbursement - Transaction type that represents when Amazon sends money to the seller to compensate for a failed charge.\n\n* RentalLostItemReimbursement - Transaction type that represents when Amazon sends money to the seller to compensate for a lost item.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of rental event.\n\nPossible values:\n\n* RentalCustomerPayment-Buyout - Transaction type that represents when the customer wants to buy out a rented item.\n\n* RentalCustomerPayment-Extension - Transaction type that represents when the customer wants to extend the rental period.\n\n* RentalCustomerRefund-Buyout - Transaction type that represents when the customer requests a refund for the buyout of the rented item.\n\n* RentalCustomerRefund-Extension - Transaction type that represents when the customer requests a refund over the extension on the rented item.\n\n* RentalHandlingFee - Transaction type that represents the fee that Amazon charges sellers who rent through Amazon.\n\n* RentalChargeFailureReimbursement - Transaction type that represents when Amazon sends money to the seller to compensate for a failed charge.\n\n* RentalLostItemReimbursement - Transaction type that represents when Amazon sends money to the seller to compensate for a lost item."
         },
         "ExtensionLength": {
-          "description": "The number of days that the buyer extended an already rented item. This value is only returned for RentalCustomerPayment-Extension and RentalCustomerRefund-Extension events.",
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "The number of days that the buyer extended an already rented item. This value is only returned for RentalCustomerPayment-Extension and RentalCustomerRefund-Extension events."
         },
         "PostedDate": {
           "description": "The date and time when the financial event was posted.",
@@ -2064,8 +2267,8 @@
           "$ref": "#/definitions/FeeComponentList"
         },
         "MarketplaceName": {
-          "description": "The name of the marketplace.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the marketplace."
         },
         "RentalInitialValue": {
           "description": "The amount of money the customer originally paid to rent the item. This value is only returned for RentalChargeFailureReimbursement and RentalLostItemReimbursement events.",
@@ -2079,26 +2282,26 @@
           "description": "A list of taxes withheld information for a rental item.",
           "$ref": "#/definitions/TaxWithheldComponentList"
         }
-      }
+      },
+      "description": "An event related to a rental transaction."
     },
     "RentalTransactionEventList": {
-      "description": "A list of rental transaction event information.",
       "type": "array",
+      "description": "A list of rental transaction event information.",
       "items": {
         "$ref": "#/definitions/RentalTransactionEvent"
       }
     },
     "RetrochargeEvent": {
-      "description": "A retrocharge or retrocharge reversal.",
       "type": "object",
       "properties": {
         "RetrochargeEventType": {
-          "description": "The type of event.\n\nPossible values:\n\n* Retrocharge\n\n* RetrochargeReversal",
-          "type": "string"
+          "type": "string",
+          "description": "The type of event.\n\nPossible values:\n\n* Retrocharge\n\n* RetrochargeReversal"
         },
         "AmazonOrderId": {
-          "description": "An Amazon-defined identifier for an order.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined identifier for an order."
         },
         "PostedDate": {
           "description": "The date and time when the financial event was posted.",
@@ -2113,24 +2316,24 @@
           "$ref": "#/definitions/Currency"
         },
         "MarketplaceName": {
-          "description": "The name of the marketplace where the retrocharge event occurred.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the marketplace where the retrocharge event occurred."
         },
         "RetrochargeTaxWithheldList": {
           "description": "A list of information about taxes withheld.",
           "$ref": "#/definitions/TaxWithheldComponentList"
         }
-      }
+      },
+      "description": "A retrocharge or retrocharge reversal."
     },
     "RetrochargeEventList": {
-      "description": "A list of information about Retrocharge or RetrochargeReversal events.",
       "type": "array",
+      "description": "A list of information about Retrocharge or RetrochargeReversal events.",
       "items": {
         "$ref": "#/definitions/RetrochargeEvent"
       }
     },
     "SAFETReimbursementEvent": {
-      "description": "A SAFE-T claim reimbursement on the seller's account.",
       "type": "object",
       "properties": {
         "PostedDate": {
@@ -2138,31 +2341,31 @@
           "$ref": "#/definitions/Date"
         },
         "SAFETClaimId": {
-          "description": "A SAFE-T claim identifier.",
-          "type": "string"
+          "type": "string",
+          "description": "A SAFE-T claim identifier."
         },
         "ReimbursedAmount": {
           "description": "The amount of the reimbursement.",
           "$ref": "#/definitions/Currency"
         },
         "ReasonCode": {
-          "description": "Indicates why the seller was reimbursed.",
-          "type": "string"
+          "type": "string",
+          "description": "Indicates why the seller was reimbursed."
         },
         "SAFETReimbursementItemList": {
           "$ref": "#/definitions/SAFETReimbursementItemList"
         }
-      }
+      },
+      "description": "A SAFE-T claim reimbursement on the seller's account."
     },
     "SAFETReimbursementEventList": {
-      "description": "A list of SAFETReimbursementEvents.",
       "type": "array",
+      "description": "A list of SAFETReimbursementEvents.",
       "items": {
         "$ref": "#/definitions/SAFETReimbursementEvent"
       }
     },
     "SAFETReimbursementItem": {
-      "description": "An item from a SAFE-T claim reimbursement.",
       "type": "object",
       "properties": {
         "itemChargeList": {
@@ -2170,24 +2373,24 @@
           "$ref": "#/definitions/ChargeComponentList"
         },
         "productDescription": {
-          "description": "The description of the item as shown on the product detail page on the retail website.",
-          "type": "string"
+          "type": "string",
+          "description": "The description of the item as shown on the product detail page on the retail website."
         },
         "quantity": {
-          "description": "The number of units of the item being reimbursed.",
-          "type": "string"
+          "type": "string",
+          "description": "The number of units of the item being reimbursed."
         }
-      }
+      },
+      "description": "An item from a SAFE-T claim reimbursement."
     },
     "SAFETReimbursementItemList": {
-      "description": "A list of SAFETReimbursementItems.",
       "type": "array",
+      "description": "A list of SAFETReimbursementItems.",
       "items": {
         "$ref": "#/definitions/SAFETReimbursementItem"
       }
     },
     "SellerDealPaymentEvent": {
-      "description": "An event linked to the payment of a fee related to the specified deal.",
       "type": "object",
       "properties": {
         "postedDate": {
@@ -2195,20 +2398,20 @@
           "$ref": "#/definitions/Date"
         },
         "dealId": {
-          "description": "The unique identifier of the deal.",
-          "type": "string"
+          "type": "string",
+          "description": "The unique identifier of the deal."
         },
         "dealDescription": {
-          "description": "The internal description of the deal.",
-          "type": "string"
+          "type": "string",
+          "description": "The internal description of the deal."
         },
         "eventType": {
-          "description": "The type of event: SellerDealComplete.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of event: SellerDealComplete."
         },
         "feeType": {
-          "description": "The type of fee: RunLightningDealFee.",
-          "type": "string"
+          "type": "string",
+          "description": "The type of fee: RunLightningDealFee."
         },
         "feeAmount": {
           "description": "The monetary amount of the fee.",
@@ -2222,17 +2425,17 @@
           "description": "The total monetary amount paid.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "An event linked to the payment of a fee related to the specified deal."
     },
     "SellerDealPaymentEventList": {
-      "description": "A list of payment events for deal-related fees.",
       "type": "array",
+      "description": "A list of payment events for deal-related fees.",
       "items": {
         "$ref": "#/definitions/SellerDealPaymentEvent"
       }
     },
     "SellerReviewEnrollmentPaymentEvent": {
-      "description": "A fee payment event for the Early Reviewer Program.",
       "type": "object",
       "properties": {
         "PostedDate": {
@@ -2240,12 +2443,12 @@
           "$ref": "#/definitions/Date"
         },
         "EnrollmentId": {
-          "description": "An enrollment identifier.",
-          "type": "string"
+          "type": "string",
+          "description": "An enrollment identifier."
         },
         "ParentASIN": {
-          "description": "The Amazon Standard Identification Number (ASIN) of the item that was enrolled in the Early Reviewer Program.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item that was enrolled in the Early Reviewer Program."
         },
         "FeeComponent": {
           "$ref": "#/definitions/FeeComponent"
@@ -2257,71 +2460,71 @@
           "description": "The FeeComponent value plus the ChargeComponent value.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "A fee payment event for the Early Reviewer Program."
     },
     "SellerReviewEnrollmentPaymentEventList": {
-      "description": "A list of information about fee events for the Early Reviewer Program.",
       "type": "array",
+      "description": "A list of information about fee events for the Early Reviewer Program.",
       "items": {
         "$ref": "#/definitions/SellerReviewEnrollmentPaymentEvent"
       }
     },
     "ServiceFeeEvent": {
-      "description": "A service fee on the seller's account.",
       "type": "object",
       "properties": {
         "AmazonOrderId": {
-          "description": "An Amazon-defined identifier for an order.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined identifier for an order."
         },
         "FeeReason": {
-          "description": "A short description of the service fee reason.",
-          "type": "string"
+          "type": "string",
+          "description": "A short description of the service fee reason."
         },
         "FeeList": {
           "description": "A list of fee components associated with the service fee.",
           "$ref": "#/definitions/FeeComponentList"
         },
         "SellerSKU": {
-          "description": "The seller SKU of the item. The seller SKU is qualified by the seller's seller ID, which is included with every call to the Selling Partner API.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller SKU of the item. The seller SKU is qualified by the seller's seller ID, which is included with every call to the Selling Partner API."
         },
         "FnSKU": {
-          "description": "A unique identifier assigned by Amazon to products stored in and fulfilled from an Amazon fulfillment center.",
-          "type": "string"
+          "type": "string",
+          "description": "A unique identifier assigned by Amazon to products stored in and fulfilled from an Amazon fulfillment center."
         },
         "FeeDescription": {
-          "description": "A short description of the service fee event.",
-          "type": "string"
+          "type": "string",
+          "description": "A short description of the service fee event."
         },
         "ASIN": {
-          "description": "The Amazon Standard Identification Number (ASIN) of the item.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
         }
-      }
+      },
+      "description": "A service fee on the seller's account."
     },
     "ServiceFeeEventList": {
-      "description": "A list of information about service fee events.",
       "type": "array",
+      "description": "A list of information about service fee events.",
       "items": {
         "$ref": "#/definitions/ServiceFeeEvent"
       }
     },
     "ShipmentEvent": {
-      "description": "A shipment, refund, guarantee claim, or chargeback.",
       "type": "object",
       "properties": {
         "AmazonOrderId": {
-          "description": "An Amazon-defined identifier for an order.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined identifier for an order."
         },
         "SellerOrderId": {
-          "description": "A seller-defined identifier for an order.",
-          "type": "string"
+          "type": "string",
+          "description": "A seller-defined identifier for an order."
         },
         "MarketplaceName": {
-          "description": "The name of the marketplace where the event occurred.",
-          "type": "string"
+          "type": "string",
+          "description": "The name of the marketplace where the event occurred."
         },
         "OrderChargeList": {
           "description": "A list of order-level charges. These charges are applicable to Multi-Channel Fulfillment COD orders.",
@@ -2362,35 +2565,35 @@
           "description": "A list of shipment item adjustments.",
           "$ref": "#/definitions/ShipmentItemList"
         }
-      }
+      },
+      "description": "A shipment, refund, guarantee claim, or chargeback."
     },
     "ShipmentEventList": {
-      "description": "A list of shipment event information.",
       "type": "array",
+      "description": "A list of shipment event information.",
       "items": {
         "$ref": "#/definitions/ShipmentEvent"
       }
     },
     "ShipmentItem": {
-      "description": "An item of a shipment, refund, guarantee claim, or chargeback.",
       "type": "object",
       "properties": {
         "SellerSKU": {
-          "description": "The seller SKU of the item. The seller SKU is qualified by the seller's seller ID, which is included with every call to the Selling Partner API.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller SKU of the item. The seller SKU is qualified by the seller's seller ID, which is included with every call to the Selling Partner API."
         },
         "OrderItemId": {
-          "description": "An Amazon-defined order item identifier.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined order item identifier."
         },
         "OrderAdjustmentItemId": {
-          "description": "An Amazon-defined order adjustment identifier defined for refunds, guarantee claims, and chargeback events.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined order adjustment identifier defined for refunds, guarantee claims, and chargeback events."
         },
         "QuantityShipped": {
-          "description": "The number of items shipped.",
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "The number of items shipped."
         },
         "ItemChargeList": {
           "description": "A list of charges associated with the shipment item.",
@@ -2427,50 +2630,50 @@
           "description": "The cost of Amazon Points returned for a shipment item. This value is only returned for refunds, guarantee claims, and chargeback events.",
           "$ref": "#/definitions/Currency"
         }
-      }
+      },
+      "description": "An item of a shipment, refund, guarantee claim, or chargeback."
     },
     "ShipmentItemList": {
-      "description": "A list of shipment items.",
       "type": "array",
+      "description": "A list of shipment items.",
       "items": {
         "$ref": "#/definitions/ShipmentItem"
       }
     },
     "SolutionProviderCreditEvent": {
-      "description": "A credit given to a solution provider.",
       "type": "object",
       "properties": {
         "ProviderTransactionType": {
-          "description": "The transaction type.",
-          "type": "string"
+          "type": "string",
+          "description": "The transaction type."
         },
         "SellerOrderId": {
-          "description": "A seller-defined identifier for an order.",
-          "type": "string"
+          "type": "string",
+          "description": "A seller-defined identifier for an order."
         },
         "MarketplaceId": {
-          "description": "The identifier of the marketplace where the order was placed.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier of the marketplace where the order was placed."
         },
         "MarketplaceCountryCode": {
-          "description": "The two-letter country code of the country associated with the marketplace where the order was placed.",
-          "type": "string"
+          "type": "string",
+          "description": "The two-letter country code of the country associated with the marketplace where the order was placed."
         },
         "SellerId": {
-          "description": "The Amazon-defined identifier of the seller.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon-defined identifier of the seller."
         },
         "SellerStoreName": {
-          "description": "The store name where the payment event occurred.",
-          "type": "string"
+          "type": "string",
+          "description": "The store name where the payment event occurred."
         },
         "ProviderId": {
-          "description": "The Amazon-defined identifier of the solution provider.",
-          "type": "string"
+          "type": "string",
+          "description": "The Amazon-defined identifier of the solution provider."
         },
         "ProviderStoreName": {
-          "description": "The store name where the payment event occurred.",
-          "type": "string"
+          "type": "string",
+          "description": "The store name where the payment event occurred."
         },
         "TransactionAmount": {
           "description": "The amount of the credit.",
@@ -2480,92 +2683,118 @@
           "description": "The date and time that the credit transaction was created, in ISO 8601 date time format.",
           "$ref": "#/definitions/Date"
         }
-      }
+      },
+      "description": "A credit given to a solution provider."
     },
     "SolutionProviderCreditEventList": {
-      "description": "A list of information about solution provider credits.",
       "type": "array",
+      "description": "A list of information about solution provider credits.",
       "items": {
         "$ref": "#/definitions/SolutionProviderCreditEvent"
       }
     },
-    "TDSReimbursementEvent": {
-      "description": "A tax deduction at source (TDS) claim reimbursement event on the seller's account.",
+    "TaxWithholdingPeriod": {
+      "type": "object",
+      "properties": {
+        "StartDate": {
+          "description": "Start of the time range.",
+          "$ref": "#/definitions/Date"
+        },
+        "EndDate": {
+          "description": "End of the time range.",
+          "$ref": "#/definitions/Date"
+        }
+      },
+      "description": "Period which taxwithholding on seller's account is calculated."
+    },
+    "TaxWithholdingEvent": {
       "type": "object",
       "properties": {
         "PostedDate": {
           "description": "The date and time when the financial event was posted.",
           "$ref": "#/definitions/Date"
         },
-        "TdsOrderId": {
-          "description": "A tax deduction at source (TDS) claim identifier.",
-          "type": "string"
-        },
-        "ReimbursedAmount": {
-          "description": "The amount of the reimbursement.",
+        "BaseAmount": {
+          "description": "The amount which tax was withheld against.",
           "$ref": "#/definitions/Currency"
+        },
+        "WithheldAmount": {
+          "description": "The amount of the tax withholding deducted from seller's account.",
+          "$ref": "#/definitions/Currency"
+        },
+        "TaxWithholdingPeriod": {
+          "description": "Time period for which tax is withheld.",
+          "$ref": "#/definitions/TaxWithholdingPeriod"
         }
-      }
+      },
+      "description": "A TaxWithholding event on seller's account."
     },
-    "TDSReimbursementEventList": {
-      "description": "A list of information about tax deduction at source (TDS) claim reimbursement events.",
+    "TaxWithholdingEventList": {
       "type": "array",
+      "description": "List of TaxWithholding events.",
       "items": {
-        "$ref": "#/definitions/TDSReimbursementEvent"
+        "$ref": "#/definitions/TaxWithholdingEvent"
       }
     },
     "TaxWithheldComponent": {
-      "description": "Information about the taxes withheld.",
       "type": "object",
       "properties": {
         "TaxCollectionModel": {
-          "description": "The tax collection model applied to the item.\n\nPossible values:\n\n* MarketplaceFacilitator - Tax is withheld and remitted to the taxing authority by Amazon on behalf of the seller.\n\n* Standard - Tax is paid to the seller and not remitted to the taxing authority by Amazon.",
-          "type": "string"
+          "type": "string",
+          "description": "The tax collection model applied to the item.\n\nPossible values:\n\n* MarketplaceFacilitator - Tax is withheld and remitted to the taxing authority by Amazon on behalf of the seller.\n\n* Standard - Tax is paid to the seller and not remitted to the taxing authority by Amazon."
         },
         "TaxesWithheld": {
           "description": "A list of charges that represent the types and amounts of taxes withheld.",
           "$ref": "#/definitions/ChargeComponentList"
         }
-      }
+      },
+      "description": "Information about the taxes withheld."
     },
     "TaxWithheldComponentList": {
-      "description": "A list of information about taxes withheld.",
       "type": "array",
+      "description": "A list of information about taxes withheld.",
       "items": {
         "$ref": "#/definitions/TaxWithheldComponent"
       }
     },
     "TrialShipmentEvent": {
-      "description": "An event related to a trial shipment.",
       "type": "object",
       "properties": {
         "AmazonOrderId": {
-          "description": "An Amazon-defined identifier for an order.",
-          "type": "string"
+          "type": "string",
+          "description": "An Amazon-defined identifier for an order."
         },
         "FinancialEventGroupId": {
-          "description": "The identifier of the financial event group.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier of the financial event group."
         },
         "PostedDate": {
           "description": "The date and time when the financial event was posted.",
           "$ref": "#/definitions/Date"
         },
         "SKU": {
-          "description": "The seller SKU of the item. The seller SKU is qualified by the seller's seller ID, which is included with every call to the Selling Partner API.",
-          "type": "string"
+          "type": "string",
+          "description": "The seller SKU of the item. The seller SKU is qualified by the seller's seller ID, which is included with every call to the Selling Partner API."
         },
         "FeeList": {
           "description": "A list of fees charged by Amazon for trial shipments.",
           "$ref": "#/definitions/FeeComponentList"
         }
-      }
+      },
+      "description": "An event related to a trial shipment."
     },
     "TrialShipmentEventList": {
-      "description": "A list of information about trial shipment financial events.",
       "type": "array",
+      "description": "A list of information about trial shipment financial events.",
       "items": {
         "$ref": "#/definitions/TrialShipmentEvent"
+      }
+    },
+    "ShipmentSettleEventList": {
+      "type": "array",
+      "description": "A list of information about shipment settle financial events.",
+      "items": {
+        "$ref": "#/definitions/ShipmentEvent"
       }
     },
     "ErrorList": {
