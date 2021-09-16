@@ -1,17 +1,14 @@
 {
   "swagger": "2.0",
-  "info":
-  {
-    "title": "Selling Partner API for Sales",
+  "info": {
     "description": "The Selling Partner API for Sales provides APIs related to sales performance.",
     "version": "v1",
-    "contact":
-    {
+    "title": "Selling Partner API for Sales",
+    "contact": {
       "name": "Selling Partner API Developer Support",
       "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
     },
-    "license":
-    {
+    "license": {
       "name": "Apache License 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0"
     }
@@ -26,613 +23,14 @@
   "produces": [
     "application/json"
   ],
-  "definitions":
-  {
-    "GetOrderMetricsResponse":
-    {
-      "description": "The response schema for the getOrderMetrics operation.",
-      "type": "object",
-      "properties":
-      {
-        "payload":
-        {
-          "description": "The payload for the getOrderMetrics operation.",
-          "$ref": "#/definitions/OrderMetricsList"
-        },
-        "errors":
-        {
-          "description": "Encountered errors for the getOrderMetrics operation.",
-          "$ref": "#/definitions/ErrorList"
-        }
-      }
-    },
-    "OrderMetricsList":
-    {
-      "description": "A set of order metrics, each scoped to a particular time interval.",
-      "type": "array",
-      "items":
-      {
-        "$ref": "#/definitions/OrderMetricsInterval"
-      }
-    },
-    "OrderMetricsInterval":
-    {
-      "description": "Contains order metrics.",
-      "type": "object",
-      "properties":
-      {
-        "interval":
-        {
-          "description": "The interval of time based on requested granularity (ex. Hour, Day, etc.) If this is the first or the last interval from the list, it might contain incomplete data if the requested interval doesn't align with the requested granularity (ex. request interval 2018-09-01T02:00:00Z--2018-09-04T19:00:00Z and granularity day will result in Sept 1st UTC day and Sept 4th UTC days having partial data).",
-          "type": "string"
-        },
-        "unitCount":
-        {
-          "description": "The number of units in orders based on the specified filters.",
-          "type": "integer"
-        },
-        "orderItemCount":
-        {
-          "description": "The number of order items based on the specified filters.",
-          "type": "integer"
-        },
-        "orderCount":
-        {
-          "description": "The number of orders based on the specified filters.",
-          "type": "integer"
-        },
-        "averageUnitPrice":
-        {
-          "description": "The average price for an item based on the specified filters. Formula is totalSales/unitCount.",
-          "$ref": "#/definitions/Money"
-        },
-        "totalSales":
-        {
-          "description": "The total ordered product sales for all orders based on the specified filters.",
-          "$ref": "#/definitions/Money"
-        }
-      },
-      "required": [
-        "averageUnitPrice",
-        "interval",
-        "orderCount",
-        "orderItemCount",
-        "totalSales",
-        "unitCount"
-      ]
-    },
-    "Error":
-    {
-      "description": "Error response returned when the request is unsuccessful.",
-      "properties":
-      {
-        "code":
-        {
-          "description": "An error code that identifies the type of error that occured.",
-          "type": "string"
-        },
-        "message":
-        {
-          "description": "A message that describes the error condition in a human-readable form.",
-          "type": "string"
-        },
-        "details":
-        {
-          "description": "Additional details that can help the caller understand or fix the issue.",
-          "type": "string"
-        }
-      },
-      "required": [
-        "code",
-        "message"
-      ],
-      "type": "object"
-    },
-    "ErrorList":
-    {
-      "description": "A list of error responses returned when a request is unsuccessful.",
-      "type": "array",
-      "items":
-      {
-        "$ref": "#/definitions/Error"
-      }
-    },
-    "Money":
-    {
-      "description": "The currency type and the amount.",
-      "properties":
-      {
-        "currencyCode":
-        {
-          "description": "Three-digit currency code. In ISO 4217 format.",
-          "type": "string"
-        },
-        "amount":
-        {
-          "description": "The currency amount.",
-          "$ref": "#/definitions/Decimal"
-        }
-      },
-      "required": [
-        "amount",
-        "currencyCode"
-      ],
-      "type": "object"
-    },
-    "Decimal":
-    {
-      "description": "A decimal number with no loss of precision. Useful when precision loss is unacceptable, as with currencies. Follows RFC7159 for number representation. <br>**Pattern** : `^-?(0|([1-9]\\d*))(\\.\\d+)?([eE][+-]?\\d+)?$`.",
-      "type": "string"
-    }
-  },
-  "paths":
-  {
-    "/sales/v1/orderMetrics":
-    {
-      "get":
-      {
+  "paths": {
+    "/sales/v1/orderMetrics": {
+      "get": {
         "tags": [
           "sales"
         ],
         "description": "Returns aggregated order metrics for given interval, broken down by granularity, for given buyer type.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| .5 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getOrderMetrics",
-        "responses":
-        {
-          "200":
-          {
-            "description": "OrderMetric action taken on the resource OrderMetrics.",
-            "headers":
-            {
-              "x-amzn-RateLimit-Limit":
-              {
-                "description": "TPS throttle rate customer is authorized for.",
-                "type": "string"
-              },
-              "x-amzn-RequestId":
-              {
-                "description": "unique request reference id.",
-                "type": "string"
-              }
-            },
-            "examples":
-            {
-              "payload":
-              {
-                "dayGranularity":
-                {
-                  "metrics": [
-                    {
-                      "interval": "2018-05-01T00:00-07:00--2018-05-02T00:00-07:00",
-                      "unitCount": 1,
-                      "orderItemCount": 1,
-                      "orderCount": 1,
-                      "averageUnitPrice":
-                      {
-                        "amount": "22.95",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "22.95",
-                        "currencyCode": "USD"
-                      }
-                    },
-                    {
-                      "interval": "2018-05-02T00:00-07:00--2018-05-03T00:00-07:00",
-                      "unitCount": 1,
-                      "orderItemCount": 1,
-                      "orderCount": 1,
-                      "averageUnitPrice":
-                      {
-                        "amount": "2.05",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "2.05",
-                        "currencyCode": "USD"
-                      }
-                    }
-                  ]
-                },
-                "totalGranularity":
-                {
-                  "metrics": [
-                    {
-                      "interval": "2018-05-01T00:00-07:00--2018-05-03T00:00-07:00",
-                      "unitCount": 2,
-                      "orderItemCount": 2,
-                      "orderCount": 2,
-                      "averageUnitPrice":
-                      {
-                        "amount": "12.5",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "25",
-                        "currencyCode": "USD"
-                      }
-                    }
-                  ]
-                },
-                "asinFilter":
-                {
-                  "metrics": [
-                    {
-                      "interval": "2018-05-01T00:00-07:00--2018-05-02T00:00-07:00",
-                      "unitCount": 1,
-                      "orderItemCount": 1,
-                      "orderCount": 1,
-                      "averageUnitPrice":
-                      {
-                        "amount": "22.95",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "22.95",
-                        "currencyCode": "USD"
-                      }
-                    },
-                    {
-                      "interval": "2018-05-02T00:00-07:00--2018-05-03T00:00-07:00",
-                      "unitCount": 0,
-                      "orderItemCount": 0,
-                      "orderCount": 0,
-                      "averageUnitPrice":
-                      {
-                        "amount": "0",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "0",
-                        "currencyCode": "USD"
-                      }
-                    }
-                  ]
-                }
-              }
-            },
-            "schema":
-            {
-              "$ref": "#/definitions/GetOrderMetricsResponse"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request":
-                {
-                  "parameters":
-                  {
-                    "granularity":
-                    {
-                      "value": "Total"
-                    }
-                  }
-                },
-                "response":
-                {
-                  "payload": [
-                    {
-                      "interval": "2019-08-01T00:00-07:00--2018-08-03T00:00-07:00",
-                      "unitCount": 2,
-                      "orderItemCount": 2,
-                      "orderCount": 2,
-                      "averageUnitPrice":
-                      {
-                        "amount": "12.5",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "25",
-                        "currencyCode": "USD"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "request":
-                {
-                  "parameters":
-                  {
-                    "granularity":
-                    {
-                      "value": "Day"
-                    }
-                  }
-                },
-                "response":
-                {
-                  "payload": [
-                    {
-                      "interval": "2019-08-01T00:00-07:00--2018-08-02T00:00-07:00",
-                      "unitCount": 1,
-                      "orderItemCount": 1,
-                      "orderCount": 1,
-                      "averageUnitPrice":
-                      {
-                        "amount": "22.95",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "22.95",
-                        "currencyCode": "USD"
-                      }
-                    },
-                    {
-                      "interval": "2019-08-02T00:00-07:00--2018-08-03T00:00-07:00",
-                      "unitCount": 1,
-                      "orderItemCount": 1,
-                      "orderCount": 1,
-                      "averageUnitPrice":
-                      {
-                        "amount": "2.05",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "2.05",
-                        "currencyCode": "USD"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "request":
-                {
-                  "parameters":
-                  {
-                    "granularity":
-                    {
-                      "value": "Total"
-                    },
-                    "asin":
-                    {
-                      "value": "B008OLKVEW"
-                    }
-                  }
-                },
-                "response":
-                {
-                  "payload": [
-                    {
-                      "interval": "2018-05-01T00:00-07:00--2018-05-03T00:00-07:00",
-                      "unitCount": 1,
-                      "orderItemCount": 1,
-                      "orderCount": 1,
-                      "averageUnitPrice":
-                      {
-                        "amount": "22.95",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "22.95",
-                        "currencyCode": "USD"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "request":
-                {
-                  "parameters":
-                  {
-                    "granularity":
-                    {
-                      "value": "Day"
-                    },
-                    "asin":
-                    {
-                      "value": "B008OLKVEW"
-                    }
-                  }
-                },
-                "response":
-                {
-                  "payload": [
-                    {
-                      "interval": "2018-05-01T00:00-07:00--2018-05-02T00:00-07:00",
-                      "unitCount": 1,
-                      "orderItemCount": 1,
-                      "orderCount": 1,
-                      "averageUnitPrice":
-                      {
-                        "amount": "22.95",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "22.95",
-                        "currencyCode": "USD"
-                      }
-                    },
-                    {
-                      "interval": "2018-05-02T00:00-07:00--2018-05-03T00:00-07:00",
-                      "unitCount": 0,
-                      "orderItemCount": 0,
-                      "orderCount": 0,
-                      "averageUnitPrice":
-                      {
-                        "amount": "0",
-                        "currencyCode": "USD"
-                      },
-                      "totalSales":
-                      {
-                        "amount": "0",
-                        "currencyCode": "USD"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "400":
-          {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "headers":
-            {
-              "x-amzn-RateLimit-Limit":
-              {
-                "description": "TPS throttle rate customer is authorized for.",
-                "type": "string"
-              },
-              "x-amzn-RequestId":
-              {
-                "description": "Unique request reference id.",
-                "type": "string"
-              }
-            },
-            "schema":
-            {
-              "$ref": "#/definitions/GetOrderMetricsResponse"
-            }
-          },
-          "403":
-          {
-            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
-            "headers":
-            {
-              "x-amzn-RequestId":
-              {
-                "description": "Unique request reference id.",
-                "type": "string"
-              }
-            },
-            "schema":
-            {
-              "$ref": "#/definitions/GetOrderMetricsResponse"
-            }
-          },
-          "404":
-          {
-            "description": "The resource specified does not exist.",
-            "headers":
-            {
-              "x-amzn-RequestId":
-              {
-                "description": "Unique request reference id.",
-                "type": "string"
-              }
-            },
-            "schema":
-            {
-              "$ref": "#/definitions/GetOrderMetricsResponse"
-            }
-          },
-          "413":
-          {
-            "description": "The request size exceeded the maximum accepted size.",
-            "headers":
-            {
-              "x-amzn-RateLimit-Limit":
-              {
-                "description": "TPS throttle rate customer is authorized for.",
-                "type": "string"
-              },
-              "x-amzn-RequestId":
-              {
-                "description": "Unique request reference id.",
-                "type": "string"
-              }
-            },
-            "schema":
-            {
-              "$ref": "#/definitions/GetOrderMetricsResponse"
-            }
-          },
-          "415":
-          {
-            "description": "The entity of the request is in a format not supported by the requested resource.",
-            "headers":
-            {
-              "x-amzn-RateLimit-Limit":
-              {
-                "description": "TPS throttle rate customer is authorized for.",
-                "type": "string"
-              },
-              "x-amzn-RequestId":
-              {
-                "description": "Unique request reference id.",
-                "type": "string"
-              }
-            },
-            "schema":
-            {
-              "$ref": "#/definitions/GetOrderMetricsResponse"
-            }
-          },
-          "429":
-          {
-            "description": "The frequency of requests was greater than allowed.",
-            "headers":
-            {
-              "x-amzn-RateLimit-Limit":
-              {
-                "description": "TPS throttle rate customer is authorized for.",
-                "type": "string"
-              },
-              "x-amzn-RequestId":
-              {
-                "description": "Unique request reference id.",
-                "type": "string"
-              }
-            },
-            "schema":
-            {
-              "$ref": "#/definitions/GetOrderMetricsResponse"
-            }
-          },
-          "500":
-          {
-            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
-            "headers":
-            {
-              "x-amzn-RateLimit-Limit":
-              {
-                "description": "TPS throttle rate customer is authorized for.",
-                "type": "string"
-              },
-              "x-amzn-RequestId":
-              {
-                "description": "Unique request reference id.",
-                "type": "string"
-              }
-            },
-            "schema":
-            {
-              "$ref": "#/definitions/GetOrderMetricsResponse"
-            }
-          },
-          "503":
-          {
-            "description": "Temporary overloading or maintenance of the server.",
-            "headers":
-            {
-              "x-amzn-RateLimit-Limit":
-              {
-                "description": "TPS throttle rate customer is authorized for.",
-                "type": "string"
-              },
-              "x-amzn-RequestId":
-              {
-                "description": "Unique request reference id.",
-                "type": "string"
-              }
-            },
-            "schema":
-            {
-              "$ref": "#/definitions/GetOrderMetricsResponse"
-            }
-          }
-        },
         "parameters": [
           {
             "name": "marketplaceIds",
@@ -640,8 +38,7 @@
             "description": "A list of marketplace identifiers. Example: ATVPDKIKX0DER indicates the US marketplace.",
             "required": true,
             "type": "array",
-            "items":
-            {
+            "items": {
               "type": "string"
             }
           },
@@ -656,6 +53,7 @@
             "name": "granularityTimeZone",
             "in": "query",
             "description": "An IANA-compatible time zone for determining the day boundary. Required when specifying a granularity value greater than Hour. The granularityTimeZone value must align with the offset of the specified interval value. For example, if the interval value uses Z notation, then granularityTimeZone must be UTC. If the interval value uses an offset, then granularityTimeZone must be an IANA-compatible time zone that matches the offset. Example: US/Pacific to compute day boundaries, accounting for daylight time savings, for US/Pacific zone.",
+            "required": false,
             "type": "string"
           },
           {
@@ -703,7 +101,9 @@
             "name": "buyerType",
             "in": "query",
             "description": "Filters the results by the buyer type that you specify, B2B (business to business) or B2C (business to customer). Example: B2B, if you want the response to include order metrics for only B2B buyers.",
+            "required": false,
             "type": "string",
+            "default": "All",
             "enum": [
               "B2B",
               "B2C",
@@ -722,20 +122,22 @@
                 "value": "All",
                 "description": "Business to business and business to customer."
               }
-            ],
-            "default": "All"
+            ]
           },
           {
             "name": "fulfillmentNetwork",
             "in": "query",
             "description": "Filters the results by the fulfillment network that you specify, MFN (merchant fulfillment network) or AFN (Amazon fulfillment network). Do not include this filter if you want the response to include order metrics for all fulfillment networks. Example: AFN, if you want the response to include order metrics for only Amazon fulfillment network.",
+            "required": false,
             "type": "string"
           },
           {
             "name": "firstDayOfWeek",
             "in": "query",
             "description": "Specifies the day that the week starts on when granularity=Week, either Monday or Sunday. Default: Monday. Example: Sunday, if you want the week to start on a Sunday.",
+            "required": false,
             "type": "string",
+            "default": "Monday",
             "enum": [
               "Monday",
               "Sunday"
@@ -749,23 +151,510 @@
                 "value": "Sunday",
                 "description": "Sunday"
               }
-            ],
-            "default": "Monday"
+            ]
           },
           {
             "name": "asin",
             "in": "query",
             "description": "Filters the results by the ASIN that you specify. Specifying both ASIN and SKU returns an error. Do not include this filter if you want the response to include order metrics for all ASINs. Example: B0792R1RSN, if you want the response to include order metrics for only ASIN B0792R1RSN.",
+            "required": false,
             "type": "string"
           },
           {
             "name": "sku",
             "in": "query",
             "description": "Filters the results by the SKU that you specify. Specifying both ASIN and SKU returns an error. Do not include this filter if you want the response to include order metrics for all SKUs. Example: TestSKU, if you want the response to include order metrics for only SKU TestSKU.",
+            "required": false,
             "type": "string"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "OrderMetric action taken on the resource OrderMetrics.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderMetricsResponse"
+            },
+            "examples": {
+              "payload": {
+                "dayGranularity": {
+                  "metrics": [
+                    {
+                      "interval": "2018-05-01T00:00-07:00--2018-05-02T00:00-07:00",
+                      "unitCount": 1,
+                      "orderItemCount": 1,
+                      "orderCount": 1,
+                      "averageUnitPrice": {
+                        "amount": "22.95",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "22.95",
+                        "currencyCode": "USD"
+                      }
+                    },
+                    {
+                      "interval": "2018-05-02T00:00-07:00--2018-05-03T00:00-07:00",
+                      "unitCount": 1,
+                      "orderItemCount": 1,
+                      "orderCount": 1,
+                      "averageUnitPrice": {
+                        "amount": "2.05",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "2.05",
+                        "currencyCode": "USD"
+                      }
+                    }
+                  ]
+                },
+                "totalGranularity": {
+                  "metrics": [
+                    {
+                      "interval": "2018-05-01T00:00-07:00--2018-05-03T00:00-07:00",
+                      "unitCount": 2,
+                      "orderItemCount": 2,
+                      "orderCount": 2,
+                      "averageUnitPrice": {
+                        "amount": "12.5",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "25",
+                        "currencyCode": "USD"
+                      }
+                    }
+                  ]
+                },
+                "asinFilter": {
+                  "metrics": [
+                    {
+                      "interval": "2018-05-01T00:00-07:00--2018-05-02T00:00-07:00",
+                      "unitCount": 1,
+                      "orderItemCount": 1,
+                      "orderCount": 1,
+                      "averageUnitPrice": {
+                        "amount": "22.95",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "22.95",
+                        "currencyCode": "USD"
+                      }
+                    },
+                    {
+                      "interval": "2018-05-02T00:00-07:00--2018-05-03T00:00-07:00",
+                      "unitCount": 0,
+                      "orderItemCount": 0,
+                      "orderCount": 0,
+                      "averageUnitPrice": {
+                        "amount": "0",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "0",
+                        "currencyCode": "USD"
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "unique request reference id."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "granularity": {
+                        "value": "Total"
+                      }
+                    }
+                  },
+                  "response": {
+                    "payload": [
+                    {
+                      "interval": "2019-08-01T00:00-07:00--2018-08-03T00:00-07:00",
+                      "unitCount": 2,
+                      "orderItemCount": 2,
+                      "orderCount": 2,
+                      "averageUnitPrice": {
+                        "amount": "12.5",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "25",
+                        "currencyCode": "USD"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "granularity": {
+                      "value": "Day"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": [
+                    {
+                      "interval": "2019-08-01T00:00-07:00--2018-08-02T00:00-07:00",
+                      "unitCount": 1,
+                      "orderItemCount": 1,
+                      "orderCount": 1,
+                      "averageUnitPrice": {
+                        "amount": "22.95",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "22.95",
+                        "currencyCode": "USD"
+                      }
+                    },
+                    {
+                      "interval": "2019-08-02T00:00-07:00--2018-08-03T00:00-07:00",
+                      "unitCount": 1,
+                      "orderItemCount": 1,
+                      "orderCount": 1,
+                      "averageUnitPrice": {
+                        "amount": "2.05",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "2.05",
+                        "currencyCode": "USD"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "granularity": {
+                      "value": "Total"
+                    },
+                    "asin": {
+                      "value": "B008OLKVEW"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": [
+                    {
+                      "interval": "2018-05-01T00:00-07:00--2018-05-03T00:00-07:00",
+                      "unitCount": 1,
+                      "orderItemCount": 1,
+                      "orderCount": 1,
+                      "averageUnitPrice": {
+                        "amount": "22.95",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "22.95",
+                        "currencyCode": "USD"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "request": {
+                  "parameters": {
+                    "granularity": {
+                      "value": "Day"
+                    },
+                    "asin": {
+                      "value": "B008OLKVEW"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": [
+                    {
+                      "interval": "2018-05-01T00:00-07:00--2018-05-02T00:00-07:00",
+                      "unitCount": 1,
+                      "orderItemCount": 1,
+                      "orderCount": 1,
+                      "averageUnitPrice": {
+                        "amount": "22.95",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "22.95",
+                        "currencyCode": "USD"
+                      }
+                    },
+                    {
+                      "interval": "2018-05-02T00:00-07:00--2018-05-03T00:00-07:00",
+                      "unitCount": 0,
+                      "orderItemCount": 0,
+                      "orderCount": 0,
+                      "averageUnitPrice": {
+                        "amount": "0",
+                        "currencyCode": "USD"
+                      },
+                      "totalSales": {
+                        "amount": "0",
+                        "currencyCode": "USD"
+                      }
+                    }
+                  ]
+                }
+              }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderMetricsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference id."
+              }
+            }
+          },
+          "403": {
+            "description": "403 can be caused for reasons like Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderMetricsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference id."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderMetricsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference id."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderMetricsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference id."
+              }
+            }
+          },
+          "415": {
+            "description": "The entity of the request is in a format not supported by the requested resource.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderMetricsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference id."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderMetricsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference id."
+              }
+            }
+          },
+          "500": {
+            "description": "Encountered an unexpected condition which prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderMetricsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference id."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetOrderMetricsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference id."
+              }
+            }
+          }
+        }
       }
+    }
+  },
+  "definitions": {
+    "GetOrderMetricsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getOrderMetrics operation.",
+          "$ref": "#/definitions/OrderMetricsList"
+        },
+        "errors": {
+          "description": "Encountered errors for the getOrderMetrics operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getOrderMetrics operation."
+    },
+    "OrderMetricsList": {
+      "type": "array",
+      "description": "A set of order metrics, each scoped to a particular time interval.",
+      "items": {
+        "$ref": "#/definitions/OrderMetricsInterval"
+      }
+    },
+    "OrderMetricsInterval": {
+      "type": "object",
+      "required": [
+        "averageUnitPrice",
+        "interval",
+        "orderCount",
+        "orderItemCount",
+        "totalSales",
+        "unitCount"
+      ],
+      "properties": {
+        "interval": {
+          "type": "string",
+          "description": "The interval of time based on requested granularity (ex. Hour, Day, etc.) If this is the first or the last interval from the list, it might contain incomplete data if the requested interval doesn't align with the requested granularity (ex. request interval 2018-09-01T02:00:00Z--2018-09-04T19:00:00Z and granularity day will result in Sept 1st UTC day and Sept 4th UTC days having partial data)."
+        },
+        "unitCount": {
+          "type": "integer",
+          "description": "The number of units in orders based on the specified filters."
+        },
+        "orderItemCount": {
+          "type": "integer",
+          "description": "The number of order items based on the specified filters."
+        },
+        "orderCount": {
+          "type": "integer",
+          "description": "The number of orders based on the specified filters."
+        },
+        "averageUnitPrice": {
+          "description": "The average price for an item based on the specified filters. Formula is totalSales/unitCount.",
+          "$ref": "#/definitions/Money"
+        },
+        "totalSales": {
+          "description": "The total ordered product sales for all orders based on the specified filters.",
+          "$ref": "#/definitions/Money"
+        }
+      },
+      "description": "Contains order metrics."
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occured."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition in a human-readable form."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Money": {
+      "type": "object",
+      "required": [
+        "amount",
+        "currencyCode"
+      ],
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "description": "Three-digit currency code. In ISO 4217 format."
+        },
+        "amount": {
+          "description": "The currency amount.",
+          "$ref": "#/definitions/Decimal"
+        }
+      },
+      "description": "The currency type and the amount."
+    },
+    "Decimal": {
+      "type": "string",
+      "description": "A decimal number with no loss of precision. Useful when precision loss is unnaceptable, as with currencies. Follows RFC7159 for number representation."
     }
   }
 }
