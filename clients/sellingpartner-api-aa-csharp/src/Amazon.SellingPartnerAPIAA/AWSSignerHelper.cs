@@ -45,6 +45,9 @@ namespace Amazon.SellingPartnerAPIAA
         {
             string canonicalUri = string.Empty;
 
+            //decode existing strings 
+            resource = Uri.UnescapeDataString(resource);
+
             if (string.IsNullOrEmpty(resource))
             {
                 canonicalUri = Slash;
