@@ -73,7 +73,7 @@
           {
             "name": "MarketplaceIds",
             "in": "query",
-            "description": "A list of MarketplaceId values. Used to select orders that were placed in the specified marketplaces.",
+            "description": "A list of MarketplaceId values. Used to select orders that were placed in the specified marketplaces.\n\nSee the [Selling Partner API Developer Guide](https://github.com/amzn/selling-partner-api-docs/blob/main/guides/en-US/developer-guide/SellingPartnerApiDeveloperGuide.md#marketplaceid-values) for a complete list of marketplaceId values.",
             "required": true,
             "type": "array",
             "items": {
@@ -300,7 +300,10 @@
                         "FulfillmentInstruction": {
                           "FulfillmentSupplySourceId": "sampleSupplySourceId"
                         },
-                        "IsISPU": false
+                        "IsISPU": false,
+                        "AutomatedShippingSettings": {
+                          "HasAutomatedShippingSettings": false
+                        }
                       },
                       {
                         "AmazonOrderId": "902-8745147-1934268",
@@ -625,6 +628,9 @@
                       "CompanyLegalName": "A Company Name"
                     },
                     "PurchaseOrderNumber": "1234567890123"
+                  },
+                  "AutomatedShippingSettings": {
+                    "HasAutomatedShippingSettings": false
                   }
                 }
               }
@@ -694,7 +700,10 @@
                     "FulfillmentInstruction": {
                       "FulfillmentSupplySourceId": "sampleSupplySourceId"
                     },
-                    "IsISPU": false
+                    "IsISPU": false,
+                    "AutomatedShippingSettings": {
+                      "HasAutomatedShippingSettings": false
+                    }
                   }
                 }
               },
@@ -751,7 +760,10 @@
                     "FulfillmentInstruction": {
                       "FulfillmentSupplySourceId": "sampleSupplySourceId"
                     },
-                    "IsISPU": false
+                    "IsISPU": false,
+                    "AutomatedShippingSettings": {
+                      "HasAutomatedShippingSettings": false
+                    }
                   }
                 }
               }
@@ -1741,9 +1753,249 @@
           }
         }
       }
+    },
+    "/orders/v0/orders/{orderId}/shipment": {
+      "post": {
+        "tags": [
+          "shipment"
+        ],
+        "description": "Update the shipment status.",
+        "operationId": "updateShipmentStatus",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "An Amazon-defined order identifier, in 3-7-7 format.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payload",
+            "in": "body",
+            "description": "Request to update the shipment status.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateShipmentStatusRequest"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success.",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {}
+                }
+              ]
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "1",
+                          "shipmentStatus": "ReadyForPickup"
+                        }
+                      }
+                    }
+                },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Marketplace id is not defined",
+                        "details": "1001"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateShipmentStatusErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateShipmentStatusErrorResponse"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateShipmentStatusErrorResponse"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateShipmentStatusErrorResponse"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateShipmentStatusErrorResponse"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateShipmentStatusErrorResponse"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateShipmentStatusErrorResponse"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference ID.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateShipmentStatusErrorResponse"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
+    "UpdateShipmentStatusRequest": {
+      "description": "Request to update the status of shipment of an order.",
+      "type": "object",
+      "properties": {
+        "marketplaceId": {
+          "$ref": "#/definitions/MarketplaceId"
+        },
+        "shipmentStatus": {
+          "$ref": "#/definitions/ShipmentStatus"
+        },
+        "orderItems": {
+          "$ref": "#/definitions/OrderItems"
+        }
+      },
+      "required": [
+        "marketplaceId",
+        "shipmentStatus"
+      ]
+    },
+    "MarketplaceId": {
+      "description": "the unobfuscated marketplace ID",
+      "type": "string"
+    },
+    "ShipmentStatus": {
+      "description": "the status of the shipment of the order to be updated",
+      "type": "string",
+      "enum": [
+        "ReadyForPickup",
+        "PickedUp",
+        "RefusedPickup"
+      ]
+    },
+    "OrderItems": {
+      "description": "the list of order items and quantities when the seller wants to partially update the shipment status of the order",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "orderItemId": {
+            "description": "the unique identifier for the order item",
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "the quantity of items that needs an update of the shipment status"
+          }
+        }
+      }
+    },
+    "UpdateShipmentStatusErrorResponse": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "description": "One or more unexpected errors occurred during the UpdateShipmentStatus operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The error response schema for the UpdateShipmentStatus operation."
+    },
     "GetOrdersResponse": {
       "type": "object",
       "properties": {
@@ -2110,6 +2362,28 @@
           "description": "The recommended location for the seller to ship the items from. It is calculated at checkout. The seller may or may not choose to ship from this location.",
           "$ref": "#/definitions/Address"
         },
+        "BuyerInvoicePreference": {
+          "type": "string",
+          "enum": [
+            "INDIVIDUAL",
+            "BUSINESS"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "INDIVIDUAL",
+              "description": "Buyer should be issued an individual invoice."
+            },
+            {
+              "value": "BUSINESS",
+              "description": "Buyer should be issued a business invoice. Tax information is available in BuyerTaxInformation structure."
+            }
+          ],
+          "description": "The buyer’s invoicing preference."
+        },
+        "BuyerTaxInformation": {
+          "description": "Contains the business invoice tax information.",
+          "$ref": "#/definitions/BuyerTaxInformation"
+        },
         "FulfillmentInstruction": {
           "description": "Contains the instructions about the fulfillment like where should it be fulfilled from.",
           "$ref": "#/definitions/FulfillmentInstruction"
@@ -2131,6 +2405,10 @@
         },
         "BuyerInfo": {
           "$ref": "#/definitions/BuyerInfo"
+        },
+        "AutomatedShippingSettings": {
+          "description": "Contains information regarding the Shipping Settings Automaton program, such as whether the order's shipping settings were generated automatically, and what those settings are.",
+          "$ref": "#/definitions/AutomatedShippingSettings"
         }
       },
       "description": "Order information."
@@ -2669,12 +2947,34 @@
       },
       "description": "Information about withheld taxes."
     },
+    "BuyerTaxInformation": {
+      "type": "object",
+      "properties": {
+        "BuyerLegalCompanyName": {
+          "type": "string",
+          "description": "Business buyer's company legal name."
+        },
+        "BuyerBusinessAddress": {
+          "type": "string",
+          "description": "Business buyer's address."
+        },
+        "BuyerTaxRegistrationId": {
+          "type": "string",
+          "description": "Business buyer's tax registration ID."
+        },
+        "BuyerTaxOffice": {
+          "type": "string",
+          "description": "Business buyer's tax office."
+        }
+      },
+      "description": "Contains the business invoice tax information."
+    },
     "FulfillmentInstruction": {
       "type": "object",
       "properties": {
         "FulfillmentSupplySourceId": {
-          "type": "string",
-          "description": "Denotes the recommended sourceId where the order should be fulfilled from."
+          "description": "Denotes the recommended sourceId where the order should be fulfilled from.",
+          "type": "string"
         }
       },
       "description": "Contains the instructions about the fulfillment like where should it be fulfilled from."
@@ -2730,6 +3030,24 @@
         }
       },
       "description": "A single item's buyer information."
+    },
+    "AutomatedShippingSettings": {
+      "description": "Contains information regarding the Shipping Settings Automation program, such as whether the order's shipping settings were generated automatically, and what those settings are.",
+      "type": "object",
+      "properties": {
+        "HasAutomatedShippingSettings": {
+          "description": "If true, this order has automated shipping settings generated by Amazon. This order could be identified as an SSA order.",
+          "type": "boolean"
+        },
+        "AutomatedCarrier": {
+          "description": "Auto-generated carrier for SSA orders.",
+          "type": "string"
+        },
+        "AutomatedShipMethod": {
+          "description": "Auto-generated ship method for SSA orders.",
+          "type": "string"
+        }
+      }
     },
     "ErrorList": {
       "type": "array",
