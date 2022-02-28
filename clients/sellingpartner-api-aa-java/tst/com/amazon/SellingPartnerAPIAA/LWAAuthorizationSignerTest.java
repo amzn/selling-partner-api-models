@@ -48,7 +48,7 @@ public class LWAAuthorizationSignerTest {
     private Request request;
     private static LWAAuthorizationSigner underTestSeller;
     private static LWAAuthorizationSigner underTestSellerless;
-    
+
     @Mock
     private OkHttpClient mockOkHttpClient;
 
@@ -108,7 +108,9 @@ public class LWAAuthorizationSignerTest {
         testAuthSigner.sign(request);
 
         LWAAccessTokenRequestMeta actualLWAAccessTokenRequestMeta = lwaAccessTokenRequestMetaArgumentCaptor.getValue();
-        assertEquals(TEST_REFRESH_TOKEN, actualLWAAccessTokenRequestMeta.getRefreshToken());
+        if(sellerType.equals(SELLER_TYPE_SELLER)) {
+            assertEquals(TEST_REFRESH_TOKEN, actualLWAAccessTokenRequestMeta.getRefreshToken());
+        }
         assertEquals(TEST_CLIENT_SECRET, actualLWAAccessTokenRequestMeta.getClientSecret());
         assertEquals(TEST_CLIENT_ID, actualLWAAccessTokenRequestMeta.getClientId());
 
@@ -148,26 +150,26 @@ public class LWAAuthorizationSignerTest {
         testAuthSigner.setLwaClient(mockLWAClient);
         assertNotSame(request, testAuthSigner.sign(request));
     }
-    
+
     @Test
-    public void returnSignedRequestWithAccessTokenFromLWACache() throws IOException { 
+    public void returnSignedRequestWithAccessTokenFromLWACache() throws IOException {
         LWAClient testLWAClient = new LWAClient(TEST_ENDPOINT);
         testLWAClient.setOkHttpClient(mockOkHttpClient);
-        
+
         when(mockOkHttpClient.newCall(any(Request.class)))
         .thenReturn(mockCall);
-        when(mockCall.execute())     
+        when(mockCall.execute())
         .thenReturn(buildResponse(200, "Azta|foo", "120"))
         .thenReturn(buildResponse(200, "Azta|foo1", "1"));
 
-        LWAAccessTokenCache testLWACache = new LWAAccessTokenCacheImpl();        
+        LWAAccessTokenCache testLWACache = new LWAAccessTokenCacheImpl();
         LWAAuthorizationSigner testlwaSigner = new LWAAuthorizationSigner(LWAAuthorizationCredentials.builder()
                 .clientId(TEST_CLIENT_ID)
                 .clientSecret(TEST_CLIENT_SECRET)
                 .refreshToken(TEST_REFRESH_TOKEN)
                 .endpoint(TEST_ENDPOINT)
-                .build() , testLWACache );  
-        
+                .build() , testLWACache );
+
         testlwaSigner.setLwaClient(testLWAClient);
         testLWAClient.setLWAAccessTokenCache(testLWACache);
         Request actualSignedRequest = testlwaSigner.sign(request);
@@ -175,7 +177,7 @@ public class LWAAuthorizationSignerTest {
 
         assertEquals("Azta|foo", actualSignedSecondRequest.header("x-amz-access-token"));
     }
-    
+
     private static Response buildResponse(int code, String accessToken, String expiryInSeconds) {
         ResponseBody responseBody = ResponseBody.create(EXPECTED_MEDIA_TYPE,
                 String.format("{%s:%s,%s:%s}", "access_token", accessToken, "expires_in", expiryInSeconds));
