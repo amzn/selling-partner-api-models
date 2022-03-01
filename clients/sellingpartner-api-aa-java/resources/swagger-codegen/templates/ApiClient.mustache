@@ -83,6 +83,7 @@ public class ApiClient {
     private AWSSigV4Signer awsSigV4Signer;
     private RateLimiter rateLimiter;
     private RateLimitConfiguration rateLimitConfiguration;
+    private String restrictedDataToken;
 
     /*
      * Constructor for ApiClient
@@ -512,6 +513,11 @@ public class ApiClient {
         return this;
     }
 
+    public ApiClient restrictedDataToken(String restrictedDataToken) {
+        this.restrictedDataToken = restrictedDataToken;
+        return this;
+    }
+
     /**
      * Sets the LWAAuthorizationSigner
      *
@@ -533,7 +539,7 @@ public class ApiClient {
           this.awsSigV4Signer = awsSigV4Signer;
           return this;
      }
-     
+
     /**
      * Sets the RateLimiter
      * A rate limiter is used to manage a high volume of traffic allowing N requests per second
@@ -549,8 +555,8 @@ public class ApiClient {
           }
             return this;
      }
-     
-     
+
+
     /**
      * Format the given parameter object into string.
      *
@@ -1030,7 +1036,7 @@ public class ApiClient {
      * @param formParams The form parameters
      * @param authNames The authentications to apply
      * @param progressRequestListener Progress request listener
-     * @return The HTTP request 
+     * @return The HTTP request
      * @throws ApiException If fail to serialize the request body object
      */
     public Request buildRequest(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
@@ -1074,7 +1080,7 @@ public class ApiClient {
             request = reqBuilder.method(method, reqBody).build();
         }
 
-        request = lwaAuthorizationSigner.sign(request);
+        request = lwaAuthorizationSigner.sign(request, restrictedDataToken);
         request = awsSigV4Signer.sign(request);
 
         return request;
