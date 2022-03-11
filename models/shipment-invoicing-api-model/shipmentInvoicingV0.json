@@ -35,7 +35,7 @@
           {
             "name": "shipmentId",
             "in": "path",
-            "description": "The identifier for the shipment. Get this value from the FBAOutboundShipmentStatus notification. For information about subscribing to notifications, see the [Notifications API Use Case Guide](https://github.com/amzn/selling-partner-api-docs/blob/main/guides/en-US/use-case-guides/notifications-api-use-case-guide/notifications-use-case-guide-v1.md).",
+            "description": "The identifier for the shipment. Get this value from the FBAOutboundShipmentStatus notification. For information about subscribing to notifications, see the [Notifications API Use Case Guide](doc:notifications-api-v1-use-case-guide).",
             "required": true,
             "type": "string"
           }
@@ -56,17 +56,18 @@
                 "type": "string"
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "shipmentId": {
-                      "value": "shipmentId1"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "shipmentId": {
+                        "value": "shipmentId1"
+                      }
                     }
-                  }
-                },
-                "response": {
-                  "payload": {
+                  },
+                  "response": {
+                    "payload": {
                     "WarehouseId": "wID1234",
                     "AmazonOrderId": "222-333-4444333",
                     "AmazonShipmentId": "F4385943758",
@@ -99,6 +100,17 @@
                         }
                       ]
                     },
+                    "MarketplaceTaxInfo": {
+                      "CompanyLegalName": "Seller Legal Company Name",
+                      "TaxingRegion": "SP",
+                      "TaxClassifications": [
+                        {
+                          "Name": "CNPJ",
+                          "Value": "15436940000103"
+                        }
+                      ]
+                    },
+                    "SellerDisplayName": "Seller Display Name in the marketplace",
                     "ShipmentItems": [
                       {
                         "ASIN": "BKUO9348543",
@@ -132,10 +144,11 @@
                         ]
                       }
                     ]
+                    }
                   }
                 }
-              }
-            ]
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
@@ -152,26 +165,28 @@
                 "type": "string"
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "shipmentId": {
-                      "value": "BadShipId"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "shipmentId": {
+                        "value": "BadShipId"
+                      }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid Shipment ID",
+                        "details": "'BadShipId' is an invalid ShipmentID"
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Invalid Shipment ID",
-                      "details": "'BadShipId' is an invalid ShipmentID"
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -180,7 +195,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -207,6 +222,10 @@
               "$ref": "#/definitions/GetShipmentDetailsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "description": "Unique request reference identifier.",
                 "type": "string"
@@ -220,7 +239,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -236,7 +255,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -252,7 +271,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -268,7 +287,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -320,24 +339,26 @@
                 "type": "string"
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "shipmentId": {
-                      "value": "shipmentId1"
-                    },
-                    "body": {
-                      "value": {
-                        "InvoiceContent": "SGF2ZSB0byBkZWFsIHdpdGggQmFzZTY0IGZvcm1hdD8=",
-                        "ContentMD5Value": "9906bd8f227f6a43f1e27db4b9258ad4"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "shipmentId": {
+                        "value": "shipmentId1"
+                      },
+                      "body": {
+                        "value": {
+                          "InvoiceContent": "SGF2ZSB0byBkZWFsIHdpdGggQmFzZTY0IGZvcm1hdD8=",
+                          "ContentMD5Value": "9906bd8f227f6a43f1e27db4b9258ad4"
+                        }
                       }
                     }
-                  }
-                },
-                "response": {}
-              }
-            ]
+                  },
+                  "response": {}
+                }
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
@@ -354,32 +375,34 @@
                 "type": "string"
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "shipmentId": {
-                      "value": "BadIDForShipment"
-                    },
-                    "body": {
-                      "value": {
-                        "InvoiceContent": "NonBase64EncodedValue",
-                        "ContentMD5Value": "8f6df519a2125946820bc34a561164c2"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "shipmentId": {
+                        "value": "BadIDForShipment"
+                      },
+                      "body": {
+                        "value": {
+                          "InvoiceContent": "NonBase64EncodedValue",
+                          "ContentMD5Value": "8f6df519a2125946820bc34a561164c2"
                       }
                     }
                   }
                 },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Shipment ID is invalid",
-                      "details": "InvoiceContent fails encoding. Shipment 'BadIDForShipment' does not exist"
-                    }
-                  ]
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Shipment ID is invalid",
+                        "details": "InvoiceContent fails encoding. Shipment 'BadIDForShipment' does not exist"
+                      }
+                    ]
+                  }
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -388,7 +411,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -415,6 +438,10 @@
               "$ref": "#/definitions/SubmitInvoiceResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "description": "Unique request reference identifier.",
                 "type": "string"
@@ -428,7 +455,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -444,7 +471,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -460,7 +487,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -476,7 +503,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -521,25 +548,27 @@
                 "type": "string"
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "shipmentId": {
-                      "value": "shipmentId1"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "shipmentId": {
+                        "value": "shipmentId1"
+                      }
                     }
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "Shipments": {
-                      "AmazonShipmentId": "shipmentId1",
-                      "InvoiceStatus": "Accepted"
+                  },
+                  "response": {
+                    "payload": {
+                      "Shipments": {
+                        "AmazonShipmentId": "shipmentId1",
+                        "InvoiceStatus": "Accepted"
+                      }
                     }
                   }
                 }
-              }
-            ]
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
@@ -556,26 +585,28 @@
                 "type": "string"
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "shipmentId": {
-                      "value": "BadShipId"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "shipmentId": {
+                        "value": "BadShipId"
+                      }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid Shipment ID",
+                        "details": "'BadShipId' is an invalid ShipmentID"
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Invalid Shipment ID",
-                      "details": "'BadShipId' is an invalid ShipmentID"
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -584,7 +615,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -611,6 +642,10 @@
               "$ref": "#/definitions/GetInvoiceStatusResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "description": "Unique request reference identifier.",
                 "type": "string"
@@ -624,7 +659,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -640,7 +675,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -656,7 +691,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -672,7 +707,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -745,6 +780,13 @@
         },
         "BuyerTaxInfo": {
           "$ref": "#/definitions/BuyerTaxInfo"
+        },
+        "MarketplaceTaxInfo": {
+          "$ref": "#/definitions/MarketplaceTaxInfo"
+        },
+        "SellerDisplayName": {
+          "description": "The seller’s friendly name registered in the marketplace.",
+          "type": "string"
         },
         "ShipmentItems": {
           "$ref": "#/definitions/ShipmentItems"
@@ -831,6 +873,23 @@
     },
     "BuyerTaxInfo": {
       "description": "Tax information about the buyer.",
+      "type": "object",
+      "properties": {
+        "CompanyLegalName": {
+          "description": "The legal name of the company.",
+          "type": "string"
+        },
+        "TaxingRegion": {
+          "description": "The country or region imposing the tax.",
+          "type": "string"
+        },
+        "TaxClassifications": {
+          "$ref": "#/definitions/TaxClassificationList"
+        }
+      }
+    },
+    "MarketplaceTaxInfo": {
+      "description": "Tax information about the marketplace.",
       "type": "object",
       "properties": {
         "CompanyLegalName": {
@@ -984,6 +1043,10 @@
       "properties": {
         "InvoiceContent": {
           "$ref": "#/definitions/Blob"
+        },
+        "MarketplaceId": {
+          "description": "An Amazon marketplace identifier.",
+          "type": "string"
         },
         "ContentMD5Value": {
           "description": "MD5 sum for validating the invoice data. For more information about calculating this value, see [Working with Content-MD5 Checksums](https://docs.developer.amazonservices.com/en_US/dev_guide/DG_MD5.html).",

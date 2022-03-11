@@ -63,6 +63,21 @@ restRequest = new AWSSigV4Signer(awsAuthenticationCredentials)
 ```
 Note the IRestRequest reference is treated as **mutable** when signed.
 
+## RateLimitConfiguration
+
+Interface to set and get rateLimit configurations that are used with RateLimiter. RateLimiter is used on client side to restrict the rate at which requests are made. RateLimiter Configuration takes Permit, rate which requests are made and TimeOut 
+
+
+*Example*
+```
+RateLimitConfiguration rateLimitConfig = new RateLimitConfigurationOnRequests
+            {
+                RateLimitPermit = ..,
+                WaitTimeOutInMilliSeconds = ...
+            }; 
+
+```
+
 ## Resources
 This package features Mustache templates designed for use with [swagger codegen](https://swagger.io/tools/swagger-codegen/). 
 When you build Selling Partner API Swagger models with these templates, they help generate a rich SDK with functionality to invoke Selling Partner APIs built in. The templates are located in *resources/swagger-codegen*.
@@ -72,7 +87,7 @@ This package is built as a .NET Standard Library via a Visual Studio Solution wi
 
 ## Dependencies
 All dependencies can be installed via NuGet
-- RestSharp - 105.1.0
+- RestSharp - 106.12.0 
 - Newtonsoft.Json 12.0.3
 - NETStandard.Library 2.0.3 (platform-specific implementation requirements are documented on the [Microsoft .NET Guide](https://docs.microsoft.com/en-us/dotnet/standard/net-standard))
 

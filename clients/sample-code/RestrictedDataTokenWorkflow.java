@@ -15,6 +15,7 @@ import io.swagger.client.model.RestrictedResource;
 
 // Imports from the generated Tokens API client library dependencies.
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.google.gson.JsonObject;
@@ -46,9 +47,10 @@ public class RestrictedDataTokenWorkflow {
             .build();
 
     // Configure the AWSAuthenticationCredentials object.
+    // If you registered your application using an IAM Role ARN, the AWSAuthenticationCredentials and AWSAuthenticationCredentialsProvider objects are required.
     private static final AWSAuthenticationCredentials awsAuthenticationCredentials = AWSAuthenticationCredentials.builder()
-            // If application registered with Role ARN, use here the aws credentials of a user that is linked to the Role ARN via security token service.
-            // Otherwise, if the application was registered using User ARN, use the access key and secret key of the User ARN, but you have to make sure that it has the policy attached.
+            // If you registered your application using an IAM Role ARN, use the AWS credentials of an IAM User that is linked to the IAM Role through the AWS Security Token Service policy.
+            // Or, if you registered your application using an IAM User ARN, use the AWS credentials of that IAM User. Be sure that the IAM User has the correct IAM policy attached.
             .accessKeyId("aws_access_key")
             .secretKey("aws_secret_key")
             .region("aws_region")
@@ -73,10 +75,14 @@ public class RestrictedDataTokenWorkflow {
     // This method wraps the workflow to request an RDT and make a call to a restricted operation.
     private static void callRestrictedOperationWorkflow() throws IOException, ApiException {
         // Define the path for the restricted operation that requires an RDT.
-        final String resourcePath = "/orders/v0/orders/123-1234567-1234567/address";
+        final String resourcePath = "/orders/v0/orders/123-1234567-1234567";
 
-        // Build the RestrictedResource object with the respective Method (MethodEnum from RestrictedResource class) and Path.
-        RestrictedResource resource = buildRestrictedResource(RestrictedResource.MethodEnum.GET, resourcePath);
+        // Define the dataElements to indicate the type of Personally Identifiable Information requested.
+        // This parameter is required only when getting an RDT for use with the getOrder, getOrders, or getOrderItems operation of the Orders API.
+        final List<String> dataElements = Arrays.asList("buyerInfo","shippingAddress");
+
+        // Build the RestrictedResource object specifying method (MethodEnum from RestrictedResource class), path and dataElements parameters.
+        RestrictedResource resource = buildRestrictedResource(RestrictedResource.MethodEnum.GET, resourcePath, dataElements);
 
         // Make a list of the RestrictedResource objects that will be included in the request to create the RDT.
         List<RestrictedResource> resourceList = Arrays.asList(resource);
@@ -96,17 +102,23 @@ public class RestrictedDataTokenWorkflow {
         // You can specify a maximum of 50 restricted resources.
         /*
         // Define a path for each restricted operation that requires an RDT.
-        final String resourcePath1 = "/orders/v0/orders/123-1234567-1234567/address";
-        final String resourcePath2 = "/orders/v0/orders/123-7654321-1234567/address";
-        final String resourcePath3 = "/orders/v0/orders/123-1234567-7654321/address";
+        final String resourcePath1 = "/orders/v0/orders";
+        final String resourcePath2 = "/orders/v0/orders/123-7654321-1234567";
+        final String resourcePath3 = "/orders/v0/orders/123-1234567-7654321/items";
+        final String resourcePath4 = "/mfn/v0/shipments/FBA1234ABC5D";
 
-        // Build each RestrictedResource object with the respective Method (MethodEnum from RestrictedResource class) and Path.
-        RestrictedResource resource1 = buildRestrictedResource(RestrictedResource.MethodEnum.GET, resourcePath1);
-        RestrictedResource resource2 = buildRestrictedResource(RestrictedResource.MethodEnum.GET, resourcePath2);
-        RestrictedResource resource3 = buildRestrictedResource(RestrictedResource.MethodEnum.GET, resourcePath3);
+        // Define the dataElements to indicate the type of Personally Identifiable Information to be requested.
+        // This parameter is required only when getting an RDT for use with the getOrder, getOrders, or getOrderItems operation of the Orders API.
+        final List<String> dataElements = Arrays.asList("buyerInfo","shippingAddress");
+
+        // Build the RestrictedResource object specifying method (MethodEnum from RestrictedResource class), path and dataElements parameters.
+        RestrictedResource resource1 = buildRestrictedResource(RestrictedResource.MethodEnum.GET, resourcePath1, dataElements);
+        RestrictedResource resource2 = buildRestrictedResource(RestrictedResource.MethodEnum.GET, resourcePath2, dataElements);
+        RestrictedResource resource3 = buildRestrictedResource(RestrictedResource.MethodEnum.GET, resourcePath3, dataElements);
+        RestrictedResource resource4 = buildRestrictedResource(RestrictedResource.MethodEnum.GET, resourcePath4);
 
         // Make a list of the RestrictedResource objects that will be included in the request to create the RDT.
-        List<RestrictedResource> resourceList = Arrays.asList(resource1,resource2,resource3);
+        List<RestrictedResource> resourceList = Arrays.asList(resource1,resource2,resource3,resource4);
 
         // Get an RDT for the list of restricted resources.
         restrictedDataToken = getRestrictedDataToken(resourceList);
@@ -115,14 +127,14 @@ public class RestrictedDataTokenWorkflow {
         // Pass the same RDT when building each restricted operation request. An RDT expires after 60 minutes.
 
         // Build, sign, and execute each request, specifying RestrictedResource, RDT, and RequestBody.
-        // Pass a RequestBody only if required by the restricted operation. The requestBody is not required in this example.
+        // Pass a RequestBody only if required by the restricted operation. The requestBody is not required in these examples.
         Response restrictedRequestResponse1 = buildAndExecuteRestrictedRequest(resource1, restrictedDataToken, null);
         Response restrictedRequestResponse2 = buildAndExecuteRestrictedRequest(resource2, restrictedDataToken, null);
         Response restrictedRequestResponse3 = buildAndExecuteRestrictedRequest(resource3, restrictedDataToken, null);
+        Response restrictedRequestResponse4 = buildAndExecuteRestrictedRequest(resource4, restrictedDataToken, null);
          */
     }
-
-
+    
     // An example of a helper method to build, sign, and execute a restricted operation, specifying RestrictedResource, (String) RDT, and RequestBody.
     // Returns the restricted operation Response object.
     private static Response buildAndExecuteRestrictedRequest(RestrictedResource resource, String restrictedDataToken, RequestBody requestBody) throws IOException {
@@ -154,7 +166,14 @@ public class RestrictedDataTokenWorkflow {
         return response;
     }
 
-    // An example of a helper method for building RestrictedResource objects, specifying the method (MethodEnum from RestrictedResource class) and the path.
+    // An example of a helper method for building RestrictedResource objects with dataElements parameters.
+    private static RestrictedResource buildRestrictedResource(RestrictedResource.MethodEnum method, String path, List<String> dataElements){
+        RestrictedResource resource = buildRestrictedResource(method,path);
+        resource.dataElements(dataElements);
+        return resource;
+    }
+
+    // An example of a helper method for building RestrictedResource objects, specifying the method (MethodEnum from RestrictedResource class) and path parameters.
     private static RestrictedResource buildRestrictedResource(RestrictedResource.MethodEnum method, String path){
         RestrictedResource resource = new RestrictedResource();
         resource.setMethod(method);

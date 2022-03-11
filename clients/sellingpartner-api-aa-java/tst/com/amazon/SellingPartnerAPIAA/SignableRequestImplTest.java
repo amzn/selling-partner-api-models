@@ -69,6 +69,17 @@ public class SignableRequestImplTest {
     }
 
     @Test
+    public void getResourcePathWithPoundChar() {
+        testRequest = new Request.Builder()
+                .url("http://www.amazon.com/request/%23library")
+                .get()
+                .build();
+        underTest = new SignableRequestImpl(testRequest);
+
+        assertEquals("/request/%23library", underTest.getResourcePath());
+    }
+
+    @Test
     public void noTimeOffset() {
         assertEquals(0, underTest.getTimeOffset());
     }

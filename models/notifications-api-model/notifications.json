@@ -1,9 +1,9 @@
 {
-  "swagger":"2.0",
-  "info":{
-    "title":"Selling Partner API for Notifications",
-    "description":"The Selling Partner API for Notifications lets you subscribe to notifications that are relevant to a selling partner's business. Using this API you can create a destination to receive notifications, subscribe to notifications, delete notification subscriptions, and more.",
-    "version":"v1",
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Notifications lets you subscribe to notifications that are relevant to a selling partner's business. Using this API you can create a destination to receive notifications, subscribe to notifications, delete notification subscriptions, and more.\n\nFor more information, see the [Notifications Use Case Guide](doc:notifications-api-v1-use-case-guide)",
+    "version": "v1",
+    "title": "Selling Partner API for Notifications",
     "contact": {
       "name": "Selling Partner API Developer Support",
       "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
@@ -13,398 +13,208 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0"
     }
   },
-  "host":"sellingpartnerapi-na.amazon.com",
-  "schemes":[
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
     "https"
   ],
-  "consumes":[
+  "consumes": [
     "application/json"
   ],
-  "produces":[
+  "produces": [
     "application/json"
   ],
-  "definitions":{
-    "Subscription":{
-      "description":"Represents a subscription to receive notifications.",
-      "required": [
-        "subscriptionId",
-        "payloadVersion",
-        "destinationId"
-      ],
-      "type":"object",
-      "properties":{
-        "subscriptionId":{
-          "description":"The subscription identifier generated when the subscription is created.",
-          "type":"string"
-        },
-        "payloadVersion":{
-          "description":"The version of the payload object to be used in the notification.",
-          "type":"string"
-        },
-        "destinationId":{
-          "description":"The identifier for the destination where notifications will be delivered.",
-          "type":"string"
-        }
-      }
-    },
-    "CreateSubscriptionResponse":{
-      "description":"The response schema for the createSubscription operation.",
-      "type":"object",
-      "properties":{
-        "payload":{
-          "description":"The payload for the createSubscription operation.",
-          "$ref":"#/definitions/Subscription"
-        },
-        "errors":{
-          "description":"One or more unexpected errors occurred during the createSubscription operation.",
-          "$ref":"#/definitions/ErrorList"
-        }
-      }
-    },
-    "CreateSubscriptionRequest":{
-      "description":"The request schema for the createSubscription operation.",
-      "type":"object",
-      "properties":{
-        "payloadVersion":{
-          "description":"The version of the payload object to be used in the notification.",
-          "type":"string"
-        },
-        "destinationId":{
-          "description":"The identifier for the destination where notifications will be delivered.",
-          "type":"string"
-        }
-      }
-    },
-    "GetSubscriptionByIdResponse":{
-      "description":"The response schema for the getSubscriptionById operation.",
-      "type":"object",
-      "properties":{
-        "payload":{
-          "description":"The payload for the getSubscriptionById operation.",
-          "$ref":"#/definitions/Subscription"
-        },
-        "errors":{
-          "description":"An unexpected condition occurred during the getSubscriptionById operation.",
-          "$ref":"#/definitions/ErrorList"
-        }
-      }
-    },
-    "GetSubscriptionResponse":{
-      "description":"The response schema for the getSubscription operation.",
-      "type":"object",
-      "properties":{
-        "payload":{
-          "description":"The payload for the getSubscription operation.",
-          "$ref":"#/definitions/Subscription"
-        },
-        "errors":{
-          "description":"One or more unexpected errors occurred during the getSubscription operation.",
-          "$ref":"#/definitions/ErrorList"
-        }
-      }
-    },
-    "DeleteSubscriptionByIdResponse":{
-      "description":"The response schema for the deleteSubscriptionById operation.",
-      "type":"object",
-      "properties":{
-        "errors":{
-          "description":"An unexpected condition occurred during the deleteSubscriptionById operation.",
-          "$ref":"#/definitions/ErrorList"
-        }
-      }
-    },
-    "DestinationList": {
-      "description": "A list of destinations.",
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Destination"
-      }
-    },
-    "Destination":{
-      "description":"Represents a destination created when you call the createDestination operation.",
-      "required": [
-        "name",
-        "destinationId",
-        "resource"
-      ],
-      "type":"object",
-      "properties":{
-        "name":{
-          "description":"The developer-defined name for this destination.",
-          "type":"string",
-          "maxLength":256
-        },
-        "destinationId":{
-          "description":"The destination identifier generated when you created the destination.",
-          "type":"string"
-        },
-        "resource":{
-          "description":"The resource that will receive notifications associated with this destination.",
-          "$ref":"#/definitions/DestinationResource"
-        }
-      }
-    },
-    "DestinationResource": {
-      "description":"The destination resource types.",
-      "type":"object",
-      "properties": {
-        "sqs": {
-          "description":"An Amazon Simple Queue Service (SQS) queue destination.",
-          "$ref":"#/definitions/SqsResource"
-        },
-        "eventBridge": {
-          "description":"An Amazon EventBridge destination.",
-          "$ref":"#/definitions/EventBridgeResource"
-        }
-      }
-    },
-    "DestinationResourceSpecification": {
-      "description":"The information required to create a destination resource. Applications should use one resource type (sqs or eventBridge) per destination.",
-      "type":"object",
-      "properties": {
-        "sqs": {
-          "description":"The information required to create an Amazon Simple Queue Service (SQS) queue destination.",
-          "$ref":"#/definitions/SqsResource"
-        },
-        "eventBridge": {
-          "description":"The information required to create an Amazon EventBridge destination.",
-          "$ref":"#/definitions/EventBridgeResourceSpecification"
-        }
-      }
-    },
-    "SqsResource": {
-      "description":"The information required to create an Amazon Simple Queue Service (Amazon SQS) queue destination.",
-      "type":"object",
-      "required": [
-        "arn"
-      ],
-      "properties": {
-        "arn": {
-          "description":"The Amazon Resource Name (ARN) associated with the SQS queue.",
-          "type":"string",
-          "maxLength": 1000,
-          "pattern": "^arn:aws:sqs:\\S+:\\S+:\\S+"
-        }
-      }
-    },
-    "EventBridgeResourceSpecification": {
-      "description":"The information required to create an Amazon EventBridge destination.",
-      "type":"object",
-      "required": [
-        "region",
-        "accountId"
-      ],
-      "properties": {
-        "region": {
-          "description":"The AWS region in which you will be receiving the notifications.",
-          "type":"string"
-        },
-        "accountId": {
-          "description":"The identifier for the AWS account that is responsible for charges related to receiving notifications.",
-          "type":"string"
-        }
-      }
-    },
-    "EventBridgeResource": {
-      "description":"Represents an Amazon EventBridge destination.",
-      "type":"object",
-      "required": [
-        "name",
-        "region",
-        "accountId"
-      ],
-      "properties": {
-        "name": {
-          "description":"The name of the partner event source associated with the destination.",
-          "type":"string",
-          "maxLength": 256
-        },
-        "region": {
-          "description":"The AWS region in which you receive the notifications. For AWS regions that are supported in Amazon EventBridge, see https://docs.aws.amazon.com/general/latest/gr/ev.html.",
-          "type":"string"
-        },
-        "accountId": {
-          "description":"The identifier for the AWS account that is responsible for charges related to receiving notifications.",
-          "type":"string"
-        }
-      }
-    },
-    "CreateDestinationRequest": {
-      "description": "The request schema for the createDestination operation.",
-      "required": [
-        "resourceSpecification",
-        "name"
-      ],
-      "type": "object",
-      "properties": {
-        "resourceSpecification":{
-          "description":"The information required to create a destination resource. Applications should use one resource type (sqs or eventBridge) per destination.",
-          "$ref":"#/definitions/DestinationResourceSpecification"
-        },
-        "name": {
-          "description":"A developer-defined name to help identify this destination.",
-          "type": "string"
-        }
-      }
-    },
-    "CreateDestinationResponse":{
-      "description":"The response schema for the createDestination operation.",
-      "type":"object",
-      "properties":{
-        "payload":{
-          "description":"The payload for the createDestination operation.",
-          "$ref":"#/definitions/Destination"
-        },
-        "errors":{
-          "description":"One or more unexpected errors occurred during the createDestination operation.",
-          "$ref":"#/definitions/ErrorList"
-        }
-      }
-    },
-    "GetDestinationResponse":{
-      "description":"The response schema for the getDestination operation.",
-      "type":"object",
-      "properties":{
-        "payload":{
-          "description":"The payload for the getDestination operation.",
-          "$ref":"#/definitions/Destination"
-        },
-        "errors":{
-          "description":"One or more unexpected errors occurred during the getDestination operation.",
-          "$ref":"#/definitions/ErrorList"
-        }
-      }
-    },
-    "GetDestinationsResponse":{
-      "description":"The response schema for the getDestinations operation.",
-      "type":"object",
-      "properties":{
-        "payload":{
-          "description":"The payload for the getDestinations operation.",
-          "$ref":"#/definitions/DestinationList"
-        },
-        "errors":{
-          "description":"One or more unexpected errors occurred during the getDestinations operation.",
-          "$ref":"#/definitions/ErrorList"
-        }
-      }
-    },
-    "DeleteDestinationResponse":{
-      "description":"The response schema for the deleteDestination operation.",
-      "type":"object",
-      "properties":{
-        "errors":{
-          "description":"One or more unexpected errors occurred during the deleteDestination operation.",
-          "$ref":"#/definitions/ErrorList"
-        }
-      }
-    },
-    "ErrorList":{
-      "description":"A list of error responses returned when a request is unsuccessful.",
-      "type":"array",
-      "items":{
-        "$ref":"#/definitions/Error"
-      }
-    },
-    "Error":{
-      "description":"Error response returned when the request is unsuccessful.",
-      "required":[
-        "code",
-        "message"
-      ],
-      "type":"object",
-      "properties":{
-        "code":{
-          "description":"An error code that identifies the type of error that occurred.",
-          "type":"string"
-        },
-        "message":{
-          "description":"A message that describes the error condition in a human-readable form.",
-          "type":"string"
-        },
-        "details":{
-          "description":"Additional details that can help the caller understand or fix the issue.",
-          "type":"string"
-        }
-      }
-    }
-  },
-  "parameters": {
-    "NotificationType": {
-      "name": "notificationType",
-      "in": "path",
-      "description": "The type of notification to which you want to subscribe.\n\n For more information about notification types, see the Notifications API Use Case Guide.",
-      "required": true,
-      "type": "string",
-      "enum": [
-        "ANY_OFFER_CHANGED",
-        "FEED_PROCESSING_FINISHED",
-        "FBA_OUTBOUND_SHIPMENT_STATUS",
-        "FEE_PROMOTION",
-        "FULFILLMENT_ORDER_STATUS",
-        "REPORT_PROCESSING_FINISHED",
-        "BRANDED_ITEM_CONTENT_CHANGE",
-        "ITEM_PRODUCT_TYPE_CHANGE",
-        "MFN_ORDER_STATUS_CHANGE",
-        "B2B_ANY_OFFER_CHANGED"
-      ],
-      "x-docgen-enum-table-extension": [
-        {
-          "value": "ANY_OFFER_CHANGED",
-          "description": "Sent whenever there is a listing change for any of the top 20 offers, by condition (new or used), or if the external price (the price from other retailers) changes for an item listed by the seller. The top 20 offers are determined by the landed price, which is the price plus shipping minus Amazon Points. If multiple sellers are charging the same landed price, the results will be returned in random order.\n\n These notifications are only sent for items for which the seller has active offers. You cannot subscribe to notifications for items for which the seller does not have active offers."
-        },
-        {
-          "value": "FEED_PROCESSING_FINISHED",
-          "description": "Sent whenever any feed submitted using the Selling Partner API for Feeds reaches a feed processing status of DONE or CANCELLED."
-        },
-        {
-          "value": "FBA_OUTBOUND_SHIPMENT_STATUS",
-          "description": "Sent whenever we create or cancel a Fulfillment by Amazon shipment for a seller."
-        },
-        {
-          "value": "FEE_PROMOTION",
-          "description": "Sent when a promotion becomes active. Sellers can benefit from time-limited fee promotions. To receive notifications of these fee promotions on behalf of the seller, subscribe to the FEE_PROMOTION notification. All currently active promotions are sent at first, with each promotion sent as a single message. Subsequent notifications are sent when the promotion becomes active."
-        },
-        {
-          "value": "FULFILLMENT_ORDER_STATUS",
-          "description": "Sent whenever there is a change in the status of a Multi-Channel Fulfillment order.\n\n Multi-Channel Fulfillment is a program where sellers use their FBA inventory to fulfill orders not sold on the retail site."
-        },
-        {
-          "value": "REPORT_PROCESSING_FINISHED",
-          "description": "Sent whenever any report that you have requested using the Selling Partner API for Reports reaches a report processing status of DONE, CANCELLED, or DONE_NO_DATA."
-        },
-        {
-          "value": "BRANDED_ITEM_CONTENT_CHANGE",
-          "description": "Sent whenever there is a change to the title, description, or bullet points for any ASIN that the selling partner has a brand relationship with."
-        },
-        {
-          "value": "ITEM_PRODUCT_TYPE_CHANGE",
-          "description": "Sent whenever there is a change to the product type name of any ASIN that the selling partner has a brand relationship with."
-        },
-        {
-          "value": "MFN_ORDER_STATUS_CHANGE",
-          "description": "Sent whenever there is a change in the status of a MFN order availability."
-        },
-        {
-          "value": "B2B_ANY_OFFER_CHANGED",
-          "description": "Sent whenever there is a B2B offer change for any of the top 20 offers, in the form of any price change (either single unit or quantity discount tier prices) for an item listed by the seller. The top 20 B2B offers are determined by the single-unit landed price, which is the price plus shipping. If multiple sellers are charging the same landed price, the results will be returned in random order.\nThese notifications are only sent for items for which the seller has active offers. You cannot subscribe to notifications for items for which the seller does not have active offers."
-        }
-      ]
-    }
-  },
-  "paths":{
-    "/notifications/v1/subscriptions/{notificationType}":{
-      "post":{
-        "tags":[
+  "paths": {
+    "/notifications/v1/subscriptions/{notificationType}": {
+      "get": {
+        "tags": [
           "notifications"
         ],
-        "description":"Creates a subscription for the specified notification type to be delivered to the specified destination. Before you can subscribe, you must first create the destination by calling the createDestination operation.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "operationId":"createSubscription",
-        "parameters":[
+        "description": "Returns information about subscriptions of the specified notification type. You can use this API to get subscription information when you do not have a subscription identifier.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getSubscription",
+        "parameters": [
           {
-            "required": true,
+            "$ref": "#/parameters/NotificationType"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionResponse"
+            },
+            "examples": {
+              "Successful Response": {
+                "payload": {
+                  "subscriptionId": "7fcacc7e-727b-11e9-8848-1681be663d3e",
+                  "payloadVersion": "1.0",
+                  "destinationId": "3acafc7e-121b-1329-8ae8-1571be663aa2"
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "payload": {
+                      "subscriptionId": "TEST_CASE_200_SUBSCRIPTION_ID",
+                      "payloadVersion": "1.0",
+                      "destinationId": "TEST_CASE_200_DESTINATION_ID"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "notifications"
+        ],
+        "description": "Creates a subscription for the specified notification type to be delivered to the specified destination. Before you can subscribe, you must first create the destination by calling the createDestination operation.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "createSubscription",
+        "parameters": [
+          {
             "in": "body",
             "name": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/CreateSubscriptionRequest"
             }
@@ -413,837 +223,605 @@
             "$ref": "#/parameters/NotificationType"
           }
         ],
-        "responses":{
-          "200":{
-            "description":"Success.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {}
-                },
-                "response": {
-                  "payload": {
-                    "subscriptionId":"TEST_CASE_200_SUBSCRIPTION_ID",
-                    "payloadVersion":"1.0",
-                    "destinationId":"TEST_CASE_200_DESTINATION_ID"
-                  }
-                }
-              }
-            ],
-            "examples":{
-              "Successful Response":{
-                "payload":{
-                  "subscriptionId":"7fcacc7e-727b-11e9-8848-1681be663d3e",
-                  "payloadVersion":"1.0",
-                  "destinationId":"3acafc7e-121b-1329-8ae8-1571be663aa2"
-                }
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateSubscriptionResponse"
-            }
-          },
-          "400":{
-            "description":"Request has missing or invalid parameters and cannot be parsed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateSubscriptionResponse"
-            }
-          },
-          "403":{
-            "description":"Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateSubscriptionResponse"
-            }
-          },
-          "404":{
-            "description":"The resource specified does not exist.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateSubscriptionResponse"
-            }
-          },
-          "409":{
-            "description":"The resource specified conflicts with the current state.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateSubscriptionResponse"
-            }
-          },
-          "413":{
-            "description":"The request size exceeded the maximum accepted size.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateSubscriptionResponse"
-            }
-          },
-          "415":{
-            "description":"The request payload is in an unsupported format.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateSubscriptionResponse"
-            }
-          },
-          "429":{
-            "description":"The frequency of requests was greater than allowed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateSubscriptionResponse"
-            }
-          },
-          "500":{
-            "description":"An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateSubscriptionResponse"
-            }
-          },
-          "503":{
-            "description":"Temporary overloading or maintenance of the server.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateSubscriptionResponse"
-            }
-          }
-        }
-      },
-      "get":{
-        "tags":[
-          "notifications"
-        ],
-        "description":"Returns information about subscriptions of the specified notification type. You can use this API to get subscription information when you do not have a subscription identifier.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "operationId":"getSubscription",
-        "parameters":[
-          {
-            "$ref": "#/parameters/NotificationType"
-          }
-        ],
-        "responses":{
-          "200":{
-            "description":"Success.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "subscriptionId":"TEST_CASE_200_SUBSCRIPTION_ID",
-                    "payloadVersion":"1.0",
-                    "destinationId":"TEST_CASE_200_DESTINATION_ID"
-                  }
-                }
-              }
-            ],
-            "examples":{
-              "Successful Response":{
-                "payload":{
-                  "subscriptionId":"7fcacc7e-727b-11e9-8848-1681be663d3e",
-                  "payloadVersion":"1.0",
-                  "destinationId":"3acafc7e-121b-1329-8ae8-1571be663aa2"
-                }
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionResponse"
-            }
-          },
-          "400":{
-            "description":"Request has missing or invalid parameters and cannot be parsed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionResponse"
-            }
-          },
-          "403":{
-            "description":"Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionResponse"
-            }
-          },
-          "404":{
-            "description":"The resource specified does not exist.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionResponse"
-            }
-          },
-          "413":{
-            "description":"The request size exceeded the maximum accepted size.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionResponse"
-            }
-          },
-          "415":{
-            "description":"The request payload is in an unsupported format.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionResponse"
-            }
-          },
-          "429":{
-            "description":"The frequency of requests was greater than allowed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionResponse"
-            }
-          },
-          "500":{
-            "description":"An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionResponse"
-            }
-          },
-          "503":{
-            "description":"Temporary overloading or maintenance of the server.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionResponse"
-            }
-          }
-        }
-      }
-    },
-    "/notifications/v1/subscriptions/{notificationType}/{subscriptionId}":{
-      "delete":{
-        "tags":[
-          "notifications"
-        ],
-        "description":"Deletes the subscription indicated by the subscription identifier and notification type that you specify. The subscription identifier can be for any subscription associated with your application. After you successfully call this operation, notifications will stop being sent for the associated subscription. The deleteSubscriptionById API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "operationId":"deleteSubscriptionById",
-        "parameters":[
-          {
-            "name":"subscriptionId",
-            "in":"path",
-            "description":"The identifier for the subscription that you want to delete.",
-            "required":true,
-            "type":"string"
-          },
-          {
-            "$ref": "#/parameters/NotificationType"
-          }
-        ],
-        "responses":{
-          "200":{
-            "description":"Success.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                  }
-                },
-                "response": {
-                }
-              }
-            ],
-            "examples":{
-              "Successful Operation Response":{
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteSubscriptionByIdResponse"
-            }
-          },
-          "400":{
-            "description":"Request has missing or invalid parameters and cannot be parsed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteSubscriptionByIdResponse"
-            }
-          },
-          "403":{
-            "description":"Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteSubscriptionByIdResponse"
-            }
-          },
-          "404":{
-            "description":"The resource specified does not exist.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteSubscriptionByIdResponse"
-            }
-          },
-          "409":{
-            "description":"The resource specified conflicts with the current state.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteSubscriptionByIdResponse"
-            }
-          },
-          "413":{
-            "description":"The request size exceeded the maximum accepted size.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteSubscriptionByIdResponse"
-            }
-          },
-          "415":{
-            "description":"The request payload is in an unsupported format.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteSubscriptionByIdResponse"
-            }
-          },
-          "429":{
-            "description":"The frequency of requests was greater than allowed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteSubscriptionByIdResponse"
-            }
-          },
-          "500":{
-            "description":"An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteSubscriptionByIdResponse"
-            }
-          },
-          "503":{
-            "description":"Temporary overloading or maintenance of the server.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteSubscriptionByIdResponse"
-            }
-          }
-        }
-      },
-      "get":{
-        "tags":[
-          "notifications"
-        ],
-        "description":"Returns information about a subscription for the specified notification type. The getSubscriptionById API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "operationId":"getSubscriptionById",
-        "parameters":[
-          {
-            "name":"subscriptionId",
-            "in":"path",
-            "description":"The identifier for the subscription that you want to get.",
-            "required":true,
-            "type":"string"
-          },
-          {
-            "$ref": "#/parameters/NotificationType"
-          }
-        ],
-        "responses":{
-          "200":{
-            "description":"Success.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "subscriptionId":"TEST_CASE_200_SUBSCRIPTION_ID",
-                    "payloadVersion":"1.0",
-                    "destinationId":"TEST_CASE_200_DESTINATION_ID"
-                  }
-                }
-              }
-            ],
-            "examples":{
-              "Successful Response":{
-                "payload":{
-                  "subscriptionId":"7fcacc7e-727b-11e9-8848-1681be663d3e",
-                  "payloadVersion":"1.0",
-                  "destinationId":"3acafc7e-121b-1329-8ae8-1571be663aa2"
-                }
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionByIdResponse"
-            }
-          },
-          "400":{
-            "description":"Request has missing or invalid parameters and cannot be parsed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionByIdResponse"
-            }
-          },
-          "403":{
-            "description":"Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionByIdResponse"
-            }
-          },
-          "404":{
-            "description":"The resource specified does not exist.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionResponse"
-            }
-          },
-          "409":{
-            "description":"The resource specified conflicts with the current state.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionByIdResponse"
-            }
-          },
-          "413":{
-            "description":"The request size exceeded the maximum accepted size.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionByIdResponse"
-            }
-          },
-          "415":{
-            "description":"The request payload is in an unsupported format.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionByIdResponse"
-            }
-          },
-          "429":{
-            "description":"The frequency of requests was greater than allowed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionByIdResponse"
-            }
-          },
-          "500":{
-            "description":"An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionByIdResponse"
-            }
-          },
-          "503":{
-            "description":"Temporary overloading or maintenance of the server.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/GetSubscriptionByIdResponse"
-            }
-          }
-        }
-      }
-    },
-    "/notifications/v1/destinations":{
-      "post":{
-        "tags":[
-          "notifications"
-        ],
-        "description":"Creates a destination resource to receive notifications. The createDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "operationId":"createDestination",
-        "parameters":[
-          {
-            "required": true,
-            "in": "body",
-            "name": "body",
+        "responses": {
+          "200": {
+            "description": "Success.",
             "schema": {
-              "$ref": "#/definitions/CreateDestinationRequest"
+              "$ref": "#/definitions/CreateSubscriptionResponse"
+            },
+            "examples": {
+              "Successful Response": {
+                "payload": {
+                  "subscriptionId": "7fcacc7e-727b-11e9-8848-1681be663d3e",
+                  "payloadVersion": "1.0",
+                  "destinationId": "3acafc7e-121b-1329-8ae8-1571be663aa2"
+                }
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "payload": {
+                      "subscriptionId": "TEST_CASE_200_SUBSCRIPTION_ID",
+                      "payloadVersion": "1.0",
+                      "destinationId": "TEST_CASE_200_DESTINATION_ID"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/CreateSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/CreateSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/CreateSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "409": {
+            "description": "The resource specified conflicts with the current state.",
+            "schema": {
+              "$ref": "#/definitions/CreateSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/CreateSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/CreateSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/CreateSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/CreateSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/CreateSubscriptionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           }
+        }
+      }
+    },
+    "/notifications/v1/subscriptions/{notificationType}/{subscriptionId}": {
+      "get": {
+        "tags": [
+          "notifications"
         ],
-        "responses":{
-          "200":{
-            "description":"Success.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+        "description": "Returns information about a subscription for the specified notification type. The getSubscriptionById API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getSubscriptionById",
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "description": "The identifier for the subscription that you want to get.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/NotificationType"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "destinationId":"TEST_CASE_200_DESTINATION_ID",
-                    "resource": {
-                      "sqs": {
-                        "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
-                      }
-                    },
-                    "name":"SQSDestination"
-                  }
+            "examples": {
+              "Successful Response": {
+                "payload": {
+                  "subscriptionId": "7fcacc7e-727b-11e9-8848-1681be663d3e",
+                  "payloadVersion": "1.0",
+                  "destinationId": "3acafc7e-121b-1329-8ae8-1571be663aa2"
                 }
               }
-            ],
-            "examples":{
-              "Successful Response":{
-                "payload":{
-                  "destinationId":"9e7a83ee-7730-11e9-8f9e-2a86e4085a59",
-                  "resource": {
-                    "sqs": {
-                      "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
-                    }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
                   },
-                  "name":"SQSDestination"
+                  "response": {
+                    "payload": {
+                      "subscriptionId": "TEST_CASE_200_SUBSCRIPTION_ID",
+                      "payloadVersion": "1.0",
+                      "destinationId": "TEST_CASE_200_DESTINATION_ID"
+                    }
+                  }
                 }
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/CreateDestinationResponse"
+              ]
             }
           },
-          "400":{
-            "description":"Request has missing or invalid parameters and cannot be parsed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/CreateDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "403":{
-            "description":"Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/CreateDestinationResponse"
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "404":{
-            "description":"The resource specified does not exist.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/CreateDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "409":{
-            "description":"The resource specified conflicts with the current state.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "409": {
+            "description": "The resource specified conflicts with the current state.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/CreateDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "413":{
-            "description":"The request size exceeded the maximum accepted size.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/CreateDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "415":{
-            "description":"The request payload is in an unsupported format.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/CreateDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "429":{
-            "description":"The frequency of requests was greater than allowed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/CreateDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "500":{
-            "description":"An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/CreateDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "503":{
-            "description":"Temporary overloading or maintenance of the server.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/CreateDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           }
         }
       },
-      "get":{
-        "tags":[
+      "delete": {
+        "tags": [
           "notifications"
         ],
-        "description":"Returns information about all destinations. The getDestinations API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "operationId":"getDestinations",
-        "parameters":[
-
+        "description": "Deletes the subscription indicated by the subscription identifier and notification type that you specify. The subscription identifier can be for any subscription associated with your application. After you successfully call this operation, notifications will stop being sent for the associated subscription. The deleteSubscriptionById API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "deleteSubscriptionById",
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "description": "The identifier for the subscription that you want to delete.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/NotificationType"
+          }
         ],
-        "responses":{
-          "200":{
-            "description":"Success.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
+            },
+            "examples": {
+              "Successful Operation Response": {}
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {}
-                },
-                "response": {
-                  "payload": [
-                    {
-                      "destinationId":"TEST_CASE_200",
-                      "resource": {
-                        "sqs": {
-                          "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
-                        }
-                      },
-                      "name":"SQSDestination"
-                    }
-                  ]
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {}
                 }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
-            ],
-            "examples":{
-              "Successful Response":{
-                "payload":[
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "409": {
+            "description": "The resource specified conflicts with the current state.",
+            "schema": {
+              "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/v1/destinations": {
+      "get": {
+        "tags": [
+          "notifications"
+        ],
+        "description": "Returns information about all destinations. The getDestinations API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getDestinations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationsResponse"
+            },
+            "examples": {
+              "Successful Response": {
+                "payload": [
                   {
-                    "destinationId":"9e7a83ee-7730-11e9-8f9e-2a86e4085a59",
-                    "name":"SQSDestination",
+                    "destinationId": "9e7a83ee-7730-11e9-8f9e-2a86e4085a59",
+                    "name": "SQSDestination",
                     "resource": {
                       "sqs": {
                         "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
@@ -1253,170 +831,417 @@
                 ]
               }
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationsResponse"
-            }
-          },
-          "400":{
-            "description":"Request has missing or invalid parameters and cannot be parsed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationsResponse"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "payload": [
+                      {
+                        "destinationId": "TEST_CASE_200",
+                        "resource": {
+                          "sqs": {
+                            "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
+                          }
+                        },
+                        "name": "SQSDestination"
+                      }
+                    ]
+                  }
+                }
+              ]
             }
           },
-          "403":{
-            "description":"Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationsResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationsResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "404":{
-            "description":"The resource specified does not exist.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationsResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationsResponse"
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "409":{
-            "description":"The resource specified conflicts with the current state.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationsResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationsResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "413":{
-            "description":"The request size exceeded the maximum accepted size.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "409": {
+            "description": "The resource specified conflicts with the current state.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationsResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationsResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "415":{
-            "description":"The request payload is in an unsupported format.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationsResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationsResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "429":{
-            "description":"The frequency of requests was greater than allowed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationsResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationsResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "500":{
-            "description":"An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationsResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationsResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "503":{
-            "description":"Temporary overloading or maintenance of the server.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "notifications"
+        ],
+        "description": "Creates a destination resource to receive notifications. The createDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "createDestination",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationResponse"
+            },
+            "examples": {
+              "Successful Response": {
+                "payload": {
+                  "destinationId": "9e7a83ee-7730-11e9-8f9e-2a86e4085a59",
+                  "resource": {
+                    "sqs": {
+                      "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
+                    }
+                  },
+                  "name": "SQSDestination"
+                }
               }
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationsResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "payload": {
+                      "destinationId": "TEST_CASE_200_DESTINATION_ID",
+                      "resource": {
+                        "sqs": {
+                          "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
+                        }
+                      },
+                      "name": "SQSDestination"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "409": {
+            "description": "The resource specified conflicts with the current state.",
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/CreateDestinationResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           }
         }
       }
     },
-    "/notifications/v1/destinations/{destinationId}":{
-      "get":{
-        "tags":[
+    "/notifications/v1/destinations/{destinationId}": {
+      "get": {
+        "tags": [
           "notifications"
         ],
-        "description":"Returns information about the destination that you specify. The getDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "operationId":"getDestination",
-        "parameters":[
+        "description": "Returns information about the destination that you specify. The getDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getDestination",
+        "parameters": [
           {
-            "name":"destinationId",
-            "in":"path",
-            "description":"The identifier generated when you created the destination.",
-            "required":true,
-            "type":"string"
+            "name": "destinationId",
+            "in": "path",
+            "description": "The identifier generated when you created the destination.",
+            "required": true,
+            "type": "string"
           }
         ],
-        "responses":{
-          "200":{
-            "description":"Success.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationResponse"
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "destinationId":"TEST_CASE_200_DESTINATION",
-                    "resource": {
-                      "sqs": {
-                        "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
-                      }
-                    },
-                    "name":"SQSDestination"
-                  }
-                }
-              }
-            ],
-            "examples":{
-              "Successful Response":{
-                "payload":{
-                  "destinationId":"9e7a83ee-7730-11e9-8f9e-2a86e4085a59",
-                  "name":"SQSDestination",
+            "examples": {
+              "Successful Response": {
+                "payload": {
+                  "destinationId": "9e7a83ee-7730-11e9-8f9e-2a86e4085a59",
+                  "name": "SQSDestination",
                   "resource": {
                     "sqs": {
                       "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
@@ -1425,272 +1250,681 @@
                 }
               }
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationResponse"
-            }
-          },
-          "400":{
-            "description":"Request has missing or invalid parameters and cannot be parsed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationResponse"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "payload": {
+                      "destinationId": "TEST_CASE_200_DESTINATION",
+                      "resource": {
+                        "sqs": {
+                          "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
+                        }
+                      },
+                      "name": "SQSDestination"
+                    }
+                  }
+                }
+              ]
             }
           },
-          "403":{
-            "description":"Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "404":{
-            "description":"The resource specified does not exist.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationResponse"
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "409":{
-            "description":"The resource specified conflicts with the current state.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "413":{
-            "description":"The request size exceeded the maximum accepted size.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "409": {
+            "description": "The resource specified conflicts with the current state.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "415":{
-            "description":"The request payload is in an unsupported format.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "429":{
-            "description":"The frequency of requests was greater than allowed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "500":{
-            "description":"An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "503":{
-            "description":"Temporary overloading or maintenance of the server.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/GetDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetDestinationResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           }
         }
       },
-      "delete":{
-        "tags":[
+      "delete": {
+        "tags": [
           "notifications"
         ],
-        "description":"Deletes the destination that you specify. The deleteDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "operationId":"deleteDestination",
-        "parameters":[
+        "description": "Deletes the destination that you specify. The deleteDestination API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "deleteDestination",
+        "parameters": [
           {
-            "name":"destinationId",
-            "in":"path",
-            "description":"The identifier for the destination that you want to delete.",
-            "required":true,
-            "type":"string"
+            "name": "destinationId",
+            "in": "path",
+            "description": "The identifier for the destination that you want to delete.",
+            "required": true,
+            "type": "string"
           }
         ],
-        "responses":{
-          "200":{
-            "description":"Success.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/DeleteDestinationResponse"
+            },
+            "examples": {
+              "Successful Response": {}
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                  }
-                },
-                "response": {
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {}
                 }
-              }
-            ],
-            "examples":{
-              "Successful Response":{
-              }
-            },
-            "schema":{
-              "$ref":"#/definitions/DeleteDestinationResponse"
+              ]
             }
           },
-          "400":{
-            "description":"Request has missing or invalid parameters and cannot be parsed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/DeleteDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/DeleteDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "403":{
-            "description":"Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/DeleteDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/DeleteDestinationResponse"
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "404":{
-            "description":"The resource specified does not exist.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/DeleteDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/DeleteDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "409":{
-            "description":"The resource specified conflicts with the current state.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "409": {
+            "description": "The resource specified conflicts with the current state.",
+            "schema": {
+              "$ref": "#/definitions/DeleteDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/DeleteDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "413":{
-            "description":"The request size exceeded the maximum accepted size.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/DeleteDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/DeleteDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "415":{
-            "description":"The request payload is in an unsupported format.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/DeleteDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/DeleteDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "429":{
-            "description":"The frequency of requests was greater than allowed.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/DeleteDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/DeleteDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "500":{
-            "description":"An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/DeleteDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/DeleteDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           },
-          "503":{
-            "description":"Temporary overloading or maintenance of the server.",
-            "headers":{
-              "x-amzn-RequestId":{
-                "description":"Unique request reference identifier.",
-                "type":"string"
-              }
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/DeleteDestinationResponse"
             },
-            "schema":{
-              "$ref":"#/definitions/DeleteDestinationResponse"
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
             }
           }
         }
       }
+    }
+  },
+  "definitions": {
+    "Subscription": {
+      "type": "object",
+      "required": [
+        "destinationId",
+        "payloadVersion",
+        "subscriptionId"
+      ],
+      "properties": {
+        "subscriptionId": {
+          "type": "string",
+          "description": "The subscription identifier generated when the subscription is created."
+        },
+        "payloadVersion": {
+          "type": "string",
+          "description": "The version of the payload object to be used in the notification."
+        },
+        "destinationId": {
+          "type": "string",
+          "description": "The identifier for the destination where notifications will be delivered."
+        }
+      },
+      "description": "Represents a subscription to receive notifications."
+    },
+    "CreateSubscriptionResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the createSubscription operation.",
+          "$ref": "#/definitions/Subscription"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the createSubscription operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the createSubscription operation."
+    },
+    "CreateSubscriptionRequest": {
+      "type": "object",
+      "properties": {
+        "payloadVersion": {
+          "type": "string",
+          "description": "The version of the payload object to be used in the notification."
+        },
+        "destinationId": {
+          "type": "string",
+          "description": "The identifier for the destination where notifications will be delivered."
+        }
+      },
+      "description": "The request schema for the createSubscription operation."
+    },
+    "GetSubscriptionByIdResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getSubscriptionById operation.",
+          "$ref": "#/definitions/Subscription"
+        },
+        "errors": {
+          "description": "An unexpected condition occurred during the getSubscriptionById operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getSubscriptionById operation."
+    },
+    "GetSubscriptionResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getSubscription operation.",
+          "$ref": "#/definitions/Subscription"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getSubscription operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getSubscription operation."
+    },
+    "DeleteSubscriptionByIdResponse": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "description": "An unexpected condition occurred during the deleteSubscriptionById operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the deleteSubscriptionById operation."
+    },
+    "DestinationList": {
+      "type": "array",
+      "description": "A list of destinations.",
+      "items": {
+        "$ref": "#/definitions/Destination"
+      }
+    },
+    "Destination": {
+      "type": "object",
+      "required": [
+        "destinationId",
+        "name",
+        "resource"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The developer-defined name for this destination.",
+          "maxLength": 256
+        },
+        "destinationId": {
+          "type": "string",
+          "description": "The destination identifier generated when you created the destination."
+        },
+        "resource": {
+          "description": "The resource that will receive notifications associated with this destination.",
+          "$ref": "#/definitions/DestinationResource"
+        }
+      },
+      "description": "Represents a destination created when you call the createDestination operation."
+    },
+    "DestinationResource": {
+      "type": "object",
+      "properties": {
+        "sqs": {
+          "description": "An Amazon Simple Queue Service (SQS) queue destination.",
+          "$ref": "#/definitions/SqsResource"
+        },
+        "eventBridge": {
+          "description": "An Amazon EventBridge destination.",
+          "$ref": "#/definitions/EventBridgeResource"
+        }
+      },
+      "description": "The destination resource types."
+    },
+    "DestinationResourceSpecification": {
+      "type": "object",
+      "properties": {
+        "sqs": {
+          "description": "The information required to create an Amazon Simple Queue Service (SQS) queue destination.",
+          "$ref": "#/definitions/SqsResource"
+        },
+        "eventBridge": {
+          "description": "The information required to create an Amazon EventBridge destination.",
+          "$ref": "#/definitions/EventBridgeResourceSpecification"
+        }
+      },
+      "description": "The information required to create a destination resource. Applications should use one resource type (sqs or eventBridge) per destination."
+    },
+    "SqsResource": {
+      "type": "object",
+      "required": [
+        "arn"
+      ],
+      "properties": {
+        "arn": {
+          "type": "string",
+          "description": "The Amazon Resource Name (ARN) associated with the SQS queue.",
+          "maxLength": 1000,
+          "pattern": "^arn:aws:sqs:\\S+:\\S+:\\S+"
+        }
+      },
+      "description": "The information required to create an Amazon Simple Queue Service (Amazon SQS) queue destination."
+    },
+    "EventBridgeResourceSpecification": {
+      "type": "object",
+      "required": [
+        "accountId",
+        "region"
+      ],
+      "properties": {
+        "region": {
+          "type": "string",
+          "description": "The AWS region in which you will be receiving the notifications."
+        },
+        "accountId": {
+          "type": "string",
+          "description": "The identifier for the AWS account that is responsible for charges related to receiving notifications."
+        }
+      },
+      "description": "The information required to create an Amazon EventBridge destination."
+    },
+    "EventBridgeResource": {
+      "type": "object",
+      "required": [
+        "accountId",
+        "name",
+        "region"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the partner event source associated with the destination.",
+          "maxLength": 256
+        },
+        "region": {
+          "type": "string",
+          "description": "The AWS region in which you receive the notifications. For AWS regions that are supported in Amazon EventBridge, see https://docs.aws.amazon.com/general/latest/gr/ev.html."
+        },
+        "accountId": {
+          "type": "string",
+          "description": "The identifier for the AWS account that is responsible for charges related to receiving notifications."
+        }
+      },
+      "description": "Represents an Amazon EventBridge destination."
+    },
+    "CreateDestinationRequest": {
+      "type": "object",
+      "required": [
+        "name",
+        "resourceSpecification"
+      ],
+      "properties": {
+        "resourceSpecification": {
+          "description": "The information required to create a destination resource. Applications should use one resource type (sqs or eventBridge) per destination.",
+          "$ref": "#/definitions/DestinationResourceSpecification"
+        },
+        "name": {
+          "type": "string",
+          "description": "A developer-defined name to help identify this destination."
+        }
+      },
+      "description": "The request schema for the createDestination operation."
+    },
+    "CreateDestinationResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the createDestination operation.",
+          "$ref": "#/definitions/Destination"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the createDestination operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the createDestination operation."
+    },
+    "GetDestinationResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getDestination operation.",
+          "$ref": "#/definitions/Destination"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getDestination operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getDestination operation."
+    },
+    "GetDestinationsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getDestinations operation.",
+          "$ref": "#/definitions/DestinationList"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the getDestinations operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getDestinations operation."
+    },
+    "DeleteDestinationResponse": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "description": "One or more unexpected errors occurred during the deleteDestination operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the deleteDestination operation."
+    },
+    "ErrorList": {
+      "type": "array",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition in a human-readable form."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    }
+  },
+  "parameters": {
+    "NotificationType": {
+      "name": "notificationType",
+      "in": "path",
+      "description": "The type of notification.\n\n For more information about notification types, see [the Notifications API Use Case Guide](doc:notifications-api-v1-use-case-guide).",
+      "required": true,
+      "type": "string"
     }
   }
 }

@@ -74,6 +74,23 @@ com.squareup.okhttp.Request signedRequest = new
 ## LWAAccessTokenCache
 Interface to implement cache for access token that is returned in LWAClient and reuse the access token until time to live.
 
+## RateLimitConfiguration
+Interface to set and get rateLimit configurations that are used with RateLimiter. RateLimiter is used on client side to restrict the rate at which requests are made. RateLimiter Configuration takes Permit, rate which requests are made and TimeOut 
+
+*Example*
+```
+
+com.squareup.okhttp.Request request = new Request.Builder()
+    .url(...)
+    ...
+    .build();
+    
+ RateLimitConfiguration rateLimitOption = RateLimitConfigurationOnRequests.builder()
+                .rateLimitPermit(...)
+                .waitTimeOutInMilliSeconds(...)
+                .build();
+
+```
 
 ## Resources
 This package features Mustache templates designed for use with [swagger codegen](https://swagger.io/tools/swagger-codegen/). 

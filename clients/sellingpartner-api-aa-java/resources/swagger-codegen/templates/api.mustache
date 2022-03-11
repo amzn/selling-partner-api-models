@@ -50,6 +50,7 @@ import com.amazon.SellingPartnerAPIAA.LWAAccessTokenCache;
 import com.amazon.SellingPartnerAPIAA.LWAAccessTokenCacheImpl;
 import com.amazon.SellingPartnerAPIAA.LWAAuthorizationCredentials;
 import com.amazon.SellingPartnerAPIAA.LWAAuthorizationSigner;
+import com.amazon.SellingPartnerAPIAA.RateLimitConfiguration;
 
 {{#operations}}
 public class {{classname}} {
@@ -281,6 +282,7 @@ public class {{classname}} {
         private LWAAccessTokenCache lwaAccessTokenCache;
         private Boolean disableAccessTokenCache = false;
         private AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider;
+        private RateLimitConfiguration rateLimitConfiguration;
 
         public Builder awsAuthenticationCredentials(AWSAuthenticationCredentials awsAuthenticationCredentials) {
             this.awsAuthenticationCredentials = awsAuthenticationCredentials;
@@ -309,6 +311,16 @@ public class {{classname}} {
         
         public Builder awsAuthenticationCredentialsProvider(AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider) {
             this.awsAuthenticationCredentialsProvider = awsAuthenticationCredentialsProvider;
+            return this;
+        }
+        
+        public Builder rateLimitConfigurationOnRequests(RateLimitConfiguration rateLimitConfiguration){
+            this.rateLimitConfiguration = rateLimitConfiguration;
+            return this;
+        }
+        
+        public Builder disableRateLimitOnRequests() {
+            this.rateLimitConfiguration = null;
             return this;
         }
         
@@ -348,7 +360,8 @@ public class {{classname}} {
             return new {{classname}}(new ApiClient()
                 .setAWSSigV4Signer(awsSigV4Signer)
                 .setLWAAuthorizationSigner(lwaAuthorizationSigner)
-                .setBasePath(endpoint));
+                .setBasePath(endpoint)
+                .setRateLimiter(rateLimitConfiguration));
         }
     }
 }

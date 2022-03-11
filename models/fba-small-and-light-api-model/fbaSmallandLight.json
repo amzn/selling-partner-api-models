@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Selling Partner API for FBA Small And Light",
     "description": "The Selling Partner API for FBA Small and Light lets you help sellers manage their listings in the Small and Light program. The program reduces the cost of fulfilling orders for small and lightweight FBA inventory. You can enroll or remove items from the program and check item eligibility and enrollment status. You can also preview the estimated program fees charged to a seller for items sold while enrolled in the program.",
     "version": "v1",
+    "title": "Selling Partner API for FBA Small And Light",
     "contact": {
       "name": "Selling Partner API Developer Support",
       "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
@@ -23,261 +23,6 @@
   "produces": [
     "application/json"
   ],
-  "definitions": {
-    "MarketplaceId": {
-      "description": "A marketplace identifier.",
-      "type": "string"
-    },
-    "SellerSKU": {
-      "description": "Identifies an item in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit.",
-      "type": "string"
-    },
-    "Error": {
-      "type": "object",
-      "required": [
-        "code",
-        "message"
-      ],
-      "description": "Error response returned when the request is unsuccessful.",
-      "properties": {
-        "code": {
-          "description": "An error code that identifies the type of error that occurred.",
-          "type": "string"
-        },
-        "message": {
-          "description": "A message that describes the error condition in a human-readable form.",
-          "type": "string"
-        },
-        "details": {
-          "description": "Additional information that can help the caller understand or fix the issue.",
-          "type": "string"
-        }
-      }
-    },
-    "ErrorList": {
-      "type": "object",
-      "description": "A list of error responses returned when a request is unsuccessful.",
-      "properties": {
-        "errors": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Error"
-          }
-        }
-      }
-    },
-    "SmallAndLightEnrollmentStatus": {
-      "description": "The Small and Light enrollment status of the item.",
-      "type": "string",
-      "enum": [
-        "ENROLLED",
-        "NOT_ENROLLED"
-      ],
-      "x-docgen-enum-table-extension": [
-        {
-          "value": "ENROLLED",
-          "description": "The Small and Light enrollment status is enrolled."
-        },
-        {
-          "value": "NOT_ENROLLED",
-          "description": "The Small and Light enrollment status is not enrolled."
-        }
-      ]
-    },
-    "SmallAndLightEligibilityStatus": {
-      "description": "The Small and Light eligibility status of the item.",
-      "enum": [
-        "ELIGIBLE",
-        "NOT_ELIGIBLE"
-      ],
-      "x-docgen-enum-table-extension": [
-        {
-          "value": "ELIGIBLE",
-          "description": "The Small and Light eligibility status is eligible."
-        },
-        {
-          "value": "NOT_ELIGIBLE",
-          "description": "The Small and Light eligibility status is not eligible."
-        }
-      ],
-      "type": "string"
-    },
-    "SmallAndLightEnrollment": {
-      "description": "The Small and Light enrollment status of the item indicated by the specified seller SKU.",
-      "type": "object",
-      "required": [
-        "marketplaceId",
-        "sellerSKU",
-        "status"
-      ],
-      "properties": {
-        "marketplaceId": {
-          "$ref": "#/definitions/MarketplaceId"
-        },
-        "sellerSKU": {
-          "$ref": "#/definitions/SellerSKU"
-        },
-        "status": {
-          "$ref": "#/definitions/SmallAndLightEnrollmentStatus"
-        }
-      }
-    },
-    "SmallAndLightEligibility": {
-      "description": "The Small and Light eligibility status of the item indicated by the specified seller SKU.",
-      "type": "object",
-      "required": [
-        "marketplaceId",
-        "sellerSKU",
-        "status"
-      ],
-      "properties": {
-        "marketplaceId": {
-          "$ref": "#/definitions/MarketplaceId"
-        },
-        "sellerSKU": {
-          "$ref": "#/definitions/SellerSKU"
-        },
-        "status": {
-          "$ref": "#/definitions/SmallAndLightEligibilityStatus"
-        }
-      }
-    },
-    "SmallAndLightFeePreviewRequest": {
-      "description": "Request schema for submitting items for which to retrieve fee estimates.",
-      "type": "object",
-      "required": [
-        "items",
-        "marketplaceId"
-      ],
-      "properties": {
-        "marketplaceId": {
-          "$ref": "#/definitions/MarketplaceId"
-        },
-        "items": {
-          "description": "A list of items for which to retrieve fee estimates (limit: 25).",
-          "type": "array",
-          "maxItems": 25,
-          "items": {
-            "$ref": "#/definitions/Item"
-          }
-        }
-      }
-    },
-    "SmallAndLightFeePreviews": {
-      "type": "object",
-      "properties": {
-        "data": {
-          "type": "array",
-          "description": "A list of fee estimates for the requested items. The order of the fee estimates will follow the same order as the items in the request, with duplicates removed.",
-          "items": {
-            "$ref": "#/definitions/FeePreview"
-          }
-        }
-      }
-    },
-    "Item": {
-      "description": "An item to be sold.",
-      "type": "object",
-      "required": [
-        "asin",
-        "price"
-      ],
-      "properties": {
-        "asin": {
-          "type": "string",
-          "description": "The Amazon Standard Identification Number (ASIN) value used to identify the item."
-        },
-        "price": {
-          "description": "The price that the seller plans to charge for the item.",
-          "$ref": "#/definitions/MoneyType"
-        }
-      }
-    },
-    "FeePreview": {
-      "description": "The fee estimate for a specific item.",
-      "type": "object",
-      "properties": {
-        "asin": {
-          "type": "string",
-          "description": "The Amazon Standard Identification Number (ASIN) value used to identify the item."
-        },
-        "price": {
-          "description": "The price that the seller plans to charge for the item.",
-          "$ref": "#/definitions/MoneyType"
-        },
-        "feeBreakdown": {
-          "description": "A list of the Small and Light fees for the item.",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/FeeLineItem"
-          }
-        },
-        "totalFees": {
-          "description": "The total fees charged if the item participated in the Small and Light program.",
-          "$ref": "#/definitions/MoneyType"
-        },
-        "errors": {
-          "description": "One or more unexpected errors occurred during the getSmallAndLightFeePreview operation.",
-          "$ref": "#/definitions/ErrorList"
-        }
-      }
-    },
-    "FeeLineItem": {
-      "description": "Fee details for a specific fee.",
-      "type": "object",
-      "required": [
-        "feeType",
-        "feeCharge"
-      ],
-      "properties": {
-        "feeType": {
-          "description": "The type of fee charged to the seller.",
-          "type": "string",
-          "enum": [
-            "FBAWeightBasedFee",
-            "FBAPerOrderFulfillmentFee",
-            "FBAPerUnitFulfillmentFee",
-            "Commission"
-          ],      
-          "x-docgen-enum-table-extension": [
-            {
-              "value": "FBAWeightBasedFee",
-              "description": "The FBA weight-based fee (weight handling)."
-            },
-            {
-              "value": "FBAPerOrderFulfillmentFee",
-              "description": "The FBA per-order fulfillment fee (order handling)."
-            },
-            {
-              "value": "FBAPerUnitFulfillmentFee",
-              "description": "The FBA fulfillment fee (Pick & Pack)."
-            },
-            {
-              "value": "Commission",
-              "description": "The commission - referral fee."
-            }
-          ]
-        },
-        "feeCharge": {
-          "description": "Amount charged to the seller for the specific fee type.",
-          "$ref": "#/definitions/MoneyType"
-        }
-      }
-    },
-    "MoneyType": {
-      "type": "object",
-      "properties": {
-        "currencyCode": {
-          "description": "The currency code in ISO 4217 format.",
-          "type": "string"
-        },
-        "amount": {
-          "description": "The monetary value.",
-          "type": "number"
-        }
-      }
-    }
-  },
   "paths": {
     "/fba/smallAndLight/v1/enrollments/{sellerSKU}": {
       "get": {
@@ -286,349 +31,399 @@
         ],
         "description": "Returns the Small and Light enrollment status for the item indicated by the specified seller SKU in the specified marketplace.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getSmallAndLightEnrollmentBySellerSKU",
-        "responses": {
-          "200": {
-            "description": "Success.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_ENROLLED_IN_SMALL_AND_LIGHT"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "marketplaceId": "ATVPDKIKX0DER",
-                  "sellerSKU": "SKU_ENROLLED_IN_SMALL_AND_LIGHT",
-                  "status": "ENROLLED"
-                }
-              }
-            ],
-            "schema": {
-              "$ref": "#/definitions/SmallAndLightEnrollment"
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_400"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Invalid input."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "403": {
-            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_403"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "Unauthorized",
-                      "message": "Access to requested resource is denied."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "404": {
-            "description": "The resource specified does not exist.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_404"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "NotFound",
-                      "message": "Requested resource is not found"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "413": {
-            "description": "The request size exceeded the maximum accepted size.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_413"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "PayloadTooLarge",
-                      "message": "Payload of the request is too large."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "415": {
-            "description": "The request payload is in an unsupported format.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_415"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "UnsupportedType",
-                      "message": "The entity of the request is of unsupported type."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_429"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "TooManyRequests",
-                      "message": "Total number of requests exceed your allowed limits."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_500"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InternalServerError",
-                      "message": "Server encountered an unexpected condition while processing your request."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_503"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "ServiceUnavailable",
-                      "message": "Server is temporarily unavailable."
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
         "parameters": [
           {
-            "description": "The seller SKU that identifies the item.",
-            "in": "path",
             "name": "sellerSKU",
+            "in": "path",
+            "description": "The seller SKU that identifies the item.",
             "required": true,
             "type": "string"
           },
           {
-            "description": "The marketplace for which the enrollment status is retrieved. Note: Accepts a single marketplace only.",
-            "in": "query",
             "name": "marketplaceIds",
+            "in": "query",
+            "description": "The marketplace for which the enrollment status is retrieved. Note: Accepts a single marketplace only.",
             "required": true,
             "type": "array",
             "items": {
               "type": "string"
             },
-            "maxItems": 1   
+            "maxItems": 1
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/SmallAndLightEnrollment"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_ENROLLED_IN_SMALL_AND_LIGHT"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "sellerSKU": "SKU_ENROLLED_IN_SMALL_AND_LIGHT",
+                    "status": "ENROLLED"
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_400"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid input."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_403"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "Unauthorized",
+                        "message": "Access to requested resource is denied."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_404"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "NotFound",
+                        "message": "Requested resource is not found"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_413"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "PayloadTooLarge",
+                        "message": "Payload of the request is too large."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_415"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "UnsupportedType",
+                        "message": "The entity of the request is of unsupported type."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_429"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "TooManyRequests",
+                        "message": "Total number of requests exceed your allowed limits."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_500"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InternalServerError",
+                        "message": "Server encountered an unexpected condition while processing your request."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_503"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ServiceUnavailable",
+                        "message": "Server is temporarily unavailable."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
       },
       "put": {
         "tags": [
@@ -636,341 +431,18 @@
         ],
         "description": "Enrolls the item indicated by the specified seller SKU in the Small and Light program in the specified marketplace. If the item is not eligible, the ineligibility reasons are returned.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "putSmallAndLightEnrollmentBySellerSKU",
-        "responses": {
-          "200": {
-            "description": "Success.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_ELIGIBLE_FOR_SMALL_AND_LIGHT"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "marketplaceId": "ATVPDKIKX0DER",
-                  "sellerSKU": "SKU_ELIGIBLE_FOR_SMALL_AND_LIGHT",
-                  "status": "ENROLLED"
-                }
-              }
-            ],
-            "schema": {
-              "$ref": "#/definitions/SmallAndLightEnrollment"
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_400"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Invalid input."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "403": {
-            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_403"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "Unauthorized",
-                      "message": "Access to requested resource is denied."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "404": {
-            "description": "The resource specified does not exist.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_404"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "NotFound",
-                      "message": "Requested resource is not found"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "413": {
-            "description": "The request size exceeded the maximum accepted size.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_413"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "PayloadTooLarge",
-                      "message": "Payload of the request is too large."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "415": {
-            "description": "The request payload is in an unsupported format.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_415"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "UnsupportedType",
-                      "message": "The entity of the request is of unsupported type."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_429"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "TooManyRequests",
-                      "message": "Total number of requests exceed your allowed limits."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_500"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InternalServerError",
-                      "message": "Server encountered an unexpected condition while processing your request."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_503"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "ServiceUnavailable",
-                      "message": "Server is temporarily unavailable."
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
         "parameters": [
           {
-            "description": "The seller SKU that identifies the item.",
-            "in": "path",
             "name": "sellerSKU",
+            "in": "path",
+            "description": "The seller SKU that identifies the item.",
             "required": true,
             "type": "string"
           },
           {
-            "description": "The marketplace in which to enroll the item. Note: Accepts a single marketplace only.",
-            "in": "query",
             "name": "marketplaceIds",
+            "in": "query",
+            "description": "The marketplace in which to enroll the item. Note: Accepts a single marketplace only.",
             "required": true,
             "type": "array",
             "items": {
@@ -978,7 +450,380 @@
             },
             "maxItems": 1
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/SmallAndLightEnrollment"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_ELIGIBLE_FOR_SMALL_AND_LIGHT"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "sellerSKU": "SKU_ELIGIBLE_FOR_SMALL_AND_LIGHT",
+                    "status": "ENROLLED"
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_400"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid input."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_403"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "Unauthorized",
+                        "message": "Access to requested resource is denied."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_404"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "NotFound",
+                        "message": "Requested resource is not found"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_413"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "PayloadTooLarge",
+                        "message": "Payload of the request is too large."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_415"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "UnsupportedType",
+                        "message": "The entity of the request is of unsupported type."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_429"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "TooManyRequests",
+                        "message": "Total number of requests exceed your allowed limits."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_500"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InternalServerError",
+                        "message": "Server encountered an unexpected condition while processing your request."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_503"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ServiceUnavailable",
+                        "message": "Server is temporarily unavailable."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
       },
       "delete": {
         "tags": [
@@ -986,334 +831,18 @@
         ],
         "description": "Removes the item indicated by the specified seller SKU from the Small and Light program in the specified marketplace. If the item is not eligible for disenrollment, the ineligibility reasons are returned.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "deleteSmallAndLightEnrollmentBySellerSKU",
-        "responses": {
-          "204": {
-            "description": "Success.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_ENROLLED_FOR_SMALL_AND_LIGHT"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {}
-              }
-            ]
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_400"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Invalid input."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "403": {
-            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_403"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "Unauthorized",
-                      "message": "Access to requested resource is denied."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "404": {
-            "description": "The resource specified does not exist.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_404"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "NotFound",
-                      "message": "Requested resource is not found"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "413": {
-            "description": "The request size exceeded the maximum accepted size.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_413"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "PayloadTooLarge",
-                      "message": "Payload of the request is too large."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "415": {
-            "description": "The request payload is in an unsupported format.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_415"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "UnsupportedType",
-                      "message": "The entity of the request is of unsupported type."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_429"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "TooManyRequests",
-                      "message": "Total number of requests exceed your allowed limits."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_500"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InternalServerError",
-                      "message": "Server encountered an unexpected condition while processing your request."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_503"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "ServiceUnavailable",
-                      "message": "Server is temporarily unavailable."
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
         "parameters": [
           {
-            "description": "The seller SKU that identifies the item.",
-            "in": "path",
             "name": "sellerSKU",
+            "in": "path",
+            "description": "The seller SKU that identifies the item.",
             "required": true,
             "type": "string"
           },
           {
-            "description": "The marketplace in which to remove the item from the Small and Light program. Note: Accepts a single marketplace only.",
-            "in": "query",
             "name": "marketplaceIds",
+            "in": "query",
+            "description": "The marketplace in which to remove the item from the Small and Light program. Note: Accepts a single marketplace only.",
             "required": true,
             "type": "array",
             "items": {
@@ -1321,9 +850,374 @@
             },
             "maxItems": 1
           }
-        ]
-      },
-      "parameters": []
+        ],
+        "responses": {
+          "204": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_ENROLLED_FOR_SMALL_AND_LIGHT"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {}
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_400"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid input."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_403"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "Unauthorized",
+                        "message": "Access to requested resource is denied."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_404"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "NotFound",
+                        "message": "Requested resource is not found"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_413"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "PayloadTooLarge",
+                        "message": "Payload of the request is too large."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_415"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "UnsupportedType",
+                        "message": "The entity of the request is of unsupported type."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_429"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "TooManyRequests",
+                        "message": "Total number of requests exceed your allowed limits."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_500"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InternalServerError",
+                        "message": "Server encountered an unexpected condition while processing your request."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_503"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ServiceUnavailable",
+                        "message": "Server is temporarily unavailable."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
     },
     "/fba/smallAndLight/v1/eligibilities/{sellerSKU}": {
       "get": {
@@ -1332,341 +1226,18 @@
         ],
         "description": "Returns the Small and Light program eligibility status of the item indicated by the specified seller SKU in the specified marketplace. If the item is not eligible, the ineligibility reasons are returned.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getSmallAndLightEligibilityBySellerSKU",
-        "responses": {
-          "200": {
-            "description": "Success.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_ELIGIBLE_FOR_SMALL_AND_LIGHT"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "marketplaceId": "ATVPDKIKX0DER",
-                  "sellerSKU": "SKU_ELIGIBLE_FOR_SMALL_AND_LIGHT",
-                  "status": "ELIGIBLE"
-                }
-              }
-            ],
-            "schema": {
-              "$ref": "#/definitions/SmallAndLightEligibility"
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_400"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Invalid input."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "403": {
-            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_403"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "Unauthorized",
-                      "message": "Access to requested resource is denied."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "404": {
-            "description": "The resource specified does not exist.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_404"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "NotFound",
-                      "message": "Requested resource is not found"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "413": {
-            "description": "The request size exceeded the maximum accepted size.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_413"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "PayloadTooLarge",
-                      "message": "Payload of the request is too large."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "415": {
-            "description": "The request payload is in an unsupported format.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_415"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "UnsupportedType",
-                      "message": "The entity of the request is of unsupported type."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_429"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "TooManyRequests",
-                      "message": "Total number of requests exceed your allowed limits."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_500"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InternalServerError",
-                      "message": "Server encountered an unexpected condition while processing your request."
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "sellerSKU": {
-                      "value": "SKU_503"
-                    },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "ServiceUnavailable",
-                      "message": "Server is temporarily unavailable."
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
         "parameters": [
           {
-            "description": "The seller SKU that identifies the item.",
-            "in": "path",
             "name": "sellerSKU",
+            "in": "path",
+            "description": "The seller SKU that identifies the item.",
             "required": true,
             "type": "string"
           },
           {
-            "description": "The marketplace for which the eligibility status is retrieved. NOTE: Accepts a single marketplace only.",
-            "in": "query",
             "name": "marketplaceIds",
+            "in": "query",
+            "description": "The marketplace for which the eligibility status is retrieved. NOTE: Accepts a single marketplace only.",
             "required": true,
             "type": "array",
             "items": {
@@ -1674,9 +1245,381 @@
             },
             "maxItems": 1
           }
-        ]
-      },
-      "parameters": []
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/SmallAndLightEligibility"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_ELIGIBLE_FOR_SMALL_AND_LIGHT"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "sellerSKU": "SKU_ELIGIBLE_FOR_SMALL_AND_LIGHT",
+                    "status": "ELIGIBLE"
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_400"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid input."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_403"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "Unauthorized",
+                        "message": "Access to requested resource is denied."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_404"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "NotFound",
+                        "message": "Requested resource is not found"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_413"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "PayloadTooLarge",
+                        "message": "Payload of the request is too large."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_415"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "UnsupportedType",
+                        "message": "The entity of the request is of unsupported type."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_429"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "TooManyRequests",
+                        "message": "Total number of requests exceed your allowed limits."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_500"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InternalServerError",
+                        "message": "Server encountered an unexpected condition while processing your request."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerSKU": {
+                        "value": "SKU_503"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                    }
+                  }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ServiceUnavailable",
+                        "message": "Server is temporarily unavailable."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
     },
     "/fba/smallAndLight/v1/feePreviews": {
       "post": {
@@ -1698,17 +1641,31 @@
         "responses": {
           "200": {
             "description": "Success.",
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "marketplaceId": "ATVPDKIKX0DER",
-                        "items": [
-                          {
-                            "asin": "B076ZL9PB5",
-                            "price": {
+            "schema": {
+              "$ref": "#/definitions/SmallAndLightFeePreviews"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "ATVPDKIKX0DER",
+                          "items": [
+                            {
+                              "asin": "B076ZL9PB5",
+                              "price": {
                               "currencyCode": "USD",
                               "amount": 6.5
                             }
@@ -1764,16 +1721,8 @@
                     }
                   ]
                 }
-              }
-            ],
-            "schema": {
-              "$ref": "#/definitions/SmallAndLightFeePreviews"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
+                }
+              ]
             }
           },
           "400": {
@@ -1782,33 +1731,39 @@
               "$ref": "#/definitions/ErrorList"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "marketplaceId": "TEST_CASE_400",
-                        "items": []
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "TEST_CASE_400",
+                          "items": []
+                        }
                       }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid input."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Invalid input."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1816,33 +1771,39 @@
               "$ref": "#/definitions/ErrorList"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "marketplaceId": "TEST_CASE_401",
-                        "items": []
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "TEST_CASE_401",
+                          "items": []
+                        }
                       }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "Unauthorized",
+                        "message": "Access to requested resource is denied."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "Unauthorized",
-                      "message": "Access to requested resource is denied."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "403": {
             "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
@@ -1855,28 +1816,30 @@
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "marketplaceId": "TEST_CASE_403",
-                        "items": []
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "TEST_CASE_403",
+                          "items": []
+                        }
                       }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "Unauthorized",
+                        "message": "Access to requested resource is denied."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "Unauthorized",
-                      "message": "Access to requested resource is denied."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "404": {
             "description": "The resource specified does not exist.",
@@ -1884,33 +1847,39 @@
               "$ref": "#/definitions/ErrorList"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "marketplaceId": "TEST_CASE_404",
-                        "items": []
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "TEST_CASE_404",
+                          "items": []
+                        }
                       }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "NotFound",
+                        "message": "The requested resource doesn't exist."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "NotFound",
-                      "message": "The requested resource doesn't exist."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "429": {
             "description": "The frequency of requests was greater than allowed.",
@@ -1918,33 +1887,39 @@
               "$ref": "#/definitions/ErrorList"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "marketplaceId": "TEST_CASE_429",
-                        "items": []
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "TEST_CASE_429",
+                          "items": []
+                        }
                       }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "QuotaExceeded",
+                        "message": "You exceeded your quota for the requested resource."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "QuotaExceeded",
-                      "message": "You exceeded your quota for the requested resource."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "500": {
             "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
@@ -1952,33 +1927,39 @@
               "$ref": "#/definitions/ErrorList"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "marketplaceId": "TEST_CASE_500",
-                        "items": []
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "TEST_CASE_500",
+                          "items": []
+                        }
                       }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InternalFailure",
+                        "message": "We encountered an internal error. Please try again."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InternalFailure",
-                      "message": "We encountered an internal error. Please try again."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "503": {
             "description": "Temporary overloading or maintenance of the server.",
@@ -1986,37 +1967,300 @@
               "$ref": "#/definitions/ErrorList"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "marketplaceId": "TEST_CASE_503",
-                        "items": []
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "TEST_CASE_503",
+                          "items": []
+                        }
                       }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ServiceUnavailable",
+                        "message": "Service is temporarily unavailable. Please try again."
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "ServiceUnavailable",
-                      "message": "Service is temporarily unavailable. Please try again."
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "MarketplaceId": {
+      "type": "string",
+      "description": "A marketplace identifier."
+    },
+    "SellerSKU": {
+      "type": "string",
+      "description": "Identifies an item in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit."
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition in a human-readable form."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional information that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    },
+    "ErrorList": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Error"
           }
         }
       },
-      "parameters": []
+      "description": "A list of error responses returned when a request is unsuccessful."
+    },
+    "SmallAndLightEnrollmentStatus": {
+      "type": "string",
+      "description": "The Small and Light enrollment status of the item.",
+      "enum": [
+        "ENROLLED",
+        "NOT_ENROLLED"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "ENROLLED",
+          "description": "The Small and Light enrollment status is enrolled."
+        },
+        {
+          "value": "NOT_ENROLLED",
+          "description": "The Small and Light enrollment status is not enrolled."
+        }
+      ]
+    },
+    "SmallAndLightEligibilityStatus": {
+      "type": "string",
+      "description": "The Small and Light eligibility status of the item.",
+      "enum": [
+        "ELIGIBLE",
+        "NOT_ELIGIBLE"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "ELIGIBLE",
+          "description": "The Small and Light eligibility status is eligible."
+        },
+        {
+          "value": "NOT_ELIGIBLE",
+          "description": "The Small and Light eligibility status is not eligible."
+        }
+      ]
+    },
+    "SmallAndLightEnrollment": {
+      "type": "object",
+      "required": [
+        "marketplaceId",
+        "sellerSKU",
+        "status"
+      ],
+      "properties": {
+        "marketplaceId": {
+          "$ref": "#/definitions/MarketplaceId"
+        },
+        "sellerSKU": {
+          "$ref": "#/definitions/SellerSKU"
+        },
+        "status": {
+          "$ref": "#/definitions/SmallAndLightEnrollmentStatus"
+        }
+      },
+      "description": "The Small and Light enrollment status of the item indicated by the specified seller SKU."
+    },
+    "SmallAndLightEligibility": {
+      "type": "object",
+      "required": [
+        "marketplaceId",
+        "sellerSKU",
+        "status"
+      ],
+      "properties": {
+        "marketplaceId": {
+          "$ref": "#/definitions/MarketplaceId"
+        },
+        "sellerSKU": {
+          "$ref": "#/definitions/SellerSKU"
+        },
+        "status": {
+          "$ref": "#/definitions/SmallAndLightEligibilityStatus"
+        }
+      },
+      "description": "The Small and Light eligibility status of the item indicated by the specified seller SKU."
+    },
+    "SmallAndLightFeePreviewRequest": {
+      "type": "object",
+      "required": [
+        "items",
+        "marketplaceId"
+      ],
+      "properties": {
+        "marketplaceId": {
+          "$ref": "#/definitions/MarketplaceId"
+        },
+        "items": {
+          "type": "array",
+          "description": "A list of items for which to retrieve fee estimates (limit: 25).",
+          "items": {
+            "$ref": "#/definitions/Item"
+          },
+          "maxItems": 25
+        }
+      },
+      "description": "Request schema for submitting items for which to retrieve fee estimates."
+    },
+    "SmallAndLightFeePreviews": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "description": "A list of fee estimates for the requested items. The order of the fee estimates will follow the same order as the items in the request, with duplicates removed.",
+          "items": {
+            "$ref": "#/definitions/FeePreview"
+          }
+        }
+      }
+    },
+    "Item": {
+      "type": "object",
+      "required": [
+        "asin",
+        "price"
+      ],
+      "properties": {
+        "asin": {
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) value used to identify the item."
+        },
+        "price": {
+          "description": "The price that the seller plans to charge for the item.",
+          "$ref": "#/definitions/MoneyType"
+        }
+      },
+      "description": "An item to be sold."
+    },
+    "FeePreview": {
+      "type": "object",
+      "properties": {
+        "asin": {
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) value used to identify the item."
+        },
+        "price": {
+          "description": "The price that the seller plans to charge for the item.",
+          "$ref": "#/definitions/MoneyType"
+        },
+        "feeBreakdown": {
+          "type": "array",
+          "description": "A list of the Small and Light fees for the item.",
+          "items": {
+            "$ref": "#/definitions/FeeLineItem"
+          }
+        },
+        "totalFees": {
+          "description": "The total fees charged if the item participated in the Small and Light program.",
+          "$ref": "#/definitions/MoneyType"
+        },
+        "errors": {
+          "type": "array",
+          "description": "One or more unexpected errors occurred during the getSmallAndLightFeePreview operation.",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      },
+      "description": "The fee estimate for a specific item."
+    },
+    "FeeLineItem": {
+      "type": "object",
+      "required": [
+        "feeCharge",
+        "feeType"
+      ],
+      "properties": {
+        "feeType": {
+          "type": "string",
+          "description": "The type of fee charged to the seller.",
+          "enum": [
+            "FBAWeightBasedFee",
+            "FBAPerOrderFulfillmentFee",
+            "FBAPerUnitFulfillmentFee",
+            "Commission"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "FBAWeightBasedFee",
+              "description": "The FBA weight-based fee (weight handling)."
+            },
+            {
+              "value": "FBAPerOrderFulfillmentFee",
+              "description": "The FBA per-order fulfillment fee (order handling)."
+            },
+            {
+              "value": "FBAPerUnitFulfillmentFee",
+              "description": "The FBA fulfillment fee (Pick & Pack)."
+            },
+            {
+              "value": "Commission",
+              "description": "The commission - referral fee."
+            }
+          ]
+        },
+        "feeCharge": {
+          "description": "Amount charged to the seller for the specific fee type.",
+          "$ref": "#/definitions/MoneyType"
+        }
+      },
+      "description": "Fee details for a specific fee."
+    },
+    "MoneyType": {
+      "type": "object",
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "description": "The currency code in ISO 4217 format."
+        },
+        "amount": {
+          "type": "number",
+          "description": "The monetary value."
+        }
+      }
     }
   }
 }
