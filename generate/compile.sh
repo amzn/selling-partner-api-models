@@ -4,6 +4,7 @@ cd ..
 rm -rf generated
 basePackage="com.amazon.sellingpartner"
 models=(models/*/*)
+#models=(models/*/listingsIte*)
 
 # For every model in the models/ directory, and all subdirectories:
 for model in "${models[@]}"
@@ -25,8 +26,8 @@ do
         --template-dir clients/sellingpartner-api-aa-java/resources/swagger-codegen/templates \
         --output generated/spapi \
         --invoker-package "$basePackage" \
-        --api-package "$basePackage.api" \
-        --model-package "$basePackage.model" \
+        --api-package "$basePackage.api.$model" \
+        --model-package "$basePackage.model.$model" \
         --group-id "com.amazon" \
         --artifact-id "selling-partner-api" \
         --additional-properties dateLibrary=java8
@@ -40,3 +41,7 @@ cd ../..
 cp -r generate/pom.xml generated/spapi
 cd generated/spapi
 mvn clean package
+
+# install into jazva/lib  check path
+# fix path and run manually from root folder
+# sudo mvn install:install-file -Dfile=generated/spapi/target/selling-partner-api-1.0.1.jar -Dsources=generated/spapi/target/selling-partner-api-1.0.1-sources.jar -Djavadoc=generated/spapi/target/selling-partner-api-1.0.1-javadoc.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=selling-partner-api -Dversion=1.0.1 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
