@@ -74,24 +74,20 @@ namespace Amazon.SellingPartnerAPIAA
         /// <returns>Query parameters in canonical order with URL encoding</returns>
         public virtual string ExtractCanonicalQueryString(IRestRequest request)
         {
-            IDictionary<string, string> queryParameters = request.Parameters
-                .Where(parameter => ParameterType.QueryString.Equals(parameter.Type))
-                .ToDictionary(header => header.Name.Trim().ToString(), header => header.Value.ToString());
-
-            SortedDictionary<string, string> sortedqueryParameters = new SortedDictionary<string, string>(queryParameters);
+            IEnumerable<Parameter> queryParameters = request.Parameters
+                .Where(parameter => ParameterType.QueryString.Equals(parameter.Type)).OrderBy(p => (p.Name ?? "") + p.Value);
 
             StringBuilder canonicalQueryString = new StringBuilder();
-            foreach (var key in sortedqueryParameters.Keys)
+            foreach (var parameter in queryParameters)
             {
                 if (canonicalQueryString.Length > 0)
                 {
                     canonicalQueryString.Append("&");
                 }
                 canonicalQueryString.AppendFormat("{0}={1}",
-                    Utils.UrlEncode(key),
-                    Utils.UrlEncode(sortedqueryParameters[key]));
+                    Utils.UrlEncode(parameter.Name?.Trim()),
+                    Utils.UrlEncode(parameter.Value?.ToString()));
             }
-
             return canonicalQueryString.ToString();
         }
 
