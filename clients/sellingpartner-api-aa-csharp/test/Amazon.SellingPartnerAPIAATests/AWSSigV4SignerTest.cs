@@ -43,7 +43,7 @@ namespace Amazon.SellingPartnerAPIAATests
             string expectedStringToSign = "testStringToSign";
             mockAWSSignerHelper.Setup(signerHelper => signerHelper.InitializeHeaders(request, TestHost))
                                .Returns(signingDate);
-            mockAWSSignerHelper.Setup(signerHelper => signerHelper.ExtractCanonicalURIParameters(request.Resource))
+            mockAWSSignerHelper.Setup(signerHelper => signerHelper.ExtractCanonicalURIParameters(request))
                                .Returns("testURIParameters");
             mockAWSSignerHelper.Setup(signerHelper => signerHelper.ExtractCanonicalQueryString(request))
                                .Returns("testCanonicalQueryString");
@@ -63,7 +63,7 @@ namespace Amazon.SellingPartnerAPIAATests
             IRestRequest actualRestRequest = sigV4SignerUnderTest.Sign(request, TestHost);
 
             mockAWSSignerHelper.Verify(signerHelper => signerHelper.InitializeHeaders(request, TestHost));
-            mockAWSSignerHelper.Verify(signerHelper => signerHelper.ExtractCanonicalURIParameters(request.Resource));
+            mockAWSSignerHelper.Verify(signerHelper => signerHelper.ExtractCanonicalURIParameters(request));
             mockAWSSignerHelper.Verify(signerHelper => signerHelper.ExtractCanonicalQueryString(request));
             mockAWSSignerHelper.Verify(signerHelper => signerHelper.ExtractCanonicalHeaders(request));
             mockAWSSignerHelper.Verify(signerHelper => signerHelper.ExtractSignedHeaders(request));
