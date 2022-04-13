@@ -1,0 +1,1256 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Direct Fulfillment Shipping provides programmatic access to a direct fulfillment vendor's shipping data.",
+    "version": "2021-12-28",
+    "title": "Selling Partner API for Direct Fulfillment Shipping",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/vendor/directFulfillment/shipping/2021-12-28/shippingLabels": {
+      "get": {
+        "tags": [
+          "vendorShippingLabels"
+        ],
+        "description": "Returns a list of shipping labels created during the time frame that you specify. You define that time frame using the createdAfter and createdBefore parameters. You must use both of these parameters. The date range to search must not be more than 7 days.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 10 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values then those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "getShippingLabels",
+        "parameters": [
+          {
+            "name": "shipFromPartyId",
+            "in": "query",
+            "description": "The vendor warehouseId for order fulfillment. If not specified, the result will contain orders for all warehouses.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The limit to the number of records returned.",
+            "required": false,
+            "type": "integer",
+            "maximum": 100,
+            "minimum": 1
+          },
+          {
+            "name": "createdAfter",
+            "in": "query",
+            "description": "Shipping labels that became available after this date and time will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": true,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "createdBefore",
+            "in": "query",
+            "description": "Shipping labels that became available before this date and time will be included in the result. Must be in ISO-8601 date/time format.",
+            "required": true,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Sort ASC or DESC by order creation date.",
+            "required": false,
+            "type": "string",
+            "default": "ASC",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "ASC",
+                "description": "Sort in ascending order by order creation date."
+              },
+              {
+                "value": "DESC",
+                "description": "Sort in descending order by order creation date."
+              }
+            ]
+          },
+          {
+            "name": "nextToken",
+            "in": "query",
+            "description": "Used for pagination when there are more ship labels than the specified result size limit. The token value is returned in the previous API call.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ShippingLabelList"
+            },
+            "examples": {
+              "pagination": {
+                "nextToken": "MDAwMDAwMDAwMQ=="
+              },
+              "shippingLabels": [
+                {
+                  "purchaseOrderNumber": "2JK3S9VCE",
+                  "sellingParty": {
+                    "partyId": "999US"
+                  },
+                  "shipFromParty": {
+                    "partyId": "ABCD"
+                  },
+                  "labelFormat": "PNG",
+                  "labelData": [
+                    {
+                      "packageIdentifier": "PKG001",
+                      "trackingNumber": "1Z6A34Y60369738804",
+                      "shipMethod": "UPS_GR_RES",
+                      "shipMethodName": "UPS Ground Residential",
+                      "content": "Base 64 encoded string goes here "
+                    }
+                  ]
+                },
+                {
+                  "purchaseOrderNumber": "2JK3S9VD",
+                  "sellingParty": {
+                    "partyId": "999US"
+                  },
+                  "shipFromParty": {
+                    "partyId": "ABCD"
+                  },
+                  "labelFormat": "PNG",
+                  "labelData": [
+                    {
+                      "packageIdentifier": "PKG002",
+                      "trackingNumber": "1Z6A34Y60369738805",
+                      "shipMethod": "UPS_GR_RES",
+                      "shipMethodName": "UPS Ground Residential",
+                      "content": "Base 64 encoded string goes here "
+                    }
+                  ]
+                }
+              ]
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "InvalidRequest",
+                    "message": "The request is invalid."
+                  }
+                ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        },
+        "x-amzn-api-sandbox": {
+          "dynamic": {}
+        }
+      },
+      "post": {
+        "tags": [
+          "vendorShippingLabels"
+        ],
+        "description": "Creates a shipping label for a purchase order and returns a transactionId for reference.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 10 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values then those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "submitShippingLabelRequest",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubmitShippingLabelsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/TransactionReference"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        },
+        "x-amzn-api-sandbox": {
+          "dynamic": {}
+        }
+      }
+    },
+    "/vendor/directFulfillment/shipping/2021-12-28/shippingLabels/{purchaseOrderNumber}": {
+      "get": {
+        "tags": [
+          "vendorShippingLabels"
+        ],
+        "description": "Returns a shipping label for the purchaseOrderNumber that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 10 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values then those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "getShippingLabel",
+        "parameters": [
+          {
+            "name": "purchaseOrderNumber",
+            "in": "path",
+            "description": "The purchase order number for which you want to return the shipping label. It should be the same purchaseOrderNumber as received in the order.",
+            "required": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]+$"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ShippingLabel"
+            },
+            "examples": {
+              "application/json": {
+                "purchaseOrderNumber": "2JK3S9VC",
+                "sellingParty": {
+                  "partyId": "999US"
+                },
+                "shipFromParty": {
+                  "partyId": "ABCD"
+                },
+                "labelFormat": "PNG",
+                "labelData": [
+                  {
+                    "packageIdentifier": "PKG001",
+                    "trackingNumber": "1Z6A34Y60369738804",
+                    "shipMethod": "UPS_GR_RES",
+                    "shipMethodName": "UPS Ground Residential",
+                    "content": "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AAFiCBAAABAgAgQAAASIIUAAABAghgABAAABYggQAAAEiNE4QAzDMAzDMAzDMASIYRiGYRiGYRgCxDAMwzAMwzAMQ4AYhmEYhmEYhiFADMMwDMMwDMMw/jdAAAAAio50JkAAAAABAgAACBAAAAABAgAACBAAAAABAgAACBAAAECAAAAACBAAAECAAAAACBAAAECAAAAAAoRXbAT/MX77myfXs3IfRu/nymVXrn/0PjxZ3qjlyngcV5Yx+7JRj2nGfcjYxla2n8rHonKbjFqf2a+B3V43Ml6rK99rop7jGa+Hu173std/9uv86H1buQ8IEASIABEgAkSACBABIkAEiAARIAgQASJABIgAESACRIAIEAGCAEGACBABIkAEiAARIAJEgAgQAYIAESACRIAIEAEiQASIABEgCBAEiAARIAJEgAgQASJABAgCBAEiQASIABEgAkSACBABIkAECAJEgAgQASJABIgAESACRIAgQBAgAkSACBABIkAEiAARIAJEgCBABIgAESACRIAIEAEiQAQIAgQBIkAEiAARIAJEgAgQAYIAQYAIEAEiQASIABEgAkSACBABggARIAJEgAgQASJABIgAESAIEASIABEgAkSACBABIkAEiAARIAgQASJABIgAESACRIAIEAGCAEGACBABIkAEiAARIAJEgCBAECACRIAIEAEiQASIABEgAsTcU4DYCASIABEgAkSACBABIkAECAIEASJABIgAESACRIAIEAEiQAQIAkSACBABIkAEiAARIAJEgCBAECACRIAIEAEiQASIABEgCBAEiAARIAJEgAgQASJABIgAQYAgQASIABEgAkSACBABIkAQIAgQASJABIgAESACRIAIEAEiQBAgAkSACBABIkAEiAARIAIEAYIAESACRIAIEAEiQASIABEgAgQBIkAEiAARIAJEgAgQASJAECAIEAEiQASIABEgAkSACBAECAJEgAgQASJABIgAESACRIAIEASIABEgAkSACBABIkAEiABBgCBABIgAESACRIAIEAEiQASIAEGACBABIkAEiAARIAJEgAgQBAgCRIAIEAEiQASIABEgAgQBggARIAJEgAgQASJABIgAESACBAEiQASIABEgAkSACBABIkAQIAgQASJABIgAESACRIAIEAEiQBAgAkSACBABIkAEiAARIAIEAYIAESACRIAIEAEiQASIAEGAIEAEiAARIAJEgAgQASJABIgAQYAIEAEiQASIABEgAkSACBAECAJEgAgQASJABIgAESACRIAIEASIABEgAkSACBABIkAEiABBgCBABIgAESACRIAIEAEiQBAgCBABIkAEiAARIAJEgAgQAWLu6YGyEQgQASJABIgAESACRIAIEAQIAkSACBABIkAEiAARIAJEgAgQBIgAESACRIAIEAEiQASIAEGAIEAEiAARIAJEgAgQASJAECAIEAEiQGLfmKJGxwCJmCQLEAEiQASIAEGAIEAEiAARIOEB8uftVU4wKh+fXQGyazs85b5FvdfsWp7M18PO21rE66MAQYAgQATINQHS6Y1WgAgQAbI2ORUgAkSAIEAQIAKkdYCcMgnM3oajJlQCRIB0CxEBIkAECAIEASJAWgTIaZPAjgHy7ZsTASJAOk9WBYgAESACBAEiQARIWYCcOAkUIAJk17cIp09a3xQgt0SIAEGAIEAEyFUBEvmGGHX9JwdI1k7E3SaZpwZI1YRtdRvInLjueoyinrMZl41+3YvefgQIAgQBIkCuCZCqiYQAESCd13/HAIlcXxHvNTcGyOprkwARIAIEASJABEjhRFSACBAB0mcbqDhPjQARIAJEgCBABIgAESACRIC8LECibluACBABggBBgAgQASJABIgAKYsQASJABAgCBAEiQASIABEgAkSACBABggBBgAgQASJA7g6QlXUhQPYFSMXzWoAIEAEiQBAgAkSACBABIkAEiAARIAIEAYIAESACRIAIEAEiQASIABEgAgQBIkAEiAARIMtHRRIgAkSACBABIkAQIAJEgAgQAfLaAMma/AsQASJABIgAQYAIEAEiQASIABEgAuRVAVL5+iBAECAIEAEiQBoHSOQ67BogqxEiQASIABEgAkSAIEAEiAA5LkAyJt4C5J4AyZz8CxABIkAEiABBgAgQASJABIgAESACRIAIEAQIAkSACJB3BUj0OrwtQEYmpwJEgAgQAYIAQYAIEAEiQATIEQGSPfkXIAKkKkC6vD4IEAQIAkSACJCGAZKxDgWIABEgAkSAIEAQIAJEgAgQAfJv/qGJBYgAESACBAGCABEgAiR8MiFA5n7WJUAEiAC5P0A6fUAhQBAgCBABcmSARLwxCRABIkAEiAARIAgQBIgAESAh+wIIEAEiQASIABEgCBAEiAARIKVBIkDGY02ACBABIkAECAIEASJArgyQ7EmnABEgAkSACBABggBBgAgQAVIWICuHaRUgewMka5kFyP4AmX2vESBrAdLtKHkCBAGCABEg2wKkKkI6BUj1pHdl2QWIABEgvQJk9wE9BAgCBAEiQK4IkC5vwgKkV4BEL7cAiQuQyAMgCBABIkDMPQWIjUCACJAtAdLhjbgiQHZMegWIAIkMkKplFyACRIAIEASIABEgZW9MAkSACJCeAVK57AJEgAgQAYIAESACpPSNSYAIkOhlFyBrz+XI7UuACBABggBBgAiQdgGy4805O0B2TXoFiACJeh2I2rYESMy2mPm+KUAQIAgQASJANkaIABEgNwXIbz9xy17nAsR5QAQIAgQBIkAEiAA5IkAyJp9vD5Dd25MAESACBAGCABEgAmTx9+rf1s/pE0YBIkCqtyUBIkAEiABBgAgQAdLqjSl7EiZA7g2Q6nh5S4Bkv9cIEAEiQAQIAkSACJDtAZI5GRMgvQIkYh0KkB7xIUD2Bci32xMgCBAEiAARIIOXzZpUrU5musdH5O/2Bci9AZL1Oi9ABIgAMfcUIDYCASJAjg2Q6ImZALkvQHbsP3LbmdAFiAARIAgQBIgAESCNA6Ryp+mI+9A5QCIm3gJEgAgQAYIAQYAIEAHSNkC+TXwEiAARIALktACJfK8XIAgQBIgAESAJkxYBck+A7DqErwARIAJEgCBAECACRIAIkKTnjgARIAJEgAgQBAgCRIC0DZDsT92jJmsCRIAIEAGSFQgCRICYewoQG4EAESACRIAIEAEiQASIAEGAIEAEyM0BkjXpjZiwvTFARg+DK0AEiAC5O0BGzwsjQBAgCBABIkAEiAARIAJEgAgQBAgCRIAIkLcGSFZQRE/UBYgAESACRIAgQBAgAkSAFAZI1mMhQASIABEgAkSAIEAQIAJEgAgQASJABIgAESAIEASIABEgZwXI6nV2CpDu26QAESACRIAIEAGCABEgAqRlgFROFAVI7TYpQASIABEgAkSAIEAEiABJe+M+PUCyg0KACBABIkAEiAARIAgQASJANgdI5b4Pu4MiI0Ay94WJ2iYFiAARILEBUrGPmABBgCBABMiVAVJ9/gsBIkAEiAARIAIEAYIAESACpEWARD5e1QGSeUJGASJABIgAESDmngLERiBABMi2AKlaD523GQGSf5SzrG3ylAD5baIpQASIAEGAIEAEyGsDJPLNLztAon/O1DVAor41eroubw2QlZ+0ZWzvpwRI5ra6M0Aynm+r67/qPEECBAGCABEgxwXIrslJ53NPnLa+d03kuq+jDtvfrQFySpCfuJwCBAGCABEgAkSACJBD19GbA+RNE3MBIkAQIAgQASJABIgAMYEVIAJEgCBAECACRIAIEAEiQASIABEgAkSAIEAEiAA5KECythkBclaAnDIpFCACRIAIEAGCABEgAiQpQLLfqCu3mextOGObzHocd2+TGQGS8RrY7XUj47W68r2m8ihY2e+J2Y9jh9cHAYIAQYAIkBYBkvlGLEAEiAARIAJEgCBAECACRIAIEAEiQASIABEgAsTc0wNlIxAgAkSACBABIkAEiAARIAgQBIgAESACRIAIEAEiQASIABEgCBABIkAEiAARIAJEgAgQAYIAQYAIEAEiQASIABEgAkSAIEAQIAJEgAgQASJABIgAESACBAGCABEgAkSACBABIkAEiABBgCBABIgAESACRIAIEAEiQASIAEGACBABIkAEiAARIAJEgAgQBAgCRIAIEAEiQASIABEgAkSACBAEiAARIAJEgAgQASJABIgAQYAgQASIABEgAkSACBABIkAQIAgQASJABIgAESACRIAIEAEiQBAgAkSACBABIkAEiAARIAIEAYIAESACRIAIEAEiQASIABEgAgQBIkAEiAARIAJEgAgQASJAECAIEAEiQASIABEgAkSACBAECAJEgAgQASJABIgAESACRIAIEASIABEgAkSACBABIkAEiABBgCBABIgAESACRIAIEAEiQASIAEGACBABIkAEiAARIAJEgAgQBAgCRIAIEAEiQASIABEgAgQBggARIAJEgAgQASJABIgAESACBAEiQASIABEgAkSACBABIkAQIAgQASJABIgAESACRIAIEAEiQBAgAkSACBABIkAEiAARIAIEAYIAESACRIAIEAEiQASIAEGAIEAEiAARIAJEgAgQASJABIgAQYAIEAEiQASIABEgAkSACBAECAJEgAgQASJABIgAESACRIAIEASIABEgAkSACBABIkAEiABBgCBABIgAESACRIAIEAEiQBAgCBABIkAEiAARIAJEgAgQAWLuKUAQIAJEgAgQASJABIgAESAIEASIABEgAkSACBABIkAEiAARIAgQASJABIgAESACRIAIEAGCAEGACBABIkAEiAARIAJEgJjXChAEiAARIAJEgAgQASJABIgAQYAgQASIABEgAkSACBABIkAQIAgQASJABIgAESACRIAIEAEiQBAgAkSACBABIkAEiAARIAIEAYIAESACRIAIEAEiQASIABEgAgQBIkAEiAARIAJEgAgQASJAECAIEAEiQASIABEgAkSACBAECAJEgAgQASJABIgAESACRIAIEASIABEgAkSACBABIkAEiABBgCBABIgAESACRIAIEAEiQASIAEGACBABIkAEiAARIAJEgAgQBAgCRIAIEAEiQASIABEgAgQBggARIAJEgAgQASJABIgAESACBAEiQASIABEgAkSACBABIkAQIAgQASJABIgAESACRIAIEAEiQBAgAkSACBABIkAEiAARIAIEAYIAESACRIAIEAEiQASIAEGAIEAEiAARIAJEgAgQASJABIgAQYAIEAEiQASIABEgAkSACBAECAJEgAgQASJABIgAESACRIAIEASIABEgAkSACBABIkAEiABBgCBABIgAESACRIAIEAEiQBAgCBABIkAEiAARIAJEgAgQAWLuKUBsBAJEgAgQASJABIgAESACBAGCABEgAkSACBABIkAEiAARIAIEASJABIgAESACRIAIEAEiQBAgCBABIkAEiAARIAJEgAgQBAgCRIAIEAEiQASIABEgAkSAIEAQIAJEgAgQASJABIgAESAIEASIABEgAkSACBABIkAEiAARIAgQASJABIgAESACRIAIEAGCAEGACBABIkAEiAARIAJEgAgQAYIAESACRIAIEAEiQASIABEgCBAEiAARIAJEgAgQASJABAgCBAEiQASIABEgAkSACBABIkAECAJEgAgQASJABIgAESACRIAgQBAgAkSACBABIkAEiAARIAJEgCBABIgAESACRIAIEAEiQAQIAgQBIkAEiAARIAJEgAgQAYIAQYAIEAEiQASIABEgAkSACBABggARIAJEgAgQASJABIgAESAIEASIABEgAkSACBABIkAEiAARIAgQASJABIgAESACRIAIEAGCAEGACBABIkAEiAARIAJEgCBAECACRIAIEAEiQASIABEgAkSAIEAEiAARIAJEgAgQASJABAgCBAEiQASIABEgAkSACBABIkAECAJEgAgQASJABIgAESACRIAgQBAgAkSACBABIkAE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"
+                  }
+                ]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        },
+        "x-amzn-api-sandbox": {
+          "dynamic": {}
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SubmitShippingLabelsRequest": {
+      "type": "object",
+      "properties": {
+        "shippingLabelRequests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ShippingLabelRequest"
+          }
+        }
+      }
+    },
+    "ShippingLabelRequest": {
+      "type": "object",
+      "required": [
+        "purchaseOrderNumber",
+        "sellingParty",
+        "shipFromParty"
+      ],
+      "properties": {
+        "purchaseOrderNumber": {
+          "type": "string",
+          "description": "Purchase order number of the order for which to create a shipping label.",
+          "pattern": "^[a-zA-Z0-9]+$"
+        },
+        "sellingParty": {
+          "description": "ID of the selling party or vendor.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "shipFromParty": {
+          "description": "Warehouse code of vendor.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "containers": {
+          "type": "array",
+          "description": "A list of the packages in this shipment.",
+          "items": {
+            "$ref": "#/definitions/Container"
+          }
+        }
+      }
+    },
+    "Item": {
+      "type": "object",
+      "required": [
+        "itemSequenceNumber",
+        "shippedQuantity"
+      ],
+      "properties": {
+        "itemSequenceNumber": {
+          "type": "integer",
+          "description": "Item Sequence Number for the item. This must be the same value as sent in order for a given item."
+        },
+        "buyerProductIdentifier": {
+          "type": "string",
+          "description": "Buyer's Standard Identification Number (ASIN) of an item. Either buyerProductIdentifier or vendorProductIdentifier is required."
+        },
+        "vendorProductIdentifier": {
+          "type": "string",
+          "description": "The vendor selected product identification of the item. Should be the same as was sent in the purchase order, like SKU Number."
+        },
+        "shippedQuantity": {
+          "description": "Total item quantity shipped in this shipment.",
+          "$ref": "#/definitions/ItemQuantity"
+        }
+      },
+      "description": "Details of the item being shipped."
+    },
+    "PackedItem": {
+      "type": "object",
+      "required": [
+        "itemSequenceNumber",
+        "packedQuantity"
+      ],
+      "properties": {
+        "itemSequenceNumber": {
+          "type": "integer",
+          "description": "Item Sequence Number for the item. This must be the same value as sent in the order for a given item."
+        },
+        "buyerProductIdentifier": {
+          "type": "string",
+          "description": "Buyer's Standard Identification Number (ASIN) of an item. Either buyerProductIdentifier or vendorProductIdentifier is required."
+        },
+        "vendorProductIdentifier": {
+          "type": "string",
+          "description": "The vendor selected product identification of the item. Should be the same as was sent in the Purchase Order, like SKU Number."
+        },
+        "packedQuantity": {
+          "description": "Total item quantity packed in the container.",
+          "$ref": "#/definitions/ItemQuantity"
+        }
+      }
+    },
+    "PartyIdentification": {
+      "type": "object",
+      "required": [
+        "partyId"
+      ],
+      "properties": {
+        "partyId": {
+          "type": "string",
+          "description": "Assigned Identification for the party."
+        },
+        "address": {
+          "description": "Identification of the party by address.",
+          "$ref": "#/definitions/Address"
+        },
+        "taxRegistrationDetails": {
+          "type": "array",
+          "description": "Tax registration details of the entity.",
+          "items": {
+            "$ref": "#/definitions/TaxRegistrationDetails"
+          }
+        }
+      }
+    },
+    "TaxRegistrationDetails": {
+      "type": "object",
+      "required": [
+        "taxRegistrationNumber"
+      ],
+      "properties": {
+        "taxRegistrationType": {
+          "type": "string",
+          "description": "Tax registration type for the entity.",
+          "enum": [
+            "VAT",
+            "GST"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "VAT",
+              "description": "Value-added tax."
+            },
+            {
+              "value": "GST",
+              "description": "Goods and Services Tax (GST)."
+            }
+          ]
+        },
+        "taxRegistrationNumber": {
+          "type": "string",
+          "description": "Tax registration number for the party. For example, VAT ID."
+        },
+        "taxRegistrationAddress": {
+          "description": "Address associated with the tax registration number.",
+          "$ref": "#/definitions/Address"
+        },
+        "taxRegistrationMessages": {
+          "type": "string",
+          "description": "Tax registration message that can be used for additional tax related details."
+        }
+      },
+      "description": "Tax registration details of the entity."
+    },
+    "Address": {
+      "type": "object",
+      "required": [
+        "addressLine1",
+        "countryCode",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the person, business or institution at that address."
+        },
+        "addressLine1": {
+          "type": "string",
+          "description": "First line of the address."
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "Additional street address information, if required."
+        },
+        "addressLine3": {
+          "type": "string",
+          "description": "Additional street address information, if required."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city where the person, business or institution is located."
+        },
+        "county": {
+          "type": "string",
+          "description": "The county where person, business or institution is located."
+        },
+        "district": {
+          "type": "string",
+          "description": "The district where person, business or institution is located."
+        },
+        "stateOrRegion": {
+          "type": "string",
+          "description": "The state or region where person, business or institution is located."
+        },
+        "postalCode": {
+          "type": "string",
+          "description": "The postal code of that address. It contains a series of letters or digits or both, sometimes including spaces or punctuation."
+        },
+        "countryCode": {
+          "type": "string",
+          "description": "The two digit country code in ISO 3166-1 alpha-2 format."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the person, business or institution located at that address."
+        }
+      },
+      "description": "Address of the party."
+    },
+    "Dimensions": {
+      "type": "object",
+      "required": [
+        "height",
+        "length",
+        "unitOfMeasure",
+        "width"
+      ],
+      "properties": {
+        "length": {
+          "description": "The length of the container.",
+          "$ref": "#/definitions/Decimal"
+        },
+        "width": {
+          "description": "The width of the container.",
+          "$ref": "#/definitions/Decimal"
+        },
+        "height": {
+          "description": "The height of the container.",
+          "$ref": "#/definitions/Decimal"
+        },
+        "unitOfMeasure": {
+          "type": "string",
+          "description": "The unit of measure for dimensions.",
+          "enum": [
+            "IN",
+            "CM"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "IN",
+              "description": "Inches"
+            },
+            {
+              "value": "CM",
+              "description": "Centimeters"
+            }
+          ]
+        }
+      },
+      "description": "Physical dimensional measurements of a container."
+    },
+    "Weight": {
+      "type": "object",
+      "required": [
+        "unitOfMeasure",
+        "value"
+      ],
+      "properties": {
+        "unitOfMeasure": {
+          "type": "string",
+          "description": "The unit of measurement.",
+          "enum": [
+            "KG",
+            "LB"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "KG",
+              "description": "Kilogram"
+            },
+            {
+              "value": "LB",
+              "description": "Pounds (Libra for Latin)."
+            }
+          ]
+        },
+        "value": {
+          "description": "The measurement value.",
+          "$ref": "#/definitions/Decimal"
+        }
+      },
+      "description": "The weight."
+    },
+    "Decimal": {
+      "type": "string",
+      "description": "A decimal number with no loss of precision. Useful when precision loss is unacceptable, as with currencies. Follows RFC7159 for number representation.  <br>**Pattern** : `^-?(0|([1-9]\\\\d*))(\\\\.\\\\d+)?([eE][+-]?\\\\d+)?$`."
+    },
+    "ItemQuantity": {
+      "type": "object",
+      "required": [
+        "amount",
+        "unitOfMeasure"
+      ],
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "description": "Quantity of units shipped for a specific item at a shipment level. If the item is present only in certain packages or pallets within the shipment, please provide this at the appropriate package or pallet level."
+        },
+        "unitOfMeasure": {
+          "type": "string",
+          "description": "Unit of measure for the shipped quantity."
+        }
+      },
+      "description": "Details of item quantity."
+    },
+    "GetShippingLabelListResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "List of ship labels.",
+          "$ref": "#/definitions/ShippingLabelList"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getShippingLabels operation."
+    },
+    "GetShippingLabelResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getShippingLabel operation.",
+          "$ref": "#/definitions/ShippingLabel"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getShippingLabel operation."
+    },
+    "ShippingLabelList": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/Pagination"
+        },
+        "shippingLabels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ShippingLabel"
+          }
+        }
+      }
+    },
+    "LabelData": {
+      "type": "object",
+      "required": [
+        "content"
+      ],
+      "properties": {
+        "packageIdentifier": {
+          "type": "string",
+          "description": "Identifier for the package. The first package will be 001, the second 002, and so on. This number is used as a reference to refer to this package from the pallet level."
+        },
+        "trackingNumber": {
+          "type": "string",
+          "description": "Package tracking identifier from the shipping carrier."
+        },
+        "shipMethod": {
+          "type": "string",
+          "description": "Ship method to be used for shipping the order. Amazon defines Ship Method Codes indicating shipping carrier and shipment service level. Ship Method Codes are case and format sensitive. The same ship method code should returned on the shipment confirmation. Note that the Ship Method Codes are vendor specific and will be provided to each vendor during the implementation."
+        },
+        "shipMethodName": {
+          "type": "string",
+          "description": "Shipping method name for internal reference."
+        },
+        "content": {
+          "type": "string",
+          "description": "This field will contain the Base64encoded string of the shipment label content."
+        }
+      },
+      "description": "Details of the shipment label."
+    },
+    "ShippingLabel": {
+      "type": "object",
+      "required": [
+        "labelData",
+        "labelFormat",
+        "purchaseOrderNumber",
+        "sellingParty",
+        "shipFromParty"
+      ],
+      "properties": {
+        "purchaseOrderNumber": {
+          "type": "string",
+          "description": "This field will contain the Purchase Order Number for this order.",
+          "pattern": "^[a-zA-Z0-9]+$"
+        },
+        "sellingParty": {
+          "description": "ID of the selling party or vendor.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "shipFromParty": {
+          "description": "Warehouse code of vendor.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "labelFormat": {
+          "type": "string",
+          "description": "Format of the label.",
+          "enum": [
+            "PNG",
+            "ZPL"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "PNG",
+              "description": "Portable Network Graphics (png) format."
+            },
+            {
+              "value": "ZPL",
+              "description": "Zebra Programming Language (zpl) format."
+            }
+          ]
+        },
+        "labelData": {
+          "type": "array",
+          "description": "Provides the details of the packages in this shipment.",
+          "items": {
+            "$ref": "#/definitions/LabelData"
+          }
+        }
+      }
+    },
+    "SubmitShippingLabelsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The response payload for the submitShippingLabelRequest operation.",
+          "$ref": "#/definitions/TransactionReference"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the submitShippingLabelRequest operation."
+    },
+    "GetCustomerInvoicesResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "List of customer invoices.",
+          "$ref": "#/definitions/CustomerInvoiceList"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getCustomerInvoices operation."
+    },
+    "GetCustomerInvoiceResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the getCustomerInvoice operation.",
+          "$ref": "#/definitions/CustomerInvoice"
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the getCustomerInvoice operation."
+    },
+    "CustomerInvoiceList": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/Pagination"
+        },
+        "customerInvoices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomerInvoice"
+          }
+        }
+      }
+    },
+    "Pagination": {
+      "type": "object",
+      "properties": {
+        "nextToken": {
+          "type": "string",
+          "description": "A generated string used to pass information to your next request. If NextToken is returned, pass the value of NextToken to the next request. If NextToken is not returned, there are no more order items to return."
+        }
+      }
+    },
+    "CustomerInvoice": {
+      "type": "object",
+      "required": [
+        "content",
+        "purchaseOrderNumber"
+      ],
+      "properties": {
+        "purchaseOrderNumber": {
+          "type": "string",
+          "description": "The purchase order number for this order.",
+          "pattern": "^[a-zA-Z0-9]+$"
+        },
+        "content": {
+          "type": "string",
+          "description": "The Base64encoded customer invoice."
+        }
+      }
+    },
+    "TransactionReference": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "string",
+          "description": "GUID to identify this transaction. This value can be used with the Transaction Status API to return the status of this transaction."
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "object",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    },
+    "Container": {
+      "type": "object",
+      "required": [
+        "containerIdentifier",
+        "containerType",
+        "packedItems"
+      ],
+      "properties": {
+        "containerType": {
+          "type": "string",
+          "description": "The type of container.",
+          "enum": [
+            "Carton",
+            "Pallet"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "Carton",
+              "description": "Packing container type. Typically used for drinks or food."
+            },
+            {
+              "value": "Pallet",
+              "description": "A flat transport structure which supports goods in a stable fashion while being lifted by a forklift."
+            }
+          ]
+        },
+        "containerIdentifier": {
+          "type": "string",
+          "description": "The container identifier."
+        },
+        "trackingNumber": {
+          "type": "string",
+          "description": "The tracking number."
+        },
+        "manifestId": {
+          "type": "string",
+          "description": "The manifest identifier."
+        },
+        "manifestDate": {
+          "type": "string",
+          "description": "The date of the manifest."
+        },
+        "shipMethod": {
+          "type": "string",
+          "description": "The shipment method."
+        },
+        "scacCode": {
+          "type": "string",
+          "description": "SCAC code required for NA VOC vendors only."
+        },
+        "carrier": {
+          "type": "string",
+          "description": "Carrier required for EU VOC vendors only."
+        },
+        "containerSequenceNumber": {
+          "type": "integer",
+          "description": "An integer that must be submitted for multi-box shipments only, where one item may come in separate packages."
+        },
+        "dimensions": {
+          "$ref": "#/definitions/Dimensions"
+        },
+        "weight": {
+          "$ref": "#/definitions/Weight"
+        },
+        "packedItems": {
+          "type": "array",
+          "description": "A list of packed items.",
+          "items": {
+            "$ref": "#/definitions/PackedItem"
+          }
+        }
+      }
+    }
+  }
+}
