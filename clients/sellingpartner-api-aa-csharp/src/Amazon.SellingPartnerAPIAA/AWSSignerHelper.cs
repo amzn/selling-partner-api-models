@@ -39,10 +39,11 @@ namespace Amazon.SellingPartnerAPIAA
         /// <summary>
         /// Returns URI encoded version of absolute path
         /// </summary>
-        /// <param name="resource">Resource path(absolute path) from the request</param>
+        /// <param name="request">RestRequest</param>
         /// <returns>URI encoded version of absolute path</returns>
-        public virtual string ExtractCanonicalURIParameters(string resource)
+        public virtual string ExtractCanonicalURIParameters(IRestRequest request)
         {
+            string resource = request.Resource;
             string canonicalUri = string.Empty;
 
             //decode existing strings 
@@ -58,6 +59,17 @@ namespace Amazon.SellingPartnerAPIAA
                 {
                     canonicalUri = Slash;
                 }
+                IDictionary<string, string> pathParameters = request.Parameters
+                        .Where(parameter => ParameterType.UrlSegment.Equals(parameter.Type))
+                        .ToDictionary(parameter => parameter.Name.Trim().ToString(), parameter => parameter.Value.ToString());
+
+                // Replace path parameter with actual value.
+                // Ex: /products/pricing/v0/items/{Asin}/offers -> /products/pricing/v0/items/AB12CD3E4Z/offers
+                foreach (string parameter in pathParameters.Keys)
+                {
+                    resource = resource.Replace("{" + parameter + "}", pathParameters[parameter]);
+                }
+
                 //Split path at / into segments
                 IEnumerable<string> encodedSegments = resource.Split(new char[] { '/' }, StringSplitOptions.None);
 
@@ -86,10 +98,10 @@ namespace Amazon.SellingPartnerAPIAA
                 queryParameters.Add(paramPair.Key, paramPair.Value[paramPair.Value.Count - 1]);
             }
 
-            SortedDictionary<string, string> sortedqueryParameters = new SortedDictionary<string, string>(queryParameters);
+            SortedDictionary<string, string> sortedQueryParameters = new SortedDictionary<string, string>(queryParameters);
 
             StringBuilder canonicalQueryString = new StringBuilder();
-            foreach (var key in sortedqueryParameters.Keys)
+            foreach (var key in sortedQueryParameters.Keys)
             {
                 if (canonicalQueryString.Length > 0)
                 {
@@ -97,7 +109,7 @@ namespace Amazon.SellingPartnerAPIAA
                 }
                 canonicalQueryString.AppendFormat("{0}={1}",
                     Utils.UrlEncode(key),
-                    Utils.UrlEncode(sortedqueryParameters[key]));
+                    Utils.UrlEncode(sortedQueryParameters[key]));
             }
 
             return canonicalQueryString.ToString();

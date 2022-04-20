@@ -29,7 +29,7 @@
         "tags": [
           "fees"
         ],
-        "description": "Returns the estimated fees for the item indicated by the specified seller SKU in the marketplace specified in the request body.\n\nYou can call getMyFeesEstimateForSKU for an item on behalf of a seller before the seller sets the item's price. They can then take estimated fees into account. With each fees estimate request, you must include an original identifier. This identifier is included in the fees estimate so you can correlate a fees estimate with the original request.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 1 | 1 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns the estimated fees for the item indicated by the specified seller SKU in the marketplace specified in the request body.\n\nYou can call getMyFeesEstimateForSKU for an item on behalf of a selling partner before the selling partner sets the item's price. They can then take estimated fees into account. With each fees estimate request, you must include an original identifier. This identifier is included in the fees estimate so you can correlate a fees estimate with the original request.\n\n**Note:** This value is only an estimate, actual costs may vary. Search \"fees\" in [Seller Central](https://sellercentral.amazon.com/) and consult the store-specific fee schedule for the most up-to-date information.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 20 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getMyFeesEstimateForSKU",
         "parameters": [
           {
@@ -51,17 +51,18 @@
         "responses": {
           "200": {
             "description": "Success.",
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "FeesEstimateRequest": {
-                          "MarketplaceId": "ATVPDKIKX0DER",
-                          "IsAmazonFulfilled": false,
-                          "PriceToEstimateFees": {
-                            "ListingPrice": {
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "FeesEstimateRequest": {
+                            "MarketplaceId": "ATVPDKIKX0DER",
+                            "IsAmazonFulfilled": false,
+                            "PriceToEstimateFees": {
+                              "ListingPrice": {
                               "CurrencyCode": "USD",
                               "Amount": 10
                             },
@@ -129,8 +130,9 @@
                     }
                   }
                 }
-              }
-            ],
+                }
+              ]
+            },
             "schema": {
               "$ref": "#/definitions/GetMyFeesEstimateResponse"
             },
@@ -147,30 +149,32 @@
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "FeesEstimateRequest": {
-                          "MarketplaceId": "WRNGMRKTPLCE"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "FeesEstimateRequest": {
+                            "MarketplaceId": "WRNGMRKTPLCE"
+                          }
                         }
                       }
-                    }
                   }
                 },
-                "response":{
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Incorrect Marketplace identifier.",
-                      "details": ""
-                    }
-                  ]
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Incorrect Marketplace identifier.",
+                        "details": ""
+                      }
+                    ]
+                  }
                 }
-              }
-            ],
+              ]
+            },
             "schema": {
               "$ref": "#/definitions/GetMyFeesEstimateResponse"
             },
@@ -192,7 +196,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -219,6 +223,10 @@
               "$ref": "#/definitions/GetMyFeesEstimateResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -232,7 +240,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -248,7 +256,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -264,7 +272,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -282,7 +290,7 @@
         "tags": [
           "fees"
         ],
-        "description": "Returns the estimated fees for the item indicated by the specified Asin in the marketplace specified in the request body.\n\nYou can call getMyFeesEstimateForASIN for an item on behalf of a seller before the seller sets the item's price. They can then take estimated fees into account. With each product fees request, you must include an original identifier. This identifier is included in the fees estimate so you can correlate a fees estimate with the original request.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 1 | 1 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns the estimated fees for the item indicated by the specified Asin in the marketplace specified in the request body.\n\nYou can call getMyFeesEstimateForASIN for an item on behalf of a selling partner before the selling partner sets the item's price. They can then take estimated fees into account. With each product fees request, you must include an original identifier. This identifier is included in the fees estimate so you can correlate a fees estimate with the original request.\n\n**Note:** This value is only an estimate, actual costs may vary. Search \"fees\" in [Seller Central](https://sellercentral.amazon.com/) and consult the store-specific fee schedule for the most up-to-date information.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 20 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
         "operationId": "getMyFeesEstimateForASIN",
         "parameters": [
           {
@@ -304,17 +312,18 @@
         "responses": {
           "200": {
             "description": "Success.",
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "FeesEstimateRequest": {
-                          "MarketplaceId": "ATVPDKIKX0DER",
-                          "IsAmazonFulfilled": false,
-                          "PriceToEstimateFees": {
-                            "ListingPrice": {
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "FeesEstimateRequest": {
+                            "MarketplaceId": "ATVPDKIKX0DER",
+                            "IsAmazonFulfilled": false,
+                            "PriceToEstimateFees": {
+                              "ListingPrice": {
                               "CurrencyCode": "USD",
                               "Amount": 10
                             },
@@ -382,8 +391,9 @@
                     }
                   }
                 }
-              }
-            ],
+                }
+              ]
+            },
             "schema": {
               "$ref": "#/definitions/GetMyFeesEstimateResponse"
             },
@@ -400,30 +410,32 @@
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "FeesEstimateRequest": {
-                          "MarketplaceId": "WRNGMRKTPLCE"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "FeesEstimateRequest": {
+                            "MarketplaceId": "WRNGMRKTPLCE"
+                          }
                         }
                       }
-                    }
                   }
                 },
-                "response":{
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Incorrect Marketplace identifier.",
-                      "details": ""
-                    }
-                  ]
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Incorrect Marketplace identifier.",
+                        "details": ""
+                      }
+                    ]
+                  }
                 }
-              }
-            ],
+              ]
+            },
             "schema": {
               "$ref": "#/definitions/GetMyFeesEstimateResponse"
             },
@@ -445,7 +457,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -472,6 +484,10 @@
               "$ref": "#/definitions/GetMyFeesEstimateResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -485,7 +501,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -501,7 +517,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -517,7 +533,7 @@
             },
             "headers": {
               "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned.",
                 "type": "string"
               },
               "x-amzn-RequestId": {
@@ -853,7 +869,7 @@
     },
     "OptionalFulfillmentProgram": {
       "type": "string",
-      "description": "An optional enrollment program for which to return the estimated fees when the offer is fulfilled by Amazon (IsAmazonFulfilled is set to true).",
+      "description": "An optional enrollment program to return the estimated fees when the offer is fulfilled by Amazon (IsAmazonFulfilled is set to true).",
       "enum": [
         "FBA_CORE",
         "FBA_SNL",
@@ -866,7 +882,7 @@
         },
         {
           "value": "FBA_SNL",
-          "description": "Returns the Small and Light fees for the offer. The FBA Small and Light program offers reduced fulfillment costs on qualified items."
+          "description": "Returns the FBA Small and Light (SNL) fees for the offer. The SNL program offers reduced fulfillment costs on qualified items. To check item eligibility for the SNL program, use the getSmallAndLightEligibilityBySellerSKU operation of the FBA Small And Light API."
         },
         {
           "value": "FBA_EFN",

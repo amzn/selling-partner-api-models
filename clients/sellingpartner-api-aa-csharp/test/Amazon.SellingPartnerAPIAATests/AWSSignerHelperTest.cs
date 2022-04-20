@@ -38,34 +38,56 @@ namespace Amazon.SellingPartnerAPIAATests
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, TestUri);
             string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(Utils.GetResourceFromUri(request.RequestUri));
-            Assert.Equal("/iam/user", result);
+            Assert.Equal(Slash + TestUri, result);
+        }
+
+        [Fact]
+        public void TestExtractCanonicalURIParameters_UrlSegments()
+        {
+            IRestRequest request = new RestRequest("products/pricing/v0/items/{Asin}/offers/{SellerSKU}", Method.GET);
+            request.AddUrlSegment("Asin", "AB12CD3E4Z");
+            request.AddUrlSegment("SellerSKU", "1234567890");
+            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(request);
+            Assert.Equal("/products/pricing/v0/items/AB12CD3E4Z/offers/1234567890", result);
+        }
+
+        [Fact]
+        public void TestExtractCanonicalURIParameters_IncorrectUrlSegment()
+        {
+            IRestRequest request = new RestRequest("products/pricing/v0/items/{Asin}/offers", Method.GET);
+            request.AddUrlSegment("asin", "AB12CD3E4Z");
+            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(request);
+            Assert.Equal("/products/pricing/v0/items/%257BAsin%257D/offers", result);
         }
 
         [Fact]
         public void TestExtractCanonicalURIParameters_ResourcePathWithSpace()
         {
-            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters("iam/ user");
+            IRestRequest request = new RestRequest("iam/ user", Method.GET);
+            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(request);
             Assert.Equal("/iam/%2520user", result);
         }
 
         [Fact]
         public void TestExtractCanonicalURIParameters_EmptyResourcePath()
         {
-            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(string.Empty);
+            IRestRequest request = new RestRequest(string.Empty, Method.GET);
+            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(request);
             Assert.Equal(Slash, result);
         }
 
         [Fact]
         public void TestExtractCanonicalURIParameters_NullResourcePath()
         {
-            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(null);
+            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(new RestRequest());
             Assert.Equal(Slash, result);
         }
 
         [Fact]
         public void TestExtractCanonicalURIParameters_SlashPath()
         {
-            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(Slash);
+            IRestRequest request = new RestRequest(Slash, Method.GET);
+            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(request);
             Assert.Equal(Slash, result);
         }
 

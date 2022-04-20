@@ -14,6 +14,7 @@
     }
   },
   "host": "sellingpartnerapi-na.amazon.com",
+  "basePath": "/",
   "schemes": [
     "https"
   ],
@@ -29,20 +30,20 @@
         "tags": [
           "reports"
         ],
-        "operationId": "getReports",
         "description": "Returns report details for the reports that match the filters that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getReports",
         "parameters": [
           {
             "name": "reportTypes",
             "in": "query",
+            "description": "A list of report types used to filter reports. When reportTypes is provided, the other filter parameters (processingStatuses, marketplaceIds, createdSince, createdUntil) and pageSize may also be provided. Either reportTypes or nextToken is required.",
             "required": false,
             "type": "array",
-            "minItems": 1,
-            "maxItems": 10,
-            "description": "A list of report types used to filter reports. When reportTypes is provided, the other filter parameters (processingStatuses, marketplaceIds, createdSince, createdUntil) and pageSize may also be provided. Either reportTypes or nextToken is required.",
             "items": {
               "type": "string"
-            }
+            },
+            "maxItems": 10,
+            "minItems": 1
           },
           {
             "name": "processingStatuses",
@@ -50,7 +51,6 @@
             "description": "A list of processing statuses used to filter reports.",
             "required": false,
             "type": "array",
-            "minItems": 1,
             "items": {
               "type": "string",
               "enum": [
@@ -82,19 +82,20 @@
                   "description": "The report has not yet started processing. It may be waiting for another IN_PROGRESS report."
                 }
               ]
-            }
+            },
+            "minItems": 1
           },
           {
             "name": "marketplaceIds",
-            "description": "A list of marketplace identifiers used to filter reports. The reports returned will match at least one of the marketplaces that you specify.",
             "in": "query",
+            "description": "A list of marketplace identifiers used to filter reports. The reports returned will match at least one of the marketplaces that you specify.",
             "required": false,
             "type": "array",
-            "minItems": 1,
-            "maxItems": 10,
             "items": {
               "type": "string"
-            }
+            },
+            "maxItems": 10,
+            "minItems": 1
           },
           {
             "name": "pageSize",
@@ -102,9 +103,9 @@
             "description": "The maximum number of reports to return in a single call.",
             "required": false,
             "type": "integer",
-            "minimum": 1,
+            "default": 10,
             "maximum": 100,
-            "default": 10
+            "minimum": 1
           },
           {
             "name": "createdSince",
@@ -137,22 +138,27 @@
               "$ref": "#/definitions/GetReportsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportTypes": {
-                      "value": [
-                        "FEE_DISCOUNTS_REPORT",
-                        "GET_AFN_INVENTORY_DATA"
-                      ]
-                    },
-                    "processingStatuses": {
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportTypes": {
+                        "value": [
+                          "FEE_DISCOUNTS_REPORT",
+                          "GET_AFN_INVENTORY_DATA"
+                        ]
+                      },
+                      "processingStatuses": {
                       "value": [
                         "IN_QUEUE",
                         "IN_PROGRESS"
@@ -175,8 +181,9 @@
                     }
                   ]
                 }
-              }
-            ]
+                }
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
@@ -184,22 +191,27 @@
               "$ref": "#/definitions/GetReportsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportTypes": {
-                      "value": [
-                        "FEE_DISCOUNTS_REPORT",
-                        "GET_AFN_INVENTORY_DATA"
-                      ]
-                    },
-                    "processingStatuses": {
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportTypes": {
+                        "value": [
+                          "FEE_DISCOUNTS_REPORT",
+                          "GET_AFN_INVENTORY_DATA"
+                        ]
+                      },
+                      "processingStatuses": {
                       "value": [
                         "BAD_VALUE",
                         "IN_PROGRESS"
@@ -207,17 +219,18 @@
                     }
                   }
                 },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "400",
-                      "message": "Invalid input",
-                      "details": "Invalid input in processing status"
-                    }
-                  ]
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "400",
+                        "message": "Invalid input",
+                        "details": "Invalid input in processing status"
+                      }
+                    ]
+                  }
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -225,6 +238,10 @@
               "$ref": "#/definitions/GetReportsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -249,6 +266,10 @@
               "$ref": "#/definitions/GetReportsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -261,6 +282,10 @@
               "$ref": "#/definitions/GetReportsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -273,6 +298,10 @@
               "$ref": "#/definitions/GetReportsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -285,6 +314,10 @@
               "$ref": "#/definitions/GetReportsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -297,6 +330,10 @@
               "$ref": "#/definitions/GetReportsResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -309,12 +346,12 @@
         "tags": [
           "reports"
         ],
-        "operationId": "createReport",
         "description": "Creates a report.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0167 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "createReport",
         "parameters": [
           {
-            "name": "body",
             "in": "body",
+            "name": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/CreateReportSpecification"
@@ -328,34 +365,40 @@
               "$ref": "#/definitions/CreateReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
-                        "dataStartTime": "2019-12-10T20:11:24.000Z",
-                        "marketplaceIds": [
-                          "A1PA6795UKMFR9",
-                          "ATVPDKIKX0DER"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
+                          "dataStartTime": "2019-12-10T20:11:24.000Z",
+                          "marketplaceIds": [
+                            "A1PA6795UKMFR9",
+                            "ATVPDKIKX0DER"
                         ]
+                        }
                       }
                     }
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "reportId": "ID323"
+                  },
+                  "response": {
+                    "payload": {
+                      "reportId": "ID323"
+                    }
                   }
                 }
-              }
-            ]
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
@@ -363,20 +406,25 @@
               "$ref": "#/definitions/CreateReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "reportType": "BAD_FEE_DISCOUNTS_REPORT",
-                        "dataStartTime": "2019-12-10T20:11:24.000Z",
-                        "marketplaceIds": [
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "reportType": "BAD_FEE_DISCOUNTS_REPORT",
+                          "dataStartTime": "2019-12-10T20:11:24.000Z",
+                          "marketplaceIds": [
                             "A1PA6795UKMFR9",
                             "ATVPDKIKX0DER"
                         ]
@@ -384,17 +432,18 @@
                     }
                   }
                 },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "400",
-                      "message": "Invalid input",
-                      "details": "Invalid input"
-                    }
-                  ]
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "400",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
+                  }
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -402,6 +451,10 @@
               "$ref": "#/definitions/CreateReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -426,6 +479,10 @@
               "$ref": "#/definitions/CreateReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -438,6 +495,10 @@
               "$ref": "#/definitions/CreateReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -450,6 +511,10 @@
               "$ref": "#/definitions/CreateReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -462,6 +527,10 @@
               "$ref": "#/definitions/CreateReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -474,6 +543,10 @@
               "$ref": "#/definitions/CreateReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -481,177 +554,21 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/reports/2020-09-04/reports/{reportId}": {
-      "delete": {
-        "tags": [
-          "reports"
-        ],
-        "operationId": "cancelReport",
-        "description": "Cancels the report that you specify. Only reports with processingStatus=IN_QUEUE can be cancelled. Cancelled reports are returned in subsequent calls to the getReport and getReports operations.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "parameters": [
-          {
-            "name": "reportId",
-            "in": "path",
-            "description": "The identifier for the report. This identifier is unique only in combination with a seller ID.",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportId": {
-                      "value": "ID"
-                    }
-                  }
-                },
-                "response": {}
-              }
-            ]
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "400",
-                      "message": "Invalid input",
-                      "details": "Invalid input"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "401": {
-            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "403": {
-            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "404": {
-            "description": "The specified resource does not exist.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "415": {
-            "description": "The request's Content-Type header is invalid.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          }
-        }
-      },
       "get": {
         "tags": [
           "reports"
         ],
-        "operationId": "getReport",
         "description": "Returns report details (including the reportDocumentId, if available) for the report that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2.0 | 15 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getReport",
         "parameters": [
           {
             "name": "reportId",
             "in": "path",
-            "required": true,
             "description": "The identifier for the report. This identifier is unique only in combination with a seller ID.",
+            "required": true,
             "type": "string"
           }
         ],
@@ -662,34 +579,40 @@
               "$ref": "#/definitions/GetReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportId": {
-                      "value": "ID323"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportId": {
+                        "value": "ID323"
+                      }
+                    }
+                  },
+                  "response": {
+                    "payload": {
+                    "reportId": "ReportId1",
+                      "reportType": "FEE_DISCOUNTS_REPORT",
+                      "dataStartTime": "2019-12-11T13:47:20.677Z",
+                      "dataEndTime": "2019-12-12T13:47:20.677Z",
+                      "createdTime": "2019-12-10T13:47:20.677Z",
+                      "processingStatus": "IN_PROGRESS",
+                      "processingStartTime": "2019-12-10T13:47:20.677Z",
+                      "processingEndTime": "2019-12-12T13:47:20.677Z"
                     }
                   }
-                },
-                "response": {
-                  "payload": {
-                    "reportId": "ReportId1",
-                    "reportType": "FEE_DISCOUNTS_REPORT",
-                    "dataStartTime": "2019-12-11T13:47:20.677Z",
-                    "dataEndTime": "2019-12-12T13:47:20.677Z",
-                    "createdTime": "2019-12-10T13:47:20.677Z",
-                    "processingStatus": "IN_PROGRESS",
-                    "processingStartTime": "2019-12-10T13:47:20.677Z",
-                    "processingEndTime": "2019-12-12T13:47:20.677Z"
-                  }
                 }
-              }
-            ]
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
@@ -697,31 +620,37 @@
               "$ref": "#/definitions/GetReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportId": {
-                      "value": "badReportId1"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportId": {
+                        "value": "badReportId1"
+                      }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "400",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "400",
-                      "message": "Invalid input",
-                      "details": "Invalid input"
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -729,6 +658,10 @@
               "$ref": "#/definitions/GetReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -753,6 +686,10 @@
               "$ref": "#/definitions/GetReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -765,6 +702,10 @@
               "$ref": "#/definitions/GetReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -777,6 +718,10 @@
               "$ref": "#/definitions/GetReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -789,6 +734,10 @@
               "$ref": "#/definitions/GetReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -801,6 +750,10 @@
               "$ref": "#/definitions/GetReportResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -809,27 +762,216 @@
           }
         }
       },
-      "parameters": []
+      "delete": {
+        "tags": [
+          "reports"
+        ],
+        "description": "Cancels the report that you specify. Only reports with processingStatus=IN_QUEUE can be cancelled. Cancelled reports are returned in subsequent calls to the getReport and getReports operations.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "cancelReport",
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "description": "The identifier for the report. This identifier is unique only in combination with a seller ID.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportId": {
+                        "value": "ID"
+                      }
+                    }
+                  },
+                  "response": {}
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "400",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request's Content-Type header is invalid.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
     },
     "/reports/2020-09-04/schedules": {
       "get": {
         "tags": [
           "reports"
         ],
-        "operationId": "getReportSchedules",
         "description": "Returns report schedule details that match the filters that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getReportSchedules",
         "parameters": [
           {
             "name": "reportTypes",
             "in": "query",
+            "description": "A list of report types used to filter report schedules.",
             "required": true,
             "type": "array",
-            "minItems": 1,
-            "maxItems": 10,
-            "description": "A list of report types used to filter report schedules.",
             "items": {
               "type": "string"
-            }
+            },
+            "maxItems": 10,
+            "minItems": 1
           }
         ],
         "responses": {
@@ -839,22 +981,27 @@
               "$ref": "#/definitions/GetReportSchedulesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportTypes": {
-                      "value": [
-                        "FEE_DISCOUNTS_REPORT",
-                        "GET_FBA_FULFILLMENT_CUSTOMER_TAXES_DATA"
-                      ]
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportTypes": {
+                        "value": [
+                          "FEE_DISCOUNTS_REPORT",
+                          "GET_FBA_FULFILLMENT_CUSTOMER_TAXES_DATA"
+                        ]
+                      }
                     }
-                  }
                 },
                 "response": {
                   "payload": [
@@ -875,8 +1022,9 @@
                     }
                   ]
                 }
-              }
-            ]
+                }
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
@@ -884,34 +1032,40 @@
               "$ref": "#/definitions/GetReportSchedulesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportTypes": {
-                      "value": [
-                        "BAD_FEE_DISCOUNTS_REPORT",
-                        "BAD_GET_FBA_FULFILLMENT_CUSTOMER_TAXES_DATA"
-                      ]
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportTypes": {
+                        "value": [
+                          "BAD_FEE_DISCOUNTS_REPORT",
+                          "BAD_GET_FBA_FULFILLMENT_CUSTOMER_TAXES_DATA"
+                        ]
+                      }
                     }
-                  }
                 },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "400",
-                      "message": "Invalid input",
-                      "details": "Invalid input"
-                    }
-                  ]
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "400",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
+                  }
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -919,6 +1073,10 @@
               "$ref": "#/definitions/GetReportSchedulesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -943,6 +1101,10 @@
               "$ref": "#/definitions/GetReportSchedulesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -955,6 +1117,10 @@
               "$ref": "#/definitions/GetReportSchedulesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -967,6 +1133,10 @@
               "$ref": "#/definitions/GetReportSchedulesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -979,6 +1149,10 @@
               "$ref": "#/definitions/GetReportSchedulesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -991,6 +1165,10 @@
               "$ref": "#/definitions/GetReportSchedulesResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1003,12 +1181,12 @@
         "tags": [
           "reports"
         ],
-        "operationId": "createReportSchedule",
         "description": "Creates a report schedule. If a report schedule with the same report type and marketplace IDs already exists, it will be cancelled and replaced with this one.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "createReportSchedule",
         "parameters": [
           {
-            "name": "body",
             "in": "body",
+            "name": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/CreateReportScheduleSpecification"
@@ -1022,35 +1200,41 @@
               "$ref": "#/definitions/CreateReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "reportType": "FEE_DISCOUNTS_REPORT",
-                        "period": "PT5M",
-                        "nextReportCreationTime": "2019-12-10T20:11:24.000Z",
-                        "marketplaceIds": [
-                          "A1PA6795UKMFR9",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "reportType": "FEE_DISCOUNTS_REPORT",
+                          "period": "PT5M",
+                          "nextReportCreationTime": "2019-12-10T20:11:24.000Z",
+                          "marketplaceIds": [
+                            "A1PA6795UKMFR9",
                           "ATVPDKIKX0DER"
                         ]
+                        }
                       }
                     }
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "reportScheduleId": "ID323"
+                  },
+                  "response": {
+                    "payload": {
+                      "reportScheduleId": "ID323"
+                    }
                   }
                 }
-              }
-            ]
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
@@ -1058,35 +1242,41 @@
               "$ref": "#/definitions/CreateReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "body": {
-                      "value": {
-                        "reportType": "BAD_FEE_DISCOUNTS_REPORT",
-                        "period": "PT5M",
-                        "nextReportCreationTime": "2019-12-10T20:11:24.000Z"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "reportType": "BAD_FEE_DISCOUNTS_REPORT",
+                          "period": "PT5M",
+                          "nextReportCreationTime": "2019-12-10T20:11:24.000Z"
+                        }
                       }
-                    }
                   }
                 },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "400",
-                      "message": "Invalid input",
-                      "details": "Invalid input"
-                    }
-                  ]
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "400",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
+                  }
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1094,6 +1284,10 @@
               "$ref": "#/definitions/CreateReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1118,6 +1312,10 @@
               "$ref": "#/definitions/CreateReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1130,6 +1328,10 @@
               "$ref": "#/definitions/CreateReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1142,6 +1344,10 @@
               "$ref": "#/definitions/CreateReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1154,6 +1360,10 @@
               "$ref": "#/definitions/CreateReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1166,6 +1376,10 @@
               "$ref": "#/definitions/CreateReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1173,177 +1387,21 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/reports/2020-09-04/schedules/{reportScheduleId}": {
-      "delete": {
-        "tags": [
-          "reports"
-        ],
-        "operationId": "cancelReportSchedule",
-        "description": "Cancels the report schedule that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "parameters": [
-          {
-            "name": "reportScheduleId",
-            "in": "path",
-            "description": "The identifier for the report schedule. This identifier is unique only in combination with a seller ID.",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportScheduleResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportScheduleId": {
-                      "value": "ID"
-                    }
-                  }
-                },
-                "response": {}
-              }
-            ]
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportScheduleResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                  }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "400",
-                      "message": "Invalid input",
-                      "details": "Invalid input"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "401": {
-            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportScheduleResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "403": {
-            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportScheduleResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "404": {
-            "description": "The specified resource does not exist.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportScheduleResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "415": {
-            "description": "The request's Content-Type header is invalid.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportScheduleResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportScheduleResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportScheduleResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "schema": {
-              "$ref": "#/definitions/CancelReportScheduleResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          }
-        }
-      },
       "get": {
         "tags": [
           "reports"
         ],
-        "operationId": "getReportSchedule",
         "description": "Returns report schedule details for the report schedule that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "getReportSchedule",
         "parameters": [
           {
             "name": "reportScheduleId",
             "in": "path",
-            "required": true,
             "description": "The identifier for the report schedule. This identifier is unique only in combination with a seller ID.",
+            "required": true,
             "type": "string"
           }
         ],
@@ -1354,30 +1412,36 @@
               "$ref": "#/definitions/GetReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportScheduleId": {
-                      "value": "ID323"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportScheduleId": {
+                        "value": "ID323"
+                      }
+                    }
+                  },
+                  "response": {
+                    "payload": {
+                      "reportScheduleId": "ReportScheduleId1",
+                      "reportType": "FEE_DISCOUNTS_REPORT",
+                      "period": "PT5M",
+                      "nextReportCreationTime": "2019-12-12T13:47:20.677Z"
                     }
                   }
-                },
-                "response": {
-                  "payload": {
-                    "reportScheduleId": "ReportScheduleId1",
-                    "reportType": "FEE_DISCOUNTS_REPORT",
-                    "period": "PT5M",
-                    "nextReportCreationTime": "2019-12-12T13:47:20.677Z"
-                  }
                 }
-              }
-            ]
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
@@ -1385,31 +1449,37 @@
               "$ref": "#/definitions/GetReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportScheduleId": {
-                      "value": "badReportId1"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportScheduleId": {
+                        "value": "badReportId1"
+                      }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "400",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "400",
-                      "message": "Invalid input",
-                      "details": "Invalid input"
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1417,6 +1487,10 @@
               "$ref": "#/definitions/GetReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1441,6 +1515,10 @@
               "$ref": "#/definitions/GetReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1453,6 +1531,10 @@
               "$ref": "#/definitions/GetReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1465,6 +1547,10 @@
               "$ref": "#/definitions/GetReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1477,6 +1563,10 @@
               "$ref": "#/definitions/GetReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1489,6 +1579,10 @@
               "$ref": "#/definitions/GetReportScheduleResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1497,7 +1591,196 @@
           }
         }
       },
-      "parameters": []
+      "delete": {
+        "tags": [
+          "reports"
+        ],
+        "description": "Cancels the report schedule that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0222 | 10 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "operationId": "cancelReportSchedule",
+        "parameters": [
+          {
+            "name": "reportScheduleId",
+            "in": "path",
+            "description": "The identifier for the report schedule. This identifier is unique only in combination with a seller ID.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportScheduleResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportScheduleId": {
+                        "value": "ID"
+                      }
+                    }
+                  },
+                  "response": {}
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportScheduleResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "400",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportScheduleResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportScheduleResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportScheduleResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request's Content-Type header is invalid.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportScheduleResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportScheduleResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportScheduleResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/CancelReportScheduleResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
     },
     "/reports/2020-09-04/documents/{reportDocumentId}": {
       "get": {
@@ -1522,33 +1805,39 @@
               "$ref": "#/definitions/GetReportDocumentResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportDocumentId": {
-                      "value": "0356cf79-b8b0-4226-b4b9-0ee058ea5760"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportDocumentId": {
+                        "value": "0356cf79-b8b0-4226-b4b9-0ee058ea5760"
+                      }
                     }
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "reportDocumentId": "0356cf79-b8b0-4226-b4b9-0ee058ea5760",
-                    "url": "https://d34o8swod1owfl.cloudfront.net/SampleResult%2BKey%3DSample%2BINITVEC%3D58+fa+bf+a7+08+11+95+0f+c1+a8+c6+e0+d5+6f+ae+c8",
-                    "encryptionDetails": {
-                      "standard": "AES",
-                      "initializationVector": "58 fa bf a7 08 11 95 0f c1 a8 c6 e0 d5 6f ae c8",
-                      "key": "Sample"
+                  },
+                  "response": {
+                    "payload": {
+                      "reportDocumentId": "0356cf79-b8b0-4226-b4b9-0ee058ea5760",
+                      "url": "https://d34o8swod1owfl.cloudfront.net/SampleResult%2BKey%3DSample%2BINITVEC%3D58+fa+bf+a7+08+11+95+0f+c1+a8+c6+e0+d5+6f+ae+c8",
+                      "encryptionDetails": {
+                        "standard": "AES",
+                        "initializationVector": "58 fa bf a7 08 11 95 0f c1 a8 c6 e0 d5 6f ae c8",
+                        "key": "Sample"
+                      }
                     }
                   }
                 }
-              }
-            ]
+              ]
+            }
           },
           "400": {
             "description": "Request has missing or invalid parameters and cannot be parsed.",
@@ -1556,31 +1845,37 @@
               "$ref": "#/definitions/GetReportDocumentResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
               }
             },
-            "x-amazon-spds-sandbox-behaviors": [
-              {
-                "request": {
-                  "parameters": {
-                    "reportDocumentId": {
-                      "value": "badDocumentId1"
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "reportDocumentId": {
+                        "value": "badDocumentId1"
+                      }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "400",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "400",
-                      "message": "Invalid input",
-                      "details": "Invalid input"
-                    }
-                  ]
                 }
-              }
-            ]
+              ]
+            }
           },
           "401": {
             "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
@@ -1588,6 +1883,10 @@
               "$ref": "#/definitions/GetReportDocumentResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1612,6 +1911,10 @@
               "$ref": "#/definitions/GetReportDocumentResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1624,6 +1927,10 @@
               "$ref": "#/definitions/GetReportDocumentResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1636,6 +1943,10 @@
               "$ref": "#/definitions/GetReportDocumentResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1648,6 +1959,10 @@
               "$ref": "#/definitions/GetReportDocumentResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1660,6 +1975,10 @@
               "$ref": "#/definitions/GetReportDocumentResponse"
             },
             "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference ID."
@@ -1702,7 +2021,6 @@
     },
     "ReportDocumentEncryptionDetails": {
       "type": "object",
-      "description": "Encryption details required for decryption of a report document's contents.",
       "required": [
         "initializationVector",
         "key",
@@ -1710,8 +2028,8 @@
       ],
       "properties": {
         "standard": {
-          "description": "The encryption standard required to decrypt the document contents.",
           "type": "string",
+          "description": "The encryption standard required to decrypt the document contents.",
           "enum": [
             "AES"
           ],
@@ -1730,54 +2048,55 @@
           "type": "string",
           "description": "The encryption key used to decrypt the document contents."
         }
-      }
+      },
+      "description": "Encryption details required for decryption of a report document's contents."
     },
     "Report": {
       "type": "object",
       "required": [
+        "createdTime",
         "processingStatus",
         "reportId",
-        "reportType",
-        "createdTime"
+        "reportType"
       ],
       "properties": {
         "marketplaceIds": {
-          "description": "A list of marketplace identifiers for the report.",
           "type": "array",
+          "description": "A list of marketplace identifiers for the report.",
           "items": {
             "type": "string"
           }
         },
         "reportId": {
-          "description": "The identifier for the report. This identifier is unique only in combination with a seller ID.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the report. This identifier is unique only in combination with a seller ID."
         },
         "reportType": {
-          "description": "The report type.",
-          "type": "string"
+          "type": "string",
+          "description": "The report type."
         },
         "dataStartTime": {
-          "description": "The start of a date and time range used for selecting the data to report.",
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The start of a date and time range used for selecting the data to report."
         },
         "dataEndTime": {
-          "description": "The end of a date and time range used for selecting the data to report.",
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The end of a date and time range used for selecting the data to report."
         },
         "reportScheduleId": {
-          "description": "The identifier of the report schedule that created this report (if any). This identifier is unique only in combination with a seller ID.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier of the report schedule that created this report (if any). This identifier is unique only in combination with a seller ID."
         },
         "createdTime": {
-          "description": "The date and time when the report was created.",
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The date and time when the report was created."
         },
         "processingStatus": {
-          "description": "The processing status of the report.",
           "type": "string",
+          "description": "The processing status of the report.",
           "enum": [
             "CANCELLED",
             "DONE",
@@ -1809,18 +2128,18 @@
           ]
         },
         "processingStartTime": {
-          "description": "The date and time when the report processing started, in ISO 8601 date time format.",
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The date and time when the report processing started, in ISO 8601 date time format."
         },
         "processingEndTime": {
-          "description": "The date and time when the report processing completed, in ISO 8601 date time format.",
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The date and time when the report processing completed, in ISO 8601 date time format."
         },
         "reportDocumentId": {
-          "description": "The identifier for the report document. Pass this into the getReportDocument operation to get the information you will need to retrieve and decrypt the report document's contents.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the report document. Pass this into the getReportDocument operation to get the information you will need to retrieve and decrypt the report document's contents."
         }
       }
     },
@@ -1839,24 +2158,24 @@
       ],
       "properties": {
         "reportType": {
-          "description": "The report type.",
-          "type": "string"
+          "type": "string",
+          "description": "The report type."
         },
         "marketplaceIds": {
-          "description": "A list of marketplace identifiers for the report schedule.",
           "type": "array",
-          "minItems": 1,
-          "maxItems": 25,
+          "description": "A list of marketplace identifiers for the report schedule.",
           "items": {
             "type": "string"
-          }
+          },
+          "maxItems": 25,
+          "minItems": 1
         },
         "reportOptions": {
           "$ref": "#/definitions/ReportOptions"
         },
         "period": {
-          "description": "One of a set of predefined ISO 8601 periods that specifies how often a report should be created.",
           "type": "string",
+          "description": "One of a set of predefined ISO 8601 periods that specifies how often a report should be created.",
           "enum": [
             "PT5M",
             "PT15M",
@@ -1953,9 +2272,9 @@
           ]
         },
         "nextReportCreationTime": {
-          "description": "The date and time when the schedule will create its next report, in ISO 8601 date time format.",
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The date and time when the schedule will create its next report, in ISO 8601 date time format."
         }
       }
     },
@@ -1970,39 +2289,38 @@
           "$ref": "#/definitions/ReportOptions"
         },
         "reportType": {
-          "description": "The report type.",
-          "type": "string"
+          "type": "string",
+          "description": "The report type."
         },
         "dataStartTime": {
-          "description": "The start of a date and time range, in ISO 8601 date time format, used for selecting the data to report. The default is now. The value must be prior to or equal to the current date and time. Not all report types make use of this.",
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The start of a date and time range, in ISO 8601 date time format, used for selecting the data to report. The default is now. The value must be prior to or equal to the current date and time. Not all report types make use of this."
         },
         "dataEndTime": {
-          "description": "The end of a date and time range, in ISO 8601 date time format, used for selecting the data to report. The default is now. The value must be prior to or equal to the current date and time. Not all report types make use of this.",
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The end of a date and time range, in ISO 8601 date time format, used for selecting the data to report. The default is now. The value must be prior to or equal to the current date and time. Not all report types make use of this."
         },
         "marketplaceIds": {
-          "description": "A list of marketplace identifiers. The report document's contents will contain data for all of the specified marketplaces, unless the report type indicates otherwise.",
           "type": "array",
-          "minItems": 1,
-          "maxItems": 25,
+          "description": "A list of marketplace identifiers. The report document's contents will contain data for all of the specified marketplaces, unless the report type indicates otherwise.",
           "items": {
             "type": "string"
-          }
+          },
+          "maxItems": 25,
+          "minItems": 1
         }
       }
     },
     "ReportOptions": {
-      "description": "Additional information passed to reports. This varies by report type.",
       "type": "object",
+      "description": "Additional information passed to reports. This varies by report type.",
       "additionalProperties": {
         "type": "string"
       }
     },
     "ReportSchedule": {
-      "description": "Detailed information about a report schedule.",
       "type": "object",
       "required": [
         "period",
@@ -2011,16 +2329,16 @@
       ],
       "properties": {
         "reportScheduleId": {
-          "description": "The identifier for the report schedule. This identifier is unique only in combination with a seller ID.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the report schedule. This identifier is unique only in combination with a seller ID."
         },
         "reportType": {
-          "description": "The report type.",
-          "type": "string"
+          "type": "string",
+          "description": "The report type."
         },
         "marketplaceIds": {
-          "description": "A list of marketplace identifiers. The report document's contents will contain data for all of the specified marketplaces, unless the report type indicates otherwise.",
           "type": "array",
+          "description": "A list of marketplace identifiers. The report document's contents will contain data for all of the specified marketplaces, unless the report type indicates otherwise.",
           "items": {
             "type": "string"
           }
@@ -2029,15 +2347,16 @@
           "$ref": "#/definitions/ReportOptions"
         },
         "period": {
-          "description": "An ISO 8601 period value that indicates how often a report should be created.",
-          "type": "string"
+          "type": "string",
+          "description": "An ISO 8601 period value that indicates how often a report should be created."
         },
         "nextReportCreationTime": {
-          "description": "The date and time when the schedule will create its next report, in ISO 8601 date time format.",
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The date and time when the schedule will create its next report, in ISO 8601 date time format."
         }
-      }
+      },
+      "description": "Detailed information about a report schedule."
     },
     "ReportScheduleList": {
       "type": "array",
@@ -2052,8 +2371,8 @@
       ],
       "properties": {
         "reportId": {
-          "description": "The identifier for the report. This identifier is unique only in combination with a seller ID.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the report. This identifier is unique only in combination with a seller ID."
         }
       }
     },
@@ -2065,8 +2384,8 @@
           "$ref": "#/definitions/ReportList"
         },
         "nextToken": {
-          "description": "Returned when the number of results exceeds pageSize. To get the next page of results, call getReports with this token as the only parameter.",
-          "type": "string"
+          "type": "string",
+          "description": "Returned when the number of results exceeds pageSize. To get the next page of results, call getReports with this token as the only parameter."
         },
         "errors": {
           "$ref": "#/definitions/ErrorList"
@@ -2151,8 +2470,8 @@
       ],
       "properties": {
         "reportScheduleId": {
-          "description": "The identifier for the report schedule. This identifier is unique only in combination with a seller ID.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the report schedule. This identifier is unique only in combination with a seller ID."
         }
       }
     },
@@ -2172,25 +2491,25 @@
     "ReportDocument": {
       "type": "object",
       "required": [
-        "reportDocumentId",
         "encryptionDetails",
+        "reportDocumentId",
         "url"
       ],
       "properties": {
         "reportDocumentId": {
-          "description": "The identifier for the report document. This identifier is unique only in combination with a seller ID.",
-          "type": "string"
+          "type": "string",
+          "description": "The identifier for the report document. This identifier is unique only in combination with a seller ID."
         },
         "url": {
-          "description": "A presigned URL for the report document. This URL expires after 5 minutes.",
-          "type": "string"
+          "type": "string",
+          "description": "A presigned URL for the report document. This URL expires after 5 minutes."
         },
         "encryptionDetails": {
           "$ref": "#/definitions/ReportDocumentEncryptionDetails"
         },
         "compressionAlgorithm": {
-          "description": "If present, the report document contents have been compressed with the provided algorithm.",
           "type": "string",
+          "description": "If present, the report document contents have been compressed with the provided algorithm.",
           "enum": [
             "GZIP"
           ],
@@ -2215,6 +2534,5 @@
       },
       "description": "Response schema."
     }
-  },
-  "basePath": "/"
+  }
 }
