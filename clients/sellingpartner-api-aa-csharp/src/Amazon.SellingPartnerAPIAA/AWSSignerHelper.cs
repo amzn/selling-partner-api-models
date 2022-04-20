@@ -41,9 +41,8 @@ namespace Amazon.SellingPartnerAPIAA
         /// </summary>
         /// <param name="request">RestRequest</param>
         /// <returns>URI encoded version of absolute path</returns>
-        public virtual string ExtractCanonicalURIParameters(IRestRequest request)
+        public virtual string ExtractCanonicalURIParameters(string resource)
         {
-            string resource = request.Resource;
             string canonicalUri = string.Empty;
 
             //decode existing strings 
@@ -59,16 +58,16 @@ namespace Amazon.SellingPartnerAPIAA
                 {
                     canonicalUri = Slash;
                 }
-                IDictionary<string, string> pathParameters = request.Parameters
-                        .Where(parameter => ParameterType.UrlSegment.Equals(parameter.Type))
-                        .ToDictionary(parameter => parameter.Name.Trim().ToString(), parameter => parameter.Value.ToString());
+                //IDictionary<string, string> pathParameters = request.Parameters
+                //        .Where(parameter => ParameterType.UrlSegment.Equals(parameter.Type))
+                //        .ToDictionary(parameter => parameter.Name.Trim().ToString(), parameter => parameter.Value.ToString());
 
-                // Replace path parameter with actual value.
-                // Ex: /products/pricing/v0/items/{Asin}/offers -> /products/pricing/v0/items/AB12CD3E4Z/offers
-                foreach (string parameter in pathParameters.Keys)
-                {
-                    resource = resource.Replace("{" + parameter + "}", pathParameters[parameter]);
-                }
+                //// Replace path parameter with actual value.
+                //// Ex: /products/pricing/v0/items/{Asin}/offers -> /products/pricing/v0/items/AB12CD3E4Z/offers
+                //foreach (string parameter in pathParameters.Keys)
+                //{
+                //    resource = resource.Replace("{" + parameter + "}", pathParameters[parameter]);
+                //}
 
                 //Split path at / into segments
                 IEnumerable<string> encodedSegments = resource.Split(new char[] { '/' }, StringSplitOptions.None);
