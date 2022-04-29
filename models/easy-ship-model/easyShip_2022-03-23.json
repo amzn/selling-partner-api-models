@@ -1,0 +1,1618 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2022-03-23",
+    "description": "The Selling Partner API for Easy Ship helps you build applications that help sellers manage and ship Amazon Easy Ship orders.\n\nYour Easy Ship applications can:\n\n* Get available time slots for packages to be scheduled for delivery.\n\n* Schedule, reschedule, and cancel Easy Ship orders.\n\n* Print labels, invoices, and warranties.\n\nSee the [Marketplace Support Table](doc:easy-ship-api-v2022-03-23-use-case-guide) for the differences in Easy Ship operations by marketplace.",
+    "title": "Selling Partner API for Easy Ship",
+    "contact": {
+      "name": "Selling Partner API Test Support",
+      "url": "https://github.com/amzn/amazon-marketplace-api-sdk/issues",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/easyShip/2022-03-23/timeSlot": {
+      "post": {
+        "tags": [
+          "easyShip"
+        ],
+        "description": "Returns time slots available for Easy Ship orders to be scheduled based on the package weight and dimensions that the seller specifies.\n\nThis operation is available for scheduled and unscheduled orders based on marketplace support. See **Get Time Slots** in the [Marketplace Support Table](doc:easy-ship-api-v2022-03-23-use-case-guide).\n\nThis operation can return time slots that have either pickup or drop-off handover methods - see **Supported Handover Methods** in the [Marketplace Support Table](doc:easy-ship-api-v2022-03-23-use-case-guide).\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "listHandoverSlots",
+        "parameters": [
+          {
+            "name": "ListHandoverSlotsRequest",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ListHandoverSlotsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "amazonOrderId": "931-2308757-7991048",
+                        "marketplaceId": "A21TJRUUN4KGV",
+                        "packageDimensions": {
+                          "length": 15.0,
+                          "width": 10.0,
+                          "height": 12.0,
+                          "unit": "Cm",
+                          "identifier": "test"
+                        },
+                        "packageWeight": {
+                          "value": 50.0,
+                          "unit": "G"
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "amazonOrderId": "931-2308757-7991048",
+                    "timeSlots": [
+                      {
+                        "handoverMethod": "Pickup",
+                        "slotId": "AQc48yxSAAAAADZG0qQAAAAA6kkAAAAAAAA=",
+                        "startTime": "2022-03-09T23:30:00Z",
+                        "endTime": "2022-03-10T02:00:00Z"
+                      },
+                      {
+                        "handoverMethod": "Pickup",
+                        "slotId": "AQef4K2CAAAAAGdIAEAAAAAA6kkAAAAAAAA=",
+                        "startTime": "2022-03-10T02:00:00Z",
+                        "endTime": "2022-03-10T04:30:00Z"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ListHandoverSlotsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "amazonOrderId": "",
+                          "marketplaceId": "A21TJRUUN4KGV",
+                          "packageDimensions": {
+                            "length": 15.0,
+                            "width": 10.0,
+                            "height": 12.0,
+                            "unit": "Cm"
+                          },
+                          "packageWeight": {
+                            "value": 50.0,
+                            "unit": "G"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Request has missing or invalid parameters and cannot be parsed.",
+                        "details": ""
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "amazonOrderId": "931-2308757-7991048",
+                          "marketplaceId": "",
+                          "packageDimensions": {
+                            "length": 15.0,
+                            "width": 10.0,
+                            "height": 12.0,
+                            "unit": "Cm"
+                          },
+                          "packageWeight": {
+                            "value": 50.0,
+                            "unit": "G"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ResourceNotFound",
+                        "message": "The specified resource (for example, `AmazonOrderId` or `MarketplaceId`) does not exist."
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/easyShip/2022-03-23/package": {
+      "get": {
+        "tags": [
+          "easyShip"
+        ],
+        "description": "Returns information about a package, including dimensions, weight, time slot information for handover, invoice and item information, and status.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "getScheduledPackage",
+        "parameters": [
+          {
+            "name": "amazonOrderId",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "An Amazon-defined order identifier. Identifies the order that the seller wants to deliver using Amazon Easy Ship."
+          },
+          {
+            "name": "marketplaceId",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "An identifier for the marketplace in which the seller is selling."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "amazonOrderId": {
+                        "value": "903-1713775-3598252"
+                      },
+                      "marketplaceId": {
+                        "value": "A21TJRUUN4KGV"
+                      }
+                    }
+                  },
+                  "response": {
+                    "scheduledPackageId": {
+                      "amazonOrderId": "903-1713775-3598252",
+                      "packageId": "1ab0f06a-9149-87e0-aba9-7098117872d6"
+                    },
+                    "packageDimensions": {
+                      "length": 12.00,
+                      "width": 12.00,
+                      "height": 12.00,
+                      "unit": "Cm"
+                    },
+                    "packageWeight": {
+                      "value": 23.00,
+                      "unit": "G"
+                    },
+                    "packageTimeSlot": {
+                      "slotId": "AQc48yxSAAAAADZG0qQAAAAA6kkAAAAAAAA=",
+                      "startTime": "2022-03-09T23:30:00Z",
+                      "endTime": "2022-03-10T02:00:00Z"
+                    },
+                    "packageStatus": "Scheduled"
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/Package"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "amazonOrderId": {
+                        "value": "903-1713775-1111111"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ResourceNotFound",
+                        "message": "The specified resource (for example, `AmazonOrderId` or `MarketplaceId`) does not exist."
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "easyShip"
+        ],
+        "description": "Schedules an Easy Ship order and returns the scheduled package information.\n\nThis operation does the following:\n\n*  Specifies the time slot and handover method for the order to be scheduled for delivery.\n\n* Updates the Easy Ship order status.\n\n* Generates a shipping label and an invoice. Calling `createScheduledPackage` also generates a warranty document if you specify a `SerialNumber` value. To get these documents, see [How to get invoice, shipping label, and warranty documents](doc:easy-ship-api-v2022-03-23-use-case-guide).\n\n* Shows the status of Easy Ship orders when you call the `getOrders` operation of the Selling Partner API for Orders and examine the `EasyShipShipmentStatus` property in the response body.\n\nSee the **Shipping Label**, **Invoice**, and **Warranty** columns in the [Marketplace Support Table](doc:easy-ship-api-v2022-03-23-use-case-guide) to see which documents are supported in each marketplace.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "createScheduledPackage",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CreateScheduledPackageRequest",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateScheduledPackageRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "amazonOrderId": "903-1713775-3598252",
+                        "marketplaceId": "A21TJRUUN4KGV",
+                        "packageDetails": {
+                          "packageDimensions": {
+                            "length": 12.00,
+                            "width": 12.00,
+                            "height": 12.00,
+                            "unit": "Cm"
+                          },
+                          "packageWeight": {
+                            "value": 23.00,
+                            "unit": "G"
+                          },
+                          "packageTimeSlot": {
+                            "slotId": "AQc48yxSAAAAADZG0qQAAAAA6kkAAAAAAAA=",
+                            "startTime": "2022-03-09T23:30:00Z",
+                            "endTime": "2022-03-10T02:00:00Z"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "scheduledPackageId": {
+                      "amazonOrderId": "903-1713775-3598252",
+                      "packageId": "1ab0f06a-9149-87e0-aba9-7098117872d6"
+                    },
+                    "packageDimensions": {
+                      "length": 12.00,
+                      "width": 12.00,
+                      "height": 12.00,
+                      "unit": "Cm"
+                    },
+                    "packageWeight": {
+                      "value": 23.00,
+                      "unit": "G"
+                    },
+                    "packageTimeSlot": {
+                      "slotId": "AQc48yxSAAAAADZG0qQAAAAA6kkAAAAAAAA=",
+                      "startTime": "2022-03-09T23:30:00Z",
+                      "endTime": "2022-03-10T02:00:00Z"
+                    },
+                    "packageStatus": "ReadyForPickup"
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/Package"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "amazonOrderId": "903-1713775-3598252",
+                          "packageDetails": {
+                            "packageTimeSlot": {
+                              "slotId": "",
+                              "startTime": "2022-03-09T23:30:00Z",
+                              "endTime": "2022-03-10T02:00:00Z"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Request has missing or invalid parameters and cannot be parsed."
+                      }
+                    ]
+                  }
+                },{
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "amazonOrderId": "",
+                          "packageDetails": {
+                            "packageTimeSlot": {
+                              "slotId": "AQc48yxSAAAAADZG0qQAAAAA6kkAAAAAAAA=",
+                              "startTime": "2022-03-09T23:30:00Z",
+                              "endTime": "2022-03-10T02:00:00Z"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ResourceNotFound",
+                        "message": "The specified resource (for example, `AmazonOrderId` or `MarketplaceId`) does not exist."
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "easyShip"
+        ],
+        "description": "Updates the time slot for handing over the package indicated by the specified `scheduledPackageId`. You can get the new `slotId` value for the time slot by calling the `listHandoverSlots` operation before making another `patch` call.\n\nSee the **Update Package** column in the [Marketplace Support Table](doc:easy-ship-api-v2022-03-23-use-case-guide) to see which marketplaces this operation is supported in.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "updateScheduledPackages",
+        "parameters": [
+          {
+            "name": "UpdateScheduledPackagesRequest",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UpdateScheduledPackagesRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "marketplaceId": "A21TJRUUN4KGV",
+                        "updatePackageDetailsList": [{
+                          "scheduledPackageId": {
+                            "amazonOrderId": "903-1713775-3598252",
+                            "packageId": "1ab0f06a-9149-87e0-aba9-7098117872d6"
+                          },
+                          "packageTimeSlot": {
+                            "slotId": "AQc48yxSAAAAADZG0qQAAAAA6kkAAAAAAAA=",
+                            "startTime": "2022-03-09T23:30:00Z",
+                            "endTime": "2022-03-10T02:00:00Z"
+                          }
+                        }]
+                      }
+                    }
+                  },
+                  "response": {
+                    "packages": [
+                      {
+                        "scheduledPackageId": {
+                          "amazonOrderId": "903-1713775-3598252",
+                          "packageId": "1ab0f06a-9149-87e0-aba9-7098117872d6"
+                        },
+                        "packageDimensions": {
+                          "length": 12.00,
+                          "width": 12.00,
+                          "height": 12.00,
+                          "unit": "Cm"
+                        },
+                        "packageWeight": {
+                          "value": 23.00,
+                          "unit": "G"
+                        },
+                        "packageTimeSlot": {
+                          "slotId": "AQc48yxSAAAAADZG0qQAAAAA6kkAAAAAAAA=",
+                          "startTime": "2022-03-09T23:30:00Z",
+                          "endTime": "2022-03-10T02:00:00Z"
+                        },
+                        "packageIdentifier": "Scheduled",
+                        "packageStatus": "ReadyForPickup"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/Packages"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "",
+                          "updatePackageDetailsList": [
+                            {
+                              "scheduledPackageId": {
+                                "amazonOrderId": "903-1713775-3598252",
+                                "packageId": "1ab0f06a-9149-87e0-aba9-7098117872d6"
+                              },
+                              "packageTimeSlot": {
+                                "slotId": "",
+                                "startTime": "2022-03-09T23:30:00Z",
+                                "endTime": "2022-03-10T02:00:00Z"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Request has missing or invalid parameters and cannot be parsed."
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "A21TJRUUN4KGV",
+                          "updatePackageDetailsList": [
+                            {
+                              "scheduledPackageId": {
+                                "amazonOrderId": "",
+                                "packageId": "1ab0f06a-9149-87e0-aba9-7098117872d6"
+                              },
+                              "packageTimeSlot": {
+                                "slotId": "AQc48yxSAAAAADZG0qQAAAAA6kkAAAAAAAA=",
+                                "startTime": "2022-03-09T23:30:00Z",
+                                "endTime": "2022-03-10T02:00:00Z"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ResourceNotFound",
+                        "message": "The specified resource (for example, `AmazonOrderId` or `MarketplaceId`) does not exist."
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "marketplaceId": "A21TJRUUN4KGV",
+                          "updatePackageDetailsList": [
+                            {
+                              "scheduledPackageId": {
+                                "amazonOrderId": "905-1713775-3598252",
+                                "packageId": "1ab0f06a-9149-87e0-aba9-7098117872d6"
+                              },
+                              "packageTimeSlot": {
+                                "slotId": "AQc48yxSAAAAADZG0qQAAAAA6kkAAAAAAAA=",
+                                "startTime": "2022-03-09T23:30:00Z",
+                                "endTime": "2022-03-10T02:00:00Z"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ScheduleWindowExpired",
+                        "message": "The selected time slot has expired."
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PackageIdentifier": {
+      "description": "Optional seller-created identifier that is printed on the shipping label to help the seller identify the package.",
+      "type": "string"
+    },
+    "PackageStatus": {
+      "description": "The status of the package.",
+      "type": "string",
+      "enum": [
+        "ReadyForPickup",
+        "PickedUp",
+        "AtOriginFC",
+        "AtDestinationFC",
+        "Delivered",
+        "Rejected",
+        "Undeliverable",
+        "ReturnedToSeller",
+        "LostInTransit",
+        "LabelCanceled",
+        "DamagedInTransit",
+        "OutForDelivery"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "ReadyForPickup",
+          "description": "The package is ready for pickup."
+        },
+        {
+          "value": "PickedUp",
+          "description": "The package has been picked up."
+        },
+        {
+          "value": "AtOriginFC",
+          "description": "The package is at its origin fulfillment center."
+        },
+        {
+          "value": "AtDestinationFC",
+          "description": "The package is at its destination fulfillment center."
+        },
+        {
+          "value": "Delivered",
+          "description": "The package has been delivered."
+        },
+        {
+          "value": "Rejected",
+          "description": "The package has been rejected."
+        },
+        {
+          "value": "Undeliverable",
+          "description": "The package is not deliverable."
+        },
+        {
+          "value": "ReturnedToSeller",
+          "description": "The package has been returned to the seller."
+        },
+        {
+          "value": "LostInTransit",
+          "description": "The package has been lost in transit."
+        },
+        {
+          "value": "LabelCanceled",
+          "description": "The package's label has been canceled."
+        },
+        {
+          "value": "DamagedInTransit",
+          "description": "The package has been damaged in transit."
+        },
+        {
+          "value": "OutForDelivery",
+          "description": "The package is out for delivery."
+        }
+      ]
+    },
+    "PackageId": {
+      "type": "string",
+      "description": "An Amazon-defined identifier for the scheduled package."
+    },
+    "TrackingDetails": {
+      "description": "Representation of tracking metadata.",
+      "type": "object",
+      "properties": {
+        "trackingId": {
+          "description": "The tracking identifier for the scheduled package.",
+          "$ref": "#/definitions/String"
+        }
+      }
+    },
+    "HandoverMethod": {
+      "description": "Identifies the method by which a seller will hand a package over to Amazon Logistics.",
+      "type": "string",
+      "enum": [
+        "Pickup",
+        "Dropoff"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "Pickup",
+          "description": "An Amazon Logistics carrier will pickup the package(s) from the seller's pickup address."
+        },
+        {
+          "value": "Dropoff",
+          "description": "Seller will need to drop off the package(s) to a designated location."
+        }
+      ]
+    },
+    "AmazonOrderId": {
+      "type": "string",
+      "description": "An Amazon-defined order identifier. Identifies the order that the seller wants to deliver using Amazon Easy Ship."
+    },
+    "Dimension": {
+      "description": "The numerical value of the specified dimension.",
+      "type": "number",
+      "format": "float",
+      "minimum": 0.01
+    },
+    "Dimensions": {
+      "type": "object",
+      "description": "The dimensions of the scheduled package.",
+      "properties": {
+        "length": {
+          "description": "The length dimension.",
+          "$ref": "#/definitions/Dimension"
+        },
+        "width": {
+          "description": "The width dimension.",
+          "$ref": "#/definitions/Dimension"
+        },
+        "height": {
+          "description": "The height dimension.",
+          "$ref": "#/definitions/Dimension"
+        },
+        "unit": {
+          "$ref": "#/definitions/UnitOfLength"
+        },
+        "identifier": {
+          "description": "Identifier for custom package dimensions.",
+          "$ref": "#/definitions/String"
+        }
+      }
+    },
+    "ListHandoverSlotsRequest": {
+      "description": "The request schema for the `listHandoverSlots` operation.",
+      "type": "object",
+      "required": [
+        "marketplaceId",
+        "amazonOrderId",
+        "packageDimensions",
+        "packageWeight"
+      ],
+      "properties": {
+        "marketplaceId": {
+          "$ref": "#/definitions/String"
+        },
+        "amazonOrderId": {
+          "$ref": "#/definitions/AmazonOrderId"
+        },
+        "packageDimensions": {
+          "$ref": "#/definitions/Dimensions"
+        },
+        "packageWeight": {
+          "$ref": "#/definitions/Weight"
+        }
+      }
+    },
+    "ListHandoverSlotsResponse": {
+      "description": "The response schema for the `listHandoverSlots` operation.",
+      "type": "object",
+      "required": [
+        "amazonOrderId",
+        "timeSlots"
+      ],
+      "properties": {
+        "amazonOrderId": {
+          "$ref": "#/definitions/AmazonOrderId"
+        },
+        "timeSlots": {
+          "$ref": "#/definitions/TimeSlots"
+        }
+      }
+    },
+    "InvoiceData": {
+      "type": "object",
+      "description": "Invoice number and date.",
+      "required": [
+        "invoiceNumber"
+      ],
+      "properties": {
+        "invoiceNumber": {
+          "description": "The invoice number.",
+          "$ref": "#/definitions/String"
+        },
+        "invoiceDate": {
+          "description": "The date that the invoice was generated.",
+          "$ref": "#/definitions/DateTime"
+        }
+      }
+    },
+    "Item": {
+      "description": "Item identifier and serial number information.",
+      "type": "object",
+      "properties": {
+        "orderItemId": {
+          "$ref": "#/definitions/OrderItemId"
+        },
+        "orderItemSerialNumbers": {
+          "$ref": "#/definitions/OrderItemSerialNumbers"
+        }
+      }
+    },
+    "Items": {
+      "description": "A list of items contained in the package.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Item"
+      },
+      "maxItems": 500
+    },
+    "OrderItemId": {
+      "type": "string",
+      "description": "The Amazon-defined order item identifier.",
+      "maxLength": 255
+    },
+    "OrderItemSerialNumber": {
+      "description": "A serial number for an item associated with the `OrderItemId` value.",
+      "type": "string",
+      "maxLength": 255
+    },
+    "OrderItemSerialNumbers": {
+      "type": "array",
+      "description": "A list of serial numbers for the items associated with the `OrderItemId` value.",
+      "items": {
+        "$ref": "#/definitions/OrderItemSerialNumber"
+      },
+      "maxItems": 100
+    },
+    "Package": {
+      "description": "A package. This object contains all the details of the scheduled Easy Ship package including the package identifier, physical attributes such as dimensions and weight, selected time slot to handover the package to carrier, status of the package, and tracking/invoice details.",
+      "type": "object",
+      "required": [
+        "packageDimensions",
+        "packageTimeSlot",
+        "packageWeight",
+        "scheduledPackageId"
+      ],
+      "properties": {
+        "scheduledPackageId": {
+          "$ref": "#/definitions/ScheduledPackageId"
+        },
+        "packageDimensions": {
+          "$ref": "#/definitions/Dimensions"
+        },
+        "packageWeight": {
+          "$ref": "#/definitions/Weight"
+        },
+        "packageItems": {
+          "$ref": "#/definitions/Items"
+        },
+        "packageTimeSlot": {
+          "$ref": "#/definitions/TimeSlot"
+        },
+        "packageIdentifier": {
+          "$ref": "#/definitions/PackageIdentifier"
+        },
+        "invoice": {
+          "$ref": "#/definitions/InvoiceData"
+        },
+        "packageStatus": {
+          "$ref": "#/definitions/PackageStatus"
+        },
+        "trackingDetails": {
+          "$ref": "#/definitions/TrackingDetails"
+        }
+      }
+    },
+    "Packages": {
+      "description": "A list of packages.",
+      "type": "object",
+      "required": [
+        "packages"
+      ],
+      "properties": {
+        "packages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Package"
+          },
+          "maxItems": 500,
+          "minItems": 1
+        }
+      }
+    },
+    "PackageDetails": {
+      "description": "Package details. Includes `packageItems`, `packageTimeSlot`, and `packageIdentifier`.",
+      "type": "object",
+      "required": [
+        "packageTimeSlot"
+      ],
+      "properties": {
+        "packageItems": {
+          "$ref": "#/definitions/Items"
+        },
+        "packageTimeSlot": {
+          "$ref": "#/definitions/TimeSlot"
+        },
+        "packageIdentifier": {
+          "$ref": "#/definitions/PackageIdentifier"
+        }
+      }
+    },
+    "TimeSlot": {
+      "type": "object",
+      "description": "A time window to hand over an Easy Ship package to Amazon Logistics.",
+      "required": [
+        "slotId"
+      ],
+      "properties": {
+        "slotId": {
+          "description": "An Amazon-defined identifier for a time slot.",
+          "$ref": "#/definitions/String"
+        },
+        "startTime": {
+          "description": "The start date and time of the time slot.",
+          "$ref": "#/definitions/DateTime"
+        },
+        "endTime": {
+          "description": "The end date and time of the time slot.",
+          "$ref": "#/definitions/DateTime"
+        },
+        "handoverMethod": {
+          "description": "The method by which a seller will hand a package over to Amazon Logistics.",
+          "$ref": "#/definitions/HandoverMethod"
+        }
+      }
+    },
+    "TimeSlots": {
+      "description": "A list of time slots.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TimeSlot"
+      },
+      "maxItems": 500,
+      "minItems": 1
+    },
+    "ScheduledPackageId": {
+      "type": "object",
+      "description": "Identifies the scheduled package to be updated.",
+      "required": [
+        "amazonOrderId"
+      ],
+      "properties": {
+        "amazonOrderId": {
+          "$ref": "#/definitions/AmazonOrderId"
+        },
+        "packageId": {
+          "$ref": "#/definitions/PackageId"
+        }
+      }
+    },
+    "CreateScheduledPackageRequest": {
+      "description": "The request schema for the `createScheduledPackage` operation.",
+      "type": "object",
+      "required": [
+        "amazonOrderId",
+        "marketplaceId",
+        "packageDetails"
+      ],
+      "properties": {
+        "amazonOrderId": {
+          "$ref": "#/definitions/AmazonOrderId"
+        },
+        "marketplaceId": {
+          "$ref": "#/definitions/String"
+        },
+        "packageDetails": {
+          "$ref": "#/definitions/PackageDetails"
+        }
+      }
+    },
+    "UpdateScheduledPackagesRequest": {
+      "description": "The request schema for the `updateScheduledPackages` operation.",
+      "type": "object",
+      "required": [
+        "marketplaceId",
+        "updatePackageDetailsList"
+      ],
+      "properties": {
+        "marketplaceId": {
+          "$ref": "#/definitions/String"
+        },
+        "updatePackageDetailsList": {
+          "$ref": "#/definitions/UpdatePackageDetailsList"
+        }
+      }
+    },
+    "UpdatePackageDetails": {
+      "description": "Request to update the time slot of a package.",
+      "type": "object",
+      "required": [
+        "packageTimeSlot",
+        "scheduledPackageId"
+      ],
+      "properties": {
+        "scheduledPackageId": {
+          "$ref": "#/definitions/ScheduledPackageId"
+        },
+        "packageTimeSlot": {
+          "$ref": "#/definitions/TimeSlot"
+        }
+      }
+    },
+    "UpdatePackageDetailsList": {
+      "description": "A list of package update details.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/UpdatePackageDetails"
+      },
+      "maxItems": 500,
+      "minItems": 1
+    },
+    "String": {
+      "description": "A string of up to 255 characters.",
+      "type": "string",
+      "maxLength": 255,
+      "minLength": 1
+    },
+    "DateTime": {
+      "description": "A datetime value in ISO 8601 format.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "UnitOfLength": {
+      "description": "The unit of measurement used to measure the length.",
+      "type": "string",
+      "enum": [
+        "Cm"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "Cm",
+          "description": "Centimeters"
+        }
+      ]
+    },
+    "UnitOfWeight": {
+      "description": "The unit of measurement used to measure the weight.",
+      "type": "string",
+      "enum": [
+        "Grams",
+        "G"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "Grams",
+          "description": "Grams"
+        },
+        {
+          "value": "G",
+          "description": "Grams"
+        }
+      ]
+    },
+    "Weight": {
+      "type": "object",
+      "description": "The weight of the scheduled package",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/WeightValue"
+        },
+        "unit": {
+          "$ref": "#/definitions/UnitOfWeight"
+        }
+      }
+    },
+    "WeightValue": {
+      "description": "The weight of the package.",
+      "type": "number",
+      "format": "float",
+      "minimum": 11.00
+    },
+    "ErrorList": {
+      "type": "object",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occurred.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "Code": {
+      "description": "An error code that identifies the type of error that occurred. The error codes listed below are specific to the Easy Ship section.",
+      "type": "string",
+      "enum": [
+        "InvalidInput",
+        "InvalidTimeSlotId",
+        "ScheduledPackageAlreadyExists",
+        "ScheduleWindowExpired",
+        "RetryableAfterGettingNewSlots",
+        "TimeSlotNotAvailable",
+        "ResourceNotFound",
+        "InvalidOrderState",
+        "RegionNotSupported",
+        "OrderNotEligibleForRescheduling",
+        "InternalServerError"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "InvalidInput",
+          "description": "HTTP status code 400. Request has missing or invalid parameters and cannot be processed."
+        },
+        {
+          "value": "InvalidTimeSlotId",
+          "description": "HTTP status code 400. The specified time slot identifier is not valid."
+        },
+        {
+          "value": "ScheduledPackageAlreadyExists",
+          "description": "HTTP status code 400. The order has already been scheduled."
+        },
+        {
+          "value": "ScheduleWindowExpired",
+          "description": "HTTP status code 400. The selected time slot has expired. Try calling `listHandoverSlots` again to get a new time slot."
+        },
+        {
+          "value": "RetryableAfterGettingNewSlots",
+          "description": "HTTP status code 400. Order scheduling has failed because of an issue with the selected time slot. If you see this error, request a new time slot and try to schedule again."
+        },
+        {
+          "value": "TimeSlotNotAvailable",
+          "description": "HTTP status code 404. No time slot is available due to various factors such as: invalid weight and dimension parameters, or the available slots are only available after the expected cancellation date."
+        },
+        {
+          "value": "ResourceNotFound",
+          "description": "HTTP status code 404. The specified resource (for example, `amazonOrderId` or `marketplaceId`) does not exist."
+        },
+        {
+          "value": "InvalidOrderState",
+          "description": "HTTP status code 404. The request cannot be applied to the order in its current state. For example, you cannot cancel an order which has not yet been scheduled or which has already been canceled."
+        },
+        {
+          "value": "RegionNotSupported",
+          "description": "HTTP status code 404. Amazon Easy Ship is not supported in the specified marketplace."
+        },
+        {
+          "value": "OrderNotEligibleForRescheduling",
+          "description": "HTTP status code 405. Order is not eligible for rescheduling."
+        },
+        {
+          "value": "InternalServerError",
+          "description": "HTTP status code 500. There was an internal service failure."
+        }
+      ]
+    }
+  }
+}
