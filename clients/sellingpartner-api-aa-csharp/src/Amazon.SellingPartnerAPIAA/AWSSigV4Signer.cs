@@ -59,7 +59,7 @@ namespace Amazon.SellingPartnerAPIAA
             canonicalizedRequest.AppendFormat("{0}\n", restRequest.Method);
 
             //CanonicalURI
-            canonicalizedRequest.AppendFormat("{0}\n", AwsSignerHelper.ExtractCanonicalURIParameters(restRequest.Resource));
+            canonicalizedRequest.AppendFormat("{0}\n", AwsSignerHelper.ExtractCanonicalURIParameters(restRequest));
 
             //CanonicalQueryString
             canonicalizedRequest.AppendFormat("{0}\n", AwsSignerHelper.ExtractCanonicalQueryString(restRequest));
