@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-class LWAAccessTokenRequestMeta {
+public class LWAAccessTokenRequestMeta {
     @SerializedName("grant_type")
     private String grantType;
 
