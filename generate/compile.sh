@@ -2,6 +2,9 @@
 
 cd ..
 rm -rf generated
+mkdir generated
+cp -a generate/JSON.java generated/spapi/src/main/java/com/amazon/sellingpartner/
+
 basePackage="com.amazon.sellingpartner"
 #models=(models/*/*)
 
@@ -11,7 +14,7 @@ generate () {
           --lang java \
           --template-dir clients/sellingpartner-api-aa-java/resources/swagger-codegen/templates \
           --output generated/spapi \
-          --invoker-package "$basePackage.client.$1" \
+          --invoker-package "$basePackage" \
           --api-package "$basePackage.api.$1" \
           --model-package "$basePackage.model.$1" \
           --group-id "com.amazon" \
@@ -23,6 +26,7 @@ generate "aplus" "models/aplus-content-api-model/aplusContent_2020-11-01.json"
 generate "authorization" "models/authorization-api-model/authorization.json"
 generate "catalogv0" "models/catalog-items-api-model/catalogItemsV0.json"
 generate "catalogv20" "models/catalog-items-api-model/catalogItems_2020-12-01.json"
+generate "easyship" "models/easy-ship-model/easyShip_2022-03-23.json"
 generate "fbainbound" "models/fba-inbound-eligibility-api-model/fbaInbound.json"
 generate "fbainventory" "models/fba-inventory-api-model/fbaInventory.json"
 generate "fbaSmallandLight" "models/fba-small-and-light-api-model/fbaSmallandLight.json"
@@ -74,15 +78,16 @@ generate "vendortransactionstatus" "models/vendor-transaction-status-api-model/v
 #    # --additional-properties dateLibrary=java8 :: Use Java 8 date libraries
 #done
 #
-#cd clients/sellingpartner-api-aa-java
-#mvn clean package
-#mvn install:install-file -Dfile=target/sellingpartnerapi-aa-java-1.0.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=sellingpartnerapi-aa-java -Dversion=1.0 -Dpackaging=jar
+cd clients/sellingpartner-api-aa-java
+mvn clean package
+mvn install:install-file -Dfile=target/sellingpartnerapi-aa-java-1.0.1.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=sellingpartnerapi-aa-java -Dversion=1.0.1 -Dpackaging=jar
 
-#cd ../..
+cd ../..
 cp -r generate/pom.xml generated/spapi
 cd generated/spapi
 mvn clean package
 
 # install into jazva/lib  check path
 # fix path and run manually from root folder
-# mvn install:install-file -Dfile=generated/spapi/target/selling-partner-api-1.0.3.jar -Dsources=generated/spapi/target/selling-partner-api-1.0.3-sources.jar -Djavadoc=generated/spapi/target/selling-partner-api-1.0.3-javadoc.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=selling-partner-api -Dversion=1.0.3 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
+cd ../..
+mvn install:install-file -Dfile=generated/spapi/target/selling-partner-api-1.0.5.jar -Dsources=generated/spapi/target/selling-partner-api-1.0.5-sources.jar -Djavadoc=generated/spapi/target/selling-partner-api-1.0.5-javadoc.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=selling-partner-api -Dversion=1.0.5 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
