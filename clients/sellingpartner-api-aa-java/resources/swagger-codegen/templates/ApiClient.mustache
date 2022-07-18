@@ -1074,7 +1074,9 @@ public class ApiClient {
             request = reqBuilder.method(method, reqBody).build();
         }
 
-        request = lwaAuthorizationSigner.sign(request);
+        if (!defaultHeaderMap.containsKey("x-amz-access-token")) {
+            request = lwaAuthorizationSigner.sign(request);
+        }
         request = awsSigV4Signer.sign(request);
 
         return request;
