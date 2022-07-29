@@ -1,3 +1,9 @@
+# Modifications
+
+* Dependency updates (not okhttp and apache httpcomponents - sadly)
+* Attach sources to jar
+* Fix Bug in 
+
 ## Selling Partner API Models
 This repository contains Swagger models for developers to use to create software to call Selling Partner APIs. Developers can use [swagger codegen](https://github.com/swagger-api/swagger-codegen) to generate client libraries from these models. Please refer to [selling-partner-api-docs](https://github.com/amzn/selling-partner-api-docs) for additional documentation and read the [Selling Partner API Developer Guide](https://github.com/amzn/selling-partner-api-docs/blob/main/guides/en-US/developer-guide/SellingPartnerApiDeveloperGuide.md) for instructions to get started.
 
