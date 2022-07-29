@@ -16,10 +16,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 class SignableRequestImpl implements SignableRequest<Request> {
     private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
@@ -83,8 +80,19 @@ class SignableRequestImpl implements SignableRequest<Request> {
         try {
             List<NameValuePair> nameValuePairs = URLEncodedUtils.parse(originalRequest.url().toURI(),
                     StandardCharsets.UTF_8);
-            nameValuePairs.forEach(nameValuePair -> parameters.put(nameValuePair.getName(),
-                    Collections.singletonList(nameValuePair.getValue())));
+            for (NameValuePair nameValuePair : nameValuePairs) {
+                String key = nameValuePair.getName();
+                String value = nameValuePair.getValue();
+                if (parameters.containsKey(key)) {
+                    List<String> existingValues = parameters.get(key);
+                    ArrayList<String> values = new ArrayList<>(existingValues.size() + 1);
+                    values.addAll(existingValues);
+                    values.add(value);
+                    parameters.put(key, Collections.unmodifiableList(values));
+                } else {
+                    parameters.put(key, Collections.singletonList(value));
+                }
+            }
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
