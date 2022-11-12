@@ -74,7 +74,7 @@ class SignableRequestImpl implements SignableRequest<Request> {
     @Override
     public String getResourcePath() {
         return originalRequest.url()
-                .getPath();
+                .getRawPath();
     }
 
     @Override
