@@ -2077,7 +2077,7 @@
                   "request": {
                     "parameters": {
                       "shipmentId": {
-                        "value": "shipmentId1"
+                        "value": "BADshipmentId1"
                       },
                       "body": {
                         "value": {
@@ -2703,7 +2703,7 @@
                   "request": {
                     "parameters": {
                       "shipmentId": {
-                        "value": "shipmentId1"
+                        "value": "BADshipmentId1"
                       }
                     }
                   },
@@ -3346,6 +3346,7 @@
               "type": "string",
               "enum": [
                 "WORKING",
+                "READY_TO_SHIP",
                 "SHIPPED",
                 "RECEIVING",
                 "CANCELLED",
@@ -3360,6 +3361,10 @@
                 {
                   "value": "WORKING",
                   "description": "The shipment was created by the seller, but has not yet shipped."
+                },
+                {
+                  "value": "READY_TO_SHIP",
+                  "description": "The seller has printed box labels (for Small parcel shipments) or pallet labels (for Less Than Truckload shipments)."
                 },
                 {
                   "value": "SHIPPED",
@@ -5714,7 +5719,7 @@
         },
         "CarrierName": {
           "type": "string",
-          "description": "The Amazon-partnered carrier to use for the inbound shipment."
+          "description": "The Amazon-partnered carrier to use for the inbound shipment. **`CarrierName`** values in France (FR), Italy (IT), Spain (ES), the United Kingdom (UK), and the United States (US): `UNITED_PARCEL_SERVICE_INC`. <br> **`CarrierName`** values in Germany (DE): `DHL_STANDARD`,`UNITED_PARCEL_SERVICE_INC`. <br>Default: `UNITED_PARCEL_SERVICE_INC`."
         }
       },
       "description": "Information that is required by an Amazon-partnered carrier to ship a Small Parcel inbound shipment."
@@ -5848,7 +5853,16 @@
         "Taping",
         "BlackShrinkWrapping",
         "Labeling",
-        "HangGarment"
+        "HangGarment",
+        "SetCreation",
+        "Boxing",
+        "RemoveFromHanger",
+        "Debundle",
+        "SuffocationStickering",
+        "CapSealing",
+        "SetStickering",
+        "BlankStickering",
+        "NoPrep"
       ],
       "x-docgen-enum-table-extension": [
         {
@@ -5874,6 +5888,42 @@
         {
           "value": "HangGarment",
           "description": "Indicates that the item should be placed on a hanger."
+        },
+        {
+          "value": "SetCreation",
+          "description": "Units that are sets must be labeled as sets on their packaging. The barcodes on the individual items must 1) not face outward and 2) not require covering."
+        },
+        {
+          "value": "Boxing",
+          "description": "Products may require overboxing when there are safety concerns over sharp items, fragile items, hazardous liquids, and vinyl records. For items over 4.5 kg, use double-wall corrugated boxes."
+        },
+        {
+          "value": "RemoveFromHanger",
+          "description": "Indicates that the item cannot be shipped on a hanger."
+        },
+        {
+          "value": "Debundle",
+          "description": "Indicates requiring taking apart a set of items labeled for individual sale. Remove tape or shrink wrap that groups multiple inventory units together."
+        },
+        {
+          "value": "SuffocationStickering",
+          "description": "Poly bags with an opening of 12 cm or larger (measured when flat) must have a suffocation warning. This warning must be printed on the bag or attached as a label."
+        },
+        {
+          "value": "CapSealing",
+          "description": "To prevent leakage, product needs to have a secondary seal in one of the following types: Induction seal, safety ring, clips, heat shrink plastic band, or boxing."
+        },
+        {
+          "value": "SetStickering",
+          "description": "Products that are sets (for example, a set of six unique toy cars that is sold as one unit) must be marked as sets on their packaging. Add a label to the unit that clearly states that the products are to be received and sold as a single unit."
+        },
+        {
+          "value": "BlankStickering",
+          "description": "Indicates applying a blank sticker to obscure a bad barcode that cannot be covered by another sticker."
+        },
+        {
+          "value": "NoPrep",
+          "description": "Indicates that the item does not require any prep."
         }
       ]
     },
