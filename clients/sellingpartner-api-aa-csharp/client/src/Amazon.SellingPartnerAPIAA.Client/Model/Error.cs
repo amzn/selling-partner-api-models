@@ -1,7 +1,7 @@
 /* 
- * Selling Partner API for Orders
+ * Selling Partner API for Pricing
  *
- * The Selling Partner API for Orders helps you programmatically retrieve order information. These APIs let you develop fast, flexible, custom applications in areas like order synchronization, order research, and demand-based decision support tools.
+ * The Selling Partner API for Pricing helps you programmatically retrieve product pricing and offer information for Amazon Marketplace products.
  *
  * OpenAPI spec version: v0
  * 
@@ -33,8 +33,8 @@ namespace Amazon.SellingPartnerAPIAA.Client.Model
         /// Initializes a new instance of the <see cref="Error" /> class.
         /// </summary>
         /// <param name="code">An error code that identifies the type of error that occurred. (required).</param>
-        /// <param name="message">A message that describes the error condition. (required).</param>
-        /// <param name="details">Additional details that can help the caller understand or fix the issue..</param>
+        /// <param name="message">A message that describes the error condition in a human-readable form. (required).</param>
+        /// <param name="details">Additional information that can help the caller understand or fix the issue..</param>
         public Error(string code = default(string), string message = default(string), string details = default(string))
         {
             // to ensure "code" is required (not null)
@@ -66,16 +66,16 @@ namespace Amazon.SellingPartnerAPIAA.Client.Model
         public string Code { get; set; }
 
         /// <summary>
-        /// A message that describes the error condition.
+        /// A message that describes the error condition in a human-readable form.
         /// </summary>
-        /// <value>A message that describes the error condition.</value>
+        /// <value>A message that describes the error condition in a human-readable form.</value>
         [DataMember(Name = "message", EmitDefaultValue = false)]
         public string Message { get; set; }
 
         /// <summary>
-        /// Additional details that can help the caller understand or fix the issue.
+        /// Additional information that can help the caller understand or fix the issue.
         /// </summary>
-        /// <value>Additional details that can help the caller understand or fix the issue.</value>
+        /// <value>Additional information that can help the caller understand or fix the issue.</value>
         [DataMember(Name = "details", EmitDefaultValue = false)]
         public string Details { get; set; }
 

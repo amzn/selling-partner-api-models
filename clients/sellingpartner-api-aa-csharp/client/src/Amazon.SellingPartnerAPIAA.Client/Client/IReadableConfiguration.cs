@@ -1,7 +1,7 @@
 /* 
- * Selling Partner API for Orders
+ * Selling Partner API for Pricing
  *
- * The Selling Partner API for Orders helps you programmatically retrieve order information. These APIs let you develop fast, flexible, custom applications in areas like order synchronization, order research, and demand-based decision support tools.
+ * The Selling Partner API for Pricing helps you programmatically retrieve product pricing and offer information for Amazon Marketplace products.
  *
  * OpenAPI spec version: v0
  * 

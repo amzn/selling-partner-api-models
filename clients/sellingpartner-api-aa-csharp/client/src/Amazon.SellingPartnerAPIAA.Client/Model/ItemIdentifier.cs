@@ -1,7 +1,7 @@
 /* 
- * Selling Partner API for Orders
+ * Selling Partner API for Pricing
  *
- * The Selling Partner API for Orders helps you programmatically retrieve order information. These APIs let you develop fast, flexible, custom applications in areas like order synchronization, order research, and demand-based decision support tools.
+ * The Selling Partner API for Pricing helps you programmatically retrieve product pricing and offer information for Amazon Marketplace products.
  *
  * OpenAPI spec version: v0
  * 
@@ -9,7 +9,6 @@
  */
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,44 +19,17 @@ using System.Text;
 namespace Amazon.SellingPartnerAPIAA.Client.Model
 {
     /// <summary>
-    /// Item identifiers used in the context of approvals operations.
+    /// Information that identifies an item.
     /// </summary>
     [DataContract]
     public partial class ItemIdentifier : IEquatable<ItemIdentifier>, IValidatableObject
     {
         /// <summary>
-        /// Defines the type of identifiers allowed to specify a substitution.
+        /// The condition of the item.
         /// </summary>
-        /// <value>Defines the type of identifiers allowed to specify a substitution.</value>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum IdentifierTypeEnum
-        {
-
-            /// <summary>
-            /// Enum ASIN for value: ASIN
-            /// </summary>
-            [EnumMember(Value = "ASIN")]
-            ASIN = 1,
-
-            /// <summary>
-            /// Enum SELLERSKU for value: SELLER_SKU
-            /// </summary>
-            [EnumMember(Value = "SELLER_SKU")]
-            SELLERSKU = 2,
-
-            /// <summary>
-            /// Enum EXTERNALID for value: EXTERNAL_ID
-            /// </summary>
-            [EnumMember(Value = "EXTERNAL_ID")]
-            EXTERNALID = 3
-        }
-
-        /// <summary>
-        /// Defines the type of identifiers allowed to specify a substitution.
-        /// </summary>
-        /// <value>Defines the type of identifiers allowed to specify a substitution.</value>
-        [DataMember(Name = "IdentifierType", EmitDefaultValue = false)]
-        public IdentifierTypeEnum IdentifierType { get; set; }
+        /// <value>The condition of the item.</value>
+        [DataMember(Name = "ItemCondition", EmitDefaultValue = false)]
+        public ConditionType ItemCondition { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemIdentifier" /> class.
         /// </summary>
@@ -66,36 +38,55 @@ namespace Amazon.SellingPartnerAPIAA.Client.Model
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemIdentifier" /> class.
         /// </summary>
-        /// <param name="identifierType">Defines the type of identifiers allowed to specify a substitution. (required).</param>
-        /// <param name="identifier">identifier (required).</param>
-        public ItemIdentifier(IdentifierTypeEnum identifierType = default(IdentifierTypeEnum), string identifier = default(string))
+        /// <param name="marketplaceId">A marketplace identifier. Specifies the marketplace from which prices are returned. (required).</param>
+        /// <param name="aSIN">The Amazon Standard Identification Number (ASIN) of the item..</param>
+        /// <param name="sellerSKU">The seller stock keeping unit (SKU) of the item..</param>
+        /// <param name="itemCondition">The condition of the item. (required).</param>
+        public ItemIdentifier(string marketplaceId = default(string), string aSIN = default(string), string sellerSKU = default(string), ConditionType itemCondition = default(ConditionType))
         {
-            // to ensure "identifierType" is required (not null)
-            if (identifierType == null)
+            // to ensure "marketplaceId" is required (not null)
+            if (marketplaceId == null)
             {
-                throw new InvalidDataException("identifierType is a required property for ItemIdentifier and cannot be null");
+                throw new InvalidDataException("marketplaceId is a required property for ItemIdentifier and cannot be null");
             }
             else
             {
-                this.IdentifierType = identifierType;
+                this.MarketplaceId = marketplaceId;
             }
-            // to ensure "identifier" is required (not null)
-            if (identifier == null)
+            // to ensure "itemCondition" is required (not null)
+            if (itemCondition == null)
             {
-                throw new InvalidDataException("identifier is a required property for ItemIdentifier and cannot be null");
+                throw new InvalidDataException("itemCondition is a required property for ItemIdentifier and cannot be null");
             }
             else
             {
-                this.Identifier = identifier;
+                this.ItemCondition = itemCondition;
             }
+            this.ASIN = aSIN;
+            this.SellerSKU = sellerSKU;
         }
 
+        /// <summary>
+        /// A marketplace identifier. Specifies the marketplace from which prices are returned.
+        /// </summary>
+        /// <value>A marketplace identifier. Specifies the marketplace from which prices are returned.</value>
+        [DataMember(Name = "MarketplaceId", EmitDefaultValue = false)]
+        public string MarketplaceId { get; set; }
 
         /// <summary>
-        /// Gets or Sets Identifier
+        /// The Amazon Standard Identification Number (ASIN) of the item.
         /// </summary>
-        [DataMember(Name = "Identifier", EmitDefaultValue = false)]
-        public string Identifier { get; set; }
+        /// <value>The Amazon Standard Identification Number (ASIN) of the item.</value>
+        [DataMember(Name = "ASIN", EmitDefaultValue = false)]
+        public string ASIN { get; set; }
+
+        /// <summary>
+        /// The seller stock keeping unit (SKU) of the item.
+        /// </summary>
+        /// <value>The seller stock keeping unit (SKU) of the item.</value>
+        [DataMember(Name = "SellerSKU", EmitDefaultValue = false)]
+        public string SellerSKU { get; set; }
+
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -105,8 +96,10 @@ namespace Amazon.SellingPartnerAPIAA.Client.Model
         {
             var sb = new StringBuilder();
             sb.Append("class ItemIdentifier {\n");
-            sb.Append("  IdentifierType: ").Append(IdentifierType).Append("\n");
-            sb.Append("  Identifier: ").Append(Identifier).Append("\n");
+            sb.Append("  MarketplaceId: ").Append(MarketplaceId).Append("\n");
+            sb.Append("  ASIN: ").Append(ASIN).Append("\n");
+            sb.Append("  SellerSKU: ").Append(SellerSKU).Append("\n");
+            sb.Append("  ItemCondition: ").Append(ItemCondition).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -142,14 +135,24 @@ namespace Amazon.SellingPartnerAPIAA.Client.Model
 
             return
                 (
-                    this.IdentifierType == input.IdentifierType ||
-                    (this.IdentifierType != null &&
-                    this.IdentifierType.Equals(input.IdentifierType))
+                    this.MarketplaceId == input.MarketplaceId ||
+                    (this.MarketplaceId != null &&
+                    this.MarketplaceId.Equals(input.MarketplaceId))
                 ) &&
                 (
-                    this.Identifier == input.Identifier ||
-                    (this.Identifier != null &&
-                    this.Identifier.Equals(input.Identifier))
+                    this.ASIN == input.ASIN ||
+                    (this.ASIN != null &&
+                    this.ASIN.Equals(input.ASIN))
+                ) &&
+                (
+                    this.SellerSKU == input.SellerSKU ||
+                    (this.SellerSKU != null &&
+                    this.SellerSKU.Equals(input.SellerSKU))
+                ) &&
+                (
+                    this.ItemCondition == input.ItemCondition ||
+                    (this.ItemCondition != null &&
+                    this.ItemCondition.Equals(input.ItemCondition))
                 );
         }
 
@@ -162,10 +165,14 @@ namespace Amazon.SellingPartnerAPIAA.Client.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                if (this.IdentifierType != null)
-                    hashCode = hashCode * 59 + this.IdentifierType.GetHashCode();
-                if (this.Identifier != null)
-                    hashCode = hashCode * 59 + this.Identifier.GetHashCode();
+                if (this.MarketplaceId != null)
+                    hashCode = hashCode * 59 + this.MarketplaceId.GetHashCode();
+                if (this.ASIN != null)
+                    hashCode = hashCode * 59 + this.ASIN.GetHashCode();
+                if (this.SellerSKU != null)
+                    hashCode = hashCode * 59 + this.SellerSKU.GetHashCode();
+                if (this.ItemCondition != null)
+                    hashCode = hashCode * 59 + this.ItemCondition.GetHashCode();
                 return hashCode;
             }
         }
