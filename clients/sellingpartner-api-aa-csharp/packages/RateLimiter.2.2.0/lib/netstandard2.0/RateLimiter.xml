@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RateLimiter</name>
+    </assembly>
+    <members>
+        <member name="T:RateLimiter.AwaitableConstraintExtension">
+            <summary>
+            Provides extension to interface <see cref="T:RateLimiter.IAwaitableConstraint"/>
+            </summary>
+        </member>
+        <member name="M:RateLimiter.AwaitableConstraintExtension.Compose(RateLimiter.IAwaitableConstraint,RateLimiter.IAwaitableConstraint)">
+            <summary>
+            Compose two awaitable constraint in a new one
+            </summary>
+            <param name="awaitableConstraint1"></param>
+            <param name="awaitableConstraint2"></param>
+            <returns></returns>
+        </member>
+        <member name="T:RateLimiter.CountByIntervalAwaitableConstraint">
+            <summary>
+            Provide an awaitable constraint based on number of times per duration
+            </summary>
+        </member>
+        <member name="P:RateLimiter.CountByIntervalAwaitableConstraint.TimeStamps">
+            <summary>
+            List of the last time stamps
+            </summary>
+        </member>
+        <member name="P:RateLimiter.CountByIntervalAwaitableConstraint._TimeStamps">
+            <summary>
+            Stack of the last time stamps
+            </summary>
+        </member>
+        <member name="M:RateLimiter.CountByIntervalAwaitableConstraint.#ctor(System.Int32,System.TimeSpan)">
+            <summary>
+            Constructs a new AwaitableConstraint based on number of times per duration
+            </summary>
+            <param name="count"></param>
+            <param name="timeSpan"></param>
+        </member>
+        <member name="M:RateLimiter.CountByIntervalAwaitableConstraint.WaitForReadiness(System.Threading.CancellationToken)">
+            <summary>
+            returns a task that will complete once the constraint is fulfilled
+            </summary>
+            <param name="cancellationToken">
+            Cancel the wait
+            </param>
+            <returns>
+            A disposable that should be disposed upon task completion
+            </returns>
+        </member>
+        <member name="M:RateLimiter.CountByIntervalAwaitableConstraint.Clone">
+            <summary>
+            Clone CountByIntervalAwaitableConstraint
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.CountByIntervalAwaitableConstraint.OnEnded(System.DateTime)">
+            <summary>
+            Called when action has been executed
+            </summary>
+            <param name="now"></param>
+        </member>
+        <member name="T:RateLimiter.IAwaitableConstraint">
+            <summary>
+            Represents a time constraints that can be awaited
+            </summary>
+        </member>
+        <member name="M:RateLimiter.IAwaitableConstraint.WaitForReadiness(System.Threading.CancellationToken)">
+            <summary>
+            returns a task that will complete once the constraint is fulfilled
+            </summary>
+            <param name="cancellationToken">
+            Cancel the wait
+            </param>
+            <returns>
+            A disposable that should be disposed upon task completion
+            </returns>
+        </member>
+        <member name="M:RateLimiter.IAwaitableConstraint.Clone">
+            <summary>
+            Returns a new IAwaitableConstraint with same constraints but unused
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:RateLimiter.ITime">
+            <summary>
+            Time abstraction
+            </summary>
+        </member>
+        <member name="M:RateLimiter.ITime.GetNow">
+            <summary>
+            Return Now DateTime
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.ITime.GetDelay(System.TimeSpan,System.Threading.CancellationToken)">
+            <summary>
+            Returns a task delay
+            </summary>
+            <param name="timespan"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:RateLimiter.LimitedSizeStack`1">
+            <summary>
+            LinkedList with a limited size
+            If the size exceeds the limit older entry are removed
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:RateLimiter.LimitedSizeStack`1.#ctor(System.Int32)">
+            <summary>
+            Construct the LimitedSizeStack with the given limit
+            </summary>
+            <param name="maxSize"></param>
+        </member>
+        <member name="M:RateLimiter.LimitedSizeStack`1.Push(`0)">
+            <summary>
+            Push new entry. If he size exceeds the limit, the oldest entry is removed
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="T:RateLimiter.PersistentCountByIntervalAwaitableConstraint">
+            <summary>
+            <see cref="T:RateLimiter.CountByIntervalAwaitableConstraint"/> that is able to save own state.
+            </summary>
+        </member>
+        <member name="M:RateLimiter.PersistentCountByIntervalAwaitableConstraint.#ctor(System.Int32,System.TimeSpan,System.Action{System.DateTime},System.Collections.Generic.IEnumerable{System.DateTime})">
+            <summary>
+            Create an instance of <see cref="T:RateLimiter.PersistentCountByIntervalAwaitableConstraint"/>.
+            </summary>
+            <param name="count">Maximum actions allowed per time interval.</param>
+            <param name="timeSpan">Time interval limits are applied for.</param>
+            <param name="saveStateAction">Action is used to save state.</param>
+            <param name="initialTimeStamps">Initial timestamps.</param>
+        </member>
+        <member name="M:RateLimiter.PersistentCountByIntervalAwaitableConstraint.OnEnded(System.DateTime)">
+            <summary>
+            Save state
+            </summary>
+        </member>
+        <member name="T:RateLimiter.TimeLimiter">
+            <summary>
+            TimeLimiter implementation
+            </summary>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Enqueue(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Perform the given task respecting the time constraint
+            returning the result of given function
+            </summary>
+            <param name="perform"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Enqueue``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Perform the given task respecting the time constraint
+            returning the result of given function
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="perform"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Enqueue(System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+            <summary>
+            Perform the given task respecting the time constraint
+            </summary>
+            <param name="perform"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Enqueue``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
+            <summary>
+            Perform the given task respecting the time constraint
+            returning the result of given function
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="perform"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Transform``1(System.Func{``0})">
+            <summary>
+            Perform the given task respecting the time constraint
+            returning the result of given function
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="compute"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Enqueue(System.Action)">
+            <summary>
+            Perform the given task respecting the time constraint
+            </summary>
+            <param name="perform"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Dispatch(System.Action)">
+            <summary>
+             Perform the given task respecting the time constraint
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Enqueue``1(System.Func{``0})">
+            <summary>
+            Perform the given task respecting the time constraint
+            returning the result of given function
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="perform"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Enqueue``1(System.Func{``0},System.Threading.CancellationToken)">
+            <summary>
+            Perform the given task respecting the time constraint
+            returning the result of given function
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="perform"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Enqueue(System.Action,System.Threading.CancellationToken)">
+            <summary>
+            Perform the given task respecting the time constraint
+            </summary>
+            <param name="perform"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.GetFromMaxCountByInterval(System.Int32,System.TimeSpan)">
+            <summary>
+            Returns a TimeLimiter based on a maximum number of times
+            during a given period
+            </summary>
+            <param name="maxCount"></param>
+            <param name="timeSpan"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.GetPersistentTimeLimiter(System.Int32,System.TimeSpan,System.Action{System.DateTime})">
+            <summary>
+            Create <see cref="T:RateLimiter.TimeLimiter"/> that will save state using action passed through <paramref name="saveStateAction"/> parameter.
+            </summary>
+            <param name="maxCount">Maximum actions allowed per time interval.</param>
+            <param name="timeSpan">Time interval limits are applied for.</param>
+            <param name="saveStateAction">Action is used to save state.</param>
+            <returns><see cref="T:RateLimiter.TimeLimiter"/> instance with <see cref="T:RateLimiter.PersistentCountByIntervalAwaitableConstraint"/>.</returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.GetPersistentTimeLimiter(System.Int32,System.TimeSpan,System.Action{System.DateTime},System.Collections.Generic.IEnumerable{System.DateTime})">
+            <summary>
+            Create <see cref="T:RateLimiter.TimeLimiter"/> with initial timestamps that will save state using action passed through <paramref name="saveStateAction"/> parameter.
+            </summary>
+            <param name="maxCount">Maximum actions allowed per time interval.</param>
+            <param name="timeSpan">Time interval limits are applied for.</param>
+            <param name="saveStateAction">Action is used to save state.</param>
+            <param name="initialTimeStamps">Initial timestamps.</param>
+            <returns><see cref="T:RateLimiter.TimeLimiter"/> instance with <see cref="T:RateLimiter.PersistentCountByIntervalAwaitableConstraint"/>.</returns>
+        </member>
+        <member name="M:RateLimiter.TimeLimiter.Compose(RateLimiter.IAwaitableConstraint[])">
+            <summary>
+            Compose various IAwaitableConstraint in a TimeLimiter
+            </summary>
+            <param name="constraints"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
