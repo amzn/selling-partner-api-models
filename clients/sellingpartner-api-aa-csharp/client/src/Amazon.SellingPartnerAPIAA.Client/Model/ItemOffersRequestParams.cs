@@ -120,6 +120,12 @@ namespace Amazon.SellingPartnerAPIAA.Client.Model
             foreach (var x in BaseValidate(validationContext)) yield return x;
             yield break;
         }
+
+        private IEnumerable<ValidationResult> BaseValidate(ValidationContext validationContext)
+        {
+            var results = new List<ValidationResult>();
+            return results;
+        }
     }
 
 }
