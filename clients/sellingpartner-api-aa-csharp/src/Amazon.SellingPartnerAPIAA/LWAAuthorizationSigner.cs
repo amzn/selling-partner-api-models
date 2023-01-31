@@ -1,4 +1,5 @@
 ﻿using RestSharp;
+using System.Linq;
 
 namespace Amazon.SellingPartnerAPIAA
 {
@@ -24,10 +25,11 @@ namespace Amazon.SellingPartnerAPIAA
         /// <returns>restRequest with LWA signature</returns>
         public IRestRequest Sign(IRestRequest restRequest)
         {
-            string accessToken = LWAClient.GetAccessToken();
-
-            restRequest.AddHeader(AccessTokenHeaderName, accessToken);
-
+            if (!restRequest.Parameters.Any(parameter => ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AccessTokenHeaderName))
+            {
+                string accessToken = LWAClient.GetAccessToken();
+                restRequest.AddHeader(AccessTokenHeaderName, accessToken);
+            }
             return restRequest;
         }
     }

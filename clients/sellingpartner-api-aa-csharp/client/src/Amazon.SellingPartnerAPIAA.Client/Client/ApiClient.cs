@@ -215,13 +215,13 @@ namespace Amazon.SellingPartnerAPIAA.Client.Client
             if (rateLimitConfig != null)
             {
                 var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut());
-                var response = await rateLimiter.Enqueue<IRestResponse>(() => RestClient.ExecuteTaskAsync(request), cancellationSource.Token);
+                var response = await rateLimiter.Enqueue<IRestResponse>(() => RestClient.ExecuteAsync(request), cancellationSource.Token);
                 InterceptResponse(request, response);
                 return response;
             }
             else
             {
-                var response = await RestClient.ExecuteTaskAsync(request);
+                var response = await RestClient.ExecuteAsync(request);
                 InterceptResponse(request, response);
                 return (Object)response;
             }
@@ -295,7 +295,7 @@ namespace Amazon.SellingPartnerAPIAA.Client.Client
         /// <returns>Object representation of the JSON string.</returns>
         public object Deserialize(IRestResponse response, Type type)
         {
-            IList<Parameter> headers = response.Headers;
+            var headers = response.Headers;
             if (type == typeof(byte[])) // return byte array
             {
                 return response.RawBytes;

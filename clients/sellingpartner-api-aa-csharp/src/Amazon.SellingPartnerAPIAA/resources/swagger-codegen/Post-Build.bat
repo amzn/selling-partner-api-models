@@ -37,3 +37,23 @@ java ^
 -c ..\..\..\..\clients\sellingpartner-api-aa-csharp\src\Amazon.SellingPartnerAPIAA\resources\swagger-codegen\config.json ^
 --ignore-file-override=..\..\..\..\clients\sellingpartner-api-aa-csharp\src\Amazon.SellingPartnerAPIAA\resources\swagger-codegen\.swagger-codegen-ignore ^
 -s
+
+java ^
+-jar C:\swagger-codegen\swagger-codegen-cli.jar generate ^
+-l csharp ^
+-i ..\..\..\..\models\notifications-api-model\notifications.json ^
+-t ..\..\..\..\clients\sellingpartner-api-aa-csharp\src\Amazon.SellingPartnerAPIAA\resources\swagger-codegen\templates ^
+-o ..\..\..\..\clients\sellingpartner-api-aa-csharp\client ^
+-c ..\..\..\..\clients\sellingpartner-api-aa-csharp\src\Amazon.SellingPartnerAPIAA\resources\swagger-codegen\config.json ^
+--ignore-file-override=..\..\..\..\clients\sellingpartner-api-aa-csharp\src\Amazon.SellingPartnerAPIAA\resources\swagger-codegen\.swagger-codegen-ignore ^
+-s
+
+java ^
+-jar C:\swagger-codegen\swagger-codegen-cli.jar generate ^
+-l csharp ^
+-i ..\..\..\..\models\reports-api-model\reports_2021-06-30.json ^
+-t ..\..\..\..\clients\sellingpartner-api-aa-csharp\src\Amazon.SellingPartnerAPIAA\resources\swagger-codegen\templates ^
+-o ..\..\..\..\clients\sellingpartner-api-aa-csharp\client ^
+-c ..\..\..\..\clients\sellingpartner-api-aa-csharp\src\Amazon.SellingPartnerAPIAA\resources\swagger-codegen\config.json ^
+--ignore-file-override=..\..\..\..\clients\sellingpartner-api-aa-csharp\src\Amazon.SellingPartnerAPIAA\resources\swagger-codegen\.swagger-codegen-ignore ^
+-s
