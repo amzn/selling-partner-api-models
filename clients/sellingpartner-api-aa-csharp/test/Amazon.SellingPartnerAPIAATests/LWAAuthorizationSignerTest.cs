@@ -40,7 +40,7 @@ namespace Amazon.SellingPartnerAPIAATests
             IRestRequest restRequest = new RestRequest();
             restRequest = lwaAuthorizationSignerUnderTest.Sign(restRequest);
 
-            Parameter actualAccessTokenHeader = restRequest.Parameters.Find(parameter =>
+            var actualAccessTokenHeader = restRequest.Parameters.Find(parameter =>
                 ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == LWAAuthorizationSigner.AccessTokenHeaderName);
 
             Assert.Equal(expectedAccessToken, actualAccessTokenHeader.Value);

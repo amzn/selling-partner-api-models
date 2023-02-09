@@ -31,5 +31,15 @@ namespace Amazon.SellingPartnerAPIAA
                 this.ClientSecret == other.ClientSecret &&
                 this.Scope == other.Scope;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

@@ -200,7 +200,7 @@ namespace Amazon.SellingPartnerAPIAATests
             IRestRequest request = new RestRequest();
             awsSignerHelperUnderTest.InitializeHeaders(request, TestHost);
 
-            Parameter actualParameter = request.Parameters.Find(parameter =>
+            var actualParameter = request.Parameters.Find(parameter =>
                 ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.XAmzDateHeaderName);
 
             Assert.Equal(ISOSigningDateTime, actualParameter.Value);
@@ -214,7 +214,7 @@ namespace Amazon.SellingPartnerAPIAATests
 
             awsSignerHelperUnderTest.InitializeHeaders(request, TestHost);
 
-            Parameter actualParameter = request.Parameters.Find(parameter =>
+            var actualParameter = request.Parameters.Find(parameter =>
                 ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.XAmzDateHeaderName);
 
             Assert.Equal(ISOSigningDateTime, actualParameter.Value);
@@ -244,7 +244,7 @@ namespace Amazon.SellingPartnerAPIAATests
                                                   expectedRegion,
                                                   SigningDate);
 
-            Parameter actualParameter = restRequest.Parameters.Find(parameter =>
+            var actualParameter = restRequest.Parameters.Find(parameter =>
                 ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.AuthorizationHeaderName);
 
             Assert.Equal(expectedAuthorizationHeaderValue, actualParameter.Value);
@@ -267,7 +267,7 @@ namespace Amazon.SellingPartnerAPIAATests
 
             awsSignerHelperUnderTest.InitializeHeaders(restRequest, TestHost);
 
-            Parameter actualParamter = restRequest.Parameters.Find(parameter =>
+            var actualParamter = restRequest.Parameters.Find(parameter =>
                 ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.HostHeaderName);
 
             Assert.Equal(TestHost, actualParamter.Value);
@@ -282,7 +282,7 @@ namespace Amazon.SellingPartnerAPIAATests
 
             awsSignerHelperUnderTest.InitializeHeaders(restRequest, TestHost);
 
-            Parameter actualParamter = restRequest.Parameters.Find(parameter =>
+            var actualParamter = restRequest.Parameters.Find(parameter =>
                 ParameterType.HttpHeader.Equals(parameter.Type) && parameter.Name == AWSSignerHelper.HostHeaderName);
 
             Assert.Equal(TestHost, actualParamter.Value);

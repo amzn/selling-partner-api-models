@@ -154,7 +154,7 @@ namespace Amazon.SellingPartnerAPIAA
         /// <returns>Hexadecimal hashed value of payload in the body of request</returns>
         public virtual string HashRequestBody(IRestRequest request)
         {
-            Parameter body = request.Parameters.FirstOrDefault(parameter => ParameterType.RequestBody.Equals(parameter.Type));
+            var body = request.Parameters.FirstOrDefault(parameter => ParameterType.RequestBody.Equals(parameter.Type));
             string value = body != null ? body.Value.ToString() : string.Empty;
             return Utils.ToHex(Utils.Hash(value));
         }

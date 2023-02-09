@@ -70,7 +70,7 @@ namespace Amazon.SellingPartnerAPIAATests
             lwaClientUnderTest.LWAAccessTokenRequestMetaBuilder = mockLWAAccessTokenRequestMetaBuilder.Object;
             lwaClientUnderTest.GetAccessToken();
 
-            Parameter requestBody = request.Parameters
+            var requestBody = request.Parameters
                 .FirstOrDefault(parameter => parameter.Type.Equals(ParameterType.RequestBody));
 
             JObject jsonRequestBody = JObject.Parse(requestBody.Value.ToString());
