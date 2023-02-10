@@ -59,15 +59,19 @@ namespace Amazon.SellingPartnerAPIAA
                         .Where(parameter => ParameterType.UrlSegment.Equals(parameter.Type))
                         .ToDictionary(parameter => parameter.Name.Trim().ToString(), parameter => parameter.Value.ToString());
 
-                // Replace path parameter with actual value.
-                // Ex: /products/pricing/v0/items/{Asin}/offers -> /products/pricing/v0/items/AB12CD3E4Z/offers
-                foreach (string parameter in pathParameters.Keys)
+                // Split path at / into segments
+                // Doing this as the first step to handle values with slashes "/"
+                IEnumerable<string> encodedSegments = resource.Split(new char[] { '/' }, StringSplitOptions.None).Select(encodedSegment =>
                 {
-                    resource = resource.Replace("{" + parameter + "}", pathParameters[parameter]);
-                }
+                    // Replace path parameter with actual value.
+                    // Ex: /products/pricing/v0/items/{Asin}/offers -> /products/pricing/v0/items/AB12CD3E4Z/offers
+                    foreach (string parameter in pathParameters.Keys)
+                    {
+                        encodedSegment = encodedSegment.Replace("{" + parameter + "}", pathParameters[parameter]);
+                    }
 
-                //Split path at / into segments
-                IEnumerable<string> encodedSegments = resource.Split(new char[] { '/' }, StringSplitOptions.None);
+                    return encodedSegment;
+                });
 
                 // Encode twice
                 encodedSegments = encodedSegments.Select(segment => Utils.UrlEncode(segment));
