@@ -8,5 +8,6 @@ namespace Amazon.SellingPartnerAPIAA
     {
         int getRateLimitPermit();
         int getTimeOut();
+        double getInterval();
     }
 }

@@ -73,8 +73,8 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Client
             awsSigV4Signer = new AWSSigV4Signer(Configuration.AuthenticationCredentials);
             rateLimitConfig = Configuration.RateLimitConfig;
             if(rateLimitConfig != null)
-            { 
-               rateLimiter = TimeLimiter.GetFromMaxCountByInterval(rateLimitConfig.getRateLimitPermit(), TimeSpan.FromSeconds(1));
+            {
+               rateLimiter = TimeLimiter.GetFromMaxCountByInterval(rateLimitConfig.getRateLimitPermit(), TimeSpan.FromSeconds(rateLimitConfig.getInterval()));
             }
         }
 
@@ -218,7 +218,7 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Client
             InterceptRequest(request);
             if (rateLimitConfig != null)
             {
-              var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut());
+              var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut() + 1000);
               var response =  await rateLimiter.Enqueue<IRestResponse>(() => RestClient.ExecuteAsync(request), cancellationSource.Token);                
               InterceptResponse(request, response);
               return response;
