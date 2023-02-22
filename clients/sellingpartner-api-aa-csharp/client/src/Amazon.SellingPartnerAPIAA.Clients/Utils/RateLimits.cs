@@ -29,6 +29,12 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Utils
 
     public class RateLimitDefs
     {
+
+        public static RateLimit GetRateLimit(string apiPath)
+        {
+            return GetRateLimit(apiPath, null);
+        }
+
         public static RateLimit GetRateLimit(string apiPath, List<Parameter> parameters = null)
         {
             if (parameters == null)
@@ -47,10 +53,13 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Utils
                 new RateLimit(OAuthUrls.TokenUrl, 1.0, 5),
                 new RateLimit(OAuthUrls.RefreshTokenUrl, 1.0, 5),
                 new RateLimit(CategoryApiUrls.GetCatalogItem(identifier1), 2.0, 20),
+                new RateLimit(CategoryApiUrls.GetCatalogItem(), 2.0, 20),
                 new RateLimit(CategoryApiUrls.ListCatalogCategories, 1.0, 40),
                 new RateLimit(CategoryApiUrls.ListCatalogItems, 6.0, 40),
                 new RateLimit(CategoryApiUrls.GetCatalogItem202012(identifier1), 2.0, 2),
                 new RateLimit(CategoryApiUrls.GetCatalogItem202204(identifier1), 2.0, 2),
+                new RateLimit(CategoryApiUrls.GetCatalogItem202012(), 2.0, 2),
+                new RateLimit(CategoryApiUrls.GetCatalogItem202204(), 2.0, 2),
                 //new RateLimit(1.0, 5, EasyShipApiUrls.CreateScheduledPackage(identifier1)),
                 //new RateLimit(1.0, 5, EasyShipApiUrls.GetScheduledPackage(identifier1)),
                 //new RateLimit(1.0, 5, EasyShipApiUrls.ListHandoverSlots(identifier1)),
@@ -63,10 +72,13 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Utils
                 new RateLimit(FBASmallAndLightApiUrls.GetSmallAndLightFeePreview, 1.0, 3),
                 new RateLimit(FBASmallAndLightApiUrls.PutSmallAndLightEnrollmentBySellerSKU(identifier1), 2.0, 5),
                 new RateLimit(FeedsApiUrls.CancelFeed(identifier1), 0.0222, 10),
+                new RateLimit(FeedsApiUrls.CancelFeed(), 0.0222, 10),
                 new RateLimit(FeedsApiUrls.CreateFeed, 0.0083, 15),
                 new RateLimit(FeedsApiUrls.CreateFeedDocument, 0.0083, 15),
                 new RateLimit(FeedsApiUrls.GetFeed(identifier1), 2.0, 15),
+                new RateLimit(FeedsApiUrls.GetFeed(), 2.0, 15),
                 new RateLimit(FeedsApiUrls.GetFeedDocument(identifier1), 0.0222, 10),
+                new RateLimit(FeedsApiUrls.GetFeedDocument(), 0.0222, 10),
                 new RateLimit(FeedsApiUrls.GetFeeds, 0.0222, 10),
                 new RateLimit(FinancialApiUrls.ListFinancialEventGroups, 0.5, 30),
                 new RateLimit(FinancialApiUrls.ListFinancialEvents, 0.5, 30),
@@ -137,16 +149,22 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Utils
                 new RateLimit(MessagingApiUrls.GetMessagingActionsForOrder(identifier1), 1.0, 5),
                 new RateLimit(NotificationApiUrls.CreateDestination, 1.0, 5),
                 new RateLimit(NotificationApiUrls.CreateSubscription(identifier1), 1.0, 5),
+                new RateLimit(NotificationApiUrls.CreateSubscription(), 1.0, 5),
                 new RateLimit(NotificationApiUrls.DeleteDestination(identifier1), 1.0, 5),
+                new RateLimit(NotificationApiUrls.DeleteDestination(), 1.0, 5),
                 new RateLimit(NotificationApiUrls.DeleteSubscriptionById(
                     parameters.FirstOrDefault(p => p.Name == "notificationType")?.Value.ToString() ?? "",
                     parameters.FirstOrDefault(p => p.Name == "subscriptionId")?.Value.ToString() ?? ""), 1.0, 5),
+                new RateLimit(NotificationApiUrls.DeleteSubscriptionById(), 1.0, 5),
                 new RateLimit(NotificationApiUrls.GetDestination(identifier1), 1.0, 5),
+                new RateLimit(NotificationApiUrls.GetDestination(), 1.0, 5),
                 new RateLimit(NotificationApiUrls.GetDestinations, 1.0, 5),
                 new RateLimit(NotificationApiUrls.GetSubscription(identifier1), 1.0, 5),
+                new RateLimit(NotificationApiUrls.GetSubscription(), 1.0, 5),
                 new RateLimit(NotificationApiUrls.GetSubscriptionById(
                     parameters.FirstOrDefault(p => p.Name == "notificationType")?.Value.ToString() ?? "",
                     parameters.FirstOrDefault(p => p.Name == "subscriptionId")?.Value.ToString() ?? ""), 1.0, 5),
+                new RateLimit(NotificationApiUrls.GetSubscriptionById(), 1.0, 5),
                 new RateLimit(OrdersApiUrls.Orders, 0.0167, 20),
                 new RateLimit(OrdersApiUrls.Order(identifier1), 0.0167, 20),
                 new RateLimit(OrdersApiUrls.OrderBuyerInfo(identifier1), 0.0167, 20),
@@ -154,6 +172,12 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Utils
                 new RateLimit(OrdersApiUrls.OrderItems(identifier1), 0.0167, 20),
                 new RateLimit(OrdersApiUrls.OrderItemsBuyerInfo(identifier1), 0.0167, 20),
                 new RateLimit(OrdersApiUrls.UpdateShipmentStatus(identifier1), 0.0167, 20),
+                new RateLimit(OrdersApiUrls.Order(), 0.0167, 20),
+                new RateLimit(OrdersApiUrls.OrderBuyerInfo(), 0.0167, 20),
+                new RateLimit(OrdersApiUrls.OrderShipmentInfo(), 0.0167, 20),
+                new RateLimit(OrdersApiUrls.OrderItems(), 0.0167, 20),
+                new RateLimit(OrdersApiUrls.OrderItemsBuyerInfo(), 0.0167, 20),
+                new RateLimit(OrdersApiUrls.UpdateShipmentStatus(), 0.0167, 20),
                 new RateLimit(ProductFeesApiUrls.GetMyFeesEstimate, 0.5, 1),
                 new RateLimit(ProductFeesApiUrls.GetMyFeesEstimateForASIN(identifier1), 1, 2),
                 new RateLimit(ProductFeesApiUrls.GetMyFeesEstimateForSKU(identifier1), 1, 2),
@@ -166,13 +190,18 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Utils
                 new RateLimit(ProductTypeDefinitionsApi.GetDefinitionsProductType(identifier1), 5.0, 10),
                 new RateLimit(ProductTypeDefinitionsApi.SearchDefinitionsProductTypes, 5.0, 10),
                 new RateLimit(ReportApiUrls.CancelReport(identifier1), 0.0222, 10),
+                new RateLimit(ReportApiUrls.CancelReport(), 0.0222, 10),
                 new RateLimit(ReportApiUrls.CancelReportSchedule(identifier1), 0.0222, 10),
+                new RateLimit(ReportApiUrls.CancelReportSchedule(), 0.0222, 10),
                 new RateLimit(ReportApiUrls.CreateReport, 0.0167, 15),
                 new RateLimit(ReportApiUrls.CreateReportSchedule, 0.0222, 10),
                 new RateLimit(ReportApiUrls.GetReport(identifier1), 2.0, 15),
+                new RateLimit(ReportApiUrls.GetReport(), 2.0, 15),
                 new RateLimit(ReportApiUrls.GetReportDocument(identifier1), 0.0167, 15),
+                new RateLimit(ReportApiUrls.GetReportDocument(), 0.0167, 15),
                 new RateLimit(ReportApiUrls.GetReports, 0.0222, 10),
                 new RateLimit(ReportApiUrls.GetReportSchedule(identifier1), 0.0222, 10),
+                new RateLimit(ReportApiUrls.GetReportSchedule(), 0.0222, 10),
                 new RateLimit(ReportApiUrls.GetReportSchedules, 0.0222, 10),
                 new RateLimit(RestrictionsApiUrls.GetListingsRestrictions, 5.0, 10),
                 new RateLimit(SalesApiUrls.GetOrderMetrics, 0.5, 15),

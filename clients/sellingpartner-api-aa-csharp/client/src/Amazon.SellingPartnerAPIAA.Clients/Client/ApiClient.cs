@@ -218,7 +218,7 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Client
             InterceptRequest(request);
             if (rateLimitConfig != null)
             {
-              var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut() + 1000);
+              var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut());
               var response =  await rateLimiter.Enqueue<IRestResponse>(() => RestClient.ExecuteAsync(request), cancellationSource.Token);                
               InterceptResponse(request, response);
               return response;

@@ -353,10 +353,13 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Utils
             public static string GetCatalogItem(string asin) => $"{_resourceBaseUrl}/items/{asin}";
             public static string GetCatalogItem202012(string asin) => $"{_202012resourceBaseUrl}/items/{asin}";
 
+            public static string GetCatalogItem() => $"{_resourceBaseUrl}/items/{{asin}}";
+            public static string GetCatalogItem202012() => $"{_202012resourceBaseUrl}/items/{{asin}}";
             public static string SearchCatalogItems => $"{_202012resourceBaseUrl}/items";
 
             public static string SearchCatalogItems202204 => $"{_202204resourceBaseUrl}/items";
             public static string GetCatalogItem202204(string asin) => $"{_202204resourceBaseUrl}/items/{asin}";
+            public static string GetCatalogItem202204() => $"{_202204resourceBaseUrl}/items/{{asin}}";
         }
 
         public class ListingsApiUrls
