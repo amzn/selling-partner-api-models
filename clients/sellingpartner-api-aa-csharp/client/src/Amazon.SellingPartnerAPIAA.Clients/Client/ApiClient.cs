@@ -176,9 +176,9 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Client
                 var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut());
                 try
                 {
-                    var response = rateLimiter.Enqueue<IRestResponse>(() =>  RestClient.Execute(request), cancellationSource.Token);
-                    InterceptResponse(request, response.Result);
-                    return response.Result;
+                    var response = rateLimiter.Enqueue<IRestResponse>(() => RestClient.Execute(request), cancellationSource.Token);
+                    InterceptResponse(request, response);
+                    return response;
                 }
                 catch (AggregateException e)
                 {
@@ -219,7 +219,7 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Client
             if (rateLimitConfig != null)
             {
               var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut());
-              var response =  await rateLimiter.Enqueue<IRestResponse>(() => RestClient.ExecuteAsync(request), cancellationSource.Token);                
+              var response = await rateLimiter.Enqueue<IRestResponse>(() => RestClient.ExecuteAsync(request), cancellationSource.Token);                
               InterceptResponse(request, response);
               return response;
             }

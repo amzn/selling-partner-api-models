@@ -198,12 +198,12 @@ namespace {{packageName}}.Client
             InterceptRequest(request);
             if(rateLimitConfig != null)
             {
-                var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut() + 1000);
+                var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut());
                 try
                 {
-                    var response = rateLimiter.Enqueue<IRestResponse>(() =>  RestClient.Execute(request), cancellationSource.Token);
-                    InterceptResponse(request, response.Result);
-                    return response.Result;
+                    var response = rateLimiter.Enqueue<IRestResponse>(() => RestClient.Execute(request), cancellationSource.Token);
+                    InterceptResponse(request, response);
+                    return response;
                 }
                 catch (AggregateException e)
                 {
@@ -255,7 +255,7 @@ namespace {{packageName}}.Client
             InterceptRequest(request);
             if (rateLimitConfig != null)
             {
-              var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut() + 1000);
+              var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut());
               var response =  await rateLimiter.Enqueue<IRestResponse>(() => RestClient.ExecuteAsync(request), cancellationSource.Token);                
               InterceptResponse(request, response);
               return response;
