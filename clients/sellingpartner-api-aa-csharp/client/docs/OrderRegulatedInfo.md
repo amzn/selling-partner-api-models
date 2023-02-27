@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.OrderRegulatedInfo
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.OrderRegulatedInfo
 ## Properties
 
 Name | Type | Description | Notes

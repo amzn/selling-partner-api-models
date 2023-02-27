@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.BuyerTaxInfo
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.BuyerTaxInfo
 ## Properties
 
 Name | Type | Description | Notes

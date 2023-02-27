@@ -20,7 +20,7 @@ using Amazon.SellingPartnerAPIAA;
 namespace Amazon.SellingPartnerAPIAA.Clients.API
 {
     /// <summary>
-    /// Represents a collection of functions to interact with the API endpoints 
+    /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
     public interface IOrdersV0Api : IApiAccessor
     {

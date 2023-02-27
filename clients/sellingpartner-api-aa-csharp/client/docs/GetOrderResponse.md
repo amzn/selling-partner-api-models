@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.GetOrderResponse
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.GetOrderResponse
 ## Properties
 
 Name | Type | Description | Notes

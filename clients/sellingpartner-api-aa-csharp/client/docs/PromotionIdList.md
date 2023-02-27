@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.PromotionIdList
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.PromotionIdList
 ## Properties
 
 Name | Type | Description | Notes

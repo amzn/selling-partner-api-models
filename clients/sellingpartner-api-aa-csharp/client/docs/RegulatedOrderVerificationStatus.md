@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.RegulatedOrderVerificationStatus
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.RegulatedOrderVerificationStatus
 ## Properties
 
 Name | Type | Description | Notes

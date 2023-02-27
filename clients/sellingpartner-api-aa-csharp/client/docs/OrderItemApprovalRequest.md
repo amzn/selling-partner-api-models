@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.OrderItemApprovalRequest
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.OrderItemApprovalRequest
 ## Properties
 
 Name | Type | Description | Notes

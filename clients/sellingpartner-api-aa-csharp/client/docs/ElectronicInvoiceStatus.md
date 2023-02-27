@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.ElectronicInvoiceStatus
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.ElectronicInvoiceStatus
 ## Properties
 
 Name | Type | Description | Notes

@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.AutomatedShippingSettings
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.AutomatedShippingSettings
 ## Properties
 
 Name | Type | Description | Notes

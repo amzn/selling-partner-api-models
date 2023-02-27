@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.Money
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.Money
 ## Properties
 
 Name | Type | Description | Notes

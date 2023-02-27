@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.PointsGrantedDetail
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.PointsGrantedDetail
 ## Properties
 
 Name | Type | Description | Notes

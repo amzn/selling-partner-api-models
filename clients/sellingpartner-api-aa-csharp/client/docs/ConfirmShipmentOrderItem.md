@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.ConfirmShipmentOrderItem
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.ConfirmShipmentOrderItem
 ## Properties
 
 Name | Type | Description | Notes

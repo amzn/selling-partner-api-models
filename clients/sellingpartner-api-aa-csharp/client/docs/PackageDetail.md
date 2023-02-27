@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.PackageDetail
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.PackageDetail
 ## Properties
 
 Name | Type | Description | Notes

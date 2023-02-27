@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.BuyerRequestedCancel
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.BuyerRequestedCancel
 ## Properties
 
 Name | Type | Description | Notes

@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.OrderItemsBuyerInfoList
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.OrderItemsBuyerInfoList
 ## Properties
 
 Name | Type | Description | Notes

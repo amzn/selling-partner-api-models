@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.GetOrderRegulatedInfoResponse
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.GetOrderRegulatedInfoResponse
 ## Properties
 
 Name | Type | Description | Notes

@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.FulfillmentInstruction
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.FulfillmentInstruction
 ## Properties
 
 Name | Type | Description | Notes

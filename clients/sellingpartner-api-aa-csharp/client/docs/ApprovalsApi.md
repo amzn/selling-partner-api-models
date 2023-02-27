@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Api.ApprovalsApi
+# Amazon.SellingPartnerAPIAA.Clients.API.ApprovalsApi
 
 All URIs are relative to *https://sellingpartnerapi-na.amazon.com*
 
@@ -20,9 +20,9 @@ Returns detailed order items approvals information for the order specified. If N
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {
@@ -86,9 +86,9 @@ Update the order items approvals for an order that you specify.  **Usage Plan:**
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {

@@ -78,7 +78,7 @@ namespace {{packageName}}.Client
             rateLimitConfig = Configuration.RateLimitConfig;
             if(rateLimitConfig != null)
             { 
-               rateLimiter = TimeLimiter.GetFromMaxCountByInterval(rateLimitConfig.getRateLimitPermit(), TimeSpan.FromSeconds(1));
+               rateLimiter = TimeLimiter.GetFromMaxCountByInterval(rateLimitConfig.getRateLimitPermit(), TimeSpan.FromSeconds(rateLimitConfig.getInterval()));
             }
         }
 
@@ -207,7 +207,7 @@ namespace {{packageName}}.Client
                 }
                 catch (AggregateException e)
                 {
-                    throw new ApiException(429, "Throttled at client");
+                    throw new ApiException(429, $"Throttled at client: {e.Message}");
                 }
             }
             else
@@ -256,7 +256,7 @@ namespace {{packageName}}.Client
             if (rateLimitConfig != null)
             {
               var cancellationSource = new CancellationTokenSource(rateLimitConfig.getTimeOut());
-              var response =  await rateLimiter.Enqueue<IRestResponse>(() => RestClient.ExecuteAsync(request), cancellationSource.Token);                
+              var response = await rateLimiter.Enqueue<IRestResponse>(() => RestClient.ExecuteAsync(request), cancellationSource.Token);                
               InterceptResponse(request, response);
               return response;
             }

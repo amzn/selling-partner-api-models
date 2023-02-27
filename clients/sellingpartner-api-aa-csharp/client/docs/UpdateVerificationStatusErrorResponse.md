@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.UpdateVerificationStatusErrorResponse
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.UpdateVerificationStatusErrorResponse
 ## Properties
 
 Name | Type | Description | Notes

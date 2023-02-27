@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.ConfirmShipmentRequest
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.ConfirmShipmentRequest
 ## Properties
 
 Name | Type | Description | Notes

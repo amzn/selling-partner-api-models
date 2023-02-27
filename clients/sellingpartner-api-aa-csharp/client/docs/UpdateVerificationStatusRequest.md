@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.UpdateVerificationStatusRequest
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.UpdateVerificationStatusRequest
 ## Properties
 
 Name | Type | Description | Notes

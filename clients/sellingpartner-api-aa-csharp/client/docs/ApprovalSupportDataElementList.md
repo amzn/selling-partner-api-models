@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.ApprovalSupportDataElementList
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.ApprovalSupportDataElementList
 ## Properties
 
 Name | Type | Description | Notes

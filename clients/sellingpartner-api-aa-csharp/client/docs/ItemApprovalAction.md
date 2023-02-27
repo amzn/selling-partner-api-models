@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.ItemApprovalAction
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.ItemApprovalAction
 ## Properties
 
 Name | Type | Description | Notes

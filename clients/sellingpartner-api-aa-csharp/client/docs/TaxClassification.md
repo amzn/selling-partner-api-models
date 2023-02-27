@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.TaxClassification
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.TaxClassification
 ## Properties
 
 Name | Type | Description | Notes

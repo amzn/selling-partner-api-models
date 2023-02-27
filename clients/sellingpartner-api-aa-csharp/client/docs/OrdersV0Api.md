@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Api.OrdersV0Api
+# Amazon.SellingPartnerAPIAA.Clients.API.OrdersV0Api
 
 All URIs are relative to *https://sellingpartnerapi-na.amazon.com*
 
@@ -27,9 +27,9 @@ Updates the shipment confirmation status for a specified order.  **Usage Plan:**
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {
@@ -88,9 +88,9 @@ Returns the order that you specify.  **Usage Plan:**  | Rate (requests per secon
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {
@@ -148,9 +148,9 @@ Returns the shipping address for the order that you specify.  **Usage Plan:**  |
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {
@@ -208,9 +208,9 @@ Returns buyer information for the order that you specify.  **Usage Plan:**  | Ra
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {
@@ -268,9 +268,9 @@ Returns detailed order item information for the order that you specify. If NextT
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {
@@ -330,9 +330,9 @@ Returns buyer information for the order items in the order that you specify.  **
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {
@@ -392,9 +392,9 @@ Returns regulated information for the order that you specify.  **Usage Plan:**  
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {
@@ -452,9 +452,9 @@ Returns orders created or updated during the time frame indicated by the specifi
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {
@@ -550,9 +550,9 @@ Updates (approves or rejects) the verification status of an order containing reg
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {

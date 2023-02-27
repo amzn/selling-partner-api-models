@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.ConfirmShipmentErrorResponse
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.ConfirmShipmentErrorResponse
 ## Properties
 
 Name | Type | Description | Notes

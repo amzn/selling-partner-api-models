@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.ItemApprovalStatus
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.ItemApprovalStatus
 ## Properties
 
 Name | Type | Description | Notes

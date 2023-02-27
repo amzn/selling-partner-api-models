@@ -153,6 +153,7 @@ OpenAPI spec version: v0
     <Compile Include="Models.Orders\ApprovalSupportDataElement.cs" />
     <Compile Include="Models.Orders\ApprovalSupportDataElementList.cs" />
     <Compile Include="Models.Orders\AutomatedShippingSettings.cs" />
+    <Compile Include="Models.Orders\BusinessHours.cs" />
     <Compile Include="Models.Orders\BuyerCustomizedInfoDetail.cs" />
     <Compile Include="Models.Orders\BuyerInfo.cs" />
     <Compile Include="Models.Orders\BuyerRequestedCancel.cs" />
@@ -162,10 +163,12 @@ OpenAPI spec version: v0
     <Compile Include="Models.Orders\ConfirmShipmentOrderItem.cs" />
     <Compile Include="Models.Orders\ConfirmShipmentOrderItemsList.cs" />
     <Compile Include="Models.Orders\ConfirmShipmentRequest.cs" />
+    <Compile Include="Models.Orders\DeliveryPreferences.cs" />
     <Compile Include="Models.Orders\EasyShipShipmentStatus.cs" />
     <Compile Include="Models.Orders\ElectronicInvoiceStatus.cs" />
     <Compile Include="Models.Orders\Error.cs" />
     <Compile Include="Models.Orders\ErrorList.cs" />
+    <Compile Include="Models.Orders\ExceptionDates.cs" />
     <Compile Include="Models.Orders\FulfillmentInstruction.cs" />
     <Compile Include="Models.Orders\GetOrderAddressResponse.cs" />
     <Compile Include="Models.Orders\GetOrderApprovalsResponse.cs" />
@@ -185,6 +188,8 @@ OpenAPI spec version: v0
     <Compile Include="Models.Orders\ItemIdentifier.cs" />
     <Compile Include="Models.Orders\MarketplaceTaxInfo.cs" />
     <Compile Include="Models.Orders\Money.cs" />
+    <Compile Include="Models.Orders\OpenInterval.cs" />
+    <Compile Include="Models.Orders\OpenTimeInterval.cs" />
     <Compile Include="Models.Orders\Order.cs" />
     <Compile Include="Models.Orders\OrderAddress.cs" />
     <Compile Include="Models.Orders\OrderApprovalsResponse.cs" />
@@ -202,11 +207,13 @@ OpenAPI spec version: v0
     <Compile Include="Models.Orders\OrderList.cs" />
     <Compile Include="Models.Orders\OrderRegulatedInfo.cs" />
     <Compile Include="Models.Orders\OrdersList.cs" />
+    <Compile Include="Models.Orders\OtherDeliveryAttributes.cs" />
     <Compile Include="Models.Orders\PackageDetail.cs" />
     <Compile Include="Models.Orders\PaymentExecutionDetailItem.cs" />
     <Compile Include="Models.Orders\PaymentExecutionDetailItemList.cs" />
     <Compile Include="Models.Orders\PaymentMethodDetailItemList.cs" />
     <Compile Include="Models.Orders\PointsGrantedDetail.cs" />
+    <Compile Include="Models.Orders\PreferredDeliveryTime.cs" />
     <Compile Include="Models.Orders\ProductInfoDetail.cs" />
     <Compile Include="Models.Orders\PromotionIdList.cs" />
     <Compile Include="Models.Orders\RegulatedInformation.cs" />
@@ -322,6 +329,9 @@ OpenAPI spec version: v0
     <Compile Include="Models.Tokens\ErrorList.cs" />
     <Compile Include="Models.Tokens\RestrictedResource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Schemas.Feeds\ListingsFeed.cs" />
+    <Compile Include="Schemas.Feeds\ListingsFeedMessage.cs" />
+    <Compile Include="Schemas.Feeds\ListingsFeedProcessingReport.cs" />
     <Compile Include="Schemas.Notifications\AnyOfferChangedNotification.cs" />
     <Compile Include="Schemas.Notifications\Converter.cs" />
     <Compile Include="Schemas.Notifications\FeedProcessingFinishedNotification.cs" />
@@ -345,6 +355,11 @@ OpenAPI spec version: v0
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
+    <PackageReference Include="NSwag.MSBuild">
+      <Version>13.18.2</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="RestSharp">
       <Version>106.12.0</Version>
     </PackageReference>
@@ -352,6 +367,7 @@ OpenAPI spec version: v0
       <Version>7.0.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MsBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
@@ -360,5 +376,11 @@ OpenAPI spec version: v0
   </ProjectExtensions>
   <PropertyGroup>
     <PostBuildEvent>nuget pack $(ProjectPath) -OutputDirectory $(TargetDir)</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>$(NSwagExe) jsonschema2csclient /Input:$(ProjectDir)\..\..\..\..\..\schemas\feeds\listings-feed-message-schema-v2.json /Name:ListingsFeedMessage /Namespace:Amazon.SellingPartnerAPIAA.Clients.Schemas.Feeds.Messaging /Output:$(ProjectDir)Schemas.Feeds\ListingsFeedMessage.cs -ExcludedTypeNames:Patches,PatchesOp /runtime:WinX64
+$(NSwagExe) jsonschema2csclient /Input:$(ProjectDir)\..\..\..\..\..\schemas\feeds\listings-feed-processing-report-schema-v2.json /Name:ListingsFeedProcessingReport /Namespace:Amazon.SellingPartnerAPIAA.Clients.Schemas.Feeds.Processing /Output:$(ProjectDir)Schemas.Feeds\ListingsFeedProcessingReport.cs /runtime:WinX64
+$(NSwagExe) jsonschema2csclient /Input:$(ProjectDir)\..\..\..\..\..\schemas\feeds\listings-feed-schema-v2.json /Name:ListingsFeed /Namespace:Amazon.SellingPartnerAPIAA.Clients.Schemas.Feeds /Output:$(ProjectDir)Schemas.Feeds\ListingsFeed.cs /runtime:WinX64
+</PreBuildEvent>
   </PropertyGroup>
 </Project>

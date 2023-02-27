@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.UpdateShipmentStatusErrorResponse
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.UpdateShipmentStatusErrorResponse
 ## Properties
 
 Name | Type | Description | Notes

@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.TransparencyCodeList
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.TransparencyCodeList
 ## Properties
 
 Name | Type | Description | Notes

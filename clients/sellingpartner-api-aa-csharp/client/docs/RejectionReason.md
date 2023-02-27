@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.RejectionReason
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.RejectionReason
 ## Properties
 
 Name | Type | Description | Notes

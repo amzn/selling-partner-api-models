@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.UpdateItemsApprovalsErrorResponse
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.UpdateItemsApprovalsErrorResponse
 ## Properties
 
 Name | Type | Description | Notes

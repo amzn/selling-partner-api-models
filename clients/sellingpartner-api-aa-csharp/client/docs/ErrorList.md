@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.ErrorList
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.ErrorList
 ## Properties
 
 Name | Type | Description | Notes

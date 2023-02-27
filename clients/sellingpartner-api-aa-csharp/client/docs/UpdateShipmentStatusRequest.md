@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.UpdateShipmentStatusRequest
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.UpdateShipmentStatusRequest
 ## Properties
 
 Name | Type | Description | Notes

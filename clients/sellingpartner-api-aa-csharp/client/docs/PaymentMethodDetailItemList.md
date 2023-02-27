@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.PaymentMethodDetailItemList
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.PaymentMethodDetailItemList
 ## Properties
 
 Name | Type | Description | Notes

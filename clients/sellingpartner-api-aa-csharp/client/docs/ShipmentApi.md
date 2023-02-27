@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Api.ShipmentApi
+# Amazon.SellingPartnerAPIAA.Clients.API.ShipmentApi
 
 All URIs are relative to *https://sellingpartnerapi-na.amazon.com*
 
@@ -19,9 +19,9 @@ Update the shipment status for an order that you specify.  **Usage Plan:**  | Ra
 ```csharp
 using System;
 using System.Diagnostics;
-using Amazon.SellingPartnerAPIAA.Client.Api;
-using Amazon.SellingPartnerAPIAA.Client.Client;
-using Amazon.SellingPartnerAPIAA.Client.Model;
+using Amazon.SellingPartnerAPIAA.Clients.API;
+using Amazon.SellingPartnerAPIAA.Clients.Client;
+using Amazon.SellingPartnerAPIAA.Clients.Models.Orders;
 
 namespace Example
 {

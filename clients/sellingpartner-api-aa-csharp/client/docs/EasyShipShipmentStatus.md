@@ -1,4 +1,4 @@
-# Amazon.SellingPartnerAPIAA.Client.Model.EasyShipShipmentStatus
+# Amazon.SellingPartnerAPIAA.Clients.Models.Orders.EasyShipShipmentStatus
 ## Properties
 
 Name | Type | Description | Notes
