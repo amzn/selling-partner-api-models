@@ -4030,8 +4030,15 @@
           "type": "string",
           "description": "An Amazon-defined order identifier, in 3-7-7 format."
         },
+        "BuyerCompanyName": {
+          "type": "string",
+          "description": "Company name of the destination address."
+        },
         "ShippingAddress": {
           "$ref": "#/definitions/Address"
+        },
+        "DeliveryPreferences": {
+          "$ref": "#/definitions/DeliveryPreferences"
         }
       },
       "description": "The shipping address for the order."
@@ -4110,6 +4117,179 @@
         }
       },
       "description": "The shipping address for the order."
+    },
+    "DeliveryPreferences": {
+      "type": "object",
+      "properties": {
+        "DropOffLocation": {
+          "type": "string",
+          "description": "Drop-off location selected by the customer."
+        },
+        "PreferredDeliveryTime": {
+          "$ref": "#/definitions/PreferredDeliveryTime",
+          "description": "Business hours and days when the delivery is preferred."
+        },
+        "OtherAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OtherDeliveryAttributes"
+          },
+          "description": "Enumerated list of miscellaneous delivery attributes associated with the shipping address."
+        },
+        "AddressInstructions": {
+          "type": "string",
+          "description": "Building instructions, nearby landmark or navigation instructions."
+        }
+      },
+      "description": "Contains all of the delivery instructions provided by the customer for the shipping address."
+    },
+    "PreferredDeliveryTime": {
+      "type": "object",
+      "description": "The time window when the delivery is preferred.",
+      "properties": {
+        "BusinessHours": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BusinessHours"
+          },
+          "description": "Business hours when the business is open for deliveries."
+        },
+        "ExceptionDates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ExceptionDates"
+          },
+          "description": "Dates when the business is closed in the next 30 days."
+        }
+      }
+    },
+    "BusinessHours": {
+      "type": "object",
+      "description": "Business days and hours when the destination is open for deliveries.",
+      "properties": {
+        "DayOfWeek": {
+          "type": "string",
+          "description": "Day of the week.",
+          "enum": [
+            "SUN",
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI",
+            "SAT"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "SUN",
+              "description": "Sunday - Day of the week."
+            },
+            {
+              "value": "MON",
+              "description": "Monday - Day of the week."
+            },
+            {
+              "value": "TUE",
+              "description": "Tuesday - Day of the week."
+            },
+            {
+              "value": "WED",
+              "description": "Wednesday - Day of the week."
+            },
+            {
+              "value": "THU",
+              "description": "Thursday - Day of the week."
+            },
+            {
+              "value": "FRI",
+              "description": "Friday - Day of the week."
+            },
+            {
+              "value": "SAT",
+              "description": "Saturday - Day of the week."
+            }
+          ]
+        },
+        "OpenIntervals": {
+          "type": "array",
+          "description": "Time window during the day when the business is open.",
+          "items": {
+            "$ref": "#/definitions/OpenInterval"
+          }
+        }
+      }
+    },
+    "ExceptionDates": {
+      "type": "object",
+      "description": "Dates when the business is closed or open with a different time window.",
+      "properties": {
+        "ExceptionDate": {
+          "type": "string",
+          "description": "Date when the business is closed, in ISO-8601 date format."
+        },
+        "IsOpen": {
+          "type": "boolean",
+          "description": "Boolean indicating if the business is closed or open on that date."
+        },
+        "OpenIntervals": {
+          "type": "array",
+          "description": "Time window during the day when the business is open.",
+          "items": {
+            "$ref": "#/definitions/OpenInterval"
+          }
+        }
+      }
+    },
+    "OpenInterval": {
+      "type": "object",
+      "description": "The time interval for which the business is open.",
+      "properties": {
+        "StartTime": {
+          "$ref": "#/definitions/OpenTimeInterval",
+          "description": "The time when the business opens."
+        },
+        "EndTime": {
+          "$ref": "#/definitions/OpenTimeInterval",
+          "description": "The time when the business closes."
+        }
+      }
+    },
+    "OpenTimeInterval": {
+      "type": "object",
+      "description": "The time when the business opens or closes.",
+      "properties": {
+        "Hour": {
+          "type": "integer",
+          "description": "The hour when the business opens or closes."
+        },
+        "Minute": {
+          "type": "integer",
+          "description": "The minute when the business opens or closes."
+        }
+      }
+    },
+    "OtherDeliveryAttributes": {
+      "type": "string",
+      "description": "Miscellaneous delivery attributes associated with the shipping address.",
+      "enum": [
+        "HAS_ACCESS_POINT",
+        "PALLET_ENABLED",
+        "PALLET_DISABLED"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "HAS_ACCESS_POINT",
+          "description": "Indicates whether the delivery has an access point pickup or drop-off location."
+        },
+        {
+          "value": "PALLET_ENABLED",
+          "description": "Indicates whether pallet delivery is enabled for the address."
+        },
+        {
+          "value": "PALLET_DISABLED",
+          "description": "Indicates whether pallet delivery is disabled for the address."
+        }
+      ]
     },
     "Money": {
       "type": "object",
@@ -5265,7 +5445,7 @@
     },
     "PackageReferenceId": {
       "type": "string",
-      "description": "A seller-supplied identifier that uniquely identifies a package within the scope of an order."
+      "description": "A seller-supplied identifier that uniquely identifies a package within the scope of an order. Only positive numeric values are supported."
     },
     "ErrorList": {
       "type": "array",
