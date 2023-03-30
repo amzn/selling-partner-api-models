@@ -19,7 +19,7 @@ generate () {
           --model-package "$basePackage.model.$1" \
           --group-id "com.amazon" \
           --artifact-id "selling-partner-api" \
-          --additional-properties dateLibrary=java8
+          --additional-properties dateLibrary=java11
 
 }
 generate "aplus" "models/aplus-content-api-model/aplusContent_2020-11-01.json"
@@ -81,8 +81,7 @@ generate "vendortransactionstatus" "models/vendor-transaction-status-api-model/v
 #
 #cd clients/sellingpartner-api-aa-java
 #mvn clean package
-#mvn install:install-file -Dfile=target/sellingpartnerapi-aa-java-1.0.2.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=sellingpartnerapi-aa-java -Dversion=1.0.2 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
-
+#mvn install:install-file -Dfile=target/sellingpartnerapi-aa-java-1.0.3.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=sellingpartnerapi-aa-java -Dversion=1.0.3 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
 #cd ../..
 
 cp -r generate/pom.xml generated/spapi
@@ -92,4 +91,4 @@ mvn clean package
 # install into jazva/lib  check path
 # fix path and run manually from root folder
 cd ../..
-#mvn install:install-file -Dfile=generated/spapi/target/selling-partner-api-1.0.10.jar -Dsources=generated/spapi/target/selling-partner-api-1.0.10-sources.jar -Djavadoc=generated/spapi/target/selling-partner-api-1.0.10-javadoc.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=selling-partner-api -Dversion=1.0.10 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
+#mvn install:install-file -Dfile=generated/spapi/target/selling-partner-api-1.0.11.jar -Dsources=generated/spapi/target/selling-partner-api-1.0.11-sources.jar -Djavadoc=generated/spapi/target/selling-partner-api-1.0.11-javadoc.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=selling-partner-api -Dversion=1.0.10 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
