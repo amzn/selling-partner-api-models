@@ -1,0 +1,273 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "description": "The Item Comparison report shares data on the items most commonly viewed after viewing the selling partner's items. Data is available at different date range aggregation levels: DAY, WEEK, MONTH, QUARTER. Requests can span multiple reporting periods. In this report, \"asin\" is an ASIN in the selling partner's catalog and \"comparedAsin\" may or may not be an ASIN in the selling partner's catalog.",
+  "examples": [
+    {
+      "reportSpecification": {
+        "reportType": "GET_BRAND_ANALYTICS_ITEM_COMPARISON_REPORT",
+        "reportOptions": {
+          "reportPeriod": "WEEK"
+        },
+        "dataStartTime": "2021-06-06",
+        "dataEndTime": "2021-06-19",
+        "marketplaceIds": [
+          "ATVPDKIKX0DER"
+        ]
+      },
+      "dataByAsin": [
+        {
+          "startDate": "2021-06-06",
+          "endDate": "2021-06-12",
+          "asin": "B123456789",
+          "comparedAsin": "B1A345B78C",
+          "comparedRank": 1,
+          "comparedPct": 0.0280
+        },
+        {
+          "startDate": "2021-06-06",
+          "endDate": "2021-06-12",
+          "asin": "B123456789",
+          "comparedAsin": "B1D345E78F",
+          "comparedRank": 2,
+          "comparedPct": 0.0229
+        },
+        {
+          "startDate": "2021-06-06",
+          "endDate": "2021-06-12",
+          "asin": "B123456789",
+          "comparedAsin": "B1G345H78I",
+          "comparedRank": 3,
+          "comparedPct": 0.0212
+        },
+        {
+          "startDate": "2021-06-06",
+          "endDate": "2021-06-12",
+          "asin": "B123456789",
+          "comparedAsin": "B1J345K78L",
+          "comparedRank": 4,
+          "comparedPct": 0.0206
+        },
+        {
+          "startDate": "2021-06-06",
+          "endDate": "2021-06-12",
+          "asin": "B123456789",
+          "comparedAsin": "B1M345N78O",
+          "comparedRank": 5,
+          "comparedPct": 0.0197
+        },
+        {
+          "startDate": "2021-06-13",
+          "endDate": "2021-06-19",
+          "asin": "B987654321",
+          "comparedAsin": "B12A45B78O",
+          "comparedRank": 1,
+          "comparedPct": 0.0345
+        },
+        {
+          "startDate": "2021-06-13",
+          "endDate": "2021-06-19",
+          "asin": "B987654321",
+          "comparedAsin": "B12B45C78O",
+          "comparedRank": 2,
+          "comparedPct": 0.0333
+        },
+        {
+          "startDate": "2021-06-13",
+          "endDate": "2021-06-19",
+          "asin": "B987654321",
+          "comparedAsin": "B12D45E78O",
+          "comparedRank": 3,
+          "comparedPct": 0.0321
+        },
+        {
+          "startDate": "2021-06-13",
+          "endDate": "2021-06-19",
+          "asin": "B987654321",
+          "comparedAsin": "B12F45G78O",
+          "comparedRank": 4,
+          "comparedPct": 0.0287
+        },
+        {
+          "startDate": "2021-06-13",
+          "endDate": "2021-06-19",
+          "asin": "B987654321",
+          "comparedAsin": "B12H45I78O",
+          "comparedRank": 5,
+          "comparedPct": 0.0200
+        }
+      ]
+    }
+  ],
+  "required": [
+    "reportSpecification",
+    "dataByAsin"
+  ],
+  "properties": {
+    "reportSpecification": {
+      "type": "object",
+      "description": "Summarizes the original report request.",
+      "examples": [
+        {
+          "reportType": "GET_BRAND_ANALYTICS_ITEM_COMPARISON_REPORT",
+          "dataStartTime": "2021-06-06",
+          "dataEndTime": "2021-06-19",
+          "marketplaceIds": [
+            "ATVPDKIKX0DER"
+          ]
+        }
+      ],
+      "required": [
+        "reportType",
+        "reportOptions",
+        "dataStartTime",
+        "dataEndTime",
+        "marketplaceIds"
+      ],
+      "properties": {
+        "reportType": {
+          "type": "string",
+          "description": "The report type.",
+          "enum": [
+            "GET_BRAND_ANALYTICS_ITEM_COMPARISON_REPORT"
+          ]
+        },
+        "reportOptions": {
+          "type": "object",
+          "description": "Report options specifying parameters such as reportPeriod.",
+          "required": [
+            "reportPeriod"
+          ],
+          "properties": {
+            "reportPeriod": {
+              "type": "string",
+              "description": "Determines what granularity of data is expected in the report. Valid values are: DAY, WEEK, MONTH, QUARTER.",
+              "enum": [
+                "DAY",
+                "WEEK",
+                "MONTH",
+                "QUARTER"
+              ]
+            }
+          }
+        },
+        "dataStartTime": {
+          "type": "string",
+          "format": "date",
+          "description": "Determines the start date of the report - the time component is ignored. For WEEK, MONTH and QUARTER reportPeriods, this value must correspond to the first day in the specified reportPeriod. For example, dataStartTime must be a Sunday for the WEEK reportPeriod.",
+          "examples": [
+            "2021-06-06"
+          ]
+        },
+        "dataEndTime": {
+          "type": "string",
+          "format": "date",
+          "description": "Determines the end date of the report - the time component is ignored. For WEEK, MONTH and QUARTER reportPeriods, this value must correspond to the last day in the specified reportPeriod. For example, dataEndTime must be a Saturday for the WEEK reportPeriod.",
+          "examples": [
+            "2021-06-19"
+          ]
+        },
+        "marketplaceIds": {
+          "type": "array",
+          "description": "This parameter must match the marketplaceId of the selling partner account. This report type supports only one marketplaceId per report. Specifying multiple marketplaces will result in failure to generate the report.",
+          "examples": [
+            ["ATVPDKIKX0DER"]
+          ],
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dataByAsin": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/DataByAsin"
+      }
+    }
+  },
+  "definitions": {
+    "DataByAsin": {
+      "type": "object",
+      "description": "Contains item comparison analytics data for each ASIN in the selling partner's catalog",
+      "examples": [
+        {
+          "startDate": "2021-06-06",
+          "endDate": "2021-06-12",
+          "asin": "B123456789",
+          "comparedAsin": "B1A345B78C",
+          "comparedRank": 1,
+          "comparedPct": 0.0280
+        },
+        {
+          "startDate": "2021-06-06",
+          "endDate": "2021-06-12",
+          "asin": "B123456789",
+          "comparedAsin": "B1D345E78F",
+          "comparedRank": 2,
+          "comparedPct": 0.0229
+        }
+      ],
+      "required": [
+        "startDate",
+        "endDate",
+        "asin",
+        "comparedAsin",
+        "comparedRank",
+        "comparedPct"
+      ],
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The start date of the data contained within the object. If the request spans multiple reportPeriods, byAsin data will be shared for each of these reportPeriods.",
+          "examples": [
+            "2021-06-06"
+          ]
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The end date of the data contained within the object.",
+          "examples": [
+            "2021-06-12"
+          ]
+        },
+        "asin": {
+          "type": "string",
+          "description": "Amazon Standard Identification Number.",
+          "examples": [
+            "B123456789",
+            "B987654321"
+          ]
+        },
+        "comparedAsin": {
+          "type": "string",
+          "description": "The Amazon Standard Identifier Number, customers who viewed the selling partner's product also viewed this product",
+          "examples": [
+            "B1A345B78C",
+            "B1D345E78F"
+          ]
+        },
+        "comparedRank": {
+          "type": "integer",
+          "description": "Relative frequency of comparedAsin and asin being viewed in the same day. Rank=1 means comparedAsin is the most often viewed product in the same day as viewing the selling partner's product.",
+          "examples": [
+            1,
+            5
+          ]
+        },
+        "comparedPct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction of number of detail page views for comparedAsin in comparison to the total number of detail page views for products besides asin after viewing the asin.",
+          "examples": [
+            0.0280,
+            0.0229
+          ]
+        }
+      }
+    }
+  }
+}
