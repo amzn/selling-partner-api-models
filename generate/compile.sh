@@ -91,4 +91,4 @@ mvn clean package
 # install into jazva/lib  check path
 # fix path and run manually from root folder
 cd ../..
-#mvn install:install-file -Dfile=generated/spapi/target/selling-partner-api-1.0.11.jar -Dsources=generated/spapi/target/selling-partner-api-1.0.11-sources.jar -Djavadoc=generated/spapi/target/selling-partner-api-1.0.11-javadoc.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=selling-partner-api -Dversion=1.0.10 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
+#mvn install:install-file -Dfile=generated/spapi/target/selling-partner-api-1.0.11.jar -Dsources=generated/spapi/target/selling-partner-api-1.0.11-sources.jar -Djavadoc=generated/spapi/target/selling-partner-api-1.0.11-javadoc.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=selling-partner-api -Dversion=1.0.11 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
