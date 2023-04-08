@@ -29,7 +29,7 @@
         "tags": [
           "fbaInventory"
         ],
-        "description": "Returns a list of inventory summaries. The summaries returned depend on the presence or absence of the startDateTime and sellerSkus parameters:\n\n- All inventory summaries with available details are returned when the startDateTime and sellerSkus parameters are omitted.\n- When startDateTime is provided, the operation returns inventory summaries that have had changes after the date and time specified. The sellerSkus parameter is ignored.\n- When the sellerSkus parameter is provided, the operation returns inventory summaries for only the specified sellerSkus.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 2 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Returns a list of inventory summaries. The summaries returned depend on the presence or absence of the `startDateTime`, `sellerSkus` and `sellerSku` parameters:\n\n- All inventory summaries with available details are returned when the `startDateTime`, `sellerSkus` and `sellerSku` parameters are omitted.\n- When `startDateTime` is provided, the operation returns inventory summaries that have had changes after the date and time specified. The `sellerSkus` and `sellerSku` parameters are ignored. **Important:** To avoid errors, use both `startDateTime` and `nextToken` to get the next page of inventory summaries that have changed after the date and time specified.\n- When the `sellerSkus` parameter is provided, the operation returns inventory summaries for only the specified `sellerSkus`. The `sellerSku` parameter is ignored.\n- When the `sellerSku` parameter is provided, the operation returns inventory summaries for only the specified `sellerSku`.\n\n**Note:** The parameters associated with this operation may contain special characters that must be encoded to successfully call the API. To avoid errors with SKUs when encoding URLs, refer to [URL Encoding](https://developer-docs.amazon.com/sp-api/docs/url-encoding).\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 2 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getInventorySummaries",
         "produces": [
           "application/json"
@@ -86,9 +86,16 @@
             "maxItems": 50
           },
           {
+            "name": "sellerSku",
+            "in": "query",
+            "description": "A single seller SKU used for querying the specified seller SKU inventory summaries.",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "nextToken",
             "in": "query",
-            "description": "String token returned in the response of your previous request.",
+            "description": "String token returned in the response of your previous request. The string token will expire 30 seconds after being created.",
             "required": false,
             "type": "string"
           },
@@ -132,143 +139,143 @@
                         "value": "Marketplace"
                       },
                       "granularityId": {
-                      "value": "ATVPDKIKX0DER"
+                        "value": "ATVPDKIKX0DER"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "pagination": {
+                      "nextToken": "seed"
                     },
-                    "marketplaceIds": {
-                      "value": [
-                        "ATVPDKIKX0DER"
+                    "payload": {
+                      "granularity": {
+                        "granularityType": "Marketplace",
+                        "granularityId": "ATVPDKIKX0DER"
+                      },
+                      "inventorySummaries": [
+                        {
+                          "asin": "B0020MLK00",
+                          "fnSku": "B0020MLK00",
+                          "sellerSku": "EMTEC 1 GB",
+                          "condition": "NewItem",
+                          "inventoryDetails": {
+                            "fulfillableQuantity": 0,
+                            "inboundWorkingQuantity": 0,
+                            "inboundShippedQuantity": 0,
+                            "inboundReceivingQuantity": 0,
+                            "reservedQuantity": {
+                              "totalReservedQuantity": 0,
+                              "pendingCustomerOrderQuantity": 0,
+                              "pendingTransshipmentQuantity": 0,
+                              "fcProcessingQuantity": 0
+                            },
+                            "researchingQuantity": {
+                              "totalResearchingQuantity": 0,
+                              "researchingQuantityBreakdown": []
+                            },
+                            "unfulfillableQuantity": {
+                              "totalUnfulfillableQuantity": 0,
+                              "customerDamagedQuantity": 0,
+                              "warehouseDamagedQuantity": 0,
+                              "distributorDamagedQuantity": 0,
+                              "carrierDamagedQuantity": 0,
+                              "defectiveQuantity": 0,
+                              "expiredQuantity": 0
+                            }
+                          },
+                          "lastUpdatedTime": "",
+                          "productName": "EMTEC 1 GB 60x SD Flash Memory Card with USB 2.0 Card Reader",
+                          "totalQuantity": 0
+                        },
+                        {
+                          "asin": "B0020MLK00",
+                          "fnSku": "B0020MLK00",
+                          "sellerSku": "EMTEC-SdCard-reader",
+                          "condition": "NewItem",
+                          "inventoryDetails": {
+                            "fulfillableQuantity": 0,
+                            "inboundWorkingQuantity": 0,
+                            "inboundShippedQuantity": 0,
+                            "inboundReceivingQuantity": 0,
+                            "reservedQuantity": {
+                              "totalReservedQuantity": 0,
+                              "pendingCustomerOrderQuantity": 0,
+                              "pendingTransshipmentQuantity": 0,
+                              "fcProcessingQuantity": 0
+                            },
+                            "researchingQuantity": {
+                              "totalResearchingQuantity": 0,
+                              "researchingQuantityBreakdown": []
+                            },
+                            "unfulfillableQuantity": {
+                              "totalUnfulfillableQuantity": 0,
+                              "customerDamagedQuantity": 0,
+                              "warehouseDamagedQuantity": 0,
+                              "distributorDamagedQuantity": 0,
+                              "carrierDamagedQuantity": 0,
+                              "defectiveQuantity": 0,
+                              "expiredQuantity": 0
+                            }
+                          },
+                          "lastUpdatedTime": "",
+                          "productName": "EMTEC 1 GB 60x SD Flash Memory Card with USB 2.0 Card Reader",
+                          "totalQuantity": 0
+                        },
+                        {
+                          "asin": "B00T9QONN6",
+                          "fnSku": "B00T9QONN6",
+                          "sellerSku": "Silicon Power 32GB",
+                          "condition": "NewItem",
+                          "inventoryDetails": {
+                            "fulfillableQuantity": 66,
+                            "inboundWorkingQuantity": 21,
+                            "inboundShippedQuantity": 0,
+                            "inboundReceivingQuantity": 0,
+                            "reservedQuantity": {
+                              "totalReservedQuantity": 0,
+                              "pendingCustomerOrderQuantity": 0,
+                              "pendingTransshipmentQuantity": 0,
+                              "fcProcessingQuantity": 0
+                            },
+                            "researchingQuantity": {
+                              "totalResearchingQuantity": 0,
+                              "researchingQuantityBreakdown": [
+                                {
+                                  "name": "researchingQuantityInShortTerm",
+                                  "quantity": 0
+                                },
+                                {
+                                  "name": "researchingQuantityInMidTerm",
+                                  "quantity": 0
+                                },
+                                {
+                                  "name": "researchingQuantityInLongTerm",
+                                  "quantity": 0
+                                }
+                              ]
+                            },
+                            "unfulfillableQuantity": {
+                              "totalUnfulfillableQuantity": 0,
+                              "customerDamagedQuantity": 0,
+                              "warehouseDamagedQuantity": 0,
+                              "distributorDamagedQuantity": 0,
+                              "carrierDamagedQuantity": 0,
+                              "defectiveQuantity": 0,
+                              "expiredQuantity": 0
+                            }
+                          },
+                          "lastUpdatedTime": "2018-03-31T23:40:39Z",
+                          "productName": "Silicon Power 32GB up to 85MB/s MicroSDHC UHS-1 Class10, Elite Flash Memory Card with Adaptor (SP032GBSTHBU1V20SP)",
+                          "totalQuantity": 87
+                        }
                       ]
                     }
                   }
-                },
-                "response": {
-                  "pagination": {
-                    "nextToken": "seed"
-                  },
-                  "payload": {
-                    "granularity": {
-                      "granularityType": "Marketplace",
-                      "granularityId": "ATVPDKIKX0DER"
-                    },
-                    "inventorySummaries": [
-                      {
-                        "asin": "B0020MLK00",
-                        "fnSku": "B0020MLK00",
-                        "sellerSku": "EMTEC 1 GB",
-                        "condition": "NewItem",
-                        "inventoryDetails": {
-                          "fulfillableQuantity": 0,
-                          "inboundWorkingQuantity": 0,
-                          "inboundShippedQuantity": 0,
-                          "inboundReceivingQuantity": 0,
-                          "reservedQuantity": {
-                            "totalReservedQuantity": 0,
-                            "pendingCustomerOrderQuantity": 0,
-                            "pendingTransshipmentQuantity": 0,
-                            "fcProcessingQuantity": 0
-                          },
-                          "researchingQuantity": {
-                            "totalResearchingQuantity": 0,
-                            "researchingQuantityBreakdown": []
-                          },
-                          "unfulfillableQuantity": {
-                            "totalUnfulfillableQuantity": 0,
-                            "customerDamagedQuantity": 0,
-                            "warehouseDamagedQuantity": 0,
-                            "distributorDamagedQuantity": 0,
-                            "carrierDamagedQuantity": 0,
-                            "defectiveQuantity": 0,
-                            "expiredQuantity": 0
-                          }
-                        },
-                        "lastUpdatedTime": "",
-                        "productName": "EMTEC 1 GB 60x SD Flash Memory Card with USB 2.0 Card Reader",
-                        "totalQuantity": 0
-                      },
-                      {
-                        "asin": "B0020MLK00",
-                        "fnSku": "B0020MLK00",
-                        "sellerSku": "EMTEC-SdCard-reader",
-                        "condition": "NewItem",
-                        "inventoryDetails": {
-                          "fulfillableQuantity": 0,
-                          "inboundWorkingQuantity": 0,
-                          "inboundShippedQuantity": 0,
-                          "inboundReceivingQuantity": 0,
-                          "reservedQuantity": {
-                            "totalReservedQuantity": 0,
-                            "pendingCustomerOrderQuantity": 0,
-                            "pendingTransshipmentQuantity": 0,
-                            "fcProcessingQuantity": 0
-                          },
-                          "researchingQuantity": {
-                            "totalResearchingQuantity": 0,
-                            "researchingQuantityBreakdown": []
-                          },
-                          "unfulfillableQuantity": {
-                            "totalUnfulfillableQuantity": 0,
-                            "customerDamagedQuantity": 0,
-                            "warehouseDamagedQuantity": 0,
-                            "distributorDamagedQuantity": 0,
-                            "carrierDamagedQuantity": 0,
-                            "defectiveQuantity": 0,
-                            "expiredQuantity": 0
-                          }
-                        },
-                        "lastUpdatedTime": "",
-                        "productName": "EMTEC 1 GB 60x SD Flash Memory Card with USB 2.0 Card Reader",
-                        "totalQuantity": 0
-                      },
-                      {
-                        "asin": "B00T9QONN6",
-                        "fnSku": "B00T9QONN6",
-                        "sellerSku": "Silicon Power 32GB",
-                        "condition": "NewItem",
-                        "inventoryDetails": {
-                          "fulfillableQuantity": 66,
-                          "inboundWorkingQuantity": 21,
-                          "inboundShippedQuantity": 0,
-                          "inboundReceivingQuantity": 0,
-                          "reservedQuantity": {
-                            "totalReservedQuantity": 0,
-                            "pendingCustomerOrderQuantity": 0,
-                            "pendingTransshipmentQuantity": 0,
-                            "fcProcessingQuantity": 0
-                          },
-                          "researchingQuantity": {
-                            "totalResearchingQuantity": 0,
-                            "researchingQuantityBreakdown": [
-                              {
-                                "name": "researchingQuantityInShortTerm",
-                                "quantity": 0
-                              },
-                              {
-                                "name": "researchingQuantityInMidTerm",
-                                "quantity": 0
-                              },
-                              {
-                                "name": "researchingQuantityInLongTerm",
-                                "quantity": 0
-                              }
-                            ]
-                          },
-                          "unfulfillableQuantity": {
-                            "totalUnfulfillableQuantity": 0,
-                            "customerDamagedQuantity": 0,
-                            "warehouseDamagedQuantity": 0,
-                            "distributorDamagedQuantity": 0,
-                            "carrierDamagedQuantity": 0,
-                            "defectiveQuantity": 0,
-                            "expiredQuantity": 0
-                          }
-                        },
-                        "lastUpdatedTime": "2018-03-31T23:40:39Z",
-                        "productName": "Silicon Power 32GB up to 85MB/s MicroSDHC UHS-1 Class10, Elite Flash Memory Card with Adaptor (SP032GBSTHBU1V20SP)",
-                        "totalQuantity": 87
-                      }
-                    ]
-                  }
-                }
                 }
               ]
             }

@@ -4,8 +4,6 @@ import com.amazonaws.SignableRequest;
 import com.amazonaws.auth.AWS4Signer;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider;
 import com.squareup.okhttp.Request;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,6 +108,30 @@ public class AWSSigV4SignerTest {
         underTestCredentialsProvider.setAws4Signer(mockAWS4Signer);
         underTestCredentialsProvider.setAwsCredentialsProvider(mockAWSCredentialsProvider);
         
+        Request actualSignedRequest = underTestCredentialsProvider.sign(new Request.Builder()
+                .url("http://api.amazon.com")
+                .build());
+
+        verify(mockAWS4Signer)
+                .sign(signableRequestArgumentCaptor.capture(), any(AWSCredentials.class));
+
+        SignableRequest actualSignableRequest = signableRequestArgumentCaptor.getValue();
+
+        assertEquals(((Request)actualSignableRequest.getOriginalRequestObject()).url(), actualSignedRequest.url());
+    }
+
+    @Test
+    public void returnSignedRequestWithCustomCredentialsProvider() {
+        ArgumentCaptor<SignableRequest> signableRequestArgumentCaptor = ArgumentCaptor.forClass(SignableRequest.class);
+
+        Mockito.when(mockAWSCredentialsProvider.getCredentials()).thenReturn(mockAWSCredentials);
+
+        underTestCredentialsProvider = new AWSSigV4Signer(AWSAuthenticationCustomCredentialsProvider.builder()
+                .awsCredentialsProvider(mockAWSCredentialsProvider)
+                .region(TEST_REGION)
+                .build());
+        underTestCredentialsProvider.setAws4Signer(mockAWS4Signer);
+
         Request actualSignedRequest = underTestCredentialsProvider.sign(new Request.Builder()
                 .url("http://api.amazon.com")
                 .build());

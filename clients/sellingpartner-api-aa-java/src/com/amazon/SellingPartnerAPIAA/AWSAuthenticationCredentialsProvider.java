@@ -19,5 +19,5 @@ public class AWSAuthenticationCredentialsProvider {
      */
     private String roleSessionName;
 
-
+    private String region;
 }
