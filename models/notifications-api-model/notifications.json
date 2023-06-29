@@ -1646,10 +1646,17 @@
           "$ref": "#/definitions/MarketplaceFilter"
         },
         {
+          "$ref": "#/definitions/OrderChangeTypeFilter"
+        },
+        {
           "type": "object",
           "properties": {
             "eventFilterType": {
               "type": "string",
+              "enum": [
+                "ANY_OFFER_CHANGED",
+                "ORDER_CHANGE"
+              ],
               "description": "An eventFilterType value that is supported by the specific notificationType. This is used by the subscription service to determine the type of event filter. Refer to the section of the [Notifications Use Case Guide](doc:notifications-api-v1-use-case-guide) that describes the specific notificationType to determine if an eventFilterType is supported."
             }
           },
@@ -1719,6 +1726,33 @@
         }
       ]
     },
+
+    "OrderChangeTypeFilter": {
+      "description": "Use this event filter to customize your subscription to send notifications for only the specified orderChangeType.",
+      "type": "object",
+      "properties": {
+        "orderChangeTypes": {
+          "$ref": "#/definitions/OrderChangeTypes"
+        }
+      }
+    },
+    "OrderChangeTypes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OrderChangeTypeEnum"
+      },
+      "description": "A list of order change types to subscribe to (e.g. BuyerRequestedChange). To receive notifications of all change types, do not provide this list."
+    },
+
+    "OrderChangeTypeEnum": {
+      "type": "string",
+      "enum": [
+        "OrderStatusChange",
+        "BuyerRequestedChange"
+      ],
+      "description": "The supported order change type of ORDER_CHANGE notification."
+    },
+
     "Subscription": {
       "type": "object",
       "required": [
