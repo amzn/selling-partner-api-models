@@ -98,7 +98,7 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Schemas.Feeds
         public string Sku { get; set; }
 
         /// <summary>
-        /// Type of operation to perform for the listings data submission in this message. "UPDATE" indicates the full set of item attributes are provided and any existing attributes data will be replaced with the provided attributes. "PARTIAL_UPDATE" indicates only the provided item attributes will be updated with the provided attribute data. "PATCH" indicates the provided JSON Patch operations will be used to update the applicable attributes. "DELETE" indicates the listings item will be deleted.
+        /// Type of operation to perform for the listings data submission in this message. "UPDATE" indicates the full set of item attributes are provided and any existing attributes data will be replaced with the provided attributes. "PARTIAL_UPDATE" indicates only the provided item attributes will be updated with the provided attribute data. "PATCH" indicates the provided JSON Patch operations will be used to update the applicable attributes. "DELETE" indicates the listings item will be deleted. "PARTIAL_UPDATE" is equivalent to using "PATCH" with the "replace" op.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("operationType", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]

@@ -38,7 +38,8 @@ namespace Amazon.SellingPartnerAPIAA.Clients.Client
         
         private JsonSerializerSettings serializerSettings = new JsonSerializerSettings
         {
-            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
+            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+            DateParseHandling = DateParseHandling.DateTimeOffset
         };
 
         /// <summary>
