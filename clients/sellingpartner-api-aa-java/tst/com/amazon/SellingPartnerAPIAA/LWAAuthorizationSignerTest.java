@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -108,19 +109,19 @@ public class LWAAuthorizationSignerTest {
         testAuthSigner.sign(request);
 
         LWAAccessTokenRequestMeta actualLWAAccessTokenRequestMeta = lwaAccessTokenRequestMetaArgumentCaptor.getValue();
-        assertEquals(TEST_REFRESH_TOKEN, actualLWAAccessTokenRequestMeta.getRefreshToken());
         assertEquals(TEST_CLIENT_SECRET, actualLWAAccessTokenRequestMeta.getClientSecret());
         assertEquals(TEST_CLIENT_ID, actualLWAAccessTokenRequestMeta.getClientId());
 
         if(sellerType.equals(SELLER_TYPE_SELLER)){
+            assertEquals(TEST_REFRESH_TOKEN, actualLWAAccessTokenRequestMeta.getRefreshToken());
             Assert.assertTrue(actualLWAAccessTokenRequestMeta.getScopes().getScopes().isEmpty());
             assertEquals("refresh_token", actualLWAAccessTokenRequestMeta.getGrantType());
         }
         else if (sellerType.equals(SELLER_TYPE_SELLERLESS)){
+            assertNull(actualLWAAccessTokenRequestMeta.getRefreshToken());
             assertEquals(new HashSet<String>(Arrays.asList(TEST_SCOPE_1, TEST_SCOPE_2)), actualLWAAccessTokenRequestMeta.getScopes().getScopes());
             assertEquals("client_credentials", actualLWAAccessTokenRequestMeta.getGrantType());
         }
-
     }
 
     @ParameterizedTest

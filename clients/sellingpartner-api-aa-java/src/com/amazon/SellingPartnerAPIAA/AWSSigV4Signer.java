@@ -41,7 +41,7 @@ public class AWSSigV4Signer {
                 awsAuthenticationCredentials.getSecretKey());
     }
 
-    /**
+   /**
     *
     * @param awsAuthenticationCredentials and awsAuthenticationCredentialsProvider AWS Developer Account Credentials
     */
@@ -49,16 +49,46 @@ public class AWSSigV4Signer {
             AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider) {
        aws4Signer = new AWS4Signer();
        aws4Signer.setServiceName(SERVICE_NAME);
-       aws4Signer.setRegionName(awsAuthenticationCredentials.getRegion());
-       BasicAWSCredentials awsBasicCredentials = new BasicAWSCredentials(awsAuthenticationCredentials.getAccessKeyId(),
-               awsAuthenticationCredentials.getSecretKey());
+
+       final String region;
+       AWSSecurityTokenServiceClientBuilder stsClientBuilder = AWSSecurityTokenServiceClientBuilder.standard();
+
+       if (awsAuthenticationCredentials != null) {
+           region = awsAuthenticationCredentials.getRegion();
+           BasicAWSCredentials awsBasicCredentials = new BasicAWSCredentials(
+                   awsAuthenticationCredentials.getAccessKeyId(),
+                   awsAuthenticationCredentials.getSecretKey()
+           );
+           stsClientBuilder.withCredentials(new AWSStaticCredentialsProvider(awsBasicCredentials));
+       } else {
+           region = awsAuthenticationCredentialsProvider.getRegion();
+       }
+
+       aws4Signer.setRegionName(region);
        awsCredentialsProvider = new STSAssumeRoleSessionCredentialsProvider.Builder(
                awsAuthenticationCredentialsProvider.getRoleArn(),
                awsAuthenticationCredentialsProvider.getRoleSessionName())
-                       .withStsClient(AWSSecurityTokenServiceClientBuilder.standard()
-                       .withRegion(awsAuthenticationCredentials.getRegion())
-                       .withCredentials(new AWSStaticCredentialsProvider(awsBasicCredentials)).build())
+                       .withStsClient(stsClientBuilder.withRegion(region).build())
                        .build();
+   }
+
+    /**
+     *
+     * @param awsAuthenticationCustomCredentialsProvider AWS Credentials Provider
+     */
+   public AWSSigV4Signer(AWSAuthenticationCustomCredentialsProvider awsAuthenticationCustomCredentialsProvider) {
+       aws4Signer = new AWS4Signer();
+       aws4Signer.setServiceName(SERVICE_NAME);
+       aws4Signer.setRegionName(awsAuthenticationCustomCredentialsProvider.getRegion());
+       this.awsCredentialsProvider = awsAuthenticationCustomCredentialsProvider.getAwsCredentialsProvider();
+   }
+
+   /**
+    *
+    * @param awsAuthenticationCredentialsProvider AWS Credentials Provider containing the role name to be assumed
+    */
+   public AWSSigV4Signer(AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider) {
+       this(null, awsAuthenticationCredentialsProvider);
    }
 
     /**
@@ -76,4 +106,4 @@ public class AWSSigV4Signer {
         }
         return (Request) signableRequest.getOriginalRequestObject();
     }
-    }
+}
