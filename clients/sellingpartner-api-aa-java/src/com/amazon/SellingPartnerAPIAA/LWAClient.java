@@ -60,6 +60,7 @@ class LWAClient {
         try {
             Response response = okHttpClient.newCall(accessTokenRequest).execute();
             if (!response.isSuccessful()) {
+                response.body().close();
                 throw new IOException("Unsuccessful LWA token exchange");
             }
 
