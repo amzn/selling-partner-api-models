@@ -178,8 +178,8 @@ namespace Amazon.SellingPartnerAPIAATests
         {
             string expectedCanonicalHash = "foo";
             StringBuilder expectedStringBuilder = new StringBuilder();
-            expectedStringBuilder.AppendLine("AWS4-HMAC-SHA256");
-            expectedStringBuilder.AppendLine(ISOSigningDateTime);
+            expectedStringBuilder.Append("AWS4-HMAC-SHA256\n");
+            expectedStringBuilder.Append(ISOSigningDateTime + "\n");
             expectedStringBuilder.AppendFormat("{0}/{1}/execute-api/aws4_request\n", ISOSigningDate, TestRegion);
             expectedStringBuilder.Append(expectedCanonicalHash);
 
