@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "The Selling Partner API for Orders helps you programmatically retrieve order information. These APIs let you develop fast, flexible, custom applications in areas like order synchronization, order research, and demand-based decision support tools.",
+    "description": "The Selling Partner API for Orders helps you programmatically retrieve order information. These APIs let you develop fast, flexible, custom applications in areas like order synchronization, order research, and demand-based decision support tools. The Orders API supports orders that are two years old or less. Orders more than two years old will not show in the API response.\n\n_Note:_ The Orders API supports orders from 2016 and after for the JP, AU, and SG marketplaces.",
     "version": "v0",
     "title": "Selling Partner API for Orders",
     "contact": {
@@ -178,6 +178,34 @@
             "name": "StoreChainStoreId",
             "in": "query",
             "description": "The store chain store identifier. Linked to a specific store in a store chain.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EarliestDeliveryDateBefore",
+            "in": "query",
+            "description": "A date used for selecting orders with a earliest delivery date before (or at) a specified time. The date must be in ISO 8601 format.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "EarliestDeliveryDateAfter",
+            "in": "query",
+            "description": "A date used for selecting orders with a earliest delivery date after (or at) a specified time. The date must be in ISO 8601 format.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LatestDeliveryDateBefore",
+            "in": "query",
+            "description": "A date used for selecting orders with a latest delivery date before (or at) a specified time. The date must be in ISO 8601 format.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LatestDeliveryDateAfter",
+            "in": "query",
+            "description": "A date used for selecting orders with a latest delivery date after (or at) a specified time. The date must be in ISO 8601 format.",
             "required": false,
             "type": "string"
           }
@@ -4065,9 +4093,225 @@
           "items": {
             "type": "string"
           }
+        },
+        "SubstitutionPreferences": {
+          "description": "Substitution preferences for the order item. This is an optional field and will only be present if seller supports substitutions like in case of some grocery sellers.",
+          "$ref": "#/definitions/SubstitutionPreferences"
+        },
+        "Measurement": {
+          "description": "Measurement information for the order item.",
+          "$ref": "#/definitions/Measurement"
         }
       },
       "description": "A single order item."
+    },
+    "SubstitutionPreferences": {
+      "type": "object",
+      "required": [
+        "SubstitutionType"
+      ],
+      "properties": {
+        "SubstitutionType": {
+          "type": "string",
+          "description": "The type of substitution that these preferences represent.",
+          "enum": [
+            "CUSTOMER_PREFERENCE",
+            "AMAZON_RECOMMENDED",
+            "DO_NOT_SUBSTITUTE"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "CUSTOMER_PREFERENCE",
+              "description": "Customer has provided the substitution preferences."
+            },
+            {
+              "value": "AMAZON_RECOMMENDED",
+              "description": "Amazon has provided the substitution preferences."
+            },
+            {
+              "value": "DO_NOT_SUBSTITUTE",
+              "description": "Do not provide substitute if item is not found."
+            }
+          ]
+        },
+        "SubstitutionOptions": {
+          "description": "Substitution options for the order item.",
+          "$ref": "#/definitions/SubstitutionOptionList"
+        }
+      }
+    },
+    "SubstitutionOptionList": {
+      "type": "array",
+      "description": "A collection of substitution options.",
+      "items": {
+        "$ref": "#/definitions/SubstitutionOption"
+      }
+    },
+    "SubstitutionOption": {
+      "type": "object",
+      "properties": {
+        "ASIN": {
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
+        },
+        "QuantityOrdered": {
+          "type": "integer",
+          "description": "The number of items to be picked for this substitution option. "
+        },
+        "SellerSKU": {
+          "type": "string",
+          "description": "The seller stock keeping unit (SKU) of the item."
+        },
+        "Title": {
+          "type": "string",
+          "description": "The title of the item."
+        },
+        "Measurement": {
+          "description": "Measurement information for the substitution option.",
+          "$ref": "#/definitions/Measurement"
+        }
+      }
+    },
+    "Measurement": {
+      "type": "object",
+      "required": [
+        "Unit",
+        "Value"
+      ],
+      "properties": {
+        "Unit": {
+          "type": "string",
+          "description": "The unit of measure for this measurement.",
+          "enum": [
+            "OUNCES",
+            "POUNDS",
+            "KILOGRAMS",
+            "GRAMS",
+            "MILLIGRAMS",
+            "INCHES",
+            "FEET",
+            "METERS",
+            "CENTIMETERS",
+            "MILLIMETERS",
+            "SQUARE_METERS",
+            "SQUARE_CENTIMETERS",
+            "SQUARE_FEET",
+            "SQUARE_INCHES",
+            "GALLONS",
+            "PINTS",
+            "QUARTS",
+            "FLUID_OUNCES",
+            "LITERS",
+            "CUBIC_METERS",
+            "CUBIC_FEET",
+            "CUBIC_INCHES",
+            "CUBIC_CENTIMETERS",
+            "COUNT"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "OUNCES",
+              "description": "Indicates the item's measurement is measured in ounces."
+            },
+            {
+              "value": "POUNDS",
+              "description": "Indicates the item's measurement is measured in pounds."
+            },
+            {
+              "value": "KILOGRAMS",
+              "description": "Indicates the item's measurement is measured in kilograms."
+            },
+            {
+              "value": "GRAMS",
+              "description": "Indicates the item's measurement is measured in grams."
+            },
+            {
+              "value": "MILLIGRAMS",
+              "description": "Indicates the item's measurement is measured in milligrams."
+            },
+            {
+              "value": "INCHES",
+              "description": "Indicates the item's measurement is measured in inches."
+            },
+            {
+              "value": "FEET",
+              "description": "Indicates the item's measurement is measured in feet."
+            },
+            {
+              "value": "METERS",
+              "description": "Indicates the item's measurement is measured in meters."
+            },
+            {
+              "value": "CENTIMETERS",
+              "description": "Indicates the item's measurement is measured in centimeters."
+            },
+            {
+              "value": "MILLIMETERS",
+              "description": "Indicates the item's measurement is measured in millimeters."
+            },
+            {
+              "value": "SQUARE_METERS",
+              "description": "Indicates the item's measurement is measured in square meters."
+            },
+            {
+              "value": "SQUARE_CENTIMETERS",
+              "description": "Indicates the item's measurement is measured in square centimeters."
+            },
+            {
+              "value": "SQUARE_FEET",
+              "description": "Indicates the item's measurement is measured in square feet."
+            },
+            {
+              "value": "SQUARE_INCHES",
+              "description": "Indicates the item's measurement is measured in square inches."
+            },
+            {
+              "value": "GALLONS",
+              "description": "Indicates the item's measurement is measured in gallons."
+            },
+            {
+              "value": "PINTS",
+              "description": "Indicates the item's measurement is measured in pints."
+            },
+            {
+              "value": "QUARTS",
+              "description": "Indicates the item's measurement is measured in quarts."
+            },
+            {
+              "value": "FLUID_OUNCES",
+              "description": "Indicates the item's measurement is measured in fluid ounces."
+            },
+            {
+              "value": "LITERS",
+              "description": "Indicates the item's measurement is measured in liters."
+            },
+            {
+              "value": "CUBIC_METERS",
+              "description": "Indicates the item's measurement is measured in cubic meters."
+            },
+            {
+              "value": "CUBIC_FEET",
+              "description": "Indicates the item's measurement is measured in cubic feet."
+            },
+            {
+              "value": "CUBIC_INCHES",
+              "description": "Indicates the item's measurement is measured in cubic inches."
+            },
+            {
+              "value": "CUBIC_CENTIMETERS",
+              "description": "Indicates the item's measurement is measured in cubic centimeters."
+            },
+            {
+              "value": "COUNT",
+              "description": "Indicates the item's measurement is measured by count."
+            }
+          ]
+        },
+        "Value": {
+          "type": "number",
+          "description": "The value of the measurement."
+        }
+      }
     },
     "OrderItemsBuyerInfoList": {
       "type": "object",
