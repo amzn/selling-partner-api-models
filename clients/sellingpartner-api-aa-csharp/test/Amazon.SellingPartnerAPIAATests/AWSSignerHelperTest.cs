@@ -49,6 +49,16 @@ namespace Amazon.SellingPartnerAPIAATests
         }
 
         [Fact]
+        public void TestExtractCanonicalURIParameters_UrlSegmentsWithSlash()
+        {
+            IRestRequest request = new RestRequest("products/pricing/v0/items/{Asin}/offers/{SellerSKU}", Method.GET);
+            request.AddUrlSegment("Asin", "AB/12/CD/3/E/4/Z");
+            request.AddUrlSegment("SellerSKU", "1234567890");
+            string result = awsSignerHelperUnderTest.ExtractCanonicalURIParameters(request);
+            Assert.Equal("/products/pricing/v0/items/AB%252F12%252FCD%252F3%252FE%252F4%252FZ/offers/1234567890", result);
+        }
+
+        [Fact]
         public void TestExtractCanonicalURIParameters_IncorrectUrlSegment()
         {
             IRestRequest request = new RestRequest("products/pricing/v0/items/{Asin}/offers", Method.GET);
@@ -178,8 +188,8 @@ namespace Amazon.SellingPartnerAPIAATests
         {
             string expectedCanonicalHash = "foo";
             StringBuilder expectedStringBuilder = new StringBuilder();
-            expectedStringBuilder.AppendLine("AWS4-HMAC-SHA256");
-            expectedStringBuilder.AppendLine(ISOSigningDateTime);
+            expectedStringBuilder.Append("AWS4-HMAC-SHA256").Append("\n");
+            expectedStringBuilder.Append(ISOSigningDateTime).Append("\n");
             expectedStringBuilder.AppendFormat("{0}/{1}/execute-api/aws4_request\n", ISOSigningDate, TestRegion);
             expectedStringBuilder.Append(expectedCanonicalHash);
 
