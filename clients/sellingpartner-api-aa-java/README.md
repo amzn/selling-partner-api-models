@@ -38,39 +38,6 @@ com.squareup.okhttp.Request signedRequest = new LWAAuthorizationSigner(lwaAuthor
     .sign(request);
 ```
 
-## AWSSigV4Signer
-Signs a request with [AWS Signature Version 4](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html)
-using the provided AWS developer account credentials. 
-
-*Example*
-```
-com.squareup.okhttp.Request request = new Request.Builder()
-    .url(...)
-    ...
-    .build();
-
-AWSAuthenticationCredentials awsAuthenticationCredentials = AWSAuthenticationCredentials.builder()
-                .accessKeyId("...")
-                .secretKey("...")
-                .region("...")
-                .build();
-
-com.squareup.okhttp.Request signedRequest = new AWSSigV4Signer(awsAuthenticationCredentials)
-    .sign(request);
-
-/*Signs request using IAM role credentials.
-
-AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider = AWSAuthenticationCredentialsProvider.builder()
-               .roleArn("...")
-               .roleSessionName("...")
-               .build();
-               
-com.squareup.okhttp.Request signedRequest = new 
-     AWSSigV4Signer(awsAuthenticationCredentialsProvider.getCredentials())
-    .sign(request);
-
-```
-
 ## LWAAccessTokenCache
 Interface to implement cache for access token that is returned in LWAClient and reuse the access token until time to live.
 
@@ -79,7 +46,6 @@ Interface to set and get rateLimit configurations that are used with RateLimiter
 
 *Example*
 ```
-
 com.squareup.okhttp.Request request = new Request.Builder()
     .url(...)
     ...
@@ -89,8 +55,22 @@ com.squareup.okhttp.Request request = new Request.Builder()
                 .rateLimitPermit(...)
                 .waitTimeOutInMilliSeconds(...)
                 .build();
-
 ```
+## Exception 
+This package returns a custom LWAException when there is an error returned during LWA authorization. LWAException provides additional details like errorCode and errorDescription to help fix the issue.
+ 
+*Example*
+```
+ catch (LWAException e) {
+            System.err.println("LWA Exception when calling Selling partner API");
+            System.err.println(e.getErrorCode());
+            System.err.println(e.getErrorMessage());
+            e.printStackTrace();
+        }
+```
+
+## Version
+Selling Partner API Authentication/Authorization Library version 2.0.
 
 ## Resources
 This package features Mustache templates designed for use with [swagger codegen](https://swagger.io/tools/swagger-codegen/). 
