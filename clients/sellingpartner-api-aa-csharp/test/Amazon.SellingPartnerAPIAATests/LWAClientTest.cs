@@ -15,6 +15,9 @@ namespace Amazon.SellingPartnerAPIAATests
         private const string TestClientSecret = "cSecret";
         private const string TestClientId = "cId";
         private const string TestRefreshGrantType = "rToken";
+        private const string LWAExceptionMessage = "Error getting LWA Access Token";
+        private const string LWAClientAuthMessage = "Client authentication failed";
+        private const string LWAAccessDeniedMessage = "The customer or authorization server denied the request";
         private Mock<RestClient> mockRestClient;
         private Mock<LWAAccessTokenRequestMetaBuilder> mockLWAAccessTokenRequestMetaBuilder;
 
@@ -101,7 +104,7 @@ namespace Amazon.SellingPartnerAPIAATests
         }
 
         [Fact]
-        public void UnsuccessfulPostThrowsException()
+        public void UnsuccessfulPostMissingContentThrowsOtherException()
         {
             IRestResponse response = new RestResponse
             {
@@ -119,8 +122,81 @@ namespace Amazon.SellingPartnerAPIAATests
             LWAClient lwaClientUnderTest = new LWAClient(LWAAuthorizationCredentials);
             lwaClientUnderTest.RestClient = mockRestClient.Object;
 
-            SystemException systemException = Assert.Throws<SystemException>(() => lwaClientUnderTest.GetAccessToken());
-            Assert.IsType<IOException>(systemException.GetBaseException());
+            LWAException lwaException = Assert.Throws<LWAException>(() => lwaClientUnderTest.GetAccessToken());
+            Assert.Equal(LWAExceptionErrorCode.other.ToString(), lwaException.getErrorCode());
+            Assert.Equal(LWAExceptionMessage, lwaException.Message);
+        }
+
+        [Fact]
+        public void UnsuccessfulPostThrowsInvalidClientException()
+        {
+            IRestResponse response = new RestResponse
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                ResponseStatus = ResponseStatus.Completed,
+                Content = @"{error:'invalid_client', error_description:'Client authentication failed'}"
+            };
+
+            IRestRequest request = new RestRequest();
+
+            mockRestClient.Setup(client => client.Execute(It.IsAny<IRestRequest>()))
+               .Callback((IRestRequest req) => { request = req; })
+               .Returns(response);
+
+            LWAClient lwaClientUnderTest = new LWAClient(LWAAuthorizationCredentials);
+            lwaClientUnderTest.RestClient = mockRestClient.Object;
+
+            LWAException lwaException = Assert.Throws<LWAException>(() => lwaClientUnderTest.GetAccessToken());
+            Assert.Equal(LWAExceptionErrorCode.invalid_client.ToString(), lwaException.getErrorCode());
+            Assert.Equal(LWAClientAuthMessage, lwaException.getErrorMessage());
+        }
+
+        [Fact]
+        public void UnsuccessfulPostThrowsAccessDeniedException()
+        {
+            IRestResponse response = new RestResponse
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                ResponseStatus = ResponseStatus.Completed,
+                Content = @"{error:'access_denied', error_description:'The customer or authorization server denied the request'}"
+            };
+
+            IRestRequest request = new RestRequest();
+
+            mockRestClient.Setup(client => client.Execute(It.IsAny<IRestRequest>()))
+               .Callback((IRestRequest req) => { request = req; })
+               .Returns(response);
+
+            LWAClient lwaClientUnderTest = new LWAClient(LWAAuthorizationCredentials);
+            lwaClientUnderTest.RestClient = mockRestClient.Object;
+
+            LWAException lwaException = Assert.Throws<LWAException>(() => lwaClientUnderTest.GetAccessToken());
+            Assert.Equal(LWAExceptionErrorCode.access_denied.ToString(), lwaException.getErrorCode());
+            Assert.Equal(LWAAccessDeniedMessage, lwaException.getErrorMessage());
+        }
+
+        [Fact]
+        public void UnsuccessfulPostThrowsOtherException()
+        {
+            IRestResponse response = new RestResponse
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                ResponseStatus = ResponseStatus.Completed,
+                Content = @"{error:'invalid_token'}"
+            };
+
+            IRestRequest request = new RestRequest();
+
+            mockRestClient.Setup(client => client.Execute(It.IsAny<IRestRequest>()))
+               .Callback((IRestRequest req) => { request = req; })
+               .Returns(response);
+
+            LWAClient lwaClientUnderTest = new LWAClient(LWAAuthorizationCredentials);
+            lwaClientUnderTest.RestClient = mockRestClient.Object;
+
+            LWAException lwaException = Assert.Throws<LWAException>(() => lwaClientUnderTest.GetAccessToken());
+            Assert.Equal(LWAExceptionErrorCode.other.ToString(), lwaException.getErrorCode());
+            Assert.Equal(LWAExceptionMessage, lwaException.Message);
         }
 
         [Fact]

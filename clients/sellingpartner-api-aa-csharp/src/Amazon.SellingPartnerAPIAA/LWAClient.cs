@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,6 +10,8 @@ namespace Amazon.SellingPartnerAPIAA
     public class LWAClient
     {
         public const string AccessTokenKey = "access_token";
+        public const string ErrorCodeKey = "error";
+        public const string ErrorDescKey = "error_description";
         public const string JsonMediaType = "application/json; charset=utf-8";
 
         public IRestClient RestClient { get; set; }
@@ -38,18 +41,33 @@ namespace Amazon.SellingPartnerAPIAA
             accessTokenRequest.AddParameter(JsonMediaType, jsonRequestBody, ParameterType.RequestBody);
 
             string accessToken;
+
+            LWAExceptionErrorCode errorCode;
+
             try
             {
                 var response = RestClient.Execute(accessTokenRequest);
+                JObject responseJson = !String.IsNullOrEmpty(response.Content) ? JObject.Parse(response.Content) : null;
 
                 if (!IsSuccessful(response))
                 {
-                    throw new IOException("Unsuccessful LWA token exchange", response.ErrorException);
+                    if (responseJson != null)
+                    {
+                        // If error code is present check error code if its one of the defined LWAExceptionErrorCode values
+                        var parsedErrorCode = responseJson.ContainsKey(ErrorCodeKey) ? Enum.TryParse(responseJson.GetValue(ErrorCodeKey).ToString(), out errorCode) : false;
+
+                        if (parsedErrorCode) // throw error code and description if matches defined values
+                        {
+                            throw new LWAException(responseJson.GetValue(ErrorCodeKey).ToString(), responseJson.GetValue(ErrorDescKey).ToString(), "Error getting LWA Access Token");
+                        }
+                    } //else throw general LWA exception
+                    throw new LWAException(LWAExceptionErrorCode.other.ToString(), "Other LWA Exception", "Error getting LWA Access Token");
                 }
-
-                JObject responseJson = JObject.Parse(response.Content);
-
                 accessToken = responseJson.GetValue(AccessTokenKey).ToString();
+            }
+            catch (LWAException e)
+            {
+                throw new LWAException(e.getErrorCode(), e.getErrorMessage(), e.Message);
             }
             catch (Exception e)
             {
