@@ -33,7 +33,6 @@ namespace {{packageName}}.Client
     {{>visibility}} partial class ApiClient
     {
         private LWAAuthorizationSigner lwaAuthorizationSigner;
-        private AWSSigV4Signer awsSigV4Signer;
         private RateLimitConfiguration rateLimitConfig;
         private TimeLimiter rateLimiter;
         
@@ -46,10 +45,10 @@ namespace {{packageName}}.Client
         /// Allows for extending request processing for <see cref="ApiClient"/> generated code.
         /// </summary>
         /// <param name="request">The RestSharp request object</param>
+        /// <exception cref="Amazon.SellingPartnerAPIAA.LWAException">Thrown when there is an error during LWA Authorization</exception>
         private void InterceptRequest(IRestRequest request)
         {
             lwaAuthorizationSigner.Sign(request);
-            awsSigV4Signer.Sign(request, RestClient.BaseUrl.Host);
         }
 
         /// <summary>
@@ -74,7 +73,6 @@ namespace {{packageName}}.Client
             {{/netStandard}}
 
             lwaAuthorizationSigner = new LWAAuthorizationSigner(Configuration.AuthorizationCredentials);
-            awsSigV4Signer = new AWSSigV4Signer(Configuration.AuthenticationCredentials);
             rateLimitConfig = Configuration.RateLimitConfig;
             if(rateLimitConfig != null)
             { 
