@@ -66,10 +66,10 @@ AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider = AWSA
                .build();
                
 com.squareup.okhttp.Request signedRequest = new 
-     AWSSigV4Signer(awsAuthenticationCredentialsProvider.getCredentials())
+     AWSSigV4Signer(awsAuthenticationCredentialsProvider)
     .sign(request);
-
 ```
+Note **AWSSigV4 Authentication is now optional**
 
 ## LWAAccessTokenCache
 Interface to implement cache for access token that is returned in LWAClient and reuse the access token until time to live.
@@ -79,7 +79,6 @@ Interface to set and get rateLimit configurations that are used with RateLimiter
 
 *Example*
 ```
-
 com.squareup.okhttp.Request request = new Request.Builder()
     .url(...)
     ...
@@ -89,8 +88,9 @@ com.squareup.okhttp.Request request = new Request.Builder()
                 .rateLimitPermit(...)
                 .waitTimeOutInMilliSeconds(...)
                 .build();
-
 ```
+## Version
+Selling Partner API Authentication/Authorization Library version 1.0
 
 ## Resources
 This package features Mustache templates designed for use with [swagger codegen](https://swagger.io/tools/swagger-codegen/). 

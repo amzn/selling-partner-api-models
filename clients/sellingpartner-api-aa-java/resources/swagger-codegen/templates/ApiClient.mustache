@@ -1049,9 +1049,20 @@ public class ApiClient {
         }
 
         request = lwaAuthorizationSigner.sign(request);
-        request = awsSigV4Signer.sign(request);
-
+        // Only sign the request using awsSigV4Signer if its setup and request is to an AmazonBusiness endpoint
+        if(awsSigV4Signer != null && isABEndpoint()) {
+            request = awsSigV4Signer.sign(request);
+        }
         return request;
+    }
+
+    /**
+    * Find if the endpoint is for AmazonBusiness
+    *
+    * @return True, if client is setup with an AmazonBusiness endpoint else return false
+    */
+    public boolean isABEndpoint() {
+        return basePath.contains("business-api.amazon.com");
     }
 
     /**
