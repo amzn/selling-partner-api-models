@@ -464,17 +464,18 @@ namespace {{packageName}}.{{apiPackage}}
                     throw new NullReferenceException("LWAAuthoriztionCredentials not set");
                 }
 
-                if (awsAuthenticationCredentials == null)
-                {
-                    throw new NullReferenceException("AWSAuthenticationCredentials not set");
-                }
                 
                 {{packageName}}.Client.Configuration configuration = new {{packageName}}.Client.Configuration()
                 {
                     AuthorizationCredentials = lwaAuthorizationCredentials,
-                    AuthenticationCredentials = awsAuthenticationCredentials,
                     RateLimitConfig = rateLimitConfiguration
                 };
+
+    
+                if(awsAuthenticationCredentials != null)
+                {
+                    configuration.AuthenticationCredentials = awsAuthenticationCredentials;
+                }
 
                 // default HTTP connection timeout (in milliseconds)
                 configuration.Timeout = 100000;

@@ -61,7 +61,7 @@ AWSAuthenticationCredentials awsAuthenticationCredentials = new AWSAuthenticatio
 restRequest = new AWSSigV4Signer(awsAuthenticationCredentials)
     .Sign(restRequest, restClient.BaseUrl.Host);
 ```
-Note the IRestRequest reference is treated as **mutable** when signed.
+Note the IRestRequest reference is treated as **mutable** when signed. **AWSSigV4 Authentication is now optional**
 
 ## RateLimitConfiguration
 
@@ -77,6 +77,8 @@ RateLimitConfiguration rateLimitConfig = new RateLimitConfigurationOnRequests
             }; 
 
 ```
+## Version
+Selling Partner API Authentication/Authorization Library version 1.0
 
 ## Resources
 This package features Mustache templates designed for use with [swagger codegen](https://swagger.io/tools/swagger-codegen/). 
