@@ -1033,7 +1033,7 @@
     },
     "/finances/v0/financialEvents": {
       "get": {
-        "description": "Returns financial events for the specified data range. It may take up to 48 hours for orders to appear in your financial events.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns financial events for the specified data range. It may take up to 48 hours for orders to appear in your financial events. *note in ListFinancialEvents that deferred events don’t show up in responses until in they are released. \n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "listFinancialEvents",
         "parameters": [
           {
@@ -1319,6 +1319,184 @@
           }
         }
       }
+    },
+    "/finances/v0/transactions": {
+      "get": {
+        "description": "Returns transactions for the given parameters. It may take up to 48 hours for transactions to appear in your transaction events.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "listTransactions",
+        "parameters": [
+          {
+            "name": "PostedAfter",
+            "in": "query",
+            "description": "A date used for selecting transactions posted after (or at) a specified time. The date-time must be no later than two minutes before the request was submitted, in ISO 8601 date time format.",
+            "required": true,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "PostedBefore",
+            "in": "query",
+            "description": "A date used for selecting transactions posted before (but not at) a specified time. The date-time must be later than PostedAfter and no later than two minutes before the request was submitted, in ISO 8601 date time format. If PostedAfter and PostedBefore are more than 180 days apart, no transactions are returned. You must specify the PostedAfter parameter if you specify the PostedBefore parameter. Default: Now minus two minutes.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "MarketplaceId",
+            "in": "query",
+            "description": "A string token used to select Marketplace ID.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "NextToken",
+            "in": "query",
+            "description": "A string token returned in the response of your previous request.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListTransactionsResponse"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [{
+                "request": {
+                  "parameters": {
+                    "PostedAfter": {
+                      "value": "2023-03-07"
+                    },
+                    "NextToken": {
+                      "value": "jehgri34yo7jr9e8f984tr9i4o"
+                    }
+                  }
+                },
+                "response": {
+                  "payload": {
+                    "NextToken": "Next token value",
+                    "Transactions": [{
+                      "SellingPartnerMetadata": {
+                        "SellingPartnerId": "A3TH9S8BH6GOGM",
+                        "AccountType": "PAYABLE",
+                        "MarketplaceId": "ATIV93840DER"
+                      },
+                      "RelatedIdentifiers": [{
+                        "RelatedIdentifierName": "ORDER_ID",
+                        "RelatedIdentifierValue": "8129762527551"
+                      }],
+                      "TransactionType": "Shipment",
+                      "PostedDate": "2020-07-14T03:35:13.214Z",
+                      "TotalAmount": {
+                        "CurrencyAmount": 10,
+                        "CurrencyCode": "USD"
+                      }
+                    }]
+                  }
+                }
+              }]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ListTransactionsResponse"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [{
+                "request": {
+                  "parameters": {
+                  }
+                },
+                "response": {
+                  "errors": [{
+                    "code": "InvalidInput",
+                    "message": "Input not valid."
+                  }]
+                }
+              }]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ListTransactionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ListTransactionsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ListTransactionsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ListTransactionsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ListTransactionsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1542,7 +1720,7 @@
         },
         "ChargeRefundTransactions": {
           "description": "The amount of the charge refund credit.",
-          "$ref": "#/definitions/ChargeRefundTransaction"
+          "$ref": "#/definitions/ChargeRefundTransactions"
         }
       },
       "description": "An event related to charge refund."
@@ -1567,6 +1745,13 @@
         }
       },
       "description": "The charge refund transaction."
+    },
+    "ChargeRefundTransactions": {
+      "type": "array",
+      "description": "A list of ChargeRefund Transactions",
+      "items": {
+        "$ref": "#/definitions/ChargeRefundTransaction"
+      }
     },
     "CouponPaymentEvent": {
       "type": "object",
@@ -1712,6 +1897,13 @@
       }
     },
     "FailedAdhocDisbursementEventList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FailedAdhocDisbursementEvent"
+      },
+      "description": "A list of FailedAdhocDisbursementEvents."
+    },
+    "FailedAdhocDisbursementEvent": {
       "type": "object",
       "properties": {
         "FundsTransfersType": {
@@ -1851,6 +2043,87 @@
       "items": {
         "$ref": "#/definitions/FinancialEventGroup"
       }
+    },
+    "Transactions": {
+      "type": "array",
+      "description": "Contains transactions within a given time period.",
+      "items": {
+        "$ref": "#/definitions/Transaction"
+      }
+    },
+    "Transaction": {
+      "type": "object",
+      "properties": {
+        "SellingPartnerMetadata": {
+          "description": "Metadata describing the seller.",
+          "$ref": "#/definitions/SellingPartnerMetadata"
+        },
+        "RelatedIdentifiers": {
+          "description": "Related business identifiers of the transaction.",
+          "$ref": "#/definitions/RelatedIdentifiers"
+        },
+        "TransactionType": {
+          "type": "string",
+          "description": "The type of transaction.\n\nPossible values:\n\n* Shipment"
+        },
+        "PostedDate": {
+          "description": "The date and time when the transaction was posted.",
+          "$ref": "#/definitions/Date"
+        },
+        "TotalAmount": {
+          "description": "Total amount of transaction.",
+          "$ref": "#/definitions/Currency"
+        }
+      },
+      "description": "Contains all information related to the transaction."
+    },
+    "RelatedIdentifier": {
+      "type": "object",
+      "properties": {
+        "RelatedIdentifierName": {
+          "type": "string",
+          "description": "Enumerated set of related business identifier names.",
+          "enum": [
+            "ORDER_ID"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "ORDER_ID",
+              "description": "Associated OrderId of transaction"
+            }
+          ]
+        },
+        "RelatedIdentifierValue": {
+          "type": "string",
+          "description": "Corresponding value of RelatedIdentifierName"
+        }
+      },
+      "description": "Related business identifier of the transaction."
+    },
+    "RelatedIdentifiers" : {
+      "type": "array",
+      "description": "Related business identifiers of the transaction.",
+      "items": {
+        "$ref": "#/definitions/RelatedIdentifier"
+      }
+    },
+    "SellingPartnerMetadata":{
+      "type": "object",
+      "properties": {
+        "SellingPartnerId": {
+          "type": "string",
+          "description": "Unique seller identifier."
+        },
+        "AccountType": {
+          "type": "string",
+          "description": "Account type of transaction."
+        },
+        "MarketplaceId": {
+          "type": "string",
+          "description": "Marketplace identifier of transaction."
+        }
+      },
+      "description": "Metadata describing the seller."
     },
     "FinancialEvents": {
       "type": "object",
@@ -2017,6 +2290,33 @@
         }
       },
       "description": "The response schema for the listFinancialEventGroups operation."
+    },
+    "ListTransactionsPayload": {
+      "type": "object",
+      "properties": {
+        "NextToken": {
+          "type": "string",
+          "description": "When present and not empty, pass this string token in the next request to return the next response page."
+        },
+        "Transactions": {
+          "$ref": "#/definitions/Transactions"
+        }
+      },
+      "description": "The payload for the listTransactions operation."
+    },
+    "ListTransactionsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the listTransactions operation.",
+          "$ref": "#/definitions/ListTransactionsPayload"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the listTransactions operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the listTransactions operation."
     },
     "ListFinancialEventsPayload": {
       "type": "object",
@@ -2969,6 +3269,13 @@
       "description": "A list of information about trial shipment financial events."
     },
     "ValueAddedServiceChargeEventList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ValueAddedServiceChargeEvent"
+      },
+      "description": "A list of ValueAddedServiceCharge events."
+    },
+    "ValueAddedServiceChargeEvent": {
       "type": "object",
       "properties": {
         "TransactionType": {
