@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "The Selling Partner API for Pricing helps you programmatically retrieve product pricing and offer pricing information for Amazon Marketplace products.\n\nFor more information, see the [Product Pricing v2022-05-01 Use Case Guide](doc:product-pricing-api-v2022-05-01-use-case-guide).",
+    "description": "The Selling Partner API for Pricing helps you programmatically retrieve product pricing and offer pricing information for Amazon Marketplace products.\n\nFor more information, refer to the [Product Pricing v2022-05-01 Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/product-pricing-api-v2022-05-01-use-case-guide).",
     "version": "2022-05-01",
     "title": "Selling Partner API for Pricing",
     "contact": {
@@ -29,7 +29,7 @@
         "tags": [
           "productPricing"
         ],
-        "description": "Returns the set of responses that correspond to the batched list of up to 40 requests defined in the request body. The response for each successful (HTTP status code 200) request in the set includes the computed listing price at or below which a seller can expect to become the featured offer (before applicable promotions). This is called the featured offer expected price (FOEP). Featured offer is not guaranteed, because competing offers may change, and different offers may be featured based on other factors, including fulfillment capabilities to a specific customer. The response to an unsuccessful request includes the available error text.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.033 | 1 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns the set of responses that correspond to the batched list of up to 40 requests defined in the request body. The response for each successful (HTTP status code 200) request in the set includes the computed listing price at or below which a seller can expect to become the featured offer (before applicable promotions). This is called the featured offer expected price (FOEP). Featured offer is not guaranteed, because competing offers may change, and different offers may be featured based on other factors, including fulfillment capabilities to a specific customer. The response to an unsuccessful request includes the available error text.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.033 | 1 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getFeaturedOfferExpectedPriceBatch",
         "parameters": [
           {
@@ -516,11 +516,367 @@
           }
         }
       }
+    },
+    "/batches/products/pricing/2022-05-01/items/competitiveSummary": {
+      "post": {
+        "tags": [
+          "productPricing"
+        ],
+        "description": "Returns the competitive summary response including featured buying options for the ASIN and `marketplaceId` combination.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.033 | 1 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "getCompetitiveSummary",
+        "parameters": [
+          {
+            "name": "requests",
+            "in": "body",
+            "description": "The batch of `getCompetitiveSummary` requests.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CompetitiveSummaryBatchRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CompetitiveSummaryBatchResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {
+                "responses": [
+                  {
+                    "status": {
+                      "statusCode": 200,
+                      "reasonPhrase": "Success"
+                    },
+                    "body": {
+                      "asin":"B00ZIAODGE",
+                      "marketplaceId":"ATVPDKIKX0DER",
+                      "featuredBuyingOptions":[
+                        {
+                          "buyingOptionType":"New",
+                          "segmentedFeaturedOffers":[
+                            {
+                              "sellerId": "A3DJR8M9Y3OUPG",
+                              "condition": "New",
+                              "fulfillmentType": "MFN",
+                              "listingPrice": {
+                                "amount": 18.11,
+                                "currencyCode": "USD"
+                              },
+                              "shippingOptions": [
+                                {
+                                  "shippingOptionType": "DEFAULT",
+                                  "price": {
+                                    "amount": 2.50,
+                                    "currencyCode": "USD"
+                                  }
+                                }
+                              ],
+                              "points": {
+                                "pointsNumber": 3,
+                                "pointsMonetaryValue": {
+                                  "amount": 0.03,
+                                  "currencyCode": "USD"
+                                }
+                              },
+                              "featuredOfferSegments": [
+                                {
+                                  "customerMembership": "PRIME",
+                                  "segmentDetails": {
+                                    "glanceViewWeightPercentage": 72
+                                  }
+                                },
+                                {
+                                  "customerMembership": "NON_PRIME",
+                                  "segmentDetails": {
+                                    "glanceViewWeightPercentage": 18
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "sellerId":"A2ZWOLFOFDPJL1",
+                              "condition":"New",
+                              "fulfillmentType":"MFN",
+                              "listingPrice":{
+                                "amount":17.15,
+                                "currencyCode":"USD"
+                              },
+                              "shippingOptions":[
+                                {
+                                  "shippingOptionType": "DEFAULT",
+                                  "price":{
+                                    "amount":2.50,
+                                    "currencyCode":"USD"
+                                  }
+                                }
+                              ],
+                              "points":{
+                                "pointsNumber":3,
+                                "pointsMonetaryValue":{
+                                  "amount":0.03,
+                                  "currencyCode":"USD"
+                                }
+                              },
+                              "featuredOfferSegments":[
+                                {
+                                  "customerMembership": "NON_PRIME",
+                                  "segmentDetails": {
+                                    "glanceViewWeightPercentage":10
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "requests": [
+                            {
+                              "asin": "B00ZIAODGE",
+                              "marketplaceId": "ATVPDKIKX0DER",
+                              "includedData": [
+                                "featuredBuyingOptions"
+                              ],
+                              "uri": "/products/pricing/2022-05-01/items/competitiveSummary",
+                              "method": "GET"
+                            },
+                            {
+                              "asin": "11_AABB_123",
+                              "marketplaceId": "ATVPDKIKX0DER",
+                              "includedData": [
+                                "featuredBuyingOptions"
+                              ],
+                              "uri": "/products/pricing/2022-05-01/items/competitiveSummary",
+                              "method": "GET"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "responses": [
+                      {
+                        "status": {
+                          "statusCode": 200,
+                          "reasonPhrase": "Success"
+                        },
+                        "body": {
+                          "asin": "B00ZIAODGE",
+                          "marketplaceId": "ATVPDKIKX0DER",
+                          "featuredBuyingOptions": [
+                            {
+                              "buyingOptionType": "New",
+                              "segmentedFeaturedOffers": [
+                                {
+                                  "sellerId": "A3DJR8M9Y3OUPG",
+                                  "condition": "New",
+                                  "fulfillmentType": "MFN",
+                                  "listingPrice": {
+                                    "amount": 18.11,
+                                    "currencyCode": "USD"
+                                  },
+                                  "shippingOptions": [
+                                    {
+                                      "shippingOptionType": "DEFAULT",
+                                      "price": {
+                                        "amount": 2.50,
+                                        "currencyCode": "USD"
+                                      }
+                                    }
+                                  ],
+                                  "points": {
+                                    "pointsNumber": 3,
+                                    "pointsMonetaryValue": {
+                                      "amount": 0.03,
+                                      "currencyCode": "USD"
+                                    }
+                                  },
+                                  "featuredOfferSegments": [
+                                    {
+                                      "customerMembership": "NON_PRIME",
+                                      "segmentDetails": {
+                                        "glanceViewWeightPercentage": 72
+                                      }
+                                    },
+                                    {
+                                      "customerMembership": "PRIME",
+                                      "segmentDetails": {
+                                        "glanceViewWeightPercentage": 10
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "sellerId": "A2ZWOLFOFDPJL1",
+                                  "condition": "New",
+                                  "fulfillmentType": "MFN",
+                                  "listingPrice": {
+                                    "amount": 17.15,
+                                    "currencyCode": "USD"
+                                  },
+                                  "shippingOptions": [
+                                    {
+                                      "shippingOptionType": "DEFAULT",
+                                      "price": {
+                                        "amount": 2.50,
+                                        "currencyCode": "USD"
+                                      }
+                                    }
+                                  ],
+                                  "points": {
+                                    "pointsNumber": 3,
+                                    "pointsMonetaryValue": {
+                                      "amount": 0.03,
+                                      "currencyCode": "USD"
+                                    }
+                                  },
+                                  "featuredOfferSegments": [
+                                    {
+                                      "customerMembership": "NON_PRIME",
+                                      "segmentDetails": {
+                                        "glanceViewWeightPercentage": 18
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "status": {
+                          "statusCode": 400,
+                          "reasonPhrase": "Client Error"
+                        },
+                        "body": {
+                          "asin": "11_AABB_123",
+                          "marketplaceId": "ATVPDKIKX0DER",
+                          "errors": [
+                            {
+                              "code": "INVALID_ASIN",
+                              "message": "11_AABB_123 is not a valid ASIN"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "403": {
+            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
     "GetFeaturedOfferExpectedPriceBatchRequest": {
-      "description": "The request body for the getFeaturedOfferExpectedPriceBatch operation.",
+      "description": "The request body for the `getFeaturedOfferExpectedPriceBatch` operation.",
       "type": "object",
       "properties": {
         "requests": {
@@ -564,7 +920,7 @@
       }
     },
     "GetFeaturedOfferExpectedPriceBatchResponse": {
-      "description": "The response schema for the getFeaturedOfferExpectedPriceBatch operation.",
+      "description": "The response schema for the `getFeaturedOfferExpectedPriceBatch` operation.",
       "type": "object",
       "properties": {
         "responses": {
@@ -601,6 +957,304 @@
           }
         }
       ]
+    },
+    "CompetitiveSummaryBatchRequest": {
+      "description": "The `competitiveSummary` batch request data.",
+      "type": "object",
+      "required": [
+        "requests"
+      ],
+      "properties": {
+        "requests": {
+          "description": "A batched list of `competitiveSummary` requests.",
+          "$ref": "#/definitions/CompetitiveSummaryRequestList"
+        }
+      }
+    },
+    "CompetitiveSummaryRequestList": {
+      "description": "A batched list of `competitiveSummary` requests.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CompetitiveSummaryRequest"
+      },
+      "minItems": 1,
+      "maxItems": 20
+    },
+    "CompetitiveSummaryRequest" : {
+      "description": "An individual `competitiveSummary` request for an ASIN and `marketplaceId`.",
+      "type": "object",
+      "required": [
+        "asin",
+        "marketplaceId",
+        "includedData",
+        "method",
+        "uri"
+      ],
+      "properties": {
+        "asin": {
+          "description": "The Amazon identifier for the item.",
+          "$ref": "#/definitions/Asin"
+        },
+        "marketplaceId": {
+          "$ref": "#/definitions/MarketplaceId",
+          "description": "A marketplace identifier."
+        },
+        "includedData": {
+          "type": "array",
+          "description": "The list of requested competitive pricing data for the product.",
+          "items": {
+            "$ref": "#/definitions/CompetitiveSummaryIncludedData"
+          },
+          "minItems": 1
+        },
+        "method": {
+          "description": "HTTP method type",
+          "$ref": "#/definitions/HttpMethod"
+        },
+        "uri": {
+          "description": "The URI associated with the individual APIs being called as part of the batch request. For `getCompetitiveSummary`, this should be `/products/pricing/2022-05-01/items/competitiveSummary`.",
+          "$ref": "#/definitions/HttpUri"
+        }
+      }
+    },
+    "CompetitiveSummaryIncludedData": {
+      "type": "string",
+      "description": "The supported types of data in the `getCompetitiveSummary` API.",
+      "enum": [
+        "featuredBuyingOptions"
+      ]
+    },
+    "CompetitiveSummaryBatchResponse": {
+      "description": "The response schema of the `competitiveSummaryBatch` operation.",
+      "type": "object",
+      "required": [
+        "responses"
+      ],
+      "properties": {
+        "responses": {
+          "description": "The response list of the `competitiveSummaryBatch` operation.",
+          "$ref": "#/definitions/CompetitiveSummaryResponseList"
+        }
+      }
+    },
+    "CompetitiveSummaryResponseList": {
+      "description": "The response list of the `competitiveSummaryBatch` operation.",
+      "type": "array",
+      "items": {
+        "description": "The response for the individual `competitiveSummary` request in the batch operation.",
+        "$ref": "#/definitions/CompetitiveSummaryResponse"
+      },
+      "minItems": 1,
+      "maxItems": 20
+    },
+    "CompetitiveSummaryResponse": {
+      "description": "The response for the individual `competitiveSummary` request in the batch operation.",
+      "type": "object",
+      "required": [
+        "status",
+        "body"
+      ],
+      "properties": {
+        "status": {
+          "description": "The HTTP status line associated with the response. For more information, refer to [RFC 2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html).",
+          "$ref": "#/definitions/HttpStatusLine"
+        },
+        "body": {
+          "description": "The `competitiveSummaryResponse` body for a requested ASIN and `marketplaceId`.",
+          "$ref": "#/definitions/CompetitiveSummaryResponseBody"
+        }
+      }
+    },
+    "CompetitiveSummaryResponseBody": {
+      "description": "The `competitiveSummaryResponse` body for a requested ASIN and `marketplaceId`.",
+      "type": "object",
+      "required": [
+        "asin",
+        "marketplaceId"
+      ],
+      "properties": {
+        "asin": {
+          "description": "The Amazon identifier for the item.",
+          "$ref": "#/definitions/Asin"
+        },
+        "marketplaceId": {
+          "$ref": "#/definitions/MarketplaceId",
+          "description": "A marketplace identifier."
+        },
+        "featuredBuyingOptions": {
+          "description": "A list of featured buying options for the given ASIN `marketplaceId` combination.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FeaturedBuyingOption"
+          }
+        },
+        "errors": {
+          "description": "A list of errors",
+          "$ref": "#/definitions/Errors"
+        }
+      }
+    },
+    "FeaturedBuyingOption": {
+      "description": "Describes a featured buying option which includes a list of segmented featured offers for a particular item condition.",
+      "type": "object",
+      "required": [
+        "buyingOptionType",
+        "segmentedFeaturedOffers"
+      ],
+      "properties": {
+        "buyingOptionType": {
+          "description": "The buying option type of the featured offer. This field represents the buying options that a customer sees on the detail page. For example, B2B, Fresh, and Subscribe n Save. Currently supports `NEW`",
+          "type": "string",
+          "enum": [
+            "New"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "New",
+              "description": "New"
+            }
+          ]
+        },
+        "segmentedFeaturedOffers": {
+          "description": "A list of segmented featured offers for the current buying option type. A segment can be considered as a group of regional contexts that all have the same featured offer. A regional context is a combination of factors such as customer type, region or postal code and buying option.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SegmentedFeaturedOffer"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "SegmentedFeaturedOffer": {
+      "description": "A product offer with segment information indicating where it's featured.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Offer"
+        },
+        {
+          "type": "object",
+          "description": "The list of segment information in which the offer is featured.",
+          "required": [
+            "featuredOfferSegments"
+          ],
+          "properties": {
+            "featuredOfferSegments": {
+              "description": "The list of segment information in which the offer is featured.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/FeaturedOfferSegment"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Offer": {
+      "description": "The offer data of a product.",
+      "type": "object",
+      "required": [
+        "sellerId",
+        "condition",
+        "fulfillmentType",
+        "listingPrice"
+      ],
+      "properties": {
+        "sellerId": {
+          "type": "string",
+          "description": "The seller identifier for the offer."
+        },
+        "condition": {
+          "description": "Item Condition.",
+          "$ref": "#/definitions/Condition"
+        },
+        "fulfillmentType": {
+          "$ref": "#/definitions/FulfillmentType",
+          "description": "The fulfillment type for the offer. Possible values are AFN (Amazon Fulfillment Network) and MFN (Merchant Fulfillment Network)."
+        },
+        "listingPrice": {
+          "description": "Offer buying price. Does not include shipping, points, or applicable promotions.",
+          "$ref": "#/definitions/MoneyType"
+        },
+        "shippingOptions": {
+          "description": "A list of shipping options associated with this offer",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ShippingOption"
+          }
+        },
+        "points": {
+          "description": "The number of Amazon Points offered with the purchase of an item, and their monetary value. Note that the Points element is only returned in Japan (JP).",
+          "$ref": "#/definitions/Points"
+        }
+      }
+    },
+    "ShippingOption": {
+      "description": "The shipping option available for the offer.",
+      "type": "object",
+      "required": [
+        "shippingOptionType",
+        "price"
+      ],
+      "properties": {
+        "shippingOptionType": {
+          "description": "The type of the shipping option.",
+          "enum": [
+            "DEFAULT"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "DEFAULT",
+              "description": "The estimated shipping cost of the product. Note that the shipping cost is not always available."
+            }
+          ]
+        },
+        "price": {
+          "description": "Shipping price for the offer.",
+          "$ref": "#/definitions/MoneyType"
+        }
+      }
+    },
+    "FeaturedOfferSegment": {
+      "description": "Describes the segment in which the offer is featured.",
+      "type": "object",
+      "required": [
+        "customerMembership",
+        "segmentDetails"
+      ],
+      "properties": {
+        "customerMembership": {
+          "description": "The customer membership type that make up this segment",
+          "type": "string",
+          "enum": [
+            "PRIME",
+            "NON_PRIME"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "PRIME",
+              "description": "PRIME"
+            },
+            {
+              "value": "NON_PRIME",
+              "description": "NON_PRIME"
+            }
+          ]
+        },
+        "segmentDetails": {
+          "description": "The details about the segment.",
+          "$ref": "#/definitions/SegmentDetails"
+        }
+      }
+    },
+    "SegmentDetails": {
+      "description": "The details about the segment.",
+      "type": "object",
+      "properties": {
+        "glanceViewWeightPercentage": {
+          "description": "Glance view weight percentage for this segment. The glance views for this segment as a percentage of total glance views across all segments on the ASIN. A higher percentage indicates more Amazon customers see this offer as the Featured Offer.",
+          "type": "number"
+        }
+      }
     },
     "Errors": {
       "type": "object",
@@ -654,15 +1308,15 @@
           "$ref": "#/definitions/FeaturedOfferExpectedPrice"
         },
         "resultStatus": {
-          "description": "The status of the featured offer expected price computation. Possible values include VALID_FOEP, NO_COMPETING_OFFER, OFFER_NOT_ELIGIBLE, OFFER_NOT_FOUND.",
+          "description": "The status of the featured offer expected price computation. Possible values include `VALID_FOEP`, `NO_COMPETING_OFFER`, `OFFER_NOT_ELIGIBLE`, `OFFER_NOT_FOUND`, `ASIN_NOT_ELIGIBLE`. Additional values may be added in the future.",
           "type": "string"
         },
         "competingFeaturedOffer": {
-          "description": "The offer that will likely be the featured offer if the target offer is priced above its featured offer expected price. If the target offer is currently the featured offer, this property will be different than currentFeaturedOffer.",
+          "description": "The offer that will likely be the featured offer if the target offer is priced above its featured offer expected price. If the target offer is currently the featured offer, this property will be different than `currentFeaturedOffer`.",
           "$ref": "#/definitions/FeaturedOffer"
         },
         "currentFeaturedOffer": {
-          "description": "The offer that is currently the featured offer. If the target offer is not currently featured, this property will be equal to competingFeaturedOffer.",
+          "description": "The offer that is currently the featured offer. If the target offer is not currently featured, then this property will be equal to `competingFeaturedOffer`.",
           "$ref": "#/definitions/FeaturedOffer"
         }
       }
@@ -732,6 +1386,12 @@
       "additionalProperties": {
       }
     },
+    "HttpUri": {
+      "description": "The URI associated with the individual APIs being called as part of the batch request.",
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 512
+    },
     "HttpMethod": {
       "description": "The HTTP method associated with an individual request within a batch.",
       "type": "string",
@@ -774,7 +1434,7 @@
       ],
       "properties": {
         "uri": {
-          "description": "The URI associated with an individual request within a batch. For FeaturedOfferExpectedPrice, this should be '/products/pricing/2022-05-01/offer/featuredOfferExpectedPrice'.",
+          "description":  "The URI associated with an individual request within a batch. For `FeaturedOfferExpectedPrice`, this should be `/products/pricing/2022-05-01/offer/featuredOfferExpectedPrice`.",
           "type": "string"
         },
         "method": {
@@ -968,7 +1628,7 @@
         },
         "details": {
           "type": "string",
-          "description": "Additional information that can help the caller understand or fix the issue."
+          "description": "Additional details that can help the caller understand or fix the issue."
         }
       },
       "description": "Error response returned when the request is unsuccessful."
