@@ -41,7 +41,7 @@
           {
             "name": "keywords",
             "in": "query",
-            "description": "A comma-delimited list of keywords to search product types by.",
+            "description": "A comma-delimited list of keywords to search product types. **Note:** Cannot be used with `itemName`.",
             "required": false,
             "type": "array",
             "items": {
@@ -61,6 +61,30 @@
             },
             "collectionFormat": "csv",
             "x-example": "ATVPDKIKX0DER"
+          },
+          {
+            "name": "itemName",
+            "description": "The title of the ASIN to get the product type recommendation. **Note:** Cannot be used with `keywords`.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-example": "Running shoes"
+          },
+          {
+            "name": "locale",
+            "description": "The locale for the display names in the response. Defaults to the primary locale of the marketplace.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-example": "en_US"
+          },
+          {
+            "name": "searchLocale",
+            "description": "The locale used for the `keywords` and `itemName` parameters. Defaults to the primary locale of the marketplace.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-example": "en_US"
           }
         ],
         "responses": {
@@ -74,11 +98,13 @@
                 "productTypes": [
                   {
                     "name": "LUGGAGE",
+                    "displayName": "Luggage",
                     "marketplaceIds": [
                       "ATVPDKIKX0DER"
                     ]
                   }
-                ]
+                ],
+                "productTypeVersion": "UHqSqmb4FNUk="
               }
             },
             "headers": {
@@ -101,11 +127,13 @@
                     "productTypes": [
                       {
                         "name": "LUGGAGE",
+                        "displayName": "Luggage",
                         "marketplaceIds": [
                           "ATVPDKIKX0DER"
                         ]
                       }
-                    ]
+                    ],
+                    "productTypeVersion": "UHqSqmb4FNUk="
                   }
                 }
               ]
@@ -610,6 +638,7 @@
                   "ATVPDKIKX0DER"
                 ],
                 "productType": "LUGGAGE",
+                "displayName": "Luggage",
                 "productTypeVersion": {
                   "version": "UHqSqmb4FNUk=",
                   "latest": true,
@@ -672,6 +701,7 @@
                     "ATVPDKIKX0DER"
                   ],
                     "productType": "LUGGAGE",
+                    "displayName": "Luggage",
                     "productTypeVersion": {
                       "version": "UHqSqmb4FNUk=",
                       "latest": true,
@@ -917,6 +947,7 @@
         "locale",
         "marketplaceIds",
         "productType",
+        "displayName",
         "productTypeVersion",
         "propertyGroups",
         "requirements",
@@ -995,6 +1026,10 @@
           "type": "string",
           "description": "The name of the Amazon product type that this product type definition applies to."
         },
+        "displayName": {
+          "type": "string",
+          "description": "Human-readable and localized description of the Amazon product type."
+        },
         "productTypeVersion": {
           "description": "The version details for the Amazon product type.",
           "$ref": "#/definitions/ProductTypeVersion"
@@ -1049,12 +1084,17 @@
       "type": "object",
       "required": [
         "marketplaceIds",
-        "name"
+        "name",
+        "displayName"
       ],
       "properties": {
         "name": {
           "type": "string",
           "description": "The name of the Amazon product type."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The human-readable and localized description of the Amazon product type."
         },
         "marketplaceIds": {
           "type": "array",
@@ -1069,7 +1109,8 @@
     "ProductTypeList": {
       "type": "object",
       "required": [
-        "productTypes"
+        "productTypes",
+        "productTypeVersion"
       ],
       "properties": {
         "productTypes": {
@@ -1077,6 +1118,10 @@
           "items": {
             "$ref": "#/definitions/ProductType"
           }
+        },
+        "productTypeVersion": {
+          "description": "Amazon product type version identifier.",
+          "type": "string"
         }
       },
       "description": "A list of Amazon product types with definitions available."

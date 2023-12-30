@@ -38,35 +38,8 @@ restRequest = new LWAAuthorizationSigner(lwaAuthorizationCredentials).Sign(restR
 ```
 Note the IRestRequest reference is treated as **mutable** when signed.
 
-## AWSSigV4Signer
-Signs a request with [AWS Signature Version 4](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html)
-using the provided AWS developer account credentials. 
-
-*Example*
-```
-using RestSharp;
-using Amazon.SellingPartnerAPIAA;
-
-string resource = "/my/api/path";
-RestClient restClient = new RestClient("https://...");
-IRestRequest restRequest = new RestRequest(resource, Method.GET);
-
-AWSAuthenticationCredentials awsAuthenticationCredentials = new AWSAuthenticationCredentials 
-{
-    AccessKeyId = "..."
-    SecretKey = "..."
-    Region = "..."
-};
-
-restRequest = new AWSSigV4Signer(awsAuthenticationCredentials)
-    .Sign(restRequest, restClient.BaseUrl.Host);
-```
-Note the IRestRequest reference is treated as **mutable** when signed.
-
 ## RateLimitConfiguration
-
 Interface to set and get rateLimit configurations that are used with RateLimiter. RateLimiter is used on client side to restrict the rate at which requests are made. RateLimiter Configuration takes Permit, rate which requests are made and TimeOut 
-
 
 *Example*
 ```
@@ -77,6 +50,23 @@ RateLimitConfiguration rateLimitConfig = new RateLimitConfigurationOnRequests
             }; 
 
 ```
+
+## Exception 
+This package returns a custom LWAException when there is an error returned during LWA authorization. LWAException provides additional details like errorCode and errorDescription to help fix the issue.
+ 
+*Example*
+```
+catch (LWAException e)
+            {
+                Console.WriteLine("LWA Exception when calling Selling partner API");
+                Console.WriteLine(e.getErrorCode());
+                Console.WriteLine(e.getErrorMessage());
+                Console.WriteLine(e.Message);
+            }
+```
+
+## Version
+Selling Partner API Authentication/Authorization Library version 2.0.
 
 ## Resources
 This package features Mustache templates designed for use with [swagger codegen](https://swagger.io/tools/swagger-codegen/). 
