@@ -1,6 +1,6 @@
 package com.amazon.SellingPartnerAPIAA;
 
-import com.squareup.okhttp.Request;
+import okhttp3.Request;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

@@ -8,7 +8,7 @@ Obtains and signs a request with an access token from LWA (Login with Amazon) fo
 
 *Example*
 ```
-com.squareup.okhttp.Request request = new Request.Builder()
+okhttp3.Request request = new Request.Builder()
     .url(...)
     ...
     .build();
@@ -34,7 +34,7 @@ LWAAuthorizationCredentials lwaAuthorizationCredentials = LWAAuthorizationCreden
     .endpoint("...")
     .build();
 
-com.squareup.okhttp.Request signedRequest = new LWAAuthorizationSigner(lwaAuthorizationCredentials)
+okhttp3.Request signedRequest = new LWAAuthorizationSigner(lwaAuthorizationCredentials)
     .sign(request);
 ```
 
@@ -46,7 +46,7 @@ Interface to set and get rateLimit configurations that are used with RateLimiter
 
 *Example*
 ```
-com.squareup.okhttp.Request request = new Request.Builder()
+okhttp3.Request request = new Request.Builder()
     .url(...)
     ...
     .build();
