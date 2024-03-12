@@ -104,7 +104,7 @@ public class RestrictedDataTokenWorkflow {
         // Define a path for each restricted operation that requires an RDT.
         final String resourcePath1 = "/orders/v0/orders";
         final String resourcePath2 = "/orders/v0/orders/123-7654321-1234567";
-        final String resourcePath3 = "/orders/v0/orders/123-1234567-7654321/items";
+        final String resourcePath3 = "/orders/v0/orders/123-1234567-7654321/orderItems";
         final String resourcePath4 = "/mfn/v0/shipments/FBA1234ABC5D";
 
         // Define the dataElements to indicate the type of Personally Identifiable Information to be requested.
