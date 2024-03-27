@@ -24,254 +24,6 @@
     "application/json"
   ],
   "paths": {
-    "/fba/inbound/v0/itemsGuidance": {
-      "get": {
-        "tags": [
-          "fbaInbound"
-        ],
-        "description": "Returns information that lets a seller know if Amazon recommends sending an item to a given marketplace. In some cases, Amazon provides guidance for why a given SellerSKU or ASIN is not recommended for shipment to Amazon's fulfillment network. Sellers may still ship items that are not recommended, at their discretion.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
-        "operationId": "getInboundGuidance",
-        "deprecated": true,
-        "parameters": [
-          {
-            "name": "MarketplaceId",
-            "in": "query",
-            "description": "A marketplace identifier. Specifies the marketplace where the product would be stored.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "SellerSKUList",
-            "in": "query",
-            "description": "A list of SellerSKU values. Used to identify items for which you want inbound guidance for shipment to Amazon's fulfillment network. Note: SellerSKU is qualified by the SellerId, which is included with every Selling Partner API operation that you submit. If you specify a SellerSKU that identifies a variation parent ASIN, this operation returns an error. A variation parent ASIN represents a generic product that cannot be sold. Variation child ASINs represent products that have specific characteristics (such as size and color) and can be sold. ",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "maxItems": 50
-          },
-          {
-            "name": "ASINList",
-            "in": "query",
-            "description": "A list of ASIN values. Used to identify items for which you want inbound guidance for shipment to Amazon's fulfillment network. Note: If you specify a ASIN that identifies a variation parent ASIN, this operation returns an error. A variation parent ASIN represents a generic product that cannot be sold. Variation child ASINs represent products that have specific characteristics (such as size and color) and can be sold.",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "maxItems": 50
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success.",
-            "schema": {
-              "$ref": "#/definitions/GetInboundGuidanceResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "MarketplaceId": {
-                        "value": "MarketplaceId"
-                      },
-                      "SellerSKUList": {
-                        "value": [
-                          "sku1",
-                          "sku2"
-                      ]
-                    }
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "SKUInboundGuidanceList": [
-                      {
-                        "SellerSKU": "SellerSKU",
-                        "ASIN": "ASIN",
-                        "InboundGuidance": "InboundNotRecommended",
-                        "GuidanceReasonList": [
-                          "SlowMovingASIN"
-                        ]
-                      }
-                    ],
-                    "InvalidSKUList": [
-                      {
-                        "SellerSKU": "SellerSKU",
-                        "ErrorReason": "DoesNotExist"
-                      }
-                    ],
-                    "ASINInboundGuidanceList": [
-                      {
-                        "ASIN": "ASIN",
-                        "InboundGuidance": "InboundNotRecommended",
-                        "GuidanceReasonList": [
-                          "SlowMovingASIN"
-                        ]
-                      }
-                    ],
-                    "InvalidASINList": [
-                      {
-                        "ASIN": "ASIN",
-                        "ErrorReason": "DoesNotExist"
-                      }
-                    ]
-                  }
-                }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "schema": {
-              "$ref": "#/definitions/GetInboundGuidanceResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "MarketplaceId": {
-                        "value": "BADVALUE"
-                      },
-                      "SellerSKUList": {
-                        "value": [
-                          "sku1",
-                          "sku2"
-                      ]
-                    }
-                  }
-                  },
-                  "response": {
-                    "errors": [
-                      {
-                        "code": "Invalid Input",
-                        "message": "MarketplaceId is incorrect"
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          },
-          "401": {
-            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
-            "schema": {
-              "$ref": "#/definitions/GetInboundGuidanceResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "403": {
-            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "schema": {
-              "$ref": "#/definitions/GetInboundGuidanceResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "404": {
-            "description": "The specified resource does not exist.",
-            "schema": {
-              "$ref": "#/definitions/GetInboundGuidanceResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "schema": {
-              "$ref": "#/definitions/GetInboundGuidanceResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "schema": {
-              "$ref": "#/definitions/GetInboundGuidanceResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "schema": {
-              "$ref": "#/definitions/GetInboundGuidanceResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          }
-        }
-      }
-    },
     "/fba/inbound/v0/plans": {
       "post": {
         "tags": [
@@ -279,6 +31,7 @@
         ],
         "description": "Returns one or more inbound shipment plans, which provide the information you need to create one or more inbound shipments for a set of items that you specify. Multiple inbound shipment plans might be required so that items can be optimally placed in Amazon's fulfillment network—for example, positioning inventory closer to the customer. Alternatively, two inbound shipment plans might be created with the same Amazon fulfillment center destination if the two shipment plans require different processing—for example, items that require labels must be shipped separately from stickerless, commingled inventory.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "createInboundShipmentPlan",
+        "deprecated": true,
         "parameters": [
           {
             "in": "body",
@@ -286,7 +39,8 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/CreateInboundShipmentPlanRequest"
-            }
+            },
+            "description": "The request schema for the CreateInboundShipmentPlanRequest operation."
           }
         ],
         "responses": {
@@ -465,10 +219,6 @@
               "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -509,10 +259,6 @@
               "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -525,10 +271,6 @@
               "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -541,10 +283,6 @@
               "$ref": "#/definitions/CreateInboundShipmentPlanResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -561,6 +299,7 @@
         ],
         "description": "Returns a new inbound shipment based on the specified shipmentId that was returned by the createInboundShipmentPlan operation.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "createInboundShipment",
+        "deprecated": true,
         "parameters": [
           {
             "in": "body",
@@ -568,7 +307,8 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/InboundShipmentRequest"
-            }
+            },
+            "description": "The request schema for the InboundShipmentRequest operation."
           },
           {
             "name": "shipmentId",
@@ -721,10 +461,6 @@
               "$ref": "#/definitions/InboundShipmentResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -765,10 +501,6 @@
               "$ref": "#/definitions/InboundShipmentResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -781,10 +513,6 @@
               "$ref": "#/definitions/InboundShipmentResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -797,10 +525,6 @@
               "$ref": "#/definitions/InboundShipmentResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -815,6 +539,7 @@
         ],
         "description": "Updates or removes items from the inbound shipment identified by the specified shipment identifier. Adding new items is not supported.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "updateInboundShipment",
+        "deprecated": true,
         "parameters": [
           {
             "in": "body",
@@ -822,7 +547,8 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/InboundShipmentRequest"
-            }
+            },
+            "description": "The request schema for the InboundShipmentRequest operation."
           },
           {
             "name": "shipmentId",
@@ -958,10 +684,6 @@
               "$ref": "#/definitions/InboundShipmentResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1002,10 +724,6 @@
               "$ref": "#/definitions/InboundShipmentResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1018,10 +736,6 @@
               "$ref": "#/definitions/InboundShipmentResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1034,10 +748,6 @@
               "$ref": "#/definitions/InboundShipmentResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1054,6 +764,7 @@
         ],
         "description": "Returns pre-order information, including dates, that a seller needs before confirming a shipment for pre-order. \n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getPreorderInfo",
+        "deprecated": true,
         "parameters": [
           {
             "name": "shipmentId",
@@ -1157,10 +868,6 @@
               "$ref": "#/definitions/GetPreorderInfoResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1201,10 +908,6 @@
               "$ref": "#/definitions/GetPreorderInfoResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1217,10 +920,6 @@
               "$ref": "#/definitions/GetPreorderInfoResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1233,10 +932,6 @@
               "$ref": "#/definitions/GetPreorderInfoResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1253,6 +948,7 @@
         ],
         "description": "Returns information needed to confirm a shipment for pre-order. Call this operation after calling the getPreorderInfo operation to get the NeedByDate value and other pre-order information about the shipment.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "confirmPreorder",
+        "deprecated": true,
         "parameters": [
           {
             "name": "shipmentId",
@@ -1368,10 +1064,6 @@
               "$ref": "#/definitions/ConfirmPreorderResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1412,10 +1104,6 @@
               "$ref": "#/definitions/ConfirmPreorderResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1428,10 +1116,6 @@
               "$ref": "#/definitions/ConfirmPreorderResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1444,10 +1128,6 @@
               "$ref": "#/definitions/ConfirmPreorderResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1625,10 +1305,6 @@
               "$ref": "#/definitions/GetPrepInstructionsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1669,10 +1345,6 @@
               "$ref": "#/definitions/GetPrepInstructionsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1685,10 +1357,6 @@
               "$ref": "#/definitions/GetPrepInstructionsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1701,10 +1369,6 @@
               "$ref": "#/definitions/GetPrepInstructionsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1721,6 +1385,7 @@
         ],
         "description": "Returns current transportation information about an inbound shipment.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getTransportDetails",
+        "deprecated": true,
         "parameters": [
           {
             "name": "shipmentId",
@@ -1838,10 +1503,6 @@
               "$ref": "#/definitions/GetTransportDetailsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1882,10 +1543,6 @@
               "$ref": "#/definitions/GetTransportDetailsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1898,10 +1555,6 @@
               "$ref": "#/definitions/GetTransportDetailsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1914,10 +1567,6 @@
               "$ref": "#/definitions/GetTransportDetailsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1932,6 +1581,7 @@
         ],
         "description": "Sends transportation information to Amazon about an inbound shipment.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "putTransportDetails",
+        "deprecated": true,
         "parameters": [
           {
             "name": "shipmentId",
@@ -1946,7 +1596,8 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/PutTransportDetailsRequest"
-            }
+            },
+            "description": "The request schema for the PutTransportDetailsRequest operation."
           }
         ],
         "responses": {
@@ -2171,10 +1822,6 @@
               "$ref": "#/definitions/PutTransportDetailsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2215,10 +1862,6 @@
               "$ref": "#/definitions/PutTransportDetailsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2231,10 +1874,6 @@
               "$ref": "#/definitions/PutTransportDetailsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2247,10 +1886,6 @@
               "$ref": "#/definitions/PutTransportDetailsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2267,6 +1902,7 @@
         ],
         "description": "Cancels a previously-confirmed request to ship an inbound shipment using an Amazon-partnered carrier.\n\nTo be successful, you must call this operation before the VoidDeadline date that is returned by the getTransportDetails operation.\n\nImportant: The VoidDeadline date is 24 hours after you confirm a Small Parcel shipment transportation request or one hour after you confirm a Less Than Truckload/Full Truckload (LTL/FTL) shipment transportation request. After the void deadline passes, your account will be charged for the shipping cost.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "voidTransport",
+        "deprecated": true,
         "parameters": [
           {
             "name": "shipmentId",
@@ -2356,10 +1992,6 @@
               "$ref": "#/definitions/VoidTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2400,10 +2032,6 @@
               "$ref": "#/definitions/VoidTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2416,10 +2044,6 @@
               "$ref": "#/definitions/VoidTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2432,10 +2056,6 @@
               "$ref": "#/definitions/VoidTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2452,6 +2072,7 @@
         ],
         "description": "Initiates the process of estimating the shipping cost for an inbound shipment by an Amazon-partnered carrier.\n\nPrior to calling the estimateTransport operation, you must call the putTransportDetails operation to provide Amazon with the transportation information for the inbound shipment.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "estimateTransport",
+        "deprecated": true,
         "parameters": [
           {
             "name": "shipmentId",
@@ -2541,10 +2162,6 @@
               "$ref": "#/definitions/EstimateTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2585,10 +2202,6 @@
               "$ref": "#/definitions/EstimateTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2601,10 +2214,6 @@
               "$ref": "#/definitions/EstimateTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2617,10 +2226,6 @@
               "$ref": "#/definitions/EstimateTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2637,6 +2242,7 @@
         ],
         "description": "Confirms that the seller accepts the Amazon-partnered shipping estimate, agrees to allow Amazon to charge their account for the shipping cost, and requests that the Amazon-partnered carrier ship the inbound shipment.\n\nPrior to calling the confirmTransport operation, you should call the getTransportDetails operation to get the Amazon-partnered shipping estimate.\n\nImportant: After confirming the transportation request, if the seller decides that they do not want the Amazon-partnered carrier to ship the inbound shipment, you can call the voidTransport operation to cancel the transportation request. Note that for a Small Parcel shipment, the seller has 24 hours after confirming a transportation request to void the transportation request. For a Less Than Truckload/Full Truckload (LTL/FTL) shipment, the seller has one hour after confirming a transportation request to void it. After the grace period has expired the seller's account will be charged for the shipping cost.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "confirmTransport",
+        "deprecated": true,
         "parameters": [
           {
             "name": "shipmentId",
@@ -2726,10 +2332,6 @@
               "$ref": "#/definitions/ConfirmTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2770,10 +2372,6 @@
               "$ref": "#/definitions/ConfirmTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2786,10 +2384,6 @@
               "$ref": "#/definitions/ConfirmTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2802,10 +2396,6 @@
               "$ref": "#/definitions/ConfirmTransportResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -2942,8 +2532,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "maxItems": 999
+            }
           },
           {
             "name": "NumberOfPallets",
@@ -3057,10 +2646,6 @@
               "$ref": "#/definitions/GetLabelsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3101,10 +2686,6 @@
               "$ref": "#/definitions/GetLabelsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3117,10 +2698,6 @@
               "$ref": "#/definitions/GetLabelsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3133,10 +2710,6 @@
               "$ref": "#/definitions/GetLabelsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3240,10 +2813,6 @@
               "$ref": "#/definitions/GetBillOfLadingResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3284,10 +2853,6 @@
               "$ref": "#/definitions/GetBillOfLadingResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3300,10 +2865,6 @@
               "$ref": "#/definitions/GetBillOfLadingResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3316,10 +2877,6 @@
               "$ref": "#/definitions/GetBillOfLadingResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3336,6 +2893,7 @@
         ],
         "description": "Returns a list of inbound shipments based on criteria that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getShipments",
+        "deprecated": true,
         "parameters": [
           {
             "name": "ShipmentStatusList",
@@ -3414,7 +2972,8 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "maxItems": 999
           },
           {
             "name": "LastUpdatedAfter",
@@ -3575,10 +3134,6 @@
               "$ref": "#/definitions/GetShipmentsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3619,10 +3174,6 @@
               "$ref": "#/definitions/GetShipmentsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3635,10 +3186,6 @@
               "$ref": "#/definitions/GetShipmentsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3651,10 +3198,6 @@
               "$ref": "#/definitions/GetShipmentsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3671,6 +3214,7 @@
         ],
         "description": "Returns a list of items in a specified inbound shipment.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getShipmentItemsByShipmentId",
+        "deprecated": true,
         "parameters": [
           {
             "name": "shipmentId",
@@ -3792,10 +3336,6 @@
               "$ref": "#/definitions/GetShipmentItemsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3836,10 +3376,6 @@
               "$ref": "#/definitions/GetShipmentItemsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3852,10 +3388,6 @@
               "$ref": "#/definitions/GetShipmentItemsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3868,10 +3400,6 @@
               "$ref": "#/definitions/GetShipmentItemsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -3888,6 +3416,7 @@
         ],
         "description": "Returns a list of items in a specified inbound shipment, or a list of items that were updated within a specified time frame.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getShipmentItems",
+        "deprecated": true,
         "parameters": [
           {
             "name": "LastUpdatedAfter",
@@ -4092,10 +3621,6 @@
               "$ref": "#/definitions/GetShipmentItemsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -4136,10 +3661,6 @@
               "$ref": "#/definitions/GetShipmentItemsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -4152,10 +3673,6 @@
               "$ref": "#/definitions/GetShipmentItemsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -4168,10 +3685,6 @@
               "$ref": "#/definitions/GetShipmentItemsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -4268,6 +3781,7 @@
     },
     "Address": {
       "type": "object",
+      "description": "Specific details to identify a place.",
       "required": [
         "AddressLine1",
         "City",
@@ -4379,7 +3893,8 @@
     },
     "BigDecimalType": {
       "type": "number",
-      "format": "double"
+      "format": "double",
+      "description": "Number format that supports decimal."
     },
     "BoxContentsFeeDetails": {
       "type": "object",
@@ -4536,7 +4051,8 @@
           "description": "Date that determines which pre-order items in the shipment are eligible for pre-order. The pre-order Buy Box will appear for any pre-order item in the shipment with a release date on or after this date. In YYYY-MM-DD format.",
           "$ref": "#/definitions/DateStringType"
         }
-      }
+      },
+      "description": "Result for confirm preorder operation"
     },
     "ConfirmPreorderResponse": {
       "type": "object",
@@ -4557,7 +4073,8 @@
         "TransportResult": {
           "$ref": "#/definitions/TransportResult"
         }
-      }
+      },
+      "description": "Common container for transport result"
     },
     "ConfirmTransportResponse": {
       "type": "object",
@@ -4639,7 +4156,8 @@
         "InboundShipmentPlans": {
           "$ref": "#/definitions/InboundShipmentPlanList"
         }
-      }
+      },
+      "description": "Result for the create inbound shipment operation"
     },
     "CreateInboundShipmentPlanResponse": {
       "type": "object",
@@ -4685,7 +4203,8 @@
           "type": "string",
           "description": "The shipment identifier submitted in the request."
         }
-      }
+      },
+      "description": "Result of an inbound shipment operation"
     },
     "InboundShipmentResponse": {
       "type": "object",
@@ -4720,7 +4239,8 @@
     },
     "DateStringType": {
       "type": "string",
-      "format": "date"
+      "format": "date",
+      "description": "Type containing date in string format"
     },
     "Dimensions": {
       "type": "object",
@@ -4809,20 +4329,8 @@
         "InvalidASINList": {
           "$ref": "#/definitions/InvalidASINList"
         }
-      }
-    },
-    "GetInboundGuidanceResponse": {
-      "type": "object",
-      "properties": {
-        "payload": {
-          "description": "The payload for the getInboundGuidance operation.",
-          "$ref": "#/definitions/GetInboundGuidanceResult"
-        },
-        "errors": {
-          "$ref": "#/definitions/ErrorList"
-        }
       },
-      "description": "The response schema for the getInboundGuidance operation."
+      "description": "Result for the get inbound guidance operation"
     },
     "LabelDownloadURL": {
       "type": "object",
@@ -4831,7 +4339,8 @@
           "type": "string",
           "description": "URL to download the label for the package. Note: The URL will only be valid for 15 seconds"
         }
-      }
+      },
+      "description": "Download URL for a label"
     },
     "BillOfLadingDownloadURL": {
       "type": "object",
@@ -4840,7 +4349,8 @@
           "type": "string",
           "description": "URL to download the bill of lading for the package. Note: The URL will only be valid for 15 seconds"
         }
-      }
+      },
+      "description": "Download URL for the bill of lading."
     },
     "GetLabelsResponse": {
       "type": "object",
@@ -4874,7 +4384,8 @@
           "description": "Date in YYYY-MM-DD format that determines which pre-order items in the shipment are eligible for pre-order. If this shipment is confirmed for pre-order with a subsequent call to the confirmPreorder operation, the pre-order Buy Box will appear for any pre-order items in the shipment with a release date on or after this date. Call the getShipmentItems operation to get the release dates for the pre-order items in this shipment.",
           "$ref": "#/definitions/DateStringType"
         }
-      }
+      },
+      "description": "Result for the get preorder info operation"
     },
     "GetPreorderInfoResponse": {
       "type": "object",
@@ -4905,7 +4416,8 @@
         "InvalidASINList": {
           "$ref": "#/definitions/InvalidASINList"
         }
-      }
+      },
+      "description": "Result for the get prep instructions operation"
     },
     "GetPrepInstructionsResponse": {
       "type": "object",
@@ -4926,7 +4438,8 @@
         "TransportContent": {
           "$ref": "#/definitions/TransportContent"
         }
-      }
+      },
+      "description": "Result for the get transport details operation"
     },
     "GetTransportDetailsResponse": {
       "type": "object",
@@ -5237,7 +4750,8 @@
       "type": "array",
       "items": {
         "$ref": "#/definitions/InboundShipmentPlanRequestItem"
-      }
+      },
+      "description": "List of inbound shipment plan requests"
     },
     "IntendedBoxContentsSource": {
       "type": "string",
@@ -5273,7 +4787,8 @@
           "description": "The reason that the ASIN is invalid.",
           "$ref": "#/definitions/ErrorReason"
         }
-      }
+      },
+      "description": "Contains details about an invalid ASIN"
     },
     "InvalidASINList": {
       "type": "array",
@@ -5293,7 +4808,8 @@
           "description": "The reason why the seller SKU is invalid.",
           "$ref": "#/definitions/ErrorReason"
         }
-      }
+      },
+      "description": "Contains detail about an invalid SKU"
     },
     "InvalidSKUList": {
       "type": "array",
@@ -5359,7 +4875,8 @@
           "type": "string",
           "description": "When present and not empty, pass this string token in the next request to return the next response page."
         }
-      }
+      },
+      "description": "Result for the get shipment items operation"
     },
     "GetShipmentItemsResponse": {
       "type": "object",
@@ -5385,7 +4902,8 @@
           "type": "string",
           "description": "When present and not empty, pass this string token in the next request to return the next response page."
         }
-      }
+      },
+      "description": "Result for the get shipments operation"
     },
     "GetShipmentsResponse": {
       "type": "object",
@@ -6245,7 +5763,8 @@
     },
     "TimeStampStringType": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "Timestamp in ISO 8601 format."
     },
     "TrackingId": {
       "type": "string",
@@ -6455,7 +5974,8 @@
     },
     "UnsignedIntType": {
       "type": "integer",
-      "format": "int64"
+      "format": "int64",
+      "description": "Contains an unsigned integer"
     },
     "VoidTransportResponse": {
       "type": "object",
