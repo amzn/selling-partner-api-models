@@ -48,7 +48,7 @@ generate "sales" "models/sales-api-model/sales.json"
 generate "sellers" "models/sellers-api-model/sellers.json"
 generate "services" "models/services-api-model/services.json"
 generate "shipmentinvoicing" "models/shipment-invoicing-api-model/shipmentInvoicingV0.json"
-generate "shipping" "models/shipping-api-model/shipping.json"
+generate "shipping" "models/shipping-api-model/shipping2.json"
 generate "solicitations" "models/solicitations-api-model/solicitations.json"
 generate "tokens" "models/tokens-api-model/tokens_2021-03-01.json"
 generate "uploads" "models/uploads-api-model/uploads_2020-11-01.json"
@@ -93,4 +93,4 @@ mvn clean package
 # install into jazva/lib  check path
 # fix path and run manually from root folder
 cd ../..
-#mvn install:install-file -Dfile=generated/spapi/target/selling-partner-api-1.0.13.jar -Dsources=generated/spapi/target/selling-partner-api-1.0.13-sources.jar -Djavadoc=generated/spapi/target/selling-partner-api-1.0.13-javadoc.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=selling-partner-api -Dversion=1.0.13 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
+#mvn install:install-file -Dfile=generated/spapi/target/selling-partner-api-1.0.14.jar -Dsources=generated/spapi/target/selling-partner-api-1.0.14-sources.jar -Djavadoc=generated/spapi/target/selling-partner-api-1.0.14-javadoc.jar -DgroupId=com.amazon.sellingpartnerapi -DartifactId=selling-partner-api -Dversion=1.0.14 -Dpackaging=jar -DlocalRepositoryPath=/Users/levon/Projects/jazva/lib
