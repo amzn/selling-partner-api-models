@@ -1,0 +1,580 @@
+schema {
+  query: Query
+}
+
+"""
+This directive specifies the retention duration of a query containing a
+particular field. When a query contains multiple fields with different
+retentions, the shortest (minimum) retention is applied to the query. The
+retention of a query's resulting documents always matches the retention of the query.
+"""
+directive @resultRetention(
+  "An ISO 8601 duration."
+  duration: String!
+) on FIELD_DEFINITION
+
+"Monetary amount with the corresponding currency code."
+type Amount {
+  "The amount."
+  amount: Float!
+  "Currency code of the amount in ISO 4217 format."
+  currencyCode: String!
+}
+
+"A root type for Analytics Sales and Traffic queries version 2023_11_15."
+type Analytics_SalesAndTraffic_2023_11_15 {
+  "A query to retrieve sales and traffic data for the seller's account aggregated by ASIN."
+  salesAndTrafficByAsin(
+    "Determines how the sales and traffic data should be aggregated."
+    aggregateBy: AsinGranularity!,
+    """
+    The end date of the sales and traffic data to retrieve. If a date
+    granularity is specified and the provided end date occurs mid-week or
+    mid-month, the preceding Saturday for WEEK date granularity or the last day
+    of the previous month for MONTH date granularity will be used instead.
+    """
+    endDate: Date!,
+    """
+    The marketplace identifiers to retrieve sales and traffic data for. If
+    omitted, sales and traffic data for all applicable marketplaces will be retrieved.
+    """
+    marketplaceIds: [String],
+    """
+    The start date of the sales and traffic data to retrieve. The start date
+    must be no more than two years ago. If a date granularity is specified and
+    the provided start date occurs mid-week or mid-month, the following Sunday
+    for WEEK date granularity or the first day of the next month for MONTH date
+    granularity will be used instead.
+    """
+    startDate: Date!
+  ): [SalesAndTrafficByAsin]
+  "A query to retrieve sales and traffic data for the seller's account aggregated by date."
+  salesAndTrafficByDate(
+    "Determines how the sales and traffic data should be aggregated."
+    aggregateBy: DateGranularity!,
+    """
+    The end date of the sales and traffic data to retrieve. If the provided end
+    date occurs mid-week or mid-month, the preceding Saturday for WEEK date
+    granularity or the last day of the previous month for MONTH date granularity
+    will be used instead.
+    """
+    endDate: Date!,
+    """
+    The marketplace identifiers to retrieve sales and traffic data for. If
+    omitted, sales and traffic data for all applicable marketplaces will be retrieved.
+    """
+    marketplaceIds: [String],
+    """
+    The start date of the sales and traffic data to retrieve. The start date
+    must be no more than two years ago. If the provided start date occurs
+    mid-week or mid-month, the following Sunday for WEEK date granularity or the
+    first day of the next month for MONTH date granularity will be used instead.
+    """
+    startDate: Date!
+  ): [SalesAndTrafficByDate]
+}
+
+"The sales data for the seller's account aggregated by ASIN."
+type ByAsinSales {
+  """
+  The amount of ordered product sales, calculated by multiplying the price of
+  products and the number of units sold for the selected time period.
+  """
+  orderedProductSales: Amount! @resultRetention(duration : "P30D")
+  """
+  The amount of ordered product sales to Amazon Business customers, calculated
+  by multiplying the price of products and the number of units sold for the
+  selected time period. Note: This field is only populated when the seller is a B2B seller.
+  """
+  orderedProductSalesB2B: Amount @resultRetention(duration : "P30D")
+  "The number of items that were ordered for the selected time period."
+  totalOrderItems: Long! @resultRetention(duration : "P30D")
+  """
+  The number of items that were ordered by Amazon Business customers for the
+  selected time period. Note: This field is only populated when the seller is a B2B seller.
+  """
+  totalOrderItemsB2B: Long @resultRetention(duration : "P30D")
+  "The number of units ordered."
+  unitsOrdered: Long! @resultRetention(duration : "P30D")
+  """
+  The number of units ordered by Amazon Business customers. Note: This field is
+  only populated when the seller is a B2B seller.
+  """
+  unitsOrderedB2B: Long @resultRetention(duration : "P30D")
+}
+
+"The traffic data for the seller's account aggregated by ASIN."
+type ByAsinTraffic {
+  "Browser page views are the number of times a user visited your Amazon.com browser pages for the selected time period."
+  browserPageViews: Long! @resultRetention(duration : "P30D")
+  """
+  Browser B2B page views are the number of times an Amazon Business customer
+  visited your Amazon.com browser pages for the selected time period. Note: This
+  field is only populated when the seller is a B2B seller.
+  """
+  browserPageViewsB2B: Long @resultRetention(duration : "P30D")
+  """
+  The percentage of browser page views that a particular SKU/ASIN receives
+  relative to the total number of browser page views for all products.
+  """
+  browserPageViewsPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage of browser views by Amazon Business customers that a particular
+  SKU/ASIN receives relative to the total number of mobile page views by Amazon
+  Business customers for all products. Note: This field is only populated when
+  the seller is a B2B seller.
+  """
+  browserPageViewsPercentageB2B: Float @resultRetention(duration : "P30D")
+  """
+  The percentage of browser sessions that contain at least one page view for a
+  particular SKU/ASIN relative to the total number of browser sessions for all products.
+  """
+  browserSessionPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage of browser sessions that contain at least one page view by an
+  Amazon Business customer for a particular SKU/ASIN relative to the total
+  number of browser sessions by Amazon Business customers for all products.
+  Note: This field is only populated when the seller is a B2B seller.
+  """
+  browserSessionPercentageB2B: Float @resultRetention(duration : "P30D")
+  """
+  Browser sessions are visits to your Amazon.com browser pages by a user. All
+  browser activity within a 24-hour period is considered a browser session. For
+  example, if a user visits your pages using a browser multiple times within a
+  24 hour period it is counted as a single browser session.
+  """
+  browserSessions: Long! @resultRetention(duration : "P30D")
+  """
+  Browser B2B sessions are visits to your Amazon.com browser pages by an Amazon
+  Business customer. All activity within a 24-hour period is considered a
+  browser session. For example, if an Amazon Business customer visits your pages
+  using browser multiple times within a 24 hour period it is counted as a single
+  session. Note: This field is only populated when the seller is a B2B seller.
+  """
+  browserSessionsB2B: Long @resultRetention(duration : "P30D")
+  """
+  The percentage of page views where the buy box (the add to shopping cart link)
+  appeared on the page for customers to add your product to their cart.
+  """
+  buyBoxPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage of page views by Amazon Business customers where the buy box
+  (the add to shopping cart link) appeared on the page for customers to add your
+  product to their cart. Note: This field is only populated when the seller is a B2B seller.
+  """
+  buyBoxPercentageB2B: Float @resultRetention(duration : "P30D")
+  """
+  Mobile app page views are the number of times a user visited your Amazon.com
+  mobile app pages for the selected time period.
+  """
+  mobileAppPageViews: Long! @resultRetention(duration : "P30D")
+  """
+  Mobile app B2B page views are the number of times an Amazon Business customer
+  visited your Amazon.com mobile app pages for the selected time period. Note:
+  This field is only populated when the seller is a B2B seller.
+  """
+  mobileAppPageViewsB2B: Long @resultRetention(duration : "P30D")
+  """
+  The percentage of mobile app page views that a particular SKU/ASIN receives
+  relative to the total number of mobile app page views for all products.
+  """
+  mobileAppPageViewsPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage of mobile page views by Amazon Business customers that a
+  particular SKU/ASIN receives relative to the total number of mobile page views
+  by Amazon Business customers for all products. Note: This field is only
+  populated when the seller is a B2B seller.
+  """
+  mobileAppPageViewsPercentageB2B: Float @resultRetention(duration : "P30D")
+  """
+  The percentage of mobile app sessions that contain at least one page view for
+  a particular SKU/ASIN relative to the total number of mobile app sessions for all products.
+  """
+  mobileAppSessionPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage of mobile app sessions that contain at least one page view by
+  an Amazon Business customer for a particular SKU/ASIN relative to the total
+  number of mobile app sessions by Amazon Business customers for all products.
+  Note: This field is only populated when the seller is a B2B seller.
+  """
+  mobileAppSessionPercentageB2B: Float @resultRetention(duration : "P30D")
+  """
+  Mobile app sessions are visits to your Amazon.com mobile app pages by a user.
+  All mobile app activity within a 24-hour period is considered a mobile app
+  session. For example, if a user visits your pages using a mobile app multiple
+  times within a 24 hour period it is counted as a single mobile app session.
+  """
+  mobileAppSessions: Long! @resultRetention(duration : "P30D")
+  """
+  Mobile app B2B sessions are visits to your Amazon.com mobile app pages by an
+  Amazon Business customer. All activity within a 24-hour period is considered a
+  mobile app session. For example, if an Amazon Business customer visits your
+  pages using mobile app multiple times within a 24 hour period it is counted as
+  a single session. Note: This field is only populated when the seller is a B2B seller.
+  """
+  mobileAppSessionsB2B: Long @resultRetention(duration : "P30D")
+  """
+  Page views are the number of times a user visited your Amazon.com browser or
+  mobile app pages for the selected time period. It is calculated as the sum of
+  browserPageViews and mobileAppPageViews.
+  """
+  pageViews: Long! @resultRetention(duration : "P30D")
+  """
+  B2B page views are the number of times an Amazon Business customer visited
+  your Amazon.com pages using browser or mobile app for the selected time
+  period. Note: This field is only populated when the seller is a B2B seller.
+  """
+  pageViewsB2B: Long @resultRetention(duration : "P30D")
+  """
+  The percentage of browser and mobile app page views that a particular SKU/ASIN
+  receives relative to the total number of browser and mobile app page views for all products.
+  """
+  pageViewsPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage of page views by Amazon Business customers that a particular
+  SKU/ASIN receives relative to the total number of page views by Amazon
+  Business customers for all products. Note: This field is only populated when
+  the seller is a B2B seller.
+  """
+  pageViewsPercentageB2B: Float @resultRetention(duration : "P30D")
+  """
+  The percentage of sessions that contain at least one page view for a
+  particular SKU/ASIN relative to the total number of sessions for all products.
+  """
+  sessionPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage of sessions that contain at least one page view by an Amazon
+  Business customer for a particular SKU/ASIN relative to the total number of
+  sessions by Amazon Business customers for all products. Note: This field is
+  only populated when the seller is a B2B seller.
+  """
+  sessionPercentageB2B: Float @resultRetention(duration : "P30D")
+  """
+  Sessions are visits to your Amazon.com browser or mobile app pages by a user.
+  All browser and mobile app activity within a 24-hour period is considered a
+  session. It is calculated as the sum of browserSessions and mobileAppSessions.
+  """
+  sessions: Long! @resultRetention(duration : "P30D")
+  """
+  B2B sessions are visits to your Amazon.com pages using browser or mobile app
+  by an Amazon Business customer. All activity within a 24-hour period is
+  considered a session. For example, if an Amazon Business customer visits your
+  pages multiple times using mobile app or browser within a 24 hour period it is
+  counted as a single session. Note: This field is only populated when the
+  seller is a B2B seller.
+  """
+  sessionsB2B: Long @resultRetention(duration : "P30D")
+  """
+  The percentage conversion metric indicating how many units were purchased
+  relative to the number of people who viewed the products, calculated by
+  dividing unitsOrdered by sessions.
+  """
+  unitSessionPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage conversion metric indicating how many units were purchased by
+  Amazon Business customers relative to the number of Amazon Business customers
+  who viewed the products, calculated by dividing unitsOrderedB2B by sessions.
+  Note: This field is only populated when the seller is a B2B seller.
+  """
+  unitSessionPercentageB2B: Float @resultRetention(duration : "P30D")
+}
+
+"The sales data for the seller's account aggregated by date."
+type ByDateSales {
+  """
+  The average ordered product sales, calculated by dividing orderedProductSales
+  by totalOrderItems for the selected time period.
+  """
+  averageSalesPerOrderItem: Amount! @resultRetention(duration : "P30D")
+  """
+  The average ordered product sales to Amazon Business customers, calculated by
+  dividing orderedProductSalesB2B by totalOrderItemsB2B for the selected time
+  period. Note: This field is only populated when the seller is a B2B seller.
+  """
+  averageSalesPerOrderItemB2B: Amount @resultRetention(duration : "P30D")
+  """
+  The average price of the units sold in the selected time period, calculated by
+  dividing the orderedProductSales by unitsOrdered for the selected time period.
+  """
+  averageSellingPrice: Amount! @resultRetention(duration : "P30D")
+  """
+  The average price of the units sold to Amazon Business customers, calculated
+  by dividing the orderedProductSalesB2B by unitsOrderedB2B for the selected
+  time period. Note: This field is only populated when the seller is a B2B seller.
+  """
+  averageSellingPriceB2B: Amount @resultRetention(duration : "P30D")
+  "The average number of units in each order item for the selected time period."
+  averageUnitsPerOrderItem: Float! @resultRetention(duration : "P30D")
+  """
+  The average number of units in each order item ordered by Amazon Business
+  customers for the selected time period. Note: This field is only populated
+  when the seller is a B2B seller.
+  """
+  averageUnitsPerOrderItemB2B: Float @resultRetention(duration : "P30D")
+  "Monetary amount of filed A-to-z guarantee claims."
+  claimsAmount: Amount! @resultRetention(duration : "P30D")
+  "The number of A-to-z guarantee claims granted."
+  claimsGranted: Long! @resultRetention(duration : "P30D")
+  """
+  The amount of ordered product sales, calculated by multiplying the price of
+  products and the number of units sold for the selected time period.
+  """
+  orderedProductSales: Amount! @resultRetention(duration : "P30D")
+  """
+  The amount of ordered product sales to Amazon Business customers, calculated
+  by multiplying the price of products and the number of units sold for the
+  selected time period.
+  """
+  orderedProductSalesB2B: Amount @resultRetention(duration : "P30D")
+  "The number of orders shipped in the selected time period."
+  ordersShipped: Long! @resultRetention(duration : "P30D")
+  """
+  The percentage conversion metric indicating how many orders were refunded by
+  the seller, calculated by dividing unitsOrdered by unitsRefunded in the
+  selected time period.
+  """
+  refundRate: Float! @resultRetention(duration : "P30D")
+  "The amount of ordered product sales shipped for the selected time period."
+  shippedProductSales: Amount! @resultRetention(duration : "P30D")
+  """
+  The number of items that were ordered for the selected time period. Example:
+  For an order containing 2 copies of book A and 3 copies of book B, the number
+  of orders is 1, the number of order items is 2 (book A and book B), and the
+  number of units is 5 (2 + 3).
+  """
+  totalOrderItems: Long! @resultRetention(duration : "P30D")
+  """
+  The number of items that were ordered by Amazon Business customers for the
+  selected time period. Example: For an order containing 2 copies of book A and
+  3 copies of book B, the number of orders is 1, the number of order items is 2
+  (book A and book B), and the number of units is 5 (2 + 3).
+  """
+  totalOrderItemsB2B: Long @resultRetention(duration : "P30D")
+  """
+  The number of units ordered for the selected time period. Example: For an
+  order containing 2 copies of book A and 3 copies of book B, the number of
+  orders is 1, the number of order items is 2 (book A and book B), and the
+  number of units is 5 (2 + 3).
+  """
+  unitsOrdered: Long! @resultRetention(duration : "P30D")
+  """
+  The number of units ordered by Amazon Business customers for the selected time
+  period. Example: For an order containing 2 copies of book A and 3 copies of
+  book B, the number of orders is 1, the number of order items is 2 (book A and
+  book B), and the number of units is 5 (2 + 3).
+  """
+  unitsOrderedB2B: Long @resultRetention(duration : "P30D")
+  "The number of units refunded in the selected time period."
+  unitsRefunded: Long! @resultRetention(duration : "P30D")
+  "The number of units shipped in the selected time period."
+  unitsShipped: Long! @resultRetention(duration : "P30D")
+}
+
+"The traffic data for the seller's account aggregated by date."
+type ByDateTraffic {
+  """
+  The average number of offers listed for sale in the selected time period. It
+  is calculated from the total number of offers and the total number of days in
+  the selected time period.
+  """
+  averageOfferCount: Long! @resultRetention(duration : "P30D")
+  "The average number of parent items listed for sale in the selected time period."
+  averageParentItems: Long! @resultRetention(duration : "P30D")
+  "Browser page views are the number of times a user visited your Amazon.com browser pages for the selected time period."
+  browserPageViews: Long! @resultRetention(duration : "P30D")
+  """
+  Browser B2B page views are the number of times an Amazon Business customer
+  visited your Amazon.com browser pages for the selected time period. Note: This
+  field is only populated when the seller is a B2B seller.
+  """
+  browserPageViewsB2B: Long @resultRetention(duration : "P30D")
+  """
+  Browser sessions are visits to your Amazon.com browser pages by a user. All
+  browser activity within a 24-hour period is considered a browser session. For
+  example, if a user visits your pages using a browser multiple times within a
+  24 hour period it is counted as a single browser session.
+  """
+  browserSessions: Long! @resultRetention(duration : "P30D")
+  """
+  Browser B2B sessions are visits to your Amazon.com browser pages by an Amazon
+  Business customer. All activity within a 24-hour period is considered a
+  browser session. For example, if an Amazon Business customer visits your pages
+  using browser multiple times within a 24 hour period it is counted as a single
+  session. Note: This field is only populated when the seller is a B2B seller.
+  """
+  browserSessionsB2B: Long @resultRetention(duration : "P30D")
+  """
+  The percentage of page views where the buy box (the add to shopping cart link)
+  appeared on the page for customers to add your product to their cart.
+  """
+  buyBoxPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage of page views by Amazon Business customers where the buy box
+  (the add to shopping cart link) appeared on the page for customers to add your
+  product to their cart. Note: This field is only populated when the seller is a B2B seller.
+  """
+  buyBoxPercentageB2B: Float @resultRetention(duration : "P30D")
+  "The number of times customers left feedback in the selected time period."
+  feedbackReceived: Long! @resultRetention(duration : "P30D")
+  """
+  Mobile app page views are the number of times a user visited your Amazon.com
+  mobile app pages for the selected time period.
+  """
+  mobileAppPageViews: Long! @resultRetention(duration : "P30D")
+  """
+  Mobile app B2B page views are the number of times an Amazon Business customer
+  visited your Amazon.com mobile app pages for the selected time period. Note:
+  This field is only populated when the seller is a B2B seller.
+  """
+  mobileAppPageViewsB2B: Long @resultRetention(duration : "P30D")
+  """
+  Mobile app sessions are visits to your Amazon.com mobile app pages by a user.
+  All mobile app activity within a 24-hour period is considered a mobile app
+  session. For example, if a user visits your pages using a mobile app multiple
+  times within a 24 hour period it is counted as a single mobile app session.
+  """
+  mobileAppSessions: Long! @resultRetention(duration : "P30D")
+  """
+  Mobile app B2B sessions are visits to your Amazon.com mobile app pages by an
+  Amazon Business customer. All activity within a 24-hour period is considered a
+  mobile app session. For example, if an Amazon Business customer visits your
+  pages using mobile app multiple times within a 24 hour period it is counted as
+  a single session. Note: This field is only populated when the seller is a B2B seller.
+  """
+  mobileAppSessionsB2B: Long @resultRetention(duration : "P30D")
+  "The number of times customers left negative feedback in the selected time period."
+  negativeFeedbackReceived: Long! @resultRetention(duration : "P30D")
+  """
+  The percentage conversion metric indicating how many order items were
+  generated relative to the number of people who viewed the products.
+  """
+  orderItemSessionPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage conversion metric indicating how many order items were
+  generated by Amazon Business customers relative to the number of Amazon
+  Business customers who viewed the products. Note: This field is only populated
+  when the seller is a B2B seller.
+  """
+  orderItemSessionPercentageB2B: Float @resultRetention(duration : "P30D")
+  """
+  Page views are the number of times a user visited your Amazon.com browser or
+  mobile app pages for the selected time period. It is calculated as the sum of
+  browserPageViews and mobileAppPageViews.
+  """
+  pageViews: Long! @resultRetention(duration : "P30D")
+  """
+  B2B page views are the number of times an Amazon Business customer visited
+  your Amazon.com pages using browser or mobile app for the selected time
+  period. Note: This field is only populated when the seller is a B2B seller.
+  """
+  pageViewsB2B: Long @resultRetention(duration : "P30D")
+  """
+  The negative feedback rate is the number of orders that have received negative
+  feedback divided by the number of orders in the selected time period.
+  """
+  receivedNegativeFeedbackRate: Float! @resultRetention(duration : "P30D")
+  """
+  Sessions are visits to your Amazon.com browser or mobile app pages by a user.
+  All browser and mobile app activity within a 24-hour period is considered a
+  session. It is calculated as the sum of browserSessions and mobileAppSessions.
+  """
+  sessions: Long! @resultRetention(duration : "P30D")
+  """
+  B2B sessions are visits to your Amazon.com pages using browser or mobile app
+  by an Amazon Business customer. All activity within a 24-hour period is
+  considered a session. For example, if an Amazon Business customer visits your
+  pages multiple times using mobile app or browser within a 24 hour period it is
+  counted as a single session. Note: This field is only populated when the
+  seller is a B2B seller.
+  """
+  sessionsB2B: Long @resultRetention(duration : "P30D")
+  """
+  The percentage conversion metric indicating how many units were purchased
+  relative to the number of people who viewed the products.
+  """
+  unitSessionPercentage: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage conversion metric indicating how many units were purchased by
+  Amazon Business customers relative to number of Amazon Business customers who
+  viewed the products. Note: This field is only populated when the seller is a B2B seller.
+  """
+  unitSessionPercentageB2B: Float @resultRetention(duration : "P30D")
+}
+
+"A root type for queries"
+type Query {
+  "Analytics Sales and Traffic queries version 2023_11_15."
+  analytics_salesAndTraffic_2023_11_15: Analytics_SalesAndTraffic_2023_11_15
+}
+
+"The sales and traffic data for the seller's account aggregated by ASIN."
+type SalesAndTrafficByAsin {
+  """
+  The Amazon Standard Identification Number of the child product. Child products
+  are unique, sellable products that are related in our catalog to a single,
+  non-sellable parent product. Note: This field is only present when ASIN
+  aggregation is CHILD or SKU.
+  """
+  childAsin: String @resultRetention(duration : "P30D")
+  "The end date of the period of the aggregated data."
+  endDate: Date! @resultRetention(duration : "P30D")
+  "The marketplace identifier of the sales and traffic data."
+  marketplaceId: String! @resultRetention(duration : "P30D")
+  """
+  The Amazon Standard Identification Number of the parent product. A parent
+  product appears in our catalog as a non-buyable, generic identifier for a
+  product that has buyable variations (child products).
+  """
+  parentAsin: String! @resultRetention(duration : "P30D")
+  "The sales data for the parentAsin/childAsin/sku within the specified date range."
+  sales: ByAsinSales!
+  """
+  The Stock Keeping Unit of the product. The SKU is a seller specific product
+  identifier. Note: This field is only present when ASIN aggregation is SKU.
+  """
+  sku: String @resultRetention(duration : "P30D")
+  "The start date of the period of the aggregated data."
+  startDate: Date! @resultRetention(duration : "P30D")
+  "The traffic data for the parentAsin/childAsin/sku within the specified date range."
+  traffic: ByAsinTraffic!
+}
+
+"The sales and traffic data for the seller's account aggregated by date."
+type SalesAndTrafficByDate {
+  "The end date of the sales and traffic data."
+  endDate: Date! @resultRetention(duration : "P30D")
+  "The marketplace identifier of the sales and traffic data."
+  marketplaceId: String! @resultRetention(duration : "P30D")
+  "The sales data for the seller's account."
+  sales: ByDateSales!
+  "The start date of the sales and traffic data."
+  startDate: Date! @resultRetention(duration : "P30D")
+  "The traffic data for the seller's account."
+  traffic: ByDateTraffic!
+}
+
+"The ASIN granularity used in aggregation."
+enum AsinGranularity {
+  "Sales and traffic data is aggregated by child ASIN."
+  CHILD
+  "Sales and traffic data is aggregated by parent ASIN."
+  PARENT
+  "Sales and traffic data is aggregated by sku."
+  SKU
+}
+
+"The date granularity used in aggregation."
+enum DateGranularity {
+  "Sales and traffic data is aggregated by day."
+  DAY
+  "Sales and traffic data is aggregated by month."
+  MONTH
+  "Sales and traffic data is aggregated by week."
+  WEEK
+}
+
+"Date"
+scalar Date
+
+"Long"
+scalar Long

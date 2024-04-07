@@ -98,7 +98,7 @@ public class LWAAuthorizationSignerTest {
 
     @ParameterizedTest
     @MethodSource("lwaAuthSigner")
-    public void requestLWAAccessTokenFromConfiguration(String sellerType, LWAAuthorizationSigner testAuthSigner) {
+    public void requestLWAAccessTokenFromConfiguration(String sellerType, LWAAuthorizationSigner testAuthSigner) throws LWAException {
         LWAClient mockLWAClient = mock(LWAClient.class);
         ArgumentCaptor<LWAAccessTokenRequestMeta> lwaAccessTokenRequestMetaArgumentCaptor = ArgumentCaptor.forClass(LWAAccessTokenRequestMeta.class);
 
@@ -126,7 +126,7 @@ public class LWAAuthorizationSignerTest {
 
     @ParameterizedTest
     @MethodSource("lwaAuthSigner")
-    public void returnSignedRequestWithAccessTokenFromLWAClient(String sellerType, LWAAuthorizationSigner testAuthSigner) {
+    public void returnSignedRequestWithAccessTokenFromLWAClient(String sellerType, LWAAuthorizationSigner testAuthSigner) throws LWAException {
         LWAClient mockLWAClient = mock(LWAClient.class);
 
         when(mockLWAClient.getAccessToken(any(LWAAccessTokenRequestMeta.class)))
@@ -140,7 +140,7 @@ public class LWAAuthorizationSignerTest {
 
     @ParameterizedTest
     @MethodSource("lwaAuthSigner")
-    public void originalRequestIsImmutable(String sellerType, LWAAuthorizationSigner testAuthSigner) {
+    public void originalRequestIsImmutable(String sellerType, LWAAuthorizationSigner testAuthSigner) throws LWAException {
         LWAClient mockLWAClient = mock(LWAClient.class);
 
         when(mockLWAClient.getAccessToken(any(LWAAccessTokenRequestMeta.class)))
@@ -151,7 +151,7 @@ public class LWAAuthorizationSignerTest {
     }
     
     @Test
-    public void returnSignedRequestWithAccessTokenFromLWACache() throws IOException { 
+    public void returnSignedRequestWithAccessTokenFromLWACache() throws IOException, LWAException {
         LWAClient testLWAClient = new LWAClient(TEST_ENDPOINT);
         testLWAClient.setOkHttpClient(mockOkHttpClient);
         

@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "The Selling Partner API for Orders helps you programmatically retrieve order information. These APIs let you develop fast, flexible, custom applications in areas like order synchronization, order research, and demand-based decision support tools.",
+    "description": "The Selling Partner API for Orders helps you programmatically retrieve order information. These APIs let you develop fast, flexible, custom applications in areas like order synchronization, order research, and demand-based decision support tools. The Orders API supports orders that are two years old or less. Orders more than two years old will not show in the API response.\n\n_Note:_ The Orders API supports orders from 2016 and after for the JP, AU, and SG marketplaces.",
     "version": "v0",
     "title": "Selling Partner API for Orders",
     "contact": {
@@ -35,28 +35,28 @@
           {
             "name": "CreatedAfter",
             "in": "query",
-            "description": "A date used for selecting orders created after (or at) a specified time. Only orders placed after the specified time are returned. Either the CreatedAfter parameter or the LastUpdatedAfter parameter is required. Both cannot be empty. The date must be in ISO 8601 format.",
+            "description": "A date used for selecting orders created after (or at) a specified time. Only orders placed after the specified time are returned. Either the CreatedAfter parameter or the LastUpdatedAfter parameter is required. Both cannot be empty. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
             "required": false,
             "type": "string"
           },
           {
             "name": "CreatedBefore",
             "in": "query",
-            "description": "A date used for selecting orders created before (or at) a specified time. Only orders placed before the specified time are returned. The date must be in ISO 8601 format.",
+            "description": "A date used for selecting orders created before (or at) a specified time. Only orders placed before the specified time are returned. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
             "required": false,
             "type": "string"
           },
           {
             "name": "LastUpdatedAfter",
             "in": "query",
-            "description": "A date used for selecting orders that were last updated after (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. The date must be in ISO 8601 format.",
+            "description": "A date used for selecting orders that were last updated after (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
             "required": false,
             "type": "string"
           },
           {
             "name": "LastUpdatedBefore",
             "in": "query",
-            "description": "A date used for selecting orders that were last updated before (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. The date must be in ISO 8601 format.",
+            "description": "A date used for selecting orders that were last updated before (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
             "required": false,
             "type": "string"
           },
@@ -73,7 +73,7 @@
           {
             "name": "MarketplaceIds",
             "in": "query",
-            "description": "A list of MarketplaceId values. Used to select orders that were placed in the specified marketplaces.\n\nSee the [Selling Partner API Developer Guide](doc:marketplace-ids) for a complete list of marketplaceId values.",
+            "description": "A list of MarketplaceId values. Used to select orders that were placed in the specified marketplaces.\n\nRefer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids) for a complete list of marketplaceId values.",
             "required": true,
             "type": "array",
             "items": {
@@ -182,26 +182,32 @@
             "type": "string"
           },
           {
-            "name": "ItemApprovalTypes",
+            "name": "EarliestDeliveryDateBefore",
             "in": "query",
-            "description": "When set, only return orders that contain items which approval type is contained in the specified approval types.",
+            "description": "A date used for selecting orders with a earliest delivery date before (or at) a specified time. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
             "required": false,
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/ItemApprovalType"
-            },
-            "maxItems": 1
+            "type": "string"
           },
           {
-            "name": "ItemApprovalStatus",
+            "name": "EarliestDeliveryDateAfter",
             "in": "query",
-            "description": "When set, only return orders that contain items which approval status is contained in the specified approval status.",
+            "description": "A date used for selecting orders with a earliest delivery date after (or at) a specified time. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
             "required": false,
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/ItemApprovalStatus"
-            },
-            "maxItems": 6
+            "type": "string"
+          },
+          {
+            "name": "LatestDeliveryDateBefore",
+            "in": "query",
+            "description": "A date used for selecting orders with a latest delivery date before (or at) a specified time. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "LatestDeliveryDateAfter",
+            "in": "query",
+            "description": "A date used for selecting orders with a latest delivery date after (or at) a specified time. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -2526,479 +2532,6 @@
         }
       }
     },
-    "/orders/v0/orders/{orderId}/approvals": {
-      "get": {
-        "tags": [
-          "approvals"
-        ],
-        "description": "Returns detailed order items approvals information for the order specified. If NextToken is provided, it's used to retrieve the next page of order items approvals.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 0.5 | 30 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
-        "operationId": "getOrderItemsApprovals",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "description": "An Amazon-defined order identifier, in 3-7-7 format, e.g. 933-1671587-0818628.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "NextToken",
-            "in": "query",
-            "description": "A string token returned in the response of your previous request.",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "ItemApprovalTypes",
-            "in": "query",
-            "description": "When set, only return approvals for items which approval type is contained in the specified approval types.",
-            "required": false,
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/ItemApprovalType"
-            },
-            "maxItems": 1
-          },
-          {
-            "name": "ItemApprovalStatus",
-            "in": "query",
-            "description": "When set, only return approvals that contain items which approval status is contained in the specified approval status.",
-            "required": false,
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/ItemApprovalStatus"
-            },
-            "maxItems": 6
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success.",
-            "schema": {
-              "$ref": "#/definitions/GetOrderApprovalsResponse"
-            },
-            "examples": {
-              "application/json": {
-                "payload": {
-                  "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
-                  "OrderItemsApprovalsList": [
-                    {
-                      "OrderItemId": "12354324",
-                      "ApprovalType": "LEONARDI_APPROVAL",
-                      "ApprovalStatus": "PENDING_SELLING_PARTNER_APPROVAL",
-                      "ItemApprovals": [
-                        {
-                          "SequenceId": 1,
-                          "Timestamp": "string",
-                          "Actor": "SELLING_PARTNER",
-                          "Approver": "approver-id-123",
-                          "ApprovalActionProcessStatus": "ERROR",
-                          "ApprovalActionProcessStatusMessage": "Invalid substitution request.",
-                          "ApprovalAction": {
-                            "ActionType": "APPROVE",
-                            "Comment": "Set price and units",
-                            "Changes": {
-                              "ItemPrice": {
-                                "CurrencyCode": "EUR",
-                                "Amount": "8.5"
-                              },
-                              "Quantity": 2,
-                              "SubstitutedBy": {
-                                "IdentifierType": "EXTERNAL_ID",
-                                "Identifier": "P12325"
-                              }
-                            }
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "OrderItemId": "79039765272157",
-                      "ApprovalType": "LEONARDI_APPROVAL",
-                      "ApprovalStatus": "DECLINED",
-                      "ItemApprovals": [
-                        {
-                          "SequenceId": 1,
-                          "Timestamp": "string",
-                          "Actor": "SELLING_PARTNER",
-                          "Approver": "approver-id-123",
-                          "ApprovalActionProcessStatus": "SUCCESS",
-                          "ApprovalActionProcessStatusMessage": "Approval request validated",
-                          "ApprovalAction": {
-                            "ActionType": "DECLINE",
-                            "Comment": "Out of stock."
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                }
-              }
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "orderId": {
-                        "value": "TEST_CASE_200"
-                      }
-                    }
-                  },
-                  "response": {
-                    "payload": {
-                      "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
-                      "OrderItemsApprovalsList": [
-                        {
-                          "OrderItemId": "68828574383266",
-                          "ApprovalType": "LEONARDI_APPROVAL",
-                          "ApprovalStatus": "PENDING_SELLING_PARTNER_APPROVAL",
-                          "ItemApprovals": [
-                            {
-                              "SequenceId": 1,
-                              "Timestamp": "string",
-                              "Actor": "SELLING_PARTNER",
-                              "Approver": "approver-id-123",
-                              "ApprovalActionProcessStatus": "ERROR",
-                              "ApprovalActionProcessStatusMessage": "No valid offer found for the substitution.",
-                              "ApprovalAction": {
-                                "ActionType": "APPROVE_WITH_CHANGES",
-                                "Comment": "Item substitution.",
-                                "Changes": {
-                                  "ItemPrice": {
-                                    "CurrencyCode": "EUR",
-                                    "Amount": "8.5"
-                                  },
-                                  "Quantity": 2,
-                                  "SubstitutedBy": {
-                                    "IdentifierType": "EXTERNAL_ID",
-                                    "Identifier": "NEW_ITEM_ID_12325"
-                                  }
-                                }
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "schema": {
-              "$ref": "#/definitions/GetOrderApprovalsResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "orderId": {
-                        "value": "TEST_CASE_400"
-                      }
-                    }
-                  },
-                  "response": {
-                    "errors": [
-                      {
-                        "code": "InvalidInput",
-                        "message": "Invalid Input"
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          },
-          "403": {
-            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "schema": {
-              "$ref": "#/definitions/GetOrderApprovalsResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "404": {
-            "description": "The resource specified does not exist.",
-            "schema": {
-              "$ref": "#/definitions/GetOrderApprovalsResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "schema": {
-              "$ref": "#/definitions/GetOrderApprovalsResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "schema": {
-              "$ref": "#/definitions/GetOrderApprovalsResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "schema": {
-              "$ref": "#/definitions/GetOrderApprovalsResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "approvals"
-        ],
-        "description": "Update the order items approvals for an order that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 15 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values then those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
-        "operationId": "updateOrderItemsApprovals",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "description": "An Amazon-defined order identifier, in 3-7-7 format.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "payload",
-            "in": "body",
-            "description": "The request body for the updateOrderItemsApprovals operation.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/UpdateOrderApprovalsRequest"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Success.",
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {}
-                  },
-                  "response": {}
-                }
-              ]
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
-                "type": "string"
-              },
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "body": {
-                        "value": {
-                          "Approver": "John",
-                          "OrderItemsApprovalRequests": [
-                            {
-                              "OrderItemId": "12345",
-                              "ApprovalAction": {
-                                "ActionType": "APPROVE_WITH_CHANGES",
-                                "Comment": "Mandatory substitution.",
-                                "Changes": {}
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  },
-                  "response": {
-                    "errors": [
-                      {
-                        "code": "InvalidInput",
-                        "message": "No changes defined."
-                      }
-                    ]
-                  }
-                }
-              ]
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
-                "type": "string"
-              },
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/UpdateItemsApprovalsErrorResponse"
-            }
-          },
-          "403": {
-            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/UpdateItemsApprovalsErrorResponse"
-            }
-          },
-          "404": {
-            "description": "The resource specified does not exist.",
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
-                "type": "string"
-              },
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/UpdateItemsApprovalsErrorResponse"
-            }
-          },
-          "413": {
-            "description": "The request size exceeded the maximum accepted size.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/UpdateItemsApprovalsErrorResponse"
-            }
-          },
-          "415": {
-            "description": "The request payload is in an unsupported format.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/UpdateItemsApprovalsErrorResponse"
-            }
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/UpdateItemsApprovalsErrorResponse"
-            }
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/UpdateItemsApprovalsErrorResponse"
-            }
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/UpdateItemsApprovalsErrorResponse"
-            }
-          }
-        }
-      }
-    },
     "/orders/v0/orders/{orderId}/shipmentConfirmation": {
       "post": {
         "tags": [
@@ -3464,11 +2997,11 @@
         },
         "LastUpdatedBefore": {
           "type": "string",
-          "description": "A date used for selecting orders that were last updated before (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. All dates must be in ISO 8601 format."
+          "description": "A date used for selecting orders that were last updated before (or at) a specified time. An update is defined as any change in order status, including the creation of a new order. Includes updates made by Amazon and by the seller. All dates must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format."
         },
         "CreatedBefore": {
           "type": "string",
-          "description": "A date used for selecting orders created before (or at) a specified time. Only orders placed before the specified time are returned. The date must be in ISO 8601 format."
+          "description": "A date used for selecting orders created before (or at) a specified time. Only orders placed before the specified time are returned. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format."
         }
       },
       "description": "A list of orders along with additional information to make subsequent API calls."
@@ -3632,7 +3165,7 @@
         },
         "ShipmentServiceLevelCategory": {
           "type": "string",
-          "description": "The shipment service level category of the order.\n\nPossible values: Expedited, FreeEconomy, NextDay, SameDay, SecondDay, Scheduled, Standard."
+          "description": "The shipment service level category of the order.\n\nPossible values: Expedited, FreeEconomy, NextDay, Priority, SameDay, SecondDay, Scheduled, Standard."
         },
         "EasyShipShipmentStatus": {
           "description": "The status of the Amazon Easy Ship order. This property is included only for Amazon Easy Ship orders.",
@@ -3677,19 +3210,19 @@
         },
         "EarliestShipDate": {
           "type": "string",
-          "description": "The start of the time period within which you have committed to ship the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders.\n\n__Note__: EarliestShipDate might not be returned for orders placed before February 1, 2013."
+          "description": "The start of the time period within which you have committed to ship the order. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format. Returned only for seller-fulfilled orders.\n\n__Note__: EarliestShipDate might not be returned for orders placed before February 1, 2013."
         },
         "LatestShipDate": {
           "type": "string",
-          "description": "The end of the time period within which you have committed to ship the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders.\n\n__Note__: LatestShipDate might not be returned for orders placed before February 1, 2013."
+          "description": "The end of the time period within which you have committed to ship the order. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format. Returned only for seller-fulfilled orders.\n\n__Note__: LatestShipDate might not be returned for orders placed before February 1, 2013."
         },
         "EarliestDeliveryDate": {
           "type": "string",
-          "description": "The start of the time period within which you have committed to fulfill the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders."
+          "description": "The start of the time period within which you have committed to fulfill the order. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format. Returned only for seller-fulfilled orders."
         },
         "LatestDeliveryDate": {
           "type": "string",
-          "description": "The end of the time period within which you have committed to fulfill the order. In ISO 8601 date time format. Returned only for seller-fulfilled orders that do not have a PendingAvailability, Pending, or Canceled status."
+          "description": "The end of the time period within which you have committed to fulfill the order. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format. Returned only for seller-fulfilled orders that do not have a PendingAvailability, Pending, or Canceled status."
         },
         "IsBusinessOrder": {
           "type": "boolean",
@@ -3794,20 +3327,6 @@
         "ElectronicInvoiceStatus": {
           "$ref": "#/definitions/ElectronicInvoiceStatus",
           "description": "The status of the electronic invoice."
-        },
-        "ItemApprovalTypes": {
-          "type": "array",
-            "items": {
-              "$ref": "#/definitions/ItemApprovalType"
-            },
-          "description": "Set of approval types which applies to at least one order item in the order."
-        },
-        "ItemApprovalStatus": {
-          "type": "array",
-            "items": {
-              "$ref": "#/definitions/ItemApprovalStatus"
-            },
-          "description": "Subset of all ItemApprovalStatus that are set in at least one of the order items subject to approvals."
         }
       },
       "description": "Order information."
@@ -3903,7 +3422,7 @@
         },
         "ReviewDate": {
           "type": "string",
-          "description": "The date the order was reviewed. In ISO 8601 date time format."
+          "description": "The date the order was reviewed. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format."
         },
         "ExternalReviewerId": {
           "type": "string",
@@ -4032,7 +3551,7 @@
         },
         "BuyerCompanyName": {
           "type": "string",
-          "description": "Company name of the destination address."
+          "description": "Company Name of the Buyer."
         },
         "ShippingAddress": {
           "$ref": "#/definitions/Address"
@@ -4097,6 +3616,9 @@
           "type": "string",
           "description": "The phone number. Not returned for Fulfillment by Amazon (FBA) orders."
         },
+        "ExtendedFields": {
+          "$ref": "#/definitions/AddressExtendedFields"
+        },
         "AddressType": {
           "type": "string",
           "description": "The address type of the shipping address.",
@@ -4117,6 +3639,28 @@
         }
       },
       "description": "The shipping address for the order."
+    },
+    "AddressExtendedFields": {
+      "type": "object",
+      "properties": {
+        "StreetName": {
+          "type": "string",
+          "description": "The street name."
+        },
+        "StreetNumber": {
+          "type": "string",
+          "description": "The house number/building number/property number in the street."
+        },
+        "Complement": {
+          "type": "string",
+          "description": "The floor number/unit number in the building/private house number."
+        },
+        "Neighborhood": {
+          "type": "string",
+          "description": "The neighborhood. It's smaller than a region and an integral part of an address. It is used in some countries like Brazil."
+        }
+      },
+      "description": "The container for address extended fields. For example, street name or street number. Only available for Brazil shipping addresses as of now."
     },
     "DeliveryPreferences": {
       "type": "object",
@@ -4225,7 +3769,7 @@
       "properties": {
         "ExceptionDate": {
           "type": "string",
-          "description": "Date when the business is closed, in ISO-8601 date format."
+          "description": "Date when the business is closed, in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date format."
         },
         "IsOpen": {
           "type": "boolean",
@@ -4331,7 +3875,7 @@
         },
         "PaymentMethod": {
           "type": "string",
-          "description": "A sub-payment method for a COD order.\n\nPossible values:\n\n* COD - Cash On Delivery.\n\n* GC - Gift Card.\n\n* PointsAccount - Amazon Points."
+          "description": "A sub-payment method for a COD order.\n\nPossible values:\n* `COD`: Cash On Delivery.\n* `GC`: Gift Card.\n* `PointsAccount`: Amazon Points.\n* `Invoice`: Invoice."
         }
       },
       "description": "Information about a sub-payment method used to pay for a COD order."
@@ -4432,6 +3976,13 @@
           "type": "string",
           "description": "An Amazon-defined order item identifier."
         },
+        "AssociatedItems": {
+          "type": "array",
+          "description": "A list of associated items that a customer has purchased with a product. For example, a tire installation service purchased with tires.",
+          "items": {
+            "$ref": "#/definitions/AssociatedItem"
+          }
+        },
         "Title": {
           "type": "string",
           "description": "The name of the item."
@@ -4513,11 +4064,11 @@
         },
         "ScheduledDeliveryStartDate": {
           "type": "string",
-          "description": "The start date of the scheduled delivery window in the time zone of the order destination. In ISO 8601 date time format."
+          "description": "The start date of the scheduled delivery window in the time zone of the order destination. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format."
         },
         "ScheduledDeliveryEndDate": {
           "type": "string",
-          "description": "The end date of the scheduled delivery window in the time zone of the order destination. In ISO 8601 date time format."
+          "description": "The end date of the scheduled delivery window in the time zone of the order destination. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format."
         },
         "PriceDesignation": {
           "type": "string",
@@ -4533,7 +4084,7 @@
         },
         "IsTransparency": {
           "type": "boolean",
-          "description": "When true, transparency codes are required."
+          "description": "When true, the ASIN is enrolled in Transparency and the Transparency serial number that needs to be submitted can be determined by the following:\n\n**1D or 2D Barcode:** This has a **T** logo. Submit either the 29-character alpha-numeric identifier beginning with **AZ** or **ZA**, or the 38-character Serialized Global Trade Item Number (SGTIN).\n**2D Barcode SN:** Submit the 7- to 20-character serial number barcode, which likely has the prefix **SN**. The serial number will be applied to the same side of the packaging as the GTIN (UPC/EAN/ISBN) barcode.\n**QR code SN:** Submit the URL that the QR code generates."
         },
         "IossNumber": {
           "type": "string",
@@ -4568,19 +4119,261 @@
           "description": "Information about whether or not a buyer requested cancellation.",
           "$ref": "#/definitions/BuyerRequestedCancel"
         },
-        "ItemApprovalContext": {
-          "$ref": "#/definitions/ItemApprovalContext",
-          "description": "Item approval context containing the information regarding the status and progress of the item approval."
-        },
         "SerialNumbers": {
           "type": "array",
           "description": "A list of serial numbers for electronic products that are shipped to customers. Returned for FBA orders only.",
           "items": {
             "type": "string"
           }
+        },
+        "SubstitutionPreferences": {
+          "description": "Substitution preferences for the order item. This is an optional field and will only be present if seller supports substitutions like in case of some grocery sellers.",
+          "$ref": "#/definitions/SubstitutionPreferences"
+        },
+        "Measurement": {
+          "description": "Measurement information for the order item.",
+          "$ref": "#/definitions/Measurement"
         }
       },
       "description": "A single order item."
+    },
+    "SubstitutionPreferences": {
+      "type": "object",
+      "required": [
+        "SubstitutionType"
+      ],
+      "properties": {
+        "SubstitutionType": {
+          "type": "string",
+          "description": "The type of substitution that these preferences represent.",
+          "enum": [
+            "CUSTOMER_PREFERENCE",
+            "AMAZON_RECOMMENDED",
+            "DO_NOT_SUBSTITUTE"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "CUSTOMER_PREFERENCE",
+              "description": "Customer has provided the substitution preferences."
+            },
+            {
+              "value": "AMAZON_RECOMMENDED",
+              "description": "Amazon has provided the substitution preferences."
+            },
+            {
+              "value": "DO_NOT_SUBSTITUTE",
+              "description": "Do not provide substitute if item is not found."
+            }
+          ]
+        },
+        "SubstitutionOptions": {
+          "description": "Substitution options for the order item.",
+          "$ref": "#/definitions/SubstitutionOptionList"
+        }
+      }
+    },
+    "SubstitutionOptionList": {
+      "type": "array",
+      "description": "A collection of substitution options.",
+      "items": {
+        "$ref": "#/definitions/SubstitutionOption"
+      }
+    },
+    "SubstitutionOption": {
+      "type": "object",
+      "properties": {
+        "ASIN": {
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
+        },
+        "QuantityOrdered": {
+          "type": "integer",
+          "description": "The number of items to be picked for this substitution option. "
+        },
+        "SellerSKU": {
+          "type": "string",
+          "description": "The seller stock keeping unit (SKU) of the item."
+        },
+        "Title": {
+          "type": "string",
+          "description": "The title of the item."
+        },
+        "Measurement": {
+          "description": "Measurement information for the substitution option.",
+          "$ref": "#/definitions/Measurement"
+        }
+      }
+    },
+    "Measurement": {
+      "type": "object",
+      "required": [
+        "Unit",
+        "Value"
+      ],
+      "properties": {
+        "Unit": {
+          "type": "string",
+          "description": "The unit of measure for this measurement.",
+          "enum": [
+            "OUNCES",
+            "POUNDS",
+            "KILOGRAMS",
+            "GRAMS",
+            "MILLIGRAMS",
+            "INCHES",
+            "FEET",
+            "METERS",
+            "CENTIMETERS",
+            "MILLIMETERS",
+            "SQUARE_METERS",
+            "SQUARE_CENTIMETERS",
+            "SQUARE_FEET",
+            "SQUARE_INCHES",
+            "GALLONS",
+            "PINTS",
+            "QUARTS",
+            "FLUID_OUNCES",
+            "LITERS",
+            "CUBIC_METERS",
+            "CUBIC_FEET",
+            "CUBIC_INCHES",
+            "CUBIC_CENTIMETERS",
+            "COUNT"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "OUNCES",
+              "description": "Indicates the item's measurement is measured in ounces."
+            },
+            {
+              "value": "POUNDS",
+              "description": "Indicates the item's measurement is measured in pounds."
+            },
+            {
+              "value": "KILOGRAMS",
+              "description": "Indicates the item's measurement is measured in kilograms."
+            },
+            {
+              "value": "GRAMS",
+              "description": "Indicates the item's measurement is measured in grams."
+            },
+            {
+              "value": "MILLIGRAMS",
+              "description": "Indicates the item's measurement is measured in milligrams."
+            },
+            {
+              "value": "INCHES",
+              "description": "Indicates the item's measurement is measured in inches."
+            },
+            {
+              "value": "FEET",
+              "description": "Indicates the item's measurement is measured in feet."
+            },
+            {
+              "value": "METERS",
+              "description": "Indicates the item's measurement is measured in meters."
+            },
+            {
+              "value": "CENTIMETERS",
+              "description": "Indicates the item's measurement is measured in centimeters."
+            },
+            {
+              "value": "MILLIMETERS",
+              "description": "Indicates the item's measurement is measured in millimeters."
+            },
+            {
+              "value": "SQUARE_METERS",
+              "description": "Indicates the item's measurement is measured in square meters."
+            },
+            {
+              "value": "SQUARE_CENTIMETERS",
+              "description": "Indicates the item's measurement is measured in square centimeters."
+            },
+            {
+              "value": "SQUARE_FEET",
+              "description": "Indicates the item's measurement is measured in square feet."
+            },
+            {
+              "value": "SQUARE_INCHES",
+              "description": "Indicates the item's measurement is measured in square inches."
+            },
+            {
+              "value": "GALLONS",
+              "description": "Indicates the item's measurement is measured in gallons."
+            },
+            {
+              "value": "PINTS",
+              "description": "Indicates the item's measurement is measured in pints."
+            },
+            {
+              "value": "QUARTS",
+              "description": "Indicates the item's measurement is measured in quarts."
+            },
+            {
+              "value": "FLUID_OUNCES",
+              "description": "Indicates the item's measurement is measured in fluid ounces."
+            },
+            {
+              "value": "LITERS",
+              "description": "Indicates the item's measurement is measured in liters."
+            },
+            {
+              "value": "CUBIC_METERS",
+              "description": "Indicates the item's measurement is measured in cubic meters."
+            },
+            {
+              "value": "CUBIC_FEET",
+              "description": "Indicates the item's measurement is measured in cubic feet."
+            },
+            {
+              "value": "CUBIC_INCHES",
+              "description": "Indicates the item's measurement is measured in cubic inches."
+            },
+            {
+              "value": "CUBIC_CENTIMETERS",
+              "description": "Indicates the item's measurement is measured in cubic centimeters."
+            },
+            {
+              "value": "COUNT",
+              "description": "Indicates the item's measurement is measured by count."
+            }
+          ]
+        },
+        "Value": {
+          "type": "number",
+          "description": "The value of the measurement."
+        }
+      }
+    },
+    "AssociatedItem": {
+      "description": "An item associated with an order item. For example, a tire installation service purchased with tires.",
+      "type": "object",
+      "properties": {
+        "OrderId": {
+          "type": "string",
+          "description": "The order item's order identifier, in 3-7-7 format."
+        },
+        "OrderItemId": {
+          "type": "string",
+          "description": "An Amazon-defined item identifier for the associated item."
+        },
+        "AssociationType": {
+          "$ref": "#/definitions/AssociationType"
+        }
+      }
+    },
+    "AssociationType": {
+      "type": "string",
+      "description": "The type of association an item has with an order item.",
+      "enum": [
+        "VALUE_ADD_SERVICE"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "VALUE_ADD_SERVICE",
+          "description": "The associated item is a service order."
+        }
+      ]
     },
     "OrderItemsBuyerInfoList": {
       "type": "object",
@@ -4921,7 +4714,7 @@
       ]
     },
     "ElectronicInvoiceStatus": {
-      "description": "The status of the electronic invoice.",
+      "description":  "The status of the electronic invoice. Only available for Easy Ship orders and orders in the BR marketplace.",
       "type": "string",
       "enum": [
         "NotRequired",
@@ -4952,380 +4745,6 @@
           "description": "The uploaded electronic invoice was accepted."
         }
       ]
-    },
-    "ItemApprovalType": {
-      "type": "string",
-      "enum": [
-        "LEONARDI_APPROVAL"
-      ],
-      "x-docgen-enum-table-extension": [
-        {
-          "value": "LEONARDI_APPROVAL",
-          "description": "Approval process required to fulfill Leonardi order items."
-        }
-      ],
-      "description": "Defines the approval process types available for order items."
-    },
-    "ItemApprovalStatus": {
-      "type": "string",
-      "enum": [
-        "PENDING_SELLING_PARTNER_APPROVAL",
-        "PROCESSING_SELLING_PARTNER_APPROVAL",
-        "PENDING_AMAZON_APPROVAL",
-        "APPROVED",
-        "APPROVED_WITH_CHANGES",
-        "DECLINED"
-      ],
-      "x-docgen-enum-table-extension": [
-        {
-          "value": "PENDING_SELLING_PARTNER_APPROVAL",
-          "description": "Approval process requires an approval action from the selling partner."
-        },
-        {
-          "value": "PROCESSING_SELLING_PARTNER_APPROVAL",
-          "description": "Amazon is processing the selling partner's approval action."
-        },
-        {
-          "value": "PENDING_AMAZON_APPROVAL",
-          "description": "Approval process requires an approval action from Amazon."
-        },
-        {
-          "value": "APPROVED",
-          "description": "All steps of the approval process are complete and the item is approved."
-        },
-        {
-          "value": "APPROVED_WITH_CHANGES",
-          "description": "All steps of the approval process are complete and the item is approved with some changes. This state is only possible if the approval process type allows item level changes."
-        },
-        {
-          "value": "DECLINED",
-          "description": "All steps of the approval process are complete and the item is declined."
-        }
-      ],
-      "description": "Defines the possible status of an order item approval."
-    },
-    "ItemApprovalContext": {
-      "description": "Generic item approval context. Check the applicable restrictions at the specific approval type schemas.",
-      "type": "object",
-      "required": [
-          "ApprovalType",
-          "ApprovalStatus"
-      ],
-      "properties": {
-        "ApprovalType": {
-          "$ref": "#/definitions/ItemApprovalType",
-          "description": "The approval process type required for the order item."
-        },
-        "ApprovalStatus": {
-          "$ref": "#/definitions/ItemApprovalStatus",
-          "description": "Current status of the order item approval."
-        },
-        "ApprovalSupportData": {
-          "$ref": "#/definitions/ApprovalSupportDataElementList",
-          "description": "List of additional data elements supporting the approval process. Check the applicable restrictions at the specific approval type schemas."
-        }
-      }
-    },
-    "ApprovalSupportDataElementList": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/ApprovalSupportDataElement"
-      },
-      "description": "List of additional data elements supporting the approval process. Check the applicable restrictions at the specific approval type schemas."
-    },
-    "ApprovalSupportDataElement": {
-      "description": "<Name, Value> tuple to define item approval support data elements.",
-      "type": "object",
-      "required": [
-        "Name",
-        "Value"
-      ],
-      "properties": {
-        "Name": {
-          "type": "string",
-          "description": "Name of the approval support element. Allowed names are defined in specific approval types schemas."
-        },
-        "Value": {
-          "type": "string",
-          "description": "String value of the approval support element."
-        }
-      }
-    },
-    "ItemApproval": {
-      "description": "Generic item approval. Check the applicable restrictions at the specific approval type schemas.",
-      "type": "object",
-      "required": [
-          "SequenceId",
-          "Timestamp",
-          "Actor",
-          "ApprovalAction",
-          "ApprovalActionProcessStatus"
-      ],
-      "properties": {
-          "SequenceId": {
-              "type": "integer",
-              "description": "Sequence number of the item approval. Each ItemApproval gets its sequenceId automatically from a monotonic increasing function."
-          },
-          "Timestamp": {
-              "type": "string",
-              "description": "Timestamp when the ItemApproval was recorded by Amazon's internal order approvals system. In ISO 8601 date time format."
-          },
-          "Actor": {
-              "type": "string",
-              "enum": [
-                  "SELLING_PARTNER",
-                  "AMAZON"
-              ],
-              "x-docgen-enum-table-extension": [
-                  {
-                      "value": "SELLING_PARTNER",
-                      "description": "High level actor to which the approval actions are assigned when triggered by the selling partner."
-                  },
-                  {
-                      "value": "AMAZON",
-                      "description": "High level actor to which the approval actions are assigned when triggered by Amazon."
-                  }
-              ],
-              "description": "High level actors involved in the approval process."
-          },
-          "Approver": {
-              "type": "string",
-              "description": "Person or system that triggers the approval actions on behalf of the actor."
-          },
-          "ApprovalAction": {
-              "$ref": "#/definitions/ItemApprovalAction",
-              "description": "Approval action that defines the behavior of the ItemApproval."
-          },
-          "ApprovalActionProcessStatus": {
-              "type": "string",
-              "enum": [
-                  "PROCESSING",
-                  "SUCCESS",
-                  "ERROR"
-              ],
-              "x-docgen-enum-table-extension": [
-                  {
-                      "value": "PROCESSING",
-                      "description": "Amazon is processing the item approval action triggered by the selling partner."
-                  },
-                  {
-                      "value": "SUCCESS",
-                      "description": "Item approval action processed successfully."
-                  },
-                  {
-                      "value": "ERROR",
-                      "description": "An error occurred while processing the item approval action. The approval action is ignored."
-                  }
-              ],
-              "description": "Status of approval action."
-          },
-          "ApprovalActionProcessStatusMessage": {
-              "type": "string",
-              "description": "Optional message to communicate optional additional context about the current status of the approval action."
-          }
-      }
-    },
-    "ItemApprovalAction": {
-      "description": "This object represents an approval action used by the actors in the order item approval process. Check the applicable restrictions at the specific approval type schemas.",
-      "type": "object",
-      "required": [
-          "ActionType"
-      ],
-      "properties": {
-          "ActionType": {
-              "type": "string",
-              "enum": [
-                  "APPROVE",
-                  "DECLINE",
-                  "APPROVE_WITH_CHANGES"
-              ],
-              "x-docgen-enum-table-extension": [
-                  {
-                      "value": "APPROVE",
-                      "description": "Defines the action of approving the order item."
-                  },
-                  {
-                      "value": "DECLINE",
-                      "description": "Defines the action of declining the order item."
-                  },
-                  {
-                      "value": "APPROVE_WITH_CHANGES",
-                      "description": "Defines the action of a conditional approval, i.e. the order item approval is only valid if the required changes are made to the order item."
-                  }
-              ],
-              "description": "Defines the type of action for the approval."
-          },
-          "Comment": {
-              "type": "string",
-              "description": "Comment message to provide optional additional context on the approval action."
-          },
-          "Changes": {
-              "type": "object",
-              "properties": {
-                "ItemPrice": {
-                    "$ref": "#/definitions/Money",
-                    "description": "Price to be charged to the customer for each unit of the item. If substitutedBy is specified, this value applies to the substitution item."
-                },
-                "Quantity": {
-                    "type": "integer",
-                    "description": "Quantity approved. If substitutedBy is specified, this value applies to the substitution item."
-                },
-                "SubstitutedBy": {
-                    "$ref": "#/definitions/ItemIdentifier",
-                    "description": "Identifier of the item to substitute this item in the order."
-                }
-            },
-            "description": "Changes required for the approval. Each approval type defines the allowed changes valid sub-set in its specific schema."
-          }
-      }
-    },
-    "ItemIdentifier": {
-      "description": "Item identifiers used in the context of approvals operations.",
-      "type": "object",
-      "required": [
-          "IdentifierType",
-          "Identifier"
-      ],
-      "properties": {
-          "IdentifierType": {
-              "type": "string",
-              "enum": [
-                  "ASIN",
-                  "SELLER_SKU",
-                  "EXTERNAL_ID"
-              ],
-              "x-docgen-enum-table-extension": [
-                  {
-                      "value": "ASIN",
-                      "description": "The Amazon Standard Identification Number (ASIN) of the item."
-                  },
-                  {
-                      "value": "SELLER_SKU",
-                      "description": "The seller stock keeping unit (SKU) of the item."
-                  },
-                  {
-                      "value": "EXTERNAL_ID",
-                      "description": "An external id, e.g. EAN or UPC. Approval specific schemas will define the restrictions on the allowed external identifiers."
-                  }
-              ],
-              "description": "Defines the type of identifiers allowed to specify a substitution."
-          },
-          "Identifier": {
-              "type": "string"
-          }
-      }
-    },
-    "GetOrderApprovalsResponse": {
-      "type": "object",
-      "properties": {
-        "payload": {
-          "description": "The payload for the getOrderItemsApprovals operation.",
-          "$ref": "#/definitions/OrderApprovalsResponse"
-        },
-        "errors": {
-          "description": "One or more unexpected errors occurred during the getOrderItemsApprovals operation.",
-          "$ref": "#/definitions/ErrorList"
-        }
-      },
-      "description": "The response schema for the getOrderApprovalsItems operation."
-    },
-    "OrderApprovalsResponse": {
-      "type": "object",
-      "required": [
-        "OrderItemsApprovalsList"
-      ],
-      "properties": {
-        "NextToken": {
-          "type": "string",
-          "description": "When present and not empty, pass this string token in the next request to return the next response page."
-        },
-        "OrderItemsApprovalsList": {
-          "type": "array",
-          "description": "List of OrderItemApprovals.",
-          "items": {
-            "$ref": "#/definitions/OrderItemApprovals"
-          }
-        }
-      },
-      "description": "The order items list with approvals along with the order ID."
-    },
-    "OrderItemApprovals": {
-      "type": "object",
-      "description": "List of item approvals gathered during the approval process.",
-      "required": [
-        "OrderItemId",
-        "ApprovalType",
-        "ApprovalStatus",
-        "ItemApprovals"
-      ],
-      "properties": {
-        "OrderItemId": {
-          "description": "The unique identifier of the order item.",
-          "type": "string"
-        },
-        "ApprovalType": {
-          "$ref": "#/definitions/ItemApprovalType",
-          "description": "The approval process type required for the order item."
-        },
-        "ApprovalStatus": {
-          "$ref": "#/definitions/ItemApprovalStatus",
-          "description": "Current status of the order item approval."
-        },
-        "ItemApprovals": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ItemApproval"
-          }
-        }
-      }
-    },
-    "UpdateOrderApprovalsRequest": {
-      "description": "The request body for the updateOrderItemsApprovals operation.",
-      "type": "object",
-      "required": [
-          "OrderItemsApprovalRequests"
-      ],
-      "properties": {
-        "Approver": {
-          "type": "string",
-          "description": "Person or system that triggers the approval actions on behalf of the actor."
-        },
-        "OrderItemsApprovalRequests": {
-          "type": "array",
-          "description": "A list of item approval requests.",
-          "items": {
-            "$ref": "#/definitions/OrderItemApprovalRequest"
-          }
-        }
-      }
-    },
-    "OrderItemApprovalRequest": {
-      "description": "Order item apecific approval request.",
-      "type": "object",
-      "required": [
-        "OrderItemId",
-        "ApprovalAction"
-      ],
-      "properties": {
-        "OrderItemId": {
-          "description": "The unique identifier of the order item.",
-          "type": "string"
-        },
-        "ApprovalAction": {
-          "$ref": "#/definitions/ItemApprovalAction",
-          "description": "Approval action that defines the behavior of the ItemApproval."
-        }
-      }
-    },
-    "UpdateItemsApprovalsErrorResponse": {
-      "type": "object",
-      "properties": {
-        "errors": {
-          "description": "One or more unexpected errors occurred during the updateOrderItemsApprovals operation.",
-          "$ref": "#/definitions/ErrorList"
-        }
-      },
-      "description": "The error response schema for the updateOrderItemsApprovals operation."
     },
     "ConfirmShipmentRequest": {
       "type": "object",
@@ -5390,7 +4809,7 @@
         },
         "shipDate": {
           "type": "string",
-          "description": "The shipping date for the package. Must be in ISO-8601 date/time format.",
+          "description": "The shipping date for the package. Must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date/time format.",
           "format": "date-time"
         },
         "shipFromSupplySourceId": {

@@ -1,0 +1,1823 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2022-11-07",
+    "title": "Selling Partner API for Replenishment",
+    "description": "The Selling Partner API for Replenishment (Replenishment API) provides programmatic access to replenishment program metrics and offers. These programs provide recurring delivery of any replenishable item at a frequency chosen by the customer.\n\nThe Replenishment API is available worldwide wherever Amazon Subscribe & Save is available or is supported. The API is available to vendors and FBA selling partners.",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "definitions": {
+    "GetSellingPartnerMetricsRequest": {
+      "description": "The request body for the `getSellingPartnerMetrics` operation.",
+      "type": "object",
+      "required": [
+        "timeInterval",
+        "timePeriodType",
+        "programTypes",
+        "marketplaceId"
+      ],
+      "properties": {
+        "aggregationFrequency": {
+          "$ref": "#/definitions/AggregationFrequency"
+        },
+        "timeInterval": {
+          "description": "A time interval used to compute metrics.",
+          "$ref": "#/definitions/TimeInterval"
+        },
+        "metrics": {
+          "description": "The list of metrics requested. If no metric value is provided, data for all of the metrics will be returned.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Metric"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "timePeriodType": {
+          "$ref": "#/definitions/TimePeriodType"
+        },
+        "marketplaceId": {
+          "description": "The marketplace identifier. The supported marketplaces for both sellers and vendors are US, CA, ES, UK, FR, IT, IN, DE and JP. The supported marketplaces for vendors only are BR, AU, MX, AE and NL.  Refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids) to find the identifier for the marketplace.",
+          "$ref": "#/definitions/MarketplaceId"
+        },
+        "programTypes": {
+          "description": "The list of replenishment program types for which to return metrics.",
+          "$ref": "#/definitions/ProgramTypes"
+        }
+      }
+    },
+    "ListOfferMetricsRequest": {
+      "description": "The request body for the `listOfferMetrics` operation.",
+      "type": "object",
+      "required": [
+        "pagination",
+        "filters"
+      ],
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/ListOfferMetricsRequestPagination",
+          "description": "Use these parameters to paginate through the response."
+        },
+        "sort": {
+          "description": "Use these parameters to sort the response.",
+          "$ref": "#/definitions/ListOfferMetricsRequestSort"
+        },
+        "filters": {
+          "description": "Use these parameters to filter results. Any result must match all provided parameters. For any parameter that is an array, the result must match at least one element in the provided array.",
+          "$ref": "#/definitions/ListOfferMetricsRequestFilters"
+        }
+      }
+    },
+    "ListOffersRequest": {
+      "description": "The request body for the `listOffers` operation.",
+      "type": "object",
+      "required": [
+        "pagination",
+        "filters"
+      ],
+      "properties": {
+        "pagination": {
+          "description": "Use these parameters to paginate through the response.",
+          "$ref": "#/definitions/ListOffersRequestPagination"
+        },
+        "filters": {
+          "description": "Use these parameters to filter results. Any result must match all provided parameters. For any parameter that is an array, the result must match at least one element in the provided array.",
+          "$ref": "#/definitions/ListOffersRequestFilters"
+        },
+        "sort": {
+          "description": "Use these parameters to sort the response.",
+          "$ref": "#/definitions/ListOffersRequestSort"
+        }
+      }
+    },
+    "EligibilityStatus": {
+      "type": "string",
+      "description": "The current eligibility status of an offer.",
+      "enum": [
+        "ELIGIBLE",
+        "INELIGIBLE",
+        "SUSPENDED",
+        "REPLENISHMENT_ONLY_ORDERING"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "ELIGIBLE",
+          "description": "The offer is able to fulfill current subscriptions and add new subscriptions."
+        },
+        {
+          "value": "INELIGIBLE",
+          "description": "The offer will not be able to add new subscriptions and existing subscriptions will be cancelled."
+        },
+        {
+          "value": "SUSPENDED",
+          "description": "The offer will not be able to add new subscriptions but existing subscriptions will be fulfilled."
+        },
+        {
+          "value": "REPLENISHMENT_ONLY_ORDERING",
+          "description": "The offer will not be able to add new subscriptions but existing subscriptions will be fulfilled. This eligibility status also blocks one-time purchases to preserve inventory for existing subscriptions."
+        }
+      ]
+    },
+    "Preference": {
+      "description": "Offer preferences that you can include in the result filter criteria.",
+      "type": "object",
+      "properties": {
+        "autoEnrollment": {
+          "type": "array",
+          "description": "Filters the results to only include offers with the auto-enrollment preference specified.",
+          "items": {
+            "$ref": "#/definitions/AutoEnrollmentPreference"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        }
+      }
+    },
+    "Promotion": {
+      "description": "Offer promotions to include in the result filter criteria.",
+      "type": "object",
+      "properties": {
+        "sellingPartnerFundedBaseDiscount": {
+          "description": "A base discount set by the selling partner on the offer.",
+          "$ref": "#/definitions/DiscountFunding"
+        },
+        "sellingPartnerFundedTieredDiscount": {
+          "description": "A tiered discount set by the selling partner on the offer.",
+          "$ref": "#/definitions/DiscountFunding"
+        },
+        "amazonFundedBaseDiscount": {
+          "$ref": "#/definitions/DiscountFunding",
+          "description": "A base discount set by Amazon on the offer."
+        },
+        "amazonFundedTieredDiscount": {
+          "description": "A tiered discount set by Amazon on the offer.",
+          "$ref": "#/definitions/DiscountFunding"
+        }
+      }
+    },
+    "DiscountFunding": {
+      "description": "The discount funding on the offer.",
+      "type": "object",
+      "properties": {
+        "percentage": {
+          "description": "Filters the results to only include offers with the percentage specified.",
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "int64",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 10
+        }
+      }
+    },
+    "OfferProgramConfiguration" : {
+      "description": "The offer program configuration contains a set of program properties for an offer.",
+      "type": "object",
+      "properties": {
+        "preferences": {
+          "description": "An object which contains the preferences applied to the offer.",
+          "$ref": "#/definitions/OfferProgramConfigurationPreferences"
+        },
+        "promotions": {
+          "description": "An object which contains the promotions applied to the offer.",
+          "$ref": "#/definitions/OfferProgramConfigurationPromotions"
+        },
+        "enrollmentMethod": {
+          "description": "Determines whether the offer was automatically or manually enrolled in the program. This property is only supported for sellers and not vendors.",
+          "$ref": "#/definitions/EnrollmentMethod"
+        }
+      }
+    },
+    "OfferProgramConfigurationPreferences": {
+      "type": "object",
+      "description": "An object which contains the preferences applied to the offer.",
+      "properties": {
+        "autoEnrollment": {
+          "description": "The auto-enrollment preference indicates whether the offer is opted-in to or opted-out of Amazon's auto-enrollment feature.",
+          "$ref": "#/definitions/AutoEnrollmentPreference"
+        }
+      }
+    },
+    "OfferProgramConfigurationPromotions": {
+      "description": "An object which represents all promotions applied to an offer.",
+      "type": "object",
+      "properties": {
+        "sellingPartnerFundedBaseDiscount": {
+          "description": "A base discount set by the selling partner on the offer.",
+          "$ref": "#/definitions/OfferProgramConfigurationPromotionsDiscountFunding"
+        },
+        "sellingPartnerFundedTieredDiscount": {
+          "$ref": "#/definitions/OfferProgramConfigurationPromotionsDiscountFunding",
+          "description": "A tiered discount set by the selling partner on the offer."
+        },
+        "amazonFundedBaseDiscount": {
+          "description": "A base discount set by Amazon on the offer.",
+          "$ref": "#/definitions/OfferProgramConfigurationPromotionsDiscountFunding"
+        },
+        "amazonFundedTieredDiscount": {
+          "description": "A tiered discount set by Amazon on the offer.",
+          "$ref": "#/definitions/OfferProgramConfigurationPromotionsDiscountFunding"
+        }
+      }
+    },
+    "OfferProgramConfigurationPromotionsDiscountFunding": {
+      "description": "A promotional percentage discount applied to the offer.",
+      "type": "object",
+      "properties": {
+        "percentage": {
+          "description": "The percentage discount on the offer.",
+          "type": "number",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "ListOfferMetricsRequestPagination": {
+      "description": "Use these parameters to paginate through the response.",
+      "type": "object",
+      "required": [
+        "limit",
+        "offset"
+      ],
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The maximum number of results to return in the response.",
+          "minimum": 1,
+          "maximum": 500
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The offset from which to retrieve the number of results specified by the `limit` value. The first result is at offset 0.",
+          "minimum": 0,
+          "maximum": 9000
+        }
+      }
+    },
+    "AutoEnrollmentPreference": {
+      "type": "string",
+      "description": "The auto-enrollment preference indicates whether the offer is opted-in to or opted-out of Amazon's auto-enrollment feature.",
+      "enum": [
+        "OPTED_IN",
+        "OPTED_OUT"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "OPTED_IN",
+          "description": "The offer is opted-in to the auto-enrollment program."
+        },
+        {
+          "value": "OPTED_OUT",
+          "description": "The offer is opted-out to the auto-enrollment program."
+        }
+      ]
+    },
+    "ProgramTypes": {
+      "type": "array",
+      "description": "A list of replenishment program types.",
+      "items": {
+        "$ref": "#/definitions/ProgramType"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "ProgramType": {
+      "type": "string",
+      "description": "The replenishment program type.",
+      "enum": [
+        "SUBSCRIBE_AND_SAVE"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "SUBSCRIBE_AND_SAVE",
+          "description": "Subscribe And Save Program."
+        }
+      ]
+    },
+    "EnrollmentMethod": {
+      "type": "string",
+      "description": "The enrollment method used to enroll the offer into the program.",
+      "enum": [
+        "MANUAL",
+        "AUTOMATIC"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "MANUAL",
+          "description": "Offer was manually enrolled in the program."
+        },
+        {
+          "value": "AUTOMATIC",
+          "description": "Offer was automatically enrolled in the program."
+        }
+      ]
+    },
+    "ListOfferMetricsRequestFilters": {
+      "type": "object",
+      "description": "Use these parameters to filter results. Any result must match all provided parameters. For any parameter that is an array, the result must match at least one element in the provided array.",
+      "required": [
+        "timeInterval",
+        "timePeriodType",
+        "programTypes",
+        "marketplaceId"
+      ],
+      "properties": {
+        "aggregationFrequency": {
+          "$ref": "#/definitions/AggregationFrequency"
+        },
+        "timeInterval": {
+          "description": "A time interval used to compute metrics.",
+          "$ref": "#/definitions/TimeInterval"
+        },
+        "timePeriodType": {
+          "$ref": "#/definitions/TimePeriodType"
+        },
+        "marketplaceId": {
+          "description": "The marketplace identifier. The supported marketplaces for both sellers and vendors are US, CA, ES, UK, FR, IT, IN, DE and JP. The supported marketplaces for vendors only are BR, AU, MX, AE and NL.  Refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids) to find the identifier for the marketplace.",
+          "$ref": "#/definitions/MarketplaceId"
+        },
+        "programTypes": {
+          "$ref": "#/definitions/ProgramTypes"
+        },
+        "asins": {
+          "type": "array",
+          "description": "A list of Amazon Standard Identification Numbers (ASINs).",
+          "items": {
+            "type": "string",
+            "description": "Amazon Standard Identification Number."
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        }
+      }
+    },
+    "ListOfferMetricsRequestSort": {
+      "type": "object",
+      "description": "Use these parameters to sort the response.",
+      "required": [
+        "order",
+        "key"
+      ],
+      "properties": {
+        "order": {
+          "description": "The sort order.",
+          "$ref": "#/definitions/SortOrder"
+        },
+        "key": {
+          "$ref":  "#/definitions/ListOfferMetricsSortKey"
+        }
+      }
+    },
+    "ListOfferMetricsSortKey": {
+      "type": "string",
+      "description": "The attribute to use to sort the results.",
+      "enum": [
+        "SHIPPED_SUBSCRIPTION_UNITS",
+        "TOTAL_SUBSCRIPTIONS_REVENUE",
+        "ACTIVE_SUBSCRIPTIONS",
+        "NEXT_90DAYS_SHIPPED_SUBSCRIPTION_UNITS",
+        "NEXT_60DAYS_SHIPPED_SUBSCRIPTION_UNITS",
+        "NEXT_30DAYS_SHIPPED_SUBSCRIPTION_UNITS",
+        "NEXT_90DAYS_TOTAL_SUBSCRIPTIONS_REVENUE",
+        "NEXT_60DAYS_TOTAL_SUBSCRIPTIONS_REVENUE",
+        "NEXT_30DAYS_TOTAL_SUBSCRIPTIONS_REVENUE"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "SHIPPED_SUBSCRIPTION_UNITS",
+          "description": "The number of units shipped to the subscribers over a period of time. Applicable only for the PERFORMANCE timePeriodType."
+        },
+        {
+          "value": "TOTAL_SUBSCRIPTIONS_REVENUE",
+          "description": "The revenue generated from subscriptions over a period of time. Applicable only for the PERFORMANCE timePeriodType."
+        },
+        {
+          "value": "ACTIVE_SUBSCRIPTIONS",
+          "description": "The number of active subscriptions present at the end of the period. Applicable only for the PERFORMANCE timePeriodType."
+        },
+        {
+          "value": "NEXT_90DAYS_SHIPPED_SUBSCRIPTION_UNITS",
+          "description": "The forecasted shipped subscription units for the next 90 days. Applicable only for the FORECAST timePeriodType."
+        },
+        {
+          "value": "NEXT_60DAYS_SHIPPED_SUBSCRIPTION_UNITS",
+          "description": "The forecasted shipped subscription units for the next 60 days. Applicable only for the FORECAST timePeriodType."
+        },
+        {
+          "value": "NEXT_30DAYS_SHIPPED_SUBSCRIPTION_UNITS",
+          "description": "The forecasted shipped subscription units for the next 30 days. Applicable only for the FORECAST timePeriodType."
+        },
+        {
+          "value": "NEXT_90DAYS_TOTAL_SUBSCRIPTIONS_REVENUE",
+          "description": "The forecasted total subscription revenue for the next 90 days. Applicable only for the FORECAST timePeriodType."
+        },
+        {
+          "value": "NEXT_60DAYS_TOTAL_SUBSCRIPTIONS_REVENUE",
+          "description": "The forecasted total subscription revenue for the next 60 days. Applicable only for the FORECAST timePeriodType."
+        },
+        {
+          "value": "NEXT_30DAYS_TOTAL_SUBSCRIPTIONS_REVENUE",
+          "description": "The forecasted total subscription revenue for the next 30 days. Applicable only for the FORECAST timePeriodType."
+        }
+      ]
+    },
+    "ListOffersRequestPagination": {
+      "type": "object",
+      "description": "Use these parameters to paginate through the response.",
+      "required": [
+        "limit",
+        "offset"
+      ],
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The maximum number of results to return in the response.",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The offset from which to retrieve the number of results specified by the `limit` value. The first result is at offset 0.",
+          "minimum": 0,
+          "maximum": 9000
+        }
+      }
+    },
+    "ListOffersRequestFilters": {
+      "type": "object",
+      "description": "Use these parameters to filter results. Any result must match all of the provided parameters. For any parameter that is an array, the result must match at least one element in the provided array.",
+      "required": [
+        "marketplaceId",
+        "programTypes"
+      ],
+      "properties": {
+        "marketplaceId": {
+          "description": "The marketplace identifier. The supported marketplaces for both sellers and vendors are US, CA, ES, UK, FR, IT, IN, DE and JP. The supported marketplaces for vendors only are BR, AU, MX, AE and NL.  Refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids) to find the identifier for the marketplace.",
+          "$ref": "#/definitions/MarketplaceId"
+        },
+        "skus": {
+          "description": "A list of SKUs to filter. This filter is only supported for sellers and not for vendors.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Sku."
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "asins": {
+          "description": "A list of Amazon Standard Identification Numbers (ASINs).",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Amazon Standard Identification Number (ASIN)."
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "eligibilities": {
+          "description": "A list of eligibilities associated with an offer.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EligibilityStatus"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "preferences": {
+          "description": "Offer preferences to include in the result filter criteria.",
+          "$ref": "#/definitions/Preference"
+        },
+        "promotions": {
+          "description": "Offer promotions to include in the result filter criteria.",
+          "$ref": "#/definitions/Promotion"
+        },
+        "programTypes": {
+          "$ref": "#/definitions/ProgramTypes"
+        }
+      }
+    },
+    "ListOffersRequestSort": {
+      "description": "Use these parameters to sort the response.",
+      "type": "object",
+      "required": [
+        "order",
+        "key"
+      ],
+      "properties": {
+        "order": {
+          "description": "The sort order.",
+          "$ref": "#/definitions/SortOrder"
+        },
+        "key": {
+          "$ref": "#/definitions/ListOffersSortKey",
+          "description": "The attribute to use to sort the results."
+        }
+      }
+    },
+    "ListOffersSortKey": {
+      "type": "string",
+      "description": "The attribute to use to sort the results.",
+      "enum": [
+        "ASIN",
+        "SELLING_PARTNER_FUNDED_BASE_DISCOUNT_PERCENTAGE",
+        "SELLING_PARTNER_FUNDED_TIERED_DISCOUNT_PERCENTAGE",
+        "AMAZON_FUNDED_BASE_DISCOUNT_PERCENTAGE",
+        "AMAZON_FUNDED_TIERED_DISCOUNT_PERCENTAGE"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "ASIN",
+          "description": "Sort the offers on the Amazon Standard Identification Number (ASIN)."
+        },
+        {
+          "value": "SELLING_PARTNER_FUNDED_BASE_DISCOUNT_PERCENTAGE",
+          "description": "Sort the offers on the base discount percentage set by the selling partner on the offer."
+        },
+        {
+          "value": "SELLING_PARTNER_FUNDED_TIERED_DISCOUNT_PERCENTAGE",
+          "description": "Sort the offers on the tiered discount percentage set by the selling partner on the offer."
+        },
+        {
+          "value": "AMAZON_FUNDED_BASE_DISCOUNT_PERCENTAGE",
+          "description": "Sort the offers on the base discount percentage set by Amazon on the offer."
+        },
+        {
+          "value": "AMAZON_FUNDED_TIERED_DISCOUNT_PERCENTAGE",
+          "description": "Sort the offers on the tiered discount percentage set by Amazon on the offer."
+        }
+      ]
+    },
+    "MarketplaceId": {
+      "type": "string",
+      "description": "The marketplace identifier. The supported marketplaces for both sellers and vendors are US, CA, ES, UK, FR, IT, IN, DE and JP. The supported marketplaces for vendors only are BR, AU, MX, AE and NL. Refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids) to find the identifier for the marketplace."
+    },
+    "AggregationFrequency": {
+      "description": "The time period used to group data in the response. Note that this is only valid for the performance time period type.",
+      "type": "string",
+      "enum": [
+        "WEEK",
+        "MONTH",
+        "QUARTER",
+        "YEAR"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "WEEK",
+          "description": "ISO Calendar Week."
+        },
+        {
+          "value": "MONTH",
+          "description": "ISO Calendar Month."
+        },
+        {
+          "value": "QUARTER",
+          "description": "ISO Calendar Quarter."
+        },
+        {
+          "value": "YEAR",
+          "description": "ISO Calendar Year."
+        }
+      ]
+    },
+    "TimeInterval": {
+      "type": "object",
+      "description": "A date-time interval in ISO 8601 format which is used to compute metrics. Only the date is required, but you must pass the complete date and time value. For example, November 11, 2022 should be passed as \"2022-11-07T00:00:00Z\". Note that only data for the trailing 2 years is supported.\n\n **Note**: The `listOfferMetrics` operation only supports a time interval which covers a single unit of the aggregation frequency. For example, for a MONTH aggregation frequency, the duration of the interval between the startDate and endDate can not be more than 1 month.",
+      "required": [
+        "startDate",
+        "endDate"
+      ],
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this object is used as a request parameter, the specified startDate is adjusted based on the aggregation frequency.\n\n* For WEEK the metric is computed from the first day of the week (that is, Sunday based on ISO 8601) that contains the startDate.\n* For MONTH the metric is computed from the first day of the month that contains the startDate.\n* For QUARTER the metric is computed from the first day of the quarter that contains the startDate.\n* For YEAR the metric is computed from the first day of the year that contains the startDate."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this object is used as a request parameter, the specified endDate is adjusted based on the aggregation frequency.\n\n* For WEEK the metric is computed up to the last day of the week (that is, Sunday based on ISO 8601) that contains the endDate.\n* For MONTH, the metric is computed up to the last day that contains the endDate.\n* For QUARTER the metric is computed up to the last day of the quarter that contains the endDate.\n* For YEAR the metric is computed up to the last day of the year that contains the endDate.\n Note: The end date may be adjusted to a lower value based on the data available in our system."
+        }
+      }
+    },
+    "Metric": {
+      "type": "string",
+      "description": "The metric name and description.",
+      "enum": [
+        "SHIPPED_SUBSCRIPTION_UNITS",
+        "TOTAL_SUBSCRIPTIONS_REVENUE",
+        "ACTIVE_SUBSCRIPTIONS",
+        "NOT_DELIVERED_DUE_TO_OOS",
+        "SUBSCRIBER_NON_SUBSCRIBER_AVERAGE_REVENUE"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "SHIPPED_SUBSCRIPTION_UNITS",
+          "description": "The number of units shipped to the subscribers over a period of time."
+        },
+        {
+          "value": "TOTAL_SUBSCRIPTIONS_REVENUE",
+          "description": "The revenue generated from subscriptions over a period of time."
+        },
+        {
+          "value": "ACTIVE_SUBSCRIPTIONS",
+          "description": "The number of active subscriptions present at the end of the period."
+        },
+        {
+          "value": "NOT_DELIVERED_DUE_TO_OOS",
+          "description": "The percentage of items that were not shipped out of the total shipped units over a period of time due to being out of stock."
+        },
+        {
+          "value": "SUBSCRIBER_NON_SUBSCRIBER_AVERAGE_REVENUE",
+          "description": "The average revenue per subscriber and non-subscriber over the past 12 months for sellers and 6 months for vendors."
+        }
+      ]
+    },
+    "SortOrder": {
+      "type": "string",
+      "description": "The sort order.",
+      "enum": [
+        "ASC",
+        "DESC"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "ASC",
+          "description": "Sort the results in ascending order."
+        },
+        {
+          "value": "DESC",
+          "description": "Sort the results in descending order."
+        }
+      ]
+    },
+    "TimePeriodType": {
+      "type": "string",
+      "description": "The time period type that determines whether the metrics requested are backward-looking (performance) or forward-looking (forecast).",
+      "enum": [
+        "PERFORMANCE",
+        "FORECAST"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "PERFORMANCE",
+          "description": "Indicates past performance metrics."
+        },
+        {
+          "value": "FORECAST",
+          "description": "Indicates forecasted metrics. Only TOTAL_SUBSCRIPTIONS_REVENUE and SHIPPED_SUBSCRIPTION_UNITS are supported. Forecast data is supported for sellers but not for vendors."
+        }
+      ]
+    },
+    "GetSellingPartnerMetricsResponse": {
+      "description": "The response schema for the `getSellingPartnerMetrics` operation.",
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "type": "array",
+          "description": "A list of metrics data for the selling partner.",
+          "items": {
+            "$ref": "#/definitions/GetSellingPartnerMetricsResponseMetric"
+          }
+        }
+      }
+    },
+    "GetSellingPartnerMetricsResponseMetric": {
+      "type": "object",
+      "description": "An object which contains metric data for a selling partner.",
+      "properties": {
+        "notDeliveredDueToOOS": {
+          "description": "The percentage of items that were not shipped out of the total shipped units over a period of time due to being out of stock. Applicable only for the PERFORMANCE timePeriodType.",
+          "type": "number",
+          "format": "double",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "totalSubscriptionsRevenue": {
+          "description": "The revenue generated from subscriptions over a period of time. Applicable for both the PERFORMANCE and FORECAST timePeriodType.",
+          "type": "number",
+          "format": "double",
+          "minimum": 0
+        },
+        "shippedSubscriptionUnits": {
+          "description": "The number of units shipped to the subscribers over a period of time. Applicable for both the PERFORMANCE and FORECAST timePeriodType.",
+          "type": "number",
+          "format": "int64",
+          "minimum": 0
+        },
+        "activeSubscriptions": {
+          "description": "The number of active subscriptions present at the end of the period. Applicable only for the PERFORMANCE timePeriodType.",
+          "type": "number",
+          "format": "int64",
+          "minimum": 0
+        },
+        "subscriberAverageRevenue": {
+          "description": "The average revenue per subscriber of the program over a period of past 12 months for sellers and 6 months for vendors. Applicable only for the PERFORMANCE timePeriodType.",
+          "type": "number",
+          "format": "double",
+          "minimum": 0
+        },
+        "nonSubscriberAverageRevenue": {
+          "description": "The average revenue per non-subscriber of the program over a period of past 12 months for sellers and 6 months for vendors. Applicable only for the PERFORMANCE timePeriodType.",
+          "type": "number",
+          "format": "double",
+          "minimum": 0
+        },
+        "timeInterval": {
+          "description": "A time interval used to compute metrics.",
+          "$ref": "#/definitions/TimeInterval"
+        },
+        "currencyCode": {
+          "type": "string",
+          "description": "The currency code in ISO 4217 format."
+        }
+      }
+    },
+    "ListOfferMetricsResponse": {
+      "description": "The response schema for the `listOfferMetrics` operation.",
+      "type": "object",
+      "properties": {
+        "offers": {
+          "type": "array",
+          "description": "A list of offers and associated metrics.",
+          "items": {
+            "$ref": "#/definitions/ListOfferMetricsResponseOffer"
+          }
+        },
+        "pagination": {
+          "description": "Use these parameters to paginate through the response.",
+          "$ref": "#/definitions/PaginationResponse"
+        }
+      }
+    },
+    "ListOffersResponse": {
+      "description": "The response schema for the `listOffers` operation.",
+      "type": "object",
+      "properties": {
+        "offers": {
+          "type": "array",
+          "description": "A list of offers.",
+          "items": {
+            "$ref": "#/definitions/ListOffersResponseOffer"
+          }
+        },
+        "pagination": {
+          "description": "Use these parameters to paginate through the response.",
+          "$ref": "#/definitions/PaginationResponse"
+        }
+      }
+    },
+    "ListOffersResponseOffer": {
+      "description": "An object which contains details about an offer.",
+      "type": "object",
+      "properties": {
+        "sku": {
+          "description": "The SKU. This property is only supported for sellers and not for vendors.",
+          "type": "string"
+        },
+        "asin": {
+          "description": "The Amazon Standard Identification Number (ASIN).",
+          "type": "string"
+        },
+        "marketplaceId": {
+          "description": "The marketplace identifier. The supported marketplaces for both sellers and vendors are US, CA, ES, UK, FR, IT, IN, DE and JP. The supported marketplaces for vendors only are BR, AU, MX, AE and NL.  Refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids) to find the identifier for the marketplace.",
+          "$ref": "#/definitions/MarketplaceId"
+        },
+        "eligibility": {
+          "description": "The offer eligibility status.",
+          "$ref": "#/definitions/EligibilityStatus"
+        },
+        "offerProgramConfiguration": {
+          "$ref": "#/definitions/OfferProgramConfiguration"
+        },
+        "programType": {
+          "description": "The replenishment program for the offer.",
+          "$ref": "#/definitions/ProgramType"
+        },
+        "vendorCodes": {
+          "description": "A list of vendor codes associated with the offer.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "An alphanumeric code that represents a relationship between Amazon and a vendor."
+          }
+        }
+      }
+    },
+    "PaginationResponse": {
+      "description": "Use these parameters to paginate through the response.",
+      "type": "object",
+      "properties": {
+        "totalResults": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "description": "Total number of results matching the given filter criteria."
+        }
+      }
+    },
+    "ListOfferMetricsResponseOffer": {
+      "type": "object",
+      "description": "An object which contains offer metrics.",
+      "properties": {
+        "asin": {
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN)."
+        },
+        "notDeliveredDueToOOS": {
+          "description": "The percentage of items that were not shipped out of the total shipped units over a period of time due to being out of stock. Applicable only for the PERFORMANCE timePeriodType.",
+          "type": "number",
+          "format": "double",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "totalSubscriptionsRevenue": {
+          "description": "The revenue generated from subscriptions over a period of time. Applicable only for the PERFORMANCE timePeriodType.",
+          "type": "number",
+          "format": "double",
+          "minimum": 0
+        },
+        "shippedSubscriptionUnits": {
+          "description": "The number of units shipped to the subscribers over a period of time. Applicable only for the PERFORMANCE timePeriodType.",
+          "type": "number",
+          "format": "int64",
+          "minimum": 0
+        },
+        "activeSubscriptions": {
+          "description": "The number of active subscriptions present at the end of the period. Applicable only for the PERFORMANCE timePeriodType.",
+          "type": "number",
+          "format": "int64",
+          "minimum": 0
+        },
+        "revenuePenetration": {
+          "description": "The percentage of total program revenue out of total product revenue. Applicable only for the PERFORMANCE timePeriodType.",
+          "type": "number",
+          "format": "double",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "next30DayTotalSubscriptionsRevenue": {
+          "description": "The forecasted total subscription revenue for the next 30 days. Applicable only for the FORECAST timePeriodType.",
+          "type": "number",
+          "format": "double",
+          "minimum": 0
+        },
+        "next60DayTotalSubscriptionsRevenue": {
+          "description": "The forecasted total subscription revenue for the next 60 days. Applicable only for the FORECAST timePeriodType.",
+          "type": "number",
+          "format": "double",
+          "minimum": 0
+        },
+        "next90DayTotalSubscriptionsRevenue": {
+          "description": "The forecasted total subscription revenue for the next 90 days. Applicable only for the FORECAST timePeriodType.",
+          "type": "number",
+          "format": "double",
+          "minimum": 0
+        },
+        "next30DayShippedSubscriptionUnits": {
+          "description": "The forecasted shipped subscription units for the next 30 days. Applicable only for the FORECAST timePeriodType.",
+          "type": "number",
+          "format": "int64",
+          "minimum": 0
+        },
+        "next60DayShippedSubscriptionUnits": {
+          "description": "The forecasted shipped subscription units for the next 60 days. Applicable only for the FORECAST timePeriodType.",
+          "type": "number",
+          "format": "int64",
+          "minimum": 0
+        },
+        "next90DayShippedSubscriptionUnits": {
+          "description": "The forecasted shipped subscription units for the next 90 days. Applicable only for the FORECAST timePeriodType.",
+          "type": "number",
+          "format": "int64",
+          "minimum": 0
+        },
+        "timeInterval": {
+          "description": "A time interval used to compute metrics.",
+          "$ref": "#/definitions/TimeInterval"
+        },
+        "currencyCode": {
+          "type": "string",
+          "description": "The currency code in ISO 4217 format."
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "object",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occurred.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ]
+    }
+  },
+  "paths": {
+    "/replenishment/2022-11-07/sellingPartners/metrics/search": {
+      "post": {
+        "tags": [
+          "sellingpartners"
+        ],
+        "description": "Returns aggregated replenishment program metrics for a selling partner. \n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "getSellingPartnerMetrics",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/GetSellingPartnerMetricsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetSellingPartnerMetricsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {
+                "metrics": [
+                  {
+                    "subscriberAverageRevenue": 125.93,
+                    "nonSubscriberAverageRevenue": 73.62,
+                    "shippedSubscriptionUnits": 5290,
+                    "notDeliveredDueToOOS": 5.54,
+                    "totalSubscriptionsRevenue": 131340.24,
+                    "activeSubscriptions": 0,
+                    "currencyCode": "USD",
+                    "timeInterval": {
+                      "endDate": "2023-05-09T22:36:56Z",
+                      "startDate": "2022-05-09T22:36:56Z"
+                    }
+                  }
+                ]
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "aggregationFrequency": "YEAR",
+                          "timeInterval": {
+                            "startDate": "2022-01-01T00:00:00Z",
+                            "endDate": "2022-12-31T00:00:00Z"
+                          },
+                          "metrics": [
+                            "TOTAL_SUBSCRIPTIONS_REVENUE"
+                          ],
+                          "timePeriodType": "PERFORMANCE",
+                          "marketplaceId": "ATVPDKIKX0DER",
+                          "programTypes": [
+                            "SUBSCRIBE_AND_SAVE"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "metrics": [
+                      {
+                        "subscriberAverageRevenue": 125.93,
+                        "nonSubscriberAverageRevenue": 73.62,
+                        "shippedSubscriptionUnits": 5290,
+                        "notDeliveredDueToOOS": 5.54,
+                        "totalSubscriptionsRevenue": 131340.24,
+                        "activeSubscriptions": 0,
+                        "currencyCode": "USD",
+                        "timeInterval": {
+                          "endDate": "2023-05-09T22:36:56Z",
+                          "startDate": "2022-05-09T22:36:56Z"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "aggregationFrequency": "DAY",
+                          "timeInterval": {
+                            "startDate": "2022-01-01T00:00:00Z",
+                            "endDate": "2023-01-01T00:00:00Z"
+                          },
+                          "metrics": [
+                            "SHIPPED_SUBSCRIPTION_UNITS",
+                            "TOTAL_SUBSCRIPTIONS_REVENUE",
+                            "NOT_DELIVERED_DUE_TO_OOS",
+                            "ACTIVE_SUBSCRIPTIONS",
+                            "SUBSCRIBER_NON_SUBSCRIBER_AVERAGE_REVENUE"
+                          ],
+                          "timePeriodType": "PERFORMANCE",
+                          "marketplaceId": "ATVPDKIKX0DER",
+                          "programTypes": [
+                            "SUBSCRIBE_AND_SAVE"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Unsupported aggregationFrequency is provided. Only WEEK, MONTH, QUARTER and YEAR are supported"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/replenishment/2022-11-07/offers/metrics/search": {
+      "post": {
+        "tags": [
+          "offers"
+        ],
+        "description": "Returns aggregated replenishment program metrics for a selling partner's offers.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "listOfferMetrics",
+        "parameters": [
+          {
+            "name": "body",
+            "description": "The request body for the `listOfferMetrics` operation.",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ListOfferMetricsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListOfferMetricsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {
+                "offers": [
+                  {
+                    "notDeliveredDueToOOS": 30.78,
+                    "shippedSubscriptionUnits": 20,
+                    "totalSubscriptionsRevenue": 12.89,
+                    "asin": "B000TMUDOW",
+                    "revenuePenetration": 10.34,
+                    "timeInterval": {
+                      "endDate": "2023-03-11T00:00:00Z",
+                      "startDate": "2023-03-05T00:00:00Z"
+                    },
+                    "currencyCode": "USD"
+                  },
+                  {
+                    "notDeliveredDueToOOS": 40.78,
+                    "shippedSubscriptionUnits": 40,
+                    "totalSubscriptionsRevenue": 34.03,
+                    "asin": "B004CLH5CY",
+                    "revenuePenetration": 9.87,
+                    "timeInterval": {
+                      "endDate": "2023-03-11T00:00:00Z",
+                      "startDate": "2023-03-05T00:00:00Z"
+                    },
+                    "currencyCode": "USD"
+                  }
+                ],
+                "pagination": {
+                  "totalResults": 17
+                }
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "filters": {
+                            "aggregationFrequency": "YEAR",
+                            "timeInterval": {
+                              "startDate": "2022-01-01T00:00:00Z",
+                              "endDate": "2022-12-31T00:00:00Z"
+                            },
+                            "marketplaceId": "ATVPDKIKX0DER",
+                            "programTypes": [
+                              "SUBSCRIBE_AND_SAVE"
+                            ],
+                            "timePeriodType": "PERFORMANCE",
+                            "asins": [
+                              "B07CYBR5GZ",
+                              "B07CYJJW8H"
+                            ]
+                          },
+                          "pagination": {
+                            "limit": 2,
+                            "offset": 0
+                          },
+                          "sort": {
+                            "order": "ASC",
+                            "key": "TOTAL_SUBSCRIPTIONS_REVENUE"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "offers": [
+                      {
+                        "asin": "B07CYBR5GZ",
+                        "notDeliveredDueToOOS": 10.2,
+                        "totalSubscriptionsRevenue": 100.45,
+                        "revenuePenetration": 23.6,
+                        "shippedSubscriptionUnits": 100,
+                        "activeSubscriptions": 100,
+                        "timeInterval": {
+                          "startDate": "2022-01-01T00:00:00Z",
+                          "endDate": "2022-12-31T00:00:00Z"
+                        },
+                        "currencyCode": "USD"
+                      },
+                      {
+                        "asin": "B07CYJJW8H",
+                        "notDeliveredDueToOOS": 12.78,
+                        "totalSubscriptionsRevenue": 80.11,
+                        "revenuePenetration": 35.90,
+                        "shippedSubscriptionUnits": 100,
+                        "activeSubscriptions": 100,
+                        "timeInterval": {
+                          "startDate": "2022-01-01T00:00:00Z",
+                          "endDate": "2022-12-31T00:00:00Z"
+                        },
+                        "currencyCode": "USD"
+                      }
+                    ],
+                    "pagination": {
+                      "totalResults": 17
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "filters": {
+                            "aggregationFrequency": "DAY",
+                            "timeInterval": {
+                              "startDate": "2022-01-01T00:00:00Z",
+                              "endDate": "2022-12-31T00:00:00Z"
+                            },
+                            "marketplaceId": "ATVPDKIKX0DER",
+                            "programTypes": [
+                              "SUBSCRIBE_AND_SAVE"
+                            ],
+                            "timePeriodType": "PERFORMANCE",
+                            "asins": [
+                              "B07CYBR5GZ"
+                            ]
+                          },
+                          "pagination": {
+                            "limit": 1,
+                            "offset": 0
+                          },
+                          "sort": {
+                            "order": "ASC",
+                            "key": "TOTAL_SUBSCRIPTIONS_REVENUE"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Unsupported aggregationFrequency is provided. Only WEEK, MONTH, QUARTER and YEAR are supported"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/replenishment/2022-11-07/offers/search": {
+      "post": {
+        "tags": [
+          "offers"
+        ],
+        "description": "Returns the details of a selling partner's replenishment program offers. Note that this operation only supports sellers at this time.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "listOffers",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ListOffersRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListOffersResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {
+                "offers": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "offerProgramConfiguration": {
+                      "preferences":{
+                        "autoEnrollment":"OPTED_IN"
+                      },
+                      "promotions": {
+                        "sellingPartnerFundedBaseDiscount": {
+                          "percentage": 5
+                        },
+                        "sellingPartnerFundedTieredDiscount": {
+                          "percentage": 0
+                        },
+                        "amazonFundedBaseDiscount": {
+                          "percentage": 5
+                        },
+                        "amazonFundedTieredDiscount": {
+                          "percentage": 10
+                        }
+                      },
+                      "enrollmentMethod": "AUTOMATIC"
+                    },
+                    "programType": "SUBSCRIBE_AND_SAVE",
+                    "eligibility": "ELIGIBLE",
+                    "asin": "B09KR5B7FH",
+                    "sku": "SKU_OPTED_IN"
+                  }
+                ],
+                "pagination": {
+                  "totalResults": 1
+                }
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "filters": {
+                            "eligibilities": [
+                              "ELIGIBLE"
+                            ],
+                            "marketplaceId": "ATVPDKIKX0DER",
+                            "programTypes": [
+                              "SUBSCRIBE_AND_SAVE"
+                            ],
+                            "preferences": {
+                              "autoEnrollment": ["OPTED_IN", "OPTED_OUT"]
+                            },
+                            "promotions": {
+                              "sellingPartnerFundedTieredDiscount": {
+                                "percentage": [0, 5, 10]
+                              }
+                            }
+                          },
+                          "pagination": {
+                            "limit": 25,
+                            "offset": 0
+                          },
+                          "sort": {
+                            "order": "ASC",
+                            "key": "ASIN"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "offers": [
+                      {
+                        "asin": "B07CYBR5GZ",
+                        "marketplaceId": "ATVPDKIKX0DER",
+                        "sku": "TEST_SKU_A",
+                        "eligibility": "ELIGIBLE",
+                        "vendorCodes": ["ABCDE","PQRST"],
+                        "offerProgramConfiguration": {
+                          "preferences":{
+                            "autoEnrollment":"OPTED_IN"
+                          },
+                          "promotions": {
+                            "sellingPartnerFundedBaseDiscount": {
+                              "percentage": 0
+                            },
+                            "sellingPartnerFundedTieredDiscount": {
+                              "percentage": 5
+                            },
+                            "amazonFundedBaseDiscount": {
+                              "percentage": 10
+                            },
+                            "amazonFundedTieredDiscount": {
+                              "percentage": 15
+                            }
+                          },
+                          "enrollmentMethod": "AUTOMATIC"
+                        },
+                        "programType": "SUBSCRIBE_AND_SAVE"
+                      },
+                      {
+                        "asin": "B07CYCR5GZ",
+                        "marketplaceId": "ATVPDKIKX0DER",
+                        "sku": "TEST_SKU_A",
+                        "eligibility": "ELIGIBLE",
+                        "vendorCodes": ["ABCDE","PQRST"],
+                        "offerProgramConfiguration": {
+                          "preferences":{
+                            "autoEnrollment":"OPTED_IN"
+                          },
+                          "promotions": {
+                            "sellingPartnerFundedBaseDiscount": {
+                              "percentage": 5
+                            },
+                            "sellingPartnerFundedTieredDiscount": {
+                              "percentage": 0
+                            },
+                            "amazonFundedBaseDiscount": {
+                              "percentage": 5
+                            },
+                            "amazonFundedTieredDiscount": {
+                              "percentage": 10
+                            }
+                          },
+                          "enrollmentMethod": "AUTOMATIC"
+                        },
+                        "programType": "SUBSCRIBE_AND_SAVE"
+                      }
+                    ],
+                    "pagination": {
+                      "totalResults": 2
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "filters": {
+                            "eligibilities": [
+                              "BAD_VALUE"
+                            ],
+                            "marketplaceId": "ATVPDKIKX0DER",
+                            "programTypes": [
+                              "SUBSCRIBE_AND_SAVE"
+                            ]
+                          },
+                          "pagination": {
+                            "limit": 25,
+                            "offset": 0
+                          },
+                          "sort": {
+                            "order": "ASC",
+                            "key": "ASIN"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Unsupported eligibility is provided. Only ELIGIBLE, INELIGIBLE, SUSPENDED and REPLENISHMENT_ONLY_ORDERING are supported"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
