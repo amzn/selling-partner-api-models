@@ -1,0 +1,339 @@
+schema {
+  query: Query
+}
+
+"""
+This directive specifies the retention duration of a query containing a
+particular field. When a query contains multiple fields with different
+retentions, the shortest (minimum) retention is applied to the query. The
+retention of a query's resulting documents always matches the retention of the query.
+"""
+directive @resultRetention(
+    "An ISO 8601 duration."
+    duration: String!
+  ) on FIELD_DEFINITION
+
+"The advertisements spend data summary for the seller's account aggregated by transaction event type: charge."
+type AdSummary {
+  "Advertisement type name, for example: \"Sponsored Products charge\"."
+  adTypeName: String! @resultRetention(duration : "P30D")
+  "Charge aggregated detail for an advertisement type."
+  charge: AggregatedDetail
+}
+
+"""
+The aggregated transaction detail for the seller's account aggregated by
+transaction event type and transaction type, for example: charge and
+"fbaFulfillmentFee".
+"""
+type AggregatedDetail {
+  "Amount calculated by rate card."
+  amount: Amount! @resultRetention(duration : "P30D")
+  """
+  Final charge amount per unit after promotion and tax are considered. This
+  value is calculated by dividing totalAmount by quantity. This value will be
+  null when quantity is null.
+  """
+  amountPerUnit: Amount @resultRetention(duration : "P30D")
+  "The promotion amount associated with this transaction type. This value is deducted from amount when computing totalAmount."
+  promotionAmount: Amount! @resultRetention(duration : "P30D")
+  """
+  Charged quantity for a given product in the seller's account. When the fee is
+  not charged on a per unit basis, this value may be null or may not be an integer.
+  """
+  quantity: Float @resultRetention(duration : "P30D")
+  "The tax amount associated with this transaction type. This value is added to amount when computing totalAmount."
+  taxAmount: Amount! @resultRetention(duration : "P30D")
+  """
+  Final charge amount after promotion and tax are considered. This value is
+  calculated as amount - promotionAmount + taxAmount.
+  """
+  totalAmount: Amount! @resultRetention(duration : "P30D")
+}
+
+"Monetary amount with the corresponding currency code."
+type Amount {
+  "The amount."
+  amount: Float!
+  "Currency code of the amount in ISO 4217 format."
+  currencyCode: String!
+}
+
+"A root type for seller economics queries version 2024_03_15."
+type Analytics_Economics_2024_03_15 {
+  """
+  A query to retrieve seller economics data for the seller's account aggregated
+  by date and product identifier. The seller economics data consists of
+  aggregated sales, fees, and cost for selected period.
+  """
+  economics(
+    "Determines how the seller economics data should be aggregated. By default it's aggregated by MSKU and DAY."
+    aggregateBy: EconomicsAggregation, 
+    """
+    The end date of the seller economics data to retrieve. If the provided end
+    date occurs mid-week or mid-month in UTC+0 timezone, the preceding Saturday
+    for WEEK date granularity or the last day of the previous month for MONTH
+    date granularity will be used instead.
+    """
+    endDate: Date!, 
+    "Specifies which fee types to breakdown into individual components."
+    includeComponentsForFeeTypes: [FeeType], 
+    "The marketplace identifiers to retrieve seller economics data for."
+    marketplaceIds: [String]!, 
+    """
+    The start date of the seller economics data to retrieve. The start date must
+    be no more than two years ago. If the provided start date occurs mid-week or
+    mid-month in UTC+0 timezone, the following Sunday for WEEK date granularity
+    or the first day of the next month for MONTH date granularity will be used instead.
+    """
+    startDate: Date!
+  ): [Economics]
+}
+
+"The seller economics data for a given product in the seller's account."
+type Economics {
+  """
+  The advertising spend data for the product within the specified date range.
+  Supported advertisement charge types can be found
+  [here](https://sellercentral.amazon.com/gp/help/GZ8Y22NL2FSRY8M5).
+  """
+  ads: [AdSummary]
+  """
+  The Amazon Standard Identification Number of the child product. Child products
+  are unique, sellable products that are related in our catalog to a single,
+  non-sellable parent product. Note: This field is only present when product
+  aggregation is CHILD_ASIN, FNSKU or MSKU.
+  """
+  childAsin: String @resultRetention(duration : "P30D")
+  """
+  The off Amazon cost provided by the seller for this product (per unit). The
+  off Amazon cost can be provided on [SKU
+  Central](https://sellercentral.amazon.com/skucentral?mSku=xxx) and [Revenue
+  Calculator](https://sellercentral.amazon.com/revcal).
+  """
+  cost: PerUnitCost
+  "The end date of the seller economics data, please note this date may be adjusted to the end of DateGranularity."
+  endDate: Date! @resultRetention(duration : "P30D")
+  """
+  The fees applied to the product within the specified date range. Supported fee
+  types can be found
+  [here](https://sellercentral.amazon.com/gp/help/GZ8Y22NL2FSRY8M5.)
+  """
+  fees: [FeeSummary]!
+  """
+  The Fulfillment Network Stock Keeping Unit (FNSKU) of the product. Note: This
+  field is only present when product aggregation is FNSKU or MSKU. This field
+  may be null when product aggregation is MSKU and the row is associated with
+  more than one FNSKU.
+  """
+  fnsku: String @resultRetention(duration : "P30D")
+  "The marketplace identifier of the seller economics data."
+  marketplaceId: String! @resultRetention(duration : "P30D")
+  """
+  The Merchant Stock Keeping Unit (MSKU) of the product. Note: This field is
+  only present when product aggregation is FNSKU or MSKU. This field may be null
+  when product aggregation is FNSKU and the row is associated with more than one MSKU.
+  """
+  msku: String @resultRetention(duration : "P30D")
+  """
+  The net proceeds for this product within the specified date range. The value
+  remains unchanged regardless of whether sales, fees, ads, or cost are selected in the query.
+  """
+  netProceeds: NetProceeds!
+  """
+  The Amazon Standard Identification Number of the parent product. A parent
+  product appears in our catalog as a non-buyable, generic identifier for a
+  product that has buyable variations (child products).
+  """
+  parentAsin: String! @resultRetention(duration : "P30D")
+  "The sales data for the product within the specified date range."
+  sales: Sales!
+  "The start date of the seller economics data, please note this date may be adjusted to the start of DateGranularity."
+  startDate: Date! @resultRetention(duration : "P30D")
+}
+
+"""
+The item level per unit cost provided by the seller and applicable to
+Fulfillment by Amazon (FBA) products. Fields in this type will be null if not
+provided by the seller.
+"""
+type FbaPerUnitCost {
+  """
+  Cost of shipping the Fulfillment by Amazon (FBA) item to an Amazon fulfillment
+  center. This value is provided by the seller and applicable to Fulfillment by
+  Amazon (FBA) products.
+  """
+  shippingToAmazonCost: Amount @resultRetention(duration : "P30D")
+}
+
+"""
+A fee applied to a given product in the seller's account within a given date
+range. Fee information can be found
+[here](https://sellercentral.amazon.com/gp/help/GZ8Y22NL2FSRY8M5).
+"""
+type Fee {
+  "Fee aggregated transaction detail."
+  aggregatedDetail: AggregatedDetail!
+  """
+  A breakdown of the fee into individual components. This field will be null for
+  fee types that cannot be divided into individual components.
+  """
+  components: [FeeComponent] @resultRetention(duration : "P30D")
+}
+
+"""
+The fee component data applied to a given product in the seller's account within
+a given date range. It's breakdown of parent fee.
+"""
+type FeeComponent {
+  "Fee component aggregated detail."
+  aggregatedDetail: AggregatedDetail!
+  "Fee component name, for example: \"Base fulfillment fee\"."
+  name: String! @resultRetention(duration : "P30D")
+}
+
+"The fees data summary for the seller's account aggregated by transaction event type: charge."
+type FeeSummary {
+  "Charge summary for a fee type."
+  charge: Fee
+  "Fee type name, for example: \"FBA fulfillment fees\""
+  feeTypeName: String! @resultRetention(duration : "P30D")
+}
+
+"""
+The item level per unit cost provided by the seller and applicable to Merchant
+Fulfilled Network (MFN) products. Fields in this type will be null if not
+provided by the seller.
+"""
+type MfnPerUnitCost {
+  """
+  Cost of fulfilling an order containing the product, including labor, packing
+  material, shipping to customer, customer service etc. This value is provided
+  by the seller and applicable to Merchant Fulfilled Network (MFN) products.
+  """
+  fulfillmentCost: Amount @resultRetention(duration : "P30D")
+  """
+  Cost to store a single unit of the product per month. This value is provided
+  by the seller and applicable to Merchant Fulfilled Network (MFN) products.
+  """
+  storageCost: Amount @resultRetention(duration : "P30D")
+}
+
+"""
+The net proceeds for a given product in the seller's account for a given time
+range. These fields are calculated as sales.netProductSales - sum of
+fees.charge.totalAmount - sum of ads.charge.totalAmount - (cost of Merchant
+Fulfilled Network (MFN) products or cost of Fulfillment by Amazon (FBA)
+products) * sales.netUnitsSold.
+"""
+type NetProceeds {
+  """
+  Net proceeds per unit for a given product in the seller's account for a given
+  time range. This value is calculated by dividing total by sales.netUnitsSold.
+  """
+  perUnit: Amount @resultRetention(duration : "P30D")
+  "\"Total net proceeds for a given product in the seller's account for a given time range."
+  total: Amount @resultRetention(duration : "P30D")
+}
+
+"The item level per unit cost provided by seller. Fields in this type will be null if not provided by the seller."
+type PerUnitCost {
+  """
+  Cost to manufacture or acquire the product. This value is provided by the
+  seller and is applicable to both Fulfillment by Amazon (FBA) and Merchant
+  Fulfilled Network (MFN) products.
+  """
+  costOfGoodsSold: Amount @resultRetention(duration : "P30D")
+  "The item level per unit cost provided by the seller and applicable to Fulfillment by Amazon (FBA) products."
+  fbaCost: FbaPerUnitCost
+  "The item level per unit cost provided by the seller and applicable to Merchant Fulfilled Network (MFN) products."
+  mfnCost: MfnPerUnitCost
+  """
+  Miscellaneous costs not related to this specific product, ex: overhead, etc.
+  This value is provided by the seller and applicable to both Fulfillment by
+  Amazon (FBA) and Merchant Fulfilled Network (MFN) products.
+  """
+  miscellaneousCost: Amount @resultRetention(duration : "P30D")
+}
+
+"A root type for queries"
+type Query {
+  "Seller economics queries version 2024_03_15."
+  analytics_economics_2024_03_15: Analytics_Economics_2024_03_15
+}
+
+"The sales data for a given product in the seller's account within a given date range."
+type Sales {
+  """
+  The average price of the units sold in the selected time period, calculated by
+  dividing the orderedProductSales by unitsOrdered for the selected time period.
+  This field will be null when unitsOrdered is 0.
+  """
+  averageSellingPrice: Amount @resultRetention(duration : "P30D")
+  "The amount of net product sales, calculated by orderedProductSales - refundedProductSales."
+  netProductSales: Amount! @resultRetention(duration : "P30D")
+  "The number of net units sold for the selected time period, calculated by unitsOrdered - unitsRefunded."
+  netUnitsSold: Long! @resultRetention(duration : "P30D")
+  """
+  The amount of ordered product sales, calculated by multiplying the price of
+  products and the number of units sold for the selected time period.
+  """
+  orderedProductSales: Amount! @resultRetention(duration : "P30D")
+  "The amount of refunded product sales for the selected time period, it's counted by refund request time."
+  refundedProductSales: Amount! @resultRetention(duration : "P30D")
+  """
+  The number of units ordered for the selected time period. Example: For an
+  order containing 2 copies of book A and 3 copies of book B, the number of
+  orders is 1, the number of order items is 2 (book A and book B), and the
+  number of units is 5 (2 + 3).
+  """
+  unitsOrdered: Long! @resultRetention(duration : "P30D")
+  "The number of units refunded in the selected time period."
+  unitsRefunded: Long! @resultRetention(duration : "P30D")
+}
+
+"The date granularity used in aggregation."
+enum DateGranularity {
+  "Seller economics data is aggregated by day against marketplace local time."
+  DAY
+  "Seller economics data is aggregated by month against marketplace local time."
+  MONTH
+  "Seller economics data is aggregated by the entire date range specified by startDate and endDate."
+  RANGE
+  "Seller economics data is aggregated by week against marketplace local time, Sunday is the first day of the week."
+  WEEK
+}
+
+"The fee type used in filter fee components generation."
+enum FeeType {
+  "Fulfillment by Amazon (FBA) Fulfillment Fees, including base rate and surcharges."
+  FBA_FULFILLMENT_FEE
+  "Fulfillment by Amazon (FBA) Monthly Inventory Storage Fee, including base rate and surcharges."
+  FBA_STORAGE_FEE
+}
+
+"The product identifier granularity used in aggregation."
+enum ProductIdentifierGranularity {
+  "Seller Economics data is aggregated by child ASIN."
+  CHILD_ASIN
+  "Seller Economics data is aggregated by fulfillment network sku."
+  FNSKU
+  "Seller Economics data is aggregated by merchant sku."
+  MSKU
+  "Seller Economics data is aggregated by parent ASIN."
+  PARENT_ASIN
+}
+
+"An RFC-3339 compliant Full Date Scalar. Example: \"2024-03-15\""
+scalar Date
+
+"A Scalar for the primitive long type."
+scalar Long
+
+"Defines how the seller economics data will be aggregated."
+input EconomicsAggregation {
+  "The date granularity used in aggregation. By default the results will be aggregated by DAY."
+  date: DateGranularity
+  "The product identifier granularity used in aggregation. By default the results will be aggregated by MSKU."
+  productId: ProductIdentifierGranularity
+}
