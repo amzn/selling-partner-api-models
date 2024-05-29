@@ -7,7 +7,7 @@ The [clients directory](https://github.com/amzn/selling-partner-api-models/tree/
 
 The [schemas directory](https://github.com/amzn/selling-partner-api-models/tree/main/schemas) contains all of the currently available Selling Partner Api schemas.
 
-**Note:** For any issues related to SP API like bugs or troubleshooting, please reach out to [Developer Support](https://developer.amazonservices.com/support) so that the right team can help / channel your inputs (in case of bugs / feature requests) to the development team.
+**Note:** For any issues related to SP API like bugs or troubleshooting, please reach out to Developer Support so that the right team can help / channel your inputs (in case of bugs / feature requests) to the development team.
 
 ## Security
 
