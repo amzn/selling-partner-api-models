@@ -50,6 +50,24 @@ type Analytics_vendorAnalytics_2024_09_30 {
   ): [SourcingView]
 }
 
+"Costs metric group. Null value for a given metric means that this metric is not available yet."
+type Costs {
+  """
+  Net Pure Product Margin (PPM) is defined as Amazon's margin after taking into
+  account CCOGs and sales discounts. Net PPM = (Shipped Revenue - Shipped CCOGS
+  + CCOGS - Sales Discount) / Shipped Revenue.
+  """
+  netPPM: Float @resultRetention(duration : "P30D")
+  """
+  Sales Discount is a transactional component of CP (Contribution Profit Amount)
+  related to promotional activities that Amazon conducts at checkout, such as
+  promotion code redemptions, giftcard promotions, employee discount, etc. Sales
+  Discounts = Eligible Promotions + Promotional Giftcards Amount + Bounceback
+  Promotion Amount + Cross-GL Bounceback Amount + Loyalty Points Amount
+  """
+  salesDiscount: Amount @resultRetention(duration : "P30D")
+}
+
 "Customer satisfaction metric group. Null value for a given metric means that this metric is not available yet."
 type CustomerSatisfaction {
   "The number of items returned as recorded on the Customer Returns transaction table."
@@ -140,6 +158,8 @@ type ManufacturingView {
 
 "Metrics broken down by metric groups, e.g., Product availability, Orders, Costs, Customer satisfaction."
 type ManufacturingViewMetrics {
+  "Costs metric group."
+  costs: Costs
   "Customer satisfaction metric group."
   customerSatisfaction: CustomerSatisfaction
   "Forecasting metric group."
@@ -283,6 +303,8 @@ type SourcingView {
 
 "Metrics broken down by metric groups, e.g., Product availability, Costs, Customer satisfaction."
 type SourcingViewMetrics {
+  "Costs metric group."
+  costs: Costs
   "Customer satisfaction metric group."
   customerSatisfaction: CustomerSatisfaction
   "Product availability metric group."
@@ -325,8 +347,8 @@ enum DateGranularity {
   WEEK
 }
 
-"Date"
+"RFC-3339 compliant Full Date Scalar. Example: \"2023-11-15\"."
 scalar Date
 
-"Long"
+"A Scalar for the primitive long type."
 scalar Long
