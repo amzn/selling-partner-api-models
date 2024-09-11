@@ -58,6 +58,7 @@
             "in": "query",
             "required": true,
             "type": "array",
+            "maxItems": 1,
             "items": {
               "type": "string"
             },
@@ -259,6 +260,7 @@
             "in": "query",
             "required": true,
             "type": "array",
+            "maxItems": 1,
             "items": {
               "type": "string"
             },
@@ -366,6 +368,10 @@
                     "price": {
                       "currencyCode": "USD",
                       "amount": "100.00"
+                    },
+                    "audience": {
+                      "value": "ALL",
+                      "displayName": "Sell on Amazon"
                     }
                   }
                 ],
@@ -488,6 +494,10 @@
                         "price": {
                           "currencyCode": "USD",
                           "amount": "100.00"
+                        },
+                        "audience": {
+                          "value": "ALL",
+                          "displayName": "Sell on Amazon"
                         }
                       }
                     ],
@@ -737,6 +747,7 @@
             "in": "query",
             "required": true,
             "type": "array",
+            "maxItems": 1,
             "items": {
               "type": "string"
             },
@@ -780,7 +791,7 @@
             "x-docgen-enum-table-extension": [
               {
                 "value": "VALIDATION_PREVIEW",
-                "description": "Indicates the submitted data should be validated without persisting to the selling partner's catalog."
+                "description": "Indicates the submitted data should be validated using the values provided in the payload and validation errors the selling partner account may face. This will synchronously perform the same checks that are preformed on submissions after being accepted for processing, but without persisting to the selling partner's catalog."
               }
             ],
             "required": false,
@@ -1078,6 +1089,7 @@
             "in": "query",
             "required": true,
             "type": "array",
+            "maxItems": 1,
             "items": {
               "type": "string"
             },
@@ -1121,7 +1133,7 @@
             "x-docgen-enum-table-extension": [
               {
                 "value": "VALIDATION_PREVIEW",
-                "description": "Indicates the submitted data should be validated without persisting to the selling partner's catalog."
+                "description": "Indicates the submitted data should be validated using the values provided in the payload and validation errors the selling partner account may face. This will synchronously perform the same checks that are preformed on submissions after being accepted for processing, but without persisting to the selling partner's catalog."
               }
             ],
             "required": false,
@@ -1395,6 +1407,1147 @@
           }
         }
       }
+    },
+    "/listings/2021-08-01/items/{sellerId}": {
+      "get": {
+        "tags": [
+          "listings"
+        ],
+        "description": "Search for and return list of listings items and respective details for a selling partner.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values then those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "searchListingsItems",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sellerId",
+            "description": "A selling partner identifier, such as a merchant account or vendor code.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "maxItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "ATVPDKIKX0DER"
+          },
+          {
+            "name": "identifiers",
+            "description": "A comma-delimited list of product identifiers to search for listings items by. \n\n**Note**: \n1. Required when `identifiersType` is provided.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "GM-ZDPI-9B4E"
+          },
+          {
+            "name": "identifiersType",
+            "description": "Type of product identifiers to search for listings items by. \n\n**Note**: \n1. Required when `identifiers` is provided.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ASIN",
+              "EAN",
+              "GTIN",
+              "ISBN",
+              "JAN",
+              "MINSAN",
+              "SKU",
+              "UPC"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "ASIN",
+                "description": "Amazon Standard Identification Number."
+              },
+              {
+                "value": "EAN",
+                "description": "European Article Number."
+              },
+              {
+                "value": "GTIN",
+                "description": "Global Trade Item Number."
+              },
+              {
+                "value": "ISBN",
+                "description": "International Standard Book Number."
+              },
+              {
+                "value": "JAN",
+                "description": "Japanese Article Number."
+              },
+              {
+                "value": "MINSAN",
+                "description": "Minsan Code."
+              },
+              {
+                "value": "SKU",
+                "description": "Stock Keeping Unit, a seller-specified identifier for an Amazon listing."
+              },
+              {
+                "value": "UPC",
+                "description": "Universal Product Code."
+              }
+            ],
+            "x-example": "SKU"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of results to be returned per page.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "maximum": 20,
+            "default": 10,
+            "x-example": 9
+          },
+          {
+            "name": "pageToken",
+            "description": "A token to fetch a certain page when there are multiple pages worth of results.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-example": "sdlkj234lkj234lksjdflkjwdflkjsfdlkj234234234234"
+          },
+          {
+            "name": "includedData",
+            "description": "A comma-delimited list of data sets to include in the response. Default: summaries.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "enum": [
+                "summaries",
+                "attributes",
+                "issues",
+                "offers",
+                "fulfillmentAvailability",
+                "procurement"
+              ],
+              "x-docgen-enum-table-extension": [
+                {
+                  "value": "summaries",
+                  "description": "Summary details of the listing item."
+                },
+                {
+                  "value": "attributes",
+                  "description": "JSON object containing structured listing item attribute data keyed by attribute name."
+                },
+                {
+                  "value": "issues",
+                  "description": "Issues associated with the listing item."
+                },
+                {
+                  "value": "offers",
+                  "description": "Current offers for the listing item."
+                },
+                {
+                  "value": "fulfillmentAvailability",
+                  "description": "Fulfillment availability details for the listing item."
+                },
+                {
+                  "value": "procurement",
+                  "description": "Vendor procurement details for the listing item. "
+                }
+              ],
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "summaries",
+            "default": ["summaries"]
+          },
+          {
+            "name": "issueLocale",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: \"en_US\", \"fr_CA\", \"fr_FR\". Localized messages default to \"en_US\" when a localization is not available in the specified locale.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-example": "en_US"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ItemSearchResults"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "numberOfResults": 3,
+                "pagination": {
+                  "nextToken": "xsdflkj324lkjsdlkj3423klkjsdfkljlk2j34klj2l3k4jlksdjl234",
+                  "previousToken": "ilkjsdflkj234lkjds234234lkjl234lksjdflkj234234lkjsfsdflkj333d"
+                },
+                "items": [
+                  {
+                    "sku": "GM-ZDPI-9B4E",
+                    "summaries": [
+                      {
+                        "marketplaceId": "ATVPDKIKX0DER",
+                        "asin": "B071VG5N9D",
+                        "productType": "LUGGAGE",
+                        "conditionType": "new_new",
+                        "status": [
+                          "BUYABLE"
+                        ],
+                        "itemName": "Hardside Carry-On Spinner Suitcase Luggage",
+                        "createdDate": "2021-02-01T00:00:00Z",
+                        "lastUpdatedDate": "2021-03-01T00:00:00Z",
+                        "mainImage": {
+                          "link": "https://www.example.com/luggage.png",
+                          "height": 500,
+                          "width": 500
+                        }
+                      }
+                    ],
+                    "attributes": {
+                      "total_hdmi_ports": [
+                        {
+                          "value": 4,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "resolution": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "4K",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "item_weight": [
+                        {
+                          "unit": "pounds",
+                          "value": 107.6,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "product_subcategory": [
+                        {
+                          "value": "50400120",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "bullet_point": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "SMART TV WITH UNIVERSAL GUIDE: Simple on-screen Guide is an easy way to find streaming content and live TV shows",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "100% COLOR VOLUME WITH QUANTUM DOTS: Powered by Quantum dots, Samsung’s 4K QLED TV offers over a billion shades of brilliant color and 100% color volume for exceptional depth of detail that will draw you in to the picture for the best 4K TV experience",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "QUANTUM PROCESSOR 4K: Intelligently powered processor instantly upscales content to 4K for sharp detail and refined color",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "QUANTUM HDR 4X: 4K depth of detail with high dynamic range powered by HDR10+ delivers the lightest to darkest colors, scene by scene, for amazing picture realism",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "AMBIENT MODE: Customizes and complements your living space by turning a blank screen of this big screen TV into enticing visuals including décor, info, photos and artwork",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "SMART TV FEATURES: OneRemote to control all compatible devices, Bixby voice command, on-screen universal guide, SmartThings to control compatible home appliances and devices, smart speaker expandability with Alexa and Google Assistant compatibility, and more",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "item_dimensions": [
+                        {
+                          "width": {
+                            "unit": "inches",
+                            "value": 72.4
+                          },
+                          "length": {
+                            "unit": "inches",
+                            "value": 2.4
+                          },
+                          "height": {
+                            "unit": "inches",
+                            "value": 41.4
+                          },
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "brand": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "SAMSUNG",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "generic_keyword": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "oled 65 inch smart tv qled 75 inch tv 85 inch 4k tv smart tv 4k tv 65 inch qled 82 inch tv 8k tv oled 65 smart tv qled 65 inch 80 inch tv 4k 4k tv shield tv 2018",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "q9fn qled 2018 oled 4k 4k oled toshiba antenna dvd player outdoor tv kitchen tv fire tv firetv hdtv hd tv android shield tv gaming deals tv ears dvr speakers digital tv antenna tv android tv frame mount",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "4k hdr tv 70 tv shield tv 90 inch tv gaming tv 75 tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "smart tv 4k tv tv tv oled tv 65 inch smart tv 4k tv 65 inch smart tv shield tv 2018 tv 4k oled tv 65 4k tv 4k smart tv 4k hdr tv shield tv gaming tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "control_method": [
+                        {
+                          "value": "voice",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "item_package_dimensions": [
+                        {
+                          "length": {
+                            "unit": "centimeters",
+                            "value": 26.67
+                          },
+                          "width": {
+                            "unit": "centimeters",
+                            "value": 121.92
+                          },
+                          "height": {
+                            "unit": "centimeters",
+                            "value": 203.2
+                          },
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "image_aspect_ratio": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "16:9",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "part_number": [
+                        {
+                          "value": "QN82Q60RAFXZA",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "includes_remote": [
+                        {
+                          "value": true,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "TV only",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "item_type_name": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "TV",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "battery": [
+                        {
+                          "cell_composition": [
+                            {
+                              "value": "alkaline"
+                            }
+                          ],
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "image_contrast_ratio": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "QLED 4K",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "manufacturer": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "Samsung",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "number_of_boxes": [
+                        {
+                          "value": 1,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "total_usb_ports": [
+                        {
+                          "value": 2,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "model_number": [
+                        {
+                          "value": "QN82Q60RAFXZA",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "supplier_declared_dg_hz_regulation": [
+                        {
+                          "value": "not_applicable",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "num_batteries": [
+                        {
+                          "quantity": 2,
+                          "type": "aaa",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "california_proposition_65": [
+                        {
+                          "compliance_type": "on_product_combined_cancer_reproductive",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "compliance_type": "chemical",
+                          "chemical_names": [
+                            "di_2_ethylhexyl_phthalate_dehp"
+                          ],
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "display": [
+                        {
+                          "resolution_maximum": [
+                            {
+                              "unit": "pixels",
+                              "language_tag": "en_US",
+                              "value": "3840 x 2160"
+                            }
+                          ],
+                          "size": [
+                            {
+                              "unit": "inches",
+                              "value": 82
+                            }
+                          ],
+                          "type": [
+                            {
+                              "language_tag": "en_US",
+                              "value": "QLED"
+                            }
+                          ],
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "item_name": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "Samsung QN82Q60RAFXZA Flat 82-Inch QLED 4K Q60 Series (2019) Ultra HD Smart TV with HDR and Alexa Compatibility",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "list_price": [
+                        {
+                          "currency": "USD",
+                          "value": 3799.99,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "batteries_required": [
+                        {
+                          "value": false,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "includes_rechargable_battery": [
+                        {
+                          "value": false,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "product_site_launch_date": [
+                        {
+                          "value": "2019-03-11T08:00:01.000Z",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "product_category": [
+                        {
+                          "value": "50400100",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "batteries_included": [
+                        {
+                          "value": false,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "connectivity_technology": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "Bluetooth",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "USB",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "Wireless",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "HDMI",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "included_components": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "QLED Standard Smart Remote",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "Power Cable",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "Stand",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "Samsung Smart Control",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "specification_met": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "parental_control_technology": [
+                        {
+                          "value": "V-Chip",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "power_consumption": [
+                        {
+                          "unit": "watts",
+                          "value": 120,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "cpsia_cautionary_statement": [
+                        {
+                          "value": "no_warning_applicable",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "item_type_keyword": [
+                        {
+                          "value": "qled-televisions",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "number_of_items": [
+                        {
+                          "value": 1,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "warranty_description": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "1 year manufacturer",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "max_resolution": [
+                        {
+                          "unit": "pixels",
+                          "value": 8.3,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "color": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "Black",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "screen_surface_description": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "Flat",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "item_package_weight": [
+                        {
+                          "unit": "kilograms",
+                          "value": 62.142,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "speaker_type": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "2CH",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "supported_internet_services": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "Amazon Instant Video",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "YouTube",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "Netflix",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "Hulu",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "Browser",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "tuner_technology": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "Analog Tuner",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "controller_type": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "SmartThings",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "Voice Control",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "special_feature": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "100% Color Volume with Quantum Dot; Quantum Processor 4K; Ambient Mode; Quantum HDR 4X; Real Game Enhancer",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "wireless_communication_technology": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "Wi-Fi::Wi-Fi Direct::Bluetooth",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "model_year": [
+                        {
+                          "value": 2019,
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "power_source_type": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "Corded Electric",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "street_date": [
+                        {
+                          "value": "2019-03-21T00:00:01Z",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "mounting_type": [
+                        {
+                          "language_tag": "en_US",
+                          "value": "Table Mount",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "Wall Mount",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ],
+                      "refresh_rate": [
+                        {
+                          "unit": "hertz",
+                          "language_tag": "en_US",
+                          "value": "120",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    "offers": [
+                      {
+                        "marketplaceId": "ATVPDKIKX0DER",
+                        "offerType": "B2C",
+                        "price": {
+                          "currencyCode": "USD",
+                          "amount": "100.00"
+                        }
+                      }
+                    ],
+                    "fulfillmentAvailability": [
+                      {
+                        "fulfillmentChannelCode": "DEFAULT",
+                        "quantity": 100
+                      }
+                    ],
+                    "issues": [
+                      {
+                        "code": "90220",
+                        "message": "'size' is required but not supplied.",
+                        "severity": "ERROR",
+                        "attributeNames": [
+                          "size"
+                        ],
+                        "categories": [
+                          "MISSING_ATTRIBUTE"
+                        ]
+                      },
+                      {
+                        "code": "18027",
+                        "message": "We believe the main image has text, logo, graphic or watermark which is not permitted for this product type. Please submit a compliant image to lift the suppression. Also refer to Product image requirements.",
+                        "severity": "ERROR",
+                        "categories": [
+                          "INVALID_IMAGE"
+                        ],
+                        "enforcements": {
+                          "actions": [
+                            {
+                              "action": "SEARCH_SUPPRESSED"
+                            }
+                          ],
+                          "exemption": {
+                            "status": "EXEMPT_UNTIL_EXPIRY_DATE",
+                            "expiryDate": "2025-05-28T00:36:48.914Z"
+                          }
+                        }
+                      },
+                      {
+                        "code": "99300",
+                        "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page)",
+                        "severity": "ERROR",
+                        "categories": [],
+                        "enforcements": {
+                          "actions": [
+                            {
+                              "action": "ATTRIBUTE_SUPPRESSED"
+                            }
+                          ],
+                          "exemption": {
+                            "status": "EXEMPT"
+                          }
+                        }
+                      },
+                      {
+                        "code": "18155",
+                        "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Please review and update your price and/or minimum price.",
+                        "severity": "ERROR",
+                        "categories": [
+                          "INVALID_PRICE"
+                        ],
+                        "enforcements": {
+                          "actions": [
+                            {
+                              "action": "LISTING_SUPPRESSED"
+                            }
+                          ],
+                          "exemption": {
+                            "status": "NOT_EXEMPT"
+                          }
+                        }
+                      },
+                      {
+                        "code": "18742",
+                        "message": "Restricted Products Policy Violation",
+                        "severity": "ERROR",
+                        "categories": [],
+                        "enforcements": {
+                          "actions": [
+                            {
+                              "action": "CATALOG_ITEM_REMOVED"
+                            }
+                          ],
+                          "exemption": {
+                            "status": "NOT_EXEMPT"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "identifiersType": {
+                        "value": "SKU"
+                      },
+                      "identifiers": {
+                        "value": [
+                          "GM-ZDPI-9B4E",
+                          "HW-ZDPI-9B4E",
+                          "TC-ZDPI-9B4E"
+                        ]
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                      },
+                      "includedData": {
+                        "value": [
+                          "summaries",
+                          "offers",
+                          "fulfillmentAvailability",
+                          "issues"
+                        ]
+                      },
+                      "pageSize": {
+                        "value": 1
+                      }
+                    }
+                  },
+                  "response": {
+                    "numberOfResults": 3,
+                    "pagination": {
+                      "nextToken": "xsdflkj324lkjsdlkj3423klkjsdfkljlk2j34klj2l3k4jlksdjl234",
+                      "previousToken": "ilkjsdflkj234lkjds234234lkjl234lksjdflkj234234lkjsfsdflkj333d"
+                    },
+                    "items": [
+                      {
+                        "sku": "GM-ZDPI-9B4E",
+                        "summaries": [
+                          {
+                            "marketplaceId": "ATVPDKIKX0DER",
+                            "asin": "B071VG5N9D",
+                            "productType": "LUGGAGE",
+                            "conditionType": "new_new",
+                            "status": [
+                              "BUYABLE"
+                            ],
+                            "itemName": "Hardside Carry-On Spinner Suitcase Luggage",
+                            "createdDate": "2021-02-01T00:00:00Z",
+                            "lastUpdatedDate": "2021-03-01T00:00:00Z",
+                            "mainImage": {
+                              "link": "https://www.example.com/luggage.png",
+                              "height": 500,
+                              "width": 500
+                            }
+                          }
+                        ],
+                        "offers": [
+                          {
+                            "marketplaceId": "ATVPDKIKX0DER",
+                            "offerType": "B2C",
+                            "price": {
+                              "currencyCode": "USD",
+                              "amount": "100.00"
+                            }
+                          }
+                        ],
+                        "fulfillmentAvailability": [
+                          {
+                            "fulfillmentChannelCode": "DEFAULT",
+                            "quantity": 100
+                          }
+                        ],
+                        "issues": [
+                          {
+                            "code": "90220",
+                            "message": "'size' is required but not supplied.",
+                            "severity": "ERROR",
+                            "attributeNames": [
+                              "size"
+                            ],
+                            "categories": [
+                              "MISSING_ATTRIBUTE"
+                            ]
+                          },
+                          {
+                            "code": "18027",
+                            "message": "We believe the main image has text, logo, graphic or watermark which is not permitted for this product type. Please submit a compliant image to lift the suppression. Also refer to Product image requirements.",
+                            "severity": "ERROR",
+                            "categories": [
+                              "INVALID_IMAGE"
+                            ],
+                            "enforcements": {
+                              "actions": [
+                                {
+                                  "action": "SEARCH_SUPPRESSED"
+                                }
+                              ],
+                              "exemption": {
+                                "status": "EXEMPT_UNTIL_EXPIRY_DATE",
+                                "expiryDate": "2025-05-28T00:36:48.914Z"
+                              }
+                            }
+                          },
+                          {
+                            "code": "99300",
+                            "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page)",
+                            "severity": "ERROR",
+                            "categories": [],
+                            "enforcements": {
+                              "actions": [
+                                {
+                                  "action": "ATTRIBUTE_SUPPRESSED"
+                                }
+                              ],
+                              "exemption": {
+                                "status": "EXEMPT"
+                              }
+                            }
+                          },
+                          {
+                            "code": "18155",
+                            "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Please review and update your price and/or minimum price.",
+                            "severity": "ERROR",
+                            "categories": [
+                              "INVALID_PRICE"
+                            ],
+                            "enforcements": {
+                              "actions": [
+                                {
+                                  "action": "LISTING_SUPPRESSED"
+                                }
+                              ],
+                              "exemption": {
+                                "status": "NOT_EXEMPT"
+                              }
+                            }
+                          },
+                          {
+                            "code": "18742",
+                            "message": "Restricted Products Policy Violation",
+                            "severity": "ERROR",
+                            "categories": [],
+                            "enforcements": {
+                              "actions": [
+                                {
+                                  "action": "CATALOG_ITEM_REMOVED"
+                                }
+                              ],
+                              "exemption": {
+                                "status": "NOT_EXEMPT"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sellerId": {
+                        "value": "SellerId"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "invalid"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "BAD_REQUEST",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1434,6 +2587,31 @@
       "required": [
         "errors"
       ]
+    },
+    "ItemSearchResults": {
+      "description": "Selling partner listings items and search related metadata.",
+      "properties": {
+        "numberOfResults": {
+          "description": "The total number of selling partner listings items found for the search criteria (only results up to the page count limit will be returned per request regardless of the number found).\n\nNote: The maximum number of items (SKUs) that can be returned and paged through is 1000.",
+          "type": "integer"
+        },
+        "pagination": {
+          "description": "If available, the `nextToken` and/or `previousToken` values required to return paginated results.",
+          "$ref": "#/definitions/Pagination"
+        },
+        "items": {
+          "description": "A list of listings items.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Item"
+          }
+        }
+      },
+      "required": [
+        "numberOfResults",
+        "items"
+      ],
+      "type": "object"
     },
     "Item": {
       "description": "A listings item.",
@@ -1832,6 +3010,10 @@
         },
         "points": {
           "$ref": "#/definitions/Points"
+        },
+        "audience": {
+          "description": "Buyer segment or program this offer is applicable to.",
+          "$ref": "#/definitions/Audience"
         }
       },
       "required": [
@@ -1905,6 +3087,21 @@
       "required": [
         "pointsNumber"
       ]
+    },
+    "Audience": {
+      "description": "Buyer segment or program this offer is applicable to.",
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "Name of the audience an offer is applicable to. \n\nCommon values: \n\n* 'ALL' - Standard offer audience for buyers on Amazon retail websites. \n\n* 'B2B' - Offer audience for Amazon Business website buyers.",
+          "type": "string",
+          "example": "ALL"
+        },
+        "displayName": {
+          "description": "Localized display name for the audience.",
+          "type": "string"
+        }
+      }
     },
     "PatchOperation": {
       "description": "Individual JSON Patch operation for an HTTP PATCH request.",
@@ -2084,6 +3281,20 @@
         },
         "asin": {
           "description": "Amazon Standard Identification Number (ASIN) of the listings item.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "Pagination": {
+      "description": "When a request produces a response that exceeds the `pageSize`, pagination occurs. This means the response is divided into individual pages. To retrieve the next page or the previous page, you must pass the `nextToken` value or the `previousToken` value as the `pageToken` parameter in the next request. When you receive the last page, there will be no `nextToken` key in the pagination object.",
+      "properties": {
+        "nextToken": {
+          "description": "A token that can be used to fetch the next page.",
+          "type": "string"
+        },
+        "previousToken": {
+          "description": "A token that can be used to fetch the previous page.",
           "type": "string"
         }
       },
