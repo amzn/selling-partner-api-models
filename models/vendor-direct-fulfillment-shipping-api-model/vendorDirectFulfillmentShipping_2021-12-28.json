@@ -277,7 +277,7 @@
             "schema": {
               "$ref": "#/definitions/SubmitShippingLabelsRequest"
             },
-            "description": "Request body that contains the shipping labels data."
+                "description": "Request body containing the shipping labels data."
           }
         ],
         "responses": {
@@ -418,7 +418,7 @@
           {
             "name": "purchaseOrderNumber",
             "in": "path",
-            "description": "The purchase order number for which you want to return the shipping label. Should be the same `purchaseOrderNumber` as received in the order.",
+            "description": "The purchase order number for which you want to return the shipping label and should be the same purchaseOrderNumber as received in the order.",
             "required": true,
             "type": "string",
             "pattern": "^[a-zA-Z0-9]+$"
@@ -590,7 +590,7 @@
             "in": "body",
             "name": "body",
             "required": true,
-            "description": "The request payload that contains parameters for creating shipping labels.",
+			"description": "The request payload containing parameters for creating shipping labels.",
             "schema": {
               "$ref": "#/definitions/CreateShippingLabelsRequest"
             }
@@ -750,7 +750,7 @@
             "schema": {
               "$ref": "#/definitions/SubmitShipmentConfirmationsRequest"
             },
-            "description": "Request body containing the shipment confirmations data."
+                "description": "Request body containing the shipment confirmations data."
           }
         ],
         "responses": {
@@ -895,7 +895,7 @@
             "schema": {
               "$ref": "#/definitions/SubmitShipmentStatusUpdatesRequest"
             },
-            "description": "Request body that contains the shipment status update data."
+                "description": "Request body containing the shipment status update data."
           }
         ],
         "responses": {
@@ -1758,6 +1758,158 @@
           "dynamic": {}
         }
       }
+    },
+    "/vendor/directFulfillment/shipping/2021-12-28/containerLabel": {
+      "post": {
+        "tags": [
+          "createContainerLabel"
+        ],
+        "description": "Creates container (pallet) label for provided shipment package association",
+        "operationId": "createContainerLabel",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateContainerLabelRequest"
+            },
+                "description": "Request body containing the container label data."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CreateContainerLabelResponse"
+            },
+            "examples": {
+              "containerLabel": {
+                "containerTrackingNumber": "TBA134335066000",
+                "content": "Base 64 encoded string goes here ",
+                "format": "PNG"
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        },
+        "x-amzn-api-sandbox": {
+          "dynamic": {}
+        }
+      }
     }
   },
   "definitions": {
@@ -1798,14 +1950,14 @@
       "properties": {
         "pagination": {
           "$ref": "#/definitions/Pagination",
-          "description": "The pagination elements required to retrieve the remaining data."
+		  "description": "The pagination elements required to retrieve the remaining data."
         },
         "packingSlips": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/PackingSlip"
           },
-          "description": "An array of packing slip objects."
+      "description": "An array of packing slip objects."
         }
       },
       "description": "A list of packing slips."
@@ -1843,10 +1995,10 @@
           "items": {
             "$ref": "#/definitions/ShippingLabelRequest"
           },
-          "description": "An array of shipping label requests you want to process."
+		  "description": "An array of shipping label requests to be processed."
         }
       },
-      "description": "The request schema for the `submitShippingLabelRequest` operation."
+      "description": "The request schema for the submitShippingLabelRequest operation."
     },
     "ShippingLabelRequest": {
       "type": "object",
@@ -1877,7 +2029,7 @@
           }
         }
       },
-      "description": "Represents the request payload to create a shipping label. Contains the purchase order number, selling party, ship from party, and a list of containers or packages in the shipment."
+      "description": "Represents the request payload for creating a shipping label, containing the purchase order number, selling party, ship from party, and a list of containers or packages in the shipment."
     },
     "Item": {
       "type": "object",
@@ -1933,10 +2085,10 @@
           "$ref": "#/definitions/ItemQuantity"
         }
       },
-      "description": "Represents an item packed into a container for shipping."
+	  "description": "Represents an item that has been packed into a container for shipping."
     },
     "PartyIdentification": {
-      "description": "Name, address, and tax details for a party.",
+	  "description": "Name, address and tax details of a party.",
       "type": "object",
       "required": [
         "partyId"
@@ -2021,11 +2173,11 @@
         },
         "statusCode": {
           "type": "string",
-          "description": "The shipment status code for the package that provides transportation information for Amazon tracking systems and the final customer. For more information, refer to the [Additional Fields Explanation](https://developer-docs.amazon.com/sp-api/docs/vendor-direct-fulfillment-shipping-api-use-case-guide#additional-fields-explanation)."
+          "description": "Indicates the shipment status code of the package that provides transportation information for Amazon tracking systems and ultimately for the final customer. For more information, refer to the [Additional Fields Explanation](https://developer-docs.amazon.com/sp-api/docs/vendor-direct-fulfillment-shipping-api-use-case-guide#additional-fields-explanation)."
         },
         "reasonCode": {
           "type": "string",
-          "description": "Provides a reason code for the package status that provides additional information about the transportation status. For more information, refer to the [Additional Fields Explanation](https://developer-docs.amazon.com/sp-api/docs/vendor-direct-fulfillment-shipping-api-use-case-guide#additional-fields-explanation)."
+          "description": "Provides a reason code for the status of the package that will provide additional information about the transportation status. For more information, refer to the [Additional Fields Explanation](https://developer-docs.amazon.com/sp-api/docs/vendor-direct-fulfillment-shipping-api-use-case-guide#additional-fields-explanation)."
         },
         "statusDateTime": {
           "type": "string",
@@ -2263,10 +2415,10 @@
           "items": {
             "$ref": "#/definitions/ShippingLabel"
           },
-          "description": "An array that contains the details of the generated shipping labels."
+		  "description": "An array containing the details of the generated shipping labels."
         }
       },
-      "description": "Response payload with the shipping labels list."
+      "description": "Response payload with the list of shipping labels."
     },
     "LabelData": {
       "type": "object",
@@ -2346,7 +2498,7 @@
           }
         }
       },
-      "description": "Shipping label information for an order. Includes the purchase order number, selling party, ship from party, label format, and package details."
+      "description": "Shipping label information for an order, including the purchase order number, selling party, ship from party, label format, and package details."
     },
     "SubmitShipmentConfirmationsRequest": {
       "type": "object",
@@ -2356,10 +2508,10 @@
           "items": {
             "$ref": "#/definitions/ShipmentConfirmation"
           },
-          "description": "An array of `ShipmentConfirmation` objects, each represents confirmation details for a specific shipment."
+      "description": "Array of ShipmentConfirmation objects, each representing confirmation details for a specific shipment."
         }
       },
-      "description": "The `submitShipmentConfirmations` request schema."
+      "description": "The request schema for the submitShipmentConfirmations operation."
     },
     "ShipmentConfirmation": {
       "type": "object",
@@ -2403,7 +2555,7 @@
           }
         }
       },
-      "description": "Represents the confirmation details of a shipment. Includes the purchase order number and other shipment details."
+      "description": "Represents the confirmation details of a shipment, including the purchase order number and other shipment details."
     },
     "SubmitShipmentStatusUpdatesRequest": {
       "type": "object",
@@ -2414,10 +2566,10 @@
             "$ref": "#/definitions/ShipmentStatusUpdate"
           },
           "minItems": 1,
-          "description": "Contains a list of one or more `ShipmentStatusUpdate` objects, each represents a status update of a specific shipment."
+      "description": "Contains a list of one or more ShipmentStatusUpdate objects, each representing an update to the status of a specific shipment."
         }
       },
-      "description": "The `submitShipmentStatusUpdates` request schema."
+      "description": "The request schema for the submitShipmentStatusUpdates operation."
     },
     "ShipmentStatusUpdate": {
       "type": "object",
@@ -2446,24 +2598,24 @@
           "$ref": "#/definitions/StatusUpdateDetails"
         }
       },
-      "description": "Represents a shipment status update."
+      "description": "Represents an update to the status of a shipment."
     },
     "CustomerInvoiceList": {
       "type": "object",
       "properties": {
         "pagination": {
-          "$ref": "#/definitions/Pagination",
-          "description": "The pagination elements required to retrieve the remaining data."
+          "$ref": "#/definitions/Pagination",		  
+		  "description": "The pagination elements required to retrieve the remaining data."
         },
         "customerInvoices": {
           "type": "array",
-          "description": "Represents a customer invoice within the `CustomerInvoiceList`.",
+		  "description": "Represents a customer invoice within the CustomerInvoiceList.",
           "items": {
             "$ref": "#/definitions/CustomerInvoice"
           }
         }
       },
-      "description": "Represents a list of customer invoices, potentially paginated."
+			"description": "Represents a list of customer invoices, potentially paginated."
     },
     "Pagination": {
       "type": "object",
@@ -2473,7 +2625,7 @@
           "description": "A generated string used to pass information to your next request. If NextToken is returned, pass the value of NextToken to the next request. If NextToken is not returned, there are no more order items to return."
         }
       },
-      "description": "The pagination elements required to retrieve the remaining data."
+		  "description": "The pagination elements required to retrieve the remaining data."
     },
     "CustomerInvoice": {
       "type": "object",
@@ -2492,7 +2644,7 @@
           "description": "The Base64encoded customer invoice."
         }
       },
-      "description": "Represents a customer invoice associated with a purchase order."
+			"description": "Represents a customer invoice associated with a purchase order."
     },
     "TransactionReference": {
       "type": "object",
@@ -2502,7 +2654,7 @@
           "description": "GUID to identify this transaction. This value can be used with the Transaction Status API to return the status of this transaction."
         }
       },
-      "description": "Response that contains the transaction ID."
+      "description": "Response containing the transaction ID."
     },
     "ErrorList": {
       "type": "object",
@@ -2515,8 +2667,8 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Error"
-          },
-          "description": "An array of error objects that represents individual errors encountered during the request."
+          }, 
+		  "description": "An array of Error objects representing individual errors encountered during the request."
         }
       }
     },
@@ -2615,7 +2767,130 @@
           }
         }
       },
-      "description": "A container for shipping and packing items."
+			"description": "A container used for shipping and packing items."
+    },
+    "CreateContainerLabelRequest": {
+      "description": "The request body schema for the createContainerLabel operation.",
+      "type": "object",
+      "required": [
+        "sellingParty",
+        "shipFromParty",
+        "carrierId",
+        "vendorContainerId",
+        "packages"
+      ],
+      "properties": {
+        "sellingParty": {
+          "description": "ID of the selling party or vendor.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "shipFromParty": {
+          "description": "Warehouse code of vendor.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "carrierId": {
+          "description": "Carrier for which container (pallet) label requested.",
+          "$ref": "#/definitions/CarrierId"
+        },
+        "vendorContainerId": {
+          "description": " Unique identifier for the container request incoming from vendor side.",
+          "$ref": "#/definitions/VendorContainerId"
+        },
+        "packages": {
+          "description": "Array of Package object in order to associate shipment packages with container",
+          "$ref": "#/definitions/Packages"
+        }
+      }
+    },
+    "Packages": {
+      "description": "Array of package object in order to associate shipments packages with given container.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Package"
+      }
+    },
+    "Package": {
+      "type": "object",
+      "description": "Object describing Package that is going to be associated with given container.",
+      "required": [
+        "packageTrackingNumber"
+      ],
+      "properties": {
+        "packageTrackingNumber": {
+          "type": "string",
+          "description": "tracking identifier present on label of shipment package. Tracking number can be fetched from fetched from shippingLabels API response. Alternatively bar code on the shipping label can be scanned by the scanner to get the tracking number."
+        }
+      }
+    },
+    "VendorContainerId": {
+      "type": "string",
+      "description": "unique identifier for the container provided by the vendor."
+    },
+    "CarrierId": {
+      "type": "string",
+      "description": "Unique carrier code for the carrier for whom container labels are requested.",
+      "enum": [
+        "SWA"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "SWA",
+          "description": "Ship with Amazon Carrier."
+        }
+      ]
+    },
+    "CreateContainerLabelResponse": {
+      "description": "The response schema for the createContainerLabel operation.",
+      "type": "object",
+      "required": [
+        "containerLabel"
+      ],
+      "properties": {
+        "containerLabel": {
+          "description": "Label data for container label.",
+          "$ref": "#/definitions/ContainerLabel"
+        }
+      }
+    },
+    "ContainerLabel": {
+      "description": "Details of the container label.",
+      "type": "object",
+      "required": [
+        "content",
+        "format"
+      ],
+      "properties": {
+        "containerTrackingNumber": {
+          "type": "string",
+          "description": "Container (pallet) tracking identifier from the shipping carrier."
+        },
+        "content": {
+          "type": "string",
+          "description": "This field will contain the Base64encoded string of the container label content."
+        },
+        "format": {
+          "description": "Format of the container label.",
+          "$ref": "#/definitions/ContainerLabelFormat"
+        }
+      }
+    },
+    "ContainerLabelFormat": {
+      "type": "string",
+      "description": "Format of the container label.",
+      "enum": [
+        "PNG",
+        "ZPL"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "PNG",
+          "description": "Portable Network Graphics (png) format."
+        },
+        {
+          "value": "ZPL",
+          "description": "Zebra Programming Language (zpl) format."
+        }
+      ]
     }
   }
 }
