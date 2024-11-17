@@ -1,0 +1,778 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "The Selling Partner API for third party application integrations.",
+    "description": "With the AppIntegrations API v2024-04-01, you can send notifications to Amazon Selling Partners and display the notifications in Seller Central.",
+    "version": "2024-04-01",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "definitions": {
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occurred.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "ErrorList": {
+      "type": "object",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "description": "Error response returned when the request is unsuccessful.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "CreateNotificationRequest": {
+      "type": "object",
+      "description": "The request for the `createNotification` operation.",
+      "required": [
+        "templateId",
+        "notificationParameters"
+      ],
+      "properties": {
+        "templateId": {
+          "type": "string",
+          "description": "The unique identifier of the notification template you used to onboard your application."
+        },
+        "notificationParameters": {
+          "description": "The parameters specified in the template you used to onboard your application.",
+          "$ref": "#/definitions/NotificationParameters"
+        },
+        "marketplaceId": {
+          "type": "string",
+          "description": "An encrypted marketplace identifier for the posted notification."
+        }
+      },
+      "example": {
+        "templateId": "PRICE_CHANGE",
+        "marketplaceId": "ATVPDKIKX0DER",
+        "notificationParameters": {
+          "priceValue": "200"
+        }
+      }
+    },
+    "NotificationParameters" : {
+      "type": "object",
+      "additionalProperties": {},
+      "description": "The dynamic parameters required by the notification templated specified by `templateId`.",
+      "example": {
+        "priceValue": "200"
+      }
+    },
+    "CreateNotificationResponse": {
+      "type": "object",
+      "properties": {
+        "notificationId": {
+          "type": "string",
+          "description": "The unique identifier assigned to each notification."
+        }
+      },
+      "description": "The response for the `createNotification` operation."
+    },
+    "DeleteNotificationsRequest": {
+      "type": "object",
+      "description": "The request for the `deleteNotifications` operation.",
+      "required": [
+        "templateId",
+        "deletionReason"
+      ],
+      "properties": {
+        "templateId": {
+          "type": "string",
+          "description": "The unique identifier of the notification template you used to onboard your application."
+        },
+        "deletionReason": {
+          "type": "string",
+          "enum": [
+            "INCORRECT_CONTENT",
+            "INCORRECT_RECIPIENT"
+          ],
+          "description": "The unique identifier that maps each notification status to a reason code.",
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "INCORRECT_CONTENT",
+              "description": "The notification's content is recognized to be incorrect."
+            },
+            {
+              "value": "INCORRECT_RECIPIENT",
+              "description": "The notification was sent to incorrect seller."
+            }
+          ]
+        }
+      },
+      "example": {
+        "templateId": "PRICE_CHANGE",
+        "deletionReason": "INCORRECT_CONTENT"
+      }
+    },
+    "RecordActionFeedbackRequest": {
+      "type": "object",
+      "description": "The request for the `recordActionFeedback` operation.",
+      "required": [
+        "feedbackActionCode"
+      ],
+      "properties": {
+        "feedbackActionCode": {
+          "type": "string",
+          "enum": [
+            "SELLER_ACTION_COMPLETED"
+          ],
+          "description": "The unique identifier for each notification status.",
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "SELLER_ACTION_COMPLETED",
+              "description": "The seller completed the action attached to the posted notification."
+            }
+          ]
+        }
+      },
+      "example": {
+        "feedbackActionCode": "SELLER_ACTION_COMPLETED"
+      }
+    }
+  },
+  "paths": {
+    "/appIntegrations/2024-04-01/notifications": {
+      "post": {
+        "tags": [
+          "appIntegrations"
+        ],
+        "description": "Create a notification for sellers in Seller Central.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table indicates the default rate and burst values for this operation. Sellers whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "createNotification",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The request body for the `createNotification` operation.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateNotificationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful creation of notification with the identifier captured in response.",
+            "schema": {
+              "$ref": "#/definitions/CreateNotificationResponse"
+            },
+            "examples": {
+              "application/json": {
+                "notificationId": "0cf25616-f68c-4eba-a5d3-6823b61506c0"
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "templateId": "PRICE_CHANGE",
+                          "marketplaceId": "ATVPDKIKX0DER",
+                          "notificationParameters": {
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "notificationId": "0cf25616-f68c-4eba-a5d3-6823b61506c0"
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "templateId": "BAD_TEMPLATE_ID",
+                          "marketplaceId": "ATVPDKIKX0DER",
+                          "notificationParameters": {
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid Template Identifier(templateId)",
+                        "details": "'BAD_TEMPLATE_ID' is an invalid templateId"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appIntegrations/2024-04-01/notifications/deletion": {
+      "post": {
+        "tags": [
+          "appIntegrations"
+        ],
+        "description": "Remove your application's notifications from the Appstore notifications dashboard.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table indicates the default rate and burst values for this operation. Sellers whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "deleteNotifications",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The request body for the `deleteNotifications` operation.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteNotificationsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully processed the deleteNotifications request.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "templateId": "PRICE_CHANGE",
+                "deletionReason": "INCORRECT_RECIPIENT"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "templateId": "PRICE_CHANGE",
+                          "deletionReason": "INCORRECT_RECIPIENT"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "templateId": "PRICE_CHANGE_INVALID",
+                          "deletionReason": "INCORRECT_RECIPIENT"
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid Template Id(templateId)",
+                        "details": "'PRICE_CHANGE_INVALID' is an invalid templateId"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appIntegrations/2024-04-01/notifications/{notificationId}/feedback": {
+      "post": {
+        "tags": [
+          "appIntegrations"
+        ],
+        "description": "Records the seller's response to a notification.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table indicates the default rate and burst values for this operation. Sellers whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "recordActionFeedback",
+        "parameters": [
+          {
+            "name": "notificationId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A `notificationId` uniquely identifies a notification."
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The request body for the `recordActionFeedback` operation.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RecordActionFeedbackRequest"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully processed the recordActionFeedback request.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "feedbackActionCode": "SELLER_ACTION_COMPLETED"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "notificationId": {
+                        "value": "0cf25616-f68c-1234-a5d3-6823b61506c0"
+                      },
+                      "body": {
+                        "value": {
+                          "feedbackActionCode": "SELLER_ACTION_COMPLETED"
+                        }
+                      }
+                    }
+                  },
+                  "response": {}
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "notificationId": {
+                        "value": "0cf25616-f68c-a5d3-6823b61506c0"
+                      },
+                      "body": {
+                        "value": {
+                          "feedbackActionCode": "SELLER_ACTION_COMPLETED"
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid notificationId",
+                        "details": "'0cf25616-f68c-a5d3-6823b61506c0' is an invalid notificationId"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

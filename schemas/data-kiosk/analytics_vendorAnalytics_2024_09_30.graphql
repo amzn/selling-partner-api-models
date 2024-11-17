@@ -1,0 +1,360 @@
+schema {
+  query: Query
+}
+
+"""
+This directive specifies the retention duration of a query containing a
+particular field. When a query contains multiple fields with different
+retentions, the shortest (minimum) retention is applied to the query. The
+retention of a query's resulting documents always matches the retention of the query.
+"""
+directive @resultRetention(
+    "An ISO 8601 duration."
+    duration: String!
+  ) on FIELD_DEFINITION
+
+"Monetary amount with the corresponding currency code."
+type Amount {
+  "The amount."
+  amount: Float!
+  "Currency code of the amount in ISO 4217 format."
+  currencyCode: String!
+}
+
+"Root type for Vendor Analytics queries version 2024_09_30."
+type Analytics_vendorAnalytics_2024_09_30 {
+  "The manufacturing view provides metrics about products manufactured by the Vendor."
+  manufacturingView(
+    "Determines how the data should be aggregated, e.g. daily, weekly, monthly."
+    aggregateBy: DateGranularity!, 
+    "Currency code for all monetary amounts in ISO 4217 format. If not provided, amounts will be returned in USD."
+    currencyCode: String, 
+    "The end date of the vendor analytics data to retrieve."
+    endDate: Date!, 
+    "The start date of the vendor analytics data to retrieve. The start date must be no more than two years ago."
+    startDate: Date!
+  ): [ManufacturingView]
+  """
+  The sourcing view provides metrics about products that are sourced directly
+  from the Vendor to Amazon (i.e., when the Vendor is a distributor).
+  """
+  sourcingView(
+    "Determines how the data should be aggregated, e.g. daily, weekly, monthly."
+    aggregateBy: DateGranularity!, 
+    "Currency code for all monetary amounts in ISO 4217 format. If not provided, amounts will be returned in USD."
+    currencyCode: String, 
+    "The end date of the vendor analytics data to retrieve."
+    endDate: Date!, 
+    "The start date of the vendor analytics data to retrieve. The start date must be no more than two years ago."
+    startDate: Date!
+  ): [SourcingView]
+}
+
+"Costs metric group. Null value for a given metric means that this metric is not available yet."
+type Costs {
+  """
+  Net Pure Product Margin (PPM) is defined as Amazon's margin after taking into
+  account CCOGs and sales discounts. Net PPM = (Shipped Revenue - Shipped CCOGS
+  + CCOGS - Sales Discount) / Shipped Revenue.
+  """
+  netPPM: Float @resultRetention(duration : "P30D")
+  """
+  Sales Discount is a transactional component of CP (Contribution Profit Amount)
+  related to promotional activities that Amazon conducts at checkout, such as
+  promotion code redemptions, giftcard promotions, employee discount, etc. Sales
+  Discounts = Eligible Promotions + Promotional Giftcards Amount + Bounceback
+  Promotion Amount + Cross-GL Bounceback Amount + Loyalty Points Amount
+  """
+  salesDiscount: Amount @resultRetention(duration : "P30D")
+}
+
+"Customer satisfaction metric group. Null value for a given metric means that this metric is not available yet."
+type CustomerSatisfaction {
+  "The number of items returned as recorded on the Customer Returns transaction table."
+  customerReturns: Long @resultRetention(duration : "P30D")
+}
+
+"Amazon's estimate that customer demand will be at or below this value."
+type ForecastedDemandStatistic {
+  "Amazon’s best estimate of weekly customer demand (in units). This estimate does not account for safety stock."
+  mean: Long @resultRetention(duration : "P30D")
+  "Amazon estimates that there is a 70% probability that customer demand will be at or below this number of units."
+  p70: Long @resultRetention(duration : "P30D")
+  "Amazon estimates that there is a 80% probability that customer demand will be at or below this number of units."
+  p80: Long @resultRetention(duration : "P30D")
+  "Amazon estimates that there is a 90% probability that customer demand will be at or below this number of units."
+  p90: Long @resultRetention(duration : "P30D")
+}
+
+"Forecasted customer demand by week. Null value for a given metric means that this metric is not available yet."
+type ForecastedDemandWeekly {
+  "Amazon's estimate that customer demand will be at or below this value."
+  demand: ForecastedDemandStatistic
+  "End date of the forecasting range."
+  endDate: Date! @resultRetention(duration : "P30D")
+  "Start date of the forecasting range."
+  startDate: Date! @resultRetention(duration : "P30D")
+  "Week number of the forecasting range."
+  weekNumber: Int! @resultRetention(duration : "P30D")
+}
+
+"Group by attributes, essentially catalog attributes, some of which can be null, e.g., group by brand."
+type GroupByAttributes {
+  "Amazon Standard Identification Number, used to uniquely identify products in Amazon's catalog."
+  asin: String @resultRetention(duration : "P30D")
+  "Brand name."
+  brand: String @resultRetention(duration : "P30D")
+  "Amazon brand code for the owning brand."
+  brandCode: String @resultRetention(duration : "P30D")
+  "European Article Number. A 13-digit product identifier, often represented on products as a barcode."
+  ean: String @resultRetention(duration : "P30D")
+  "13-digit International Standard Book Number."
+  isbn13: String @resultRetention(duration : "P30D")
+  "Code used to identify the manufacturer, an entity who makes the products that are sold on Amazon."
+  manufacturerCode: String @resultRetention(duration : "P30D")
+  "The model or style number of the product."
+  modelNumber: String @resultRetention(duration : "P30D")
+  """
+  Products with variations (size, color, etc.) have a Parent ASIN and Child
+  ASINs. The Parent ASIN represents the generic overall product
+  (non-purchasable).
+  """
+  parentAsin: String @resultRetention(duration : "P30D")
+  "Which type of prep instructions are required, e.g., ASIN stickering, Boxing, Bubble wrapping, Shrinkwrap, Cap Sealing."
+  prepInstructions: String @resultRetention(duration : "P30D")
+  "Differentiates if the prep instructions required will be performed by Amazon or the vendor."
+  prepInstructionsPerformedBy: String @resultRetention(duration : "P30D")
+  """
+  The product group which describes the business group, as defined by the Amazon
+  catalog, e.g., PC, Wireless, Major Appliances.
+  """
+  productGroup: String @resultRetention(duration : "P30D")
+  "Product name."
+  productTitle: String @resultRetention(duration : "P30D")
+  "The day that an item is available for purchase by the public."
+  releaseDate: String @resultRetention(duration : "P30D")
+  "Availability status for the ASIN."
+  replenishmentCategory: String @resultRetention(duration : "P30D")
+  "Customer City for a shipment."
+  shipToCity: String @resultRetention(duration : "P30D")
+  "Customer Country Code for a shipment in ISO 3166-1 alpha-2 format."
+  shipToCountryCode: String @resultRetention(duration : "P30D")
+  "Customer State or Province for a shipment."
+  shipToStateOrProvince: String @resultRetention(duration : "P30D")
+  "The Universal Product Code (UPC) used for retail packaging scanning at the point of sale."
+  upc: String @resultRetention(duration : "P30D")
+}
+
+"""
+The manufacturing view provides metrics about products manufactured by the Vendor for the given time period,
+including both totals (aggregate across all of the vendor catalog) and metrics grouped by, e.g., ASIN.
+"""
+type ManufacturingView {
+  "End date of the time period."
+  endDate: Date! @resultRetention(duration : "P30D")
+  "The marketplace identifier for the associated metrics."
+  marketplaceId: String! @resultRetention(duration : "P30D")
+  "Metrics for the given time period, grouped by, e.g., ASIN."
+  metrics: [ManufacturingViewMetricsGroupedBy]!
+  "Start date of the time period."
+  startDate: Date! @resultRetention(duration : "P30D")
+  "Totals (aggregate across all of the vendor catalog) for the given time period."
+  totals: ManufacturingViewMetrics!
+}
+
+"Metrics broken down by metric groups, e.g., Product availability, Orders, Costs, Customer satisfaction."
+type ManufacturingViewMetrics {
+  "Costs metric group."
+  costs: Costs
+  "Customer satisfaction metric group."
+  customerSatisfaction: CustomerSatisfaction
+  "Forecasting metric group."
+  forecasting: [ForecastedDemandWeekly]
+  "Orders metric group."
+  orders: Orders
+  "Product availability metric group."
+  productAvailability: ProductAvailability
+  "Shipped orders metric group."
+  shippedOrders: ShippedOrders
+  "Sourcing metric group."
+  sourcing: Sourcing
+  "Traffic metric group."
+  traffic: Traffic
+}
+
+"Manufacturing view metrics grouped by the selected \"group by\" attributes, e.g., brand, ASIN."
+type ManufacturingViewMetricsGroupedBy {
+  "Group by attributes, e.g., brand, ASIN."
+  groupByKey: GroupByAttributes!
+  "Metrics for the given time period, grouped by the attributes selected in the groupByKey."
+  metrics: ManufacturingViewMetrics!
+}
+
+"Orders metric group. Null value for a given metric means that this metric is not available yet."
+type Orders {
+  """
+  The number of ordered units and the associated revenue in a given time period
+  with adjustments made for prior sales, like returns/cancellations. This metric
+  is also applicable for Kindle and Physical books. Ordered Revenue Amount (OPS)
+  = Product Price * Ordered Units.
+  """
+  orderedUnitsWithRevenue: UnitsWithValue
+  "Number of units ordered (or pre-ordered), but have not shipped."
+  unfilledOrderedUnits: Long @resultRetention(duration : "P30D")
+}
+
+"Product availability metric group. Null value for a given metric means that this metric is not available yet."
+type ProductAvailability {
+  """
+  The number of units and their cost that is at least 90 days old and in
+  sellable condition on the last day of the selected time frame.
+  """
+  aged90DaysSellableInventory: UnitsWithValue
+  """
+  Calculated as the number of units shipped in comparison to the number of units
+  at Amazon at the start of the period, plus any units received during the same
+  time period. Sell Through Rate = (Shipped Units - Customer Returns) /
+  (Sellable On Hand Units + Net Received Units).
+  """
+  sellThroughRate: Float @resultRetention(duration : "P30D")
+  "The number of units and their cost in Amazon FCs that is in sellable condition on the last day of the selected time frame."
+  sellableOnHandInventory: UnitsWithValue
+  """
+  Ultra Fast Track (UFT), is an hourly measure of the percentage of time an ASIN
+  is available to be shipped to the customer from an FC via Prime shipping,
+  versus the selection Amazon intended to carry. This metric takes into account
+  a Customer Importance Factor (CIF), which weighs the ASIN’s importance to
+  shoppers against Amazon’s cost of having that item in stock.
+  """
+  ultraFastTrack: Float @resultRetention(duration : "P30D")
+  """
+  Excess number of units and their cost on the last day of the selected time
+  frame based on forecasted demand. (Note:Not Available for Daily/Custom Time selections)
+  """
+  unhealthyInventory: UnitsWithValue
+  """
+  The number of units and their cost in Amazon FCs that is in unsellable
+  condition on the last day of the selected time frame.
+  """
+  unsellableOnHandInventory: UnitsWithValue
+}
+
+"A root type for queries"
+type Query {
+  "API is versioned."
+  analytics_vendorAnalytics_2024_09_30: Analytics_vendorAnalytics_2024_09_30
+}
+
+"Shipped orders metric group. Null value for a given metric means that this metric is not available yet."
+type ShippedOrders {
+  """
+  The number of items shipped and the associated gross price the customer paid
+  for them. Shipped Revenue Amount = Gross Price (the price the customer sees in
+  the cart) * Shipped Units.
+  """
+  shippedUnitsWithRevenue: UnitsWithValue
+}
+
+"Sourcing metric group. Null value for a given metric means that this metric is not available yet."
+type Sourcing {
+  """
+  Net number of units and their cost received by Amazon after subtracting the
+  units returned to the supplier in the selected time frame.
+  """
+  netReceived: UnitsWithValue
+  "Number of units included in the Vendor's open POs (i.e., confirmed PO quantities that are not yet received)."
+  openPurchaseOrderQuantity: Long @resultRetention(duration : "P30D")
+  "Time (in days) from when Vendor receives a PO from Amazon, to when inventory is received in a FC."
+  overallVendorLeadTime: Float @resultRetention(duration : "P30D")
+  """
+  OOS (Out of Stock) rate on all products that are procurable. Retail Out of
+  Stock (ROOS) = Out of Stock Glance Views on Procurable ASINs / Total Glance
+  Views. Procurability refers to whether Amazon is able to fulfill a customer
+  delivery promise, considering the ability of known vendors to supply the ASIN
+  in the foreseeable future.
+  """
+  procurableProductOOS: Float @resultRetention(duration : "P30D")
+  """
+  PO units received by Amazon in comparison to PO units confirmed by the vendor.
+  The fill rate here applies only to Procurable ASINs. Fill Rate = Net Received
+  Units / Confirmed Units.
+  """
+  receivedFillRate: Float @resultRetention(duration : "P30D")
+  """
+  How many units Vendors confirm out of the units Amazon asks for, accounting
+  for Procurable ASINs only. Vendor Confirmation Rate = Confirmed Units /
+  Submitted Units.
+  """
+  vendorConfirmationRate: Float @resultRetention(duration : "P30D")
+}
+
+"""
+The sourcing view provides metrics about products that are sourced directly from
+the Vendor to Amazon (i.e., when the Vendor is a distributor)
+for the given time period, including both totals (aggregate across all of the
+vendor catalog) and metrics grouped by, e.g., ASIN.
+"""
+type SourcingView {
+  "End date of the time period."
+  endDate: Date! @resultRetention(duration : "P30D")
+  "The marketplace identifier for the associated metrics."
+  marketplaceId: String! @resultRetention(duration : "P30D")
+  "Metrics for the given time period, grouped by, e.g., ASIN."
+  metrics: [SourcingViewMetricsGroupedBy]!
+  "Start date of the time period."
+  startDate: Date! @resultRetention(duration : "P30D")
+  "Totals (aggregate across all of the vendor catalog) for the given time period."
+  totals: SourcingViewMetrics!
+}
+
+"Metrics broken down by metric groups, e.g., Product availability, Costs, Customer satisfaction."
+type SourcingViewMetrics {
+  "Costs metric group."
+  costs: Costs
+  "Customer satisfaction metric group."
+  customerSatisfaction: CustomerSatisfaction
+  "Product availability metric group."
+  productAvailability: ProductAvailability
+  "Shipped orders metric group."
+  shippedOrders: ShippedOrders
+  "Sourcing metric group."
+  sourcing: Sourcing
+}
+
+"Sourcing view metrics grouped by the selected \"group by\" attributes, e.g., brand, ASIN."
+type SourcingViewMetricsGroupedBy {
+  "Group by attributes, e.g., brand, ASIN."
+  groupByKey: GroupByAttributes!
+  "Metrics for the given time period, grouped by the attributes selected in the groupByKey."
+  metrics: SourcingViewMetrics!
+}
+
+"Traffic metric group. Null value for a given metric means that this metric is not available yet."
+type Traffic {
+  "Glance views where Retail is the featured offer (i.e., winning the buy box)."
+  glanceViews: Long @resultRetention(duration : "P30D")
+}
+
+"Number of units with their corresponding monetary value."
+type UnitsWithValue {
+  "Number of units."
+  units: Long @resultRetention(duration : "P30D")
+  "Monetary value of the units."
+  value: Amount @resultRetention(duration : "P30D")
+}
+
+"Date granularity used in aggregation."
+enum DateGranularity {
+  "Metrics are aggregated by day."
+  DAY
+  "Metrics are aggregated by month."
+  MONTH
+  "Metrics are aggregated by week."
+  WEEK
+}
+
+"RFC-3339 compliant Full Date Scalar. Example: \"2023-11-15\"."
+scalar Date
+
+"A Scalar for the primitive long type."
+scalar Long

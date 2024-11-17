@@ -1,57 +1,662 @@
 {
-  "swagger": "2.0",
-  "info": {
-    "description": "The Selling Partner API for FBA Inventory lets you programmatically retrieve information about inventory in Amazon's fulfillment network.",
-    "version": "v1",
-    "title": "Selling Partner API for FBA Inventory",
-    "contact": {
-      "name": "Selling Partner API Developer Support",
-      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    "swagger": "2.0",
+    "info": {
+      "description": "The Selling Partner API for FBA Inventory lets you programmatically retrieve information about inventory in Amazon's fulfillment network.",
+      "version": "v1",
+      "title": "Selling Partner API for FBA Inventory",
+      "contact": {
+        "name": "Selling Partner API Developer Support",
+        "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+      },
+      "license": {
+        "name": "Apache License 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0"
+      }
     },
-    "license": {
-      "name": "Apache License 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0"
-    }
-  },
-  "host": "sellingpartnerapi-na.amazon.com",
-  "schemes": [
-    "https"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "paths": {
-    "/fba/inventory/v1/summaries": {
-      "get": {
-        "tags": [
-          "fbaInventory"
-        ],
-        "description": "Returns a list of inventory summaries. The summaries returned depend on the presence or absence of the `startDateTime`, `sellerSkus` and `sellerSku` parameters:\n\n- All inventory summaries with available details are returned when the `startDateTime`, `sellerSkus` and `sellerSku` parameters are omitted.\n- When `startDateTime` is provided, the operation returns inventory summaries that have had changes after the date and time specified. The `sellerSkus` and `sellerSku` parameters are ignored. **Important:** To avoid errors, use both `startDateTime` and `nextToken` to get the next page of inventory summaries that have changed after the date and time specified.\n- When the `sellerSkus` parameter is provided, the operation returns inventory summaries for only the specified `sellerSkus`. The `sellerSku` parameter is ignored.\n- When the `sellerSku` parameter is provided, the operation returns inventory summaries for only the specified `sellerSku`.\n\n**Note:** The parameters associated with this operation may contain special characters that must be encoded to successfully call the API. To avoid errors with SKUs when encoding URLs, refer to [URL Encoding](https://developer-docs.amazon.com/sp-api/docs/url-encoding).\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 2 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
-        "operationId": "getInventorySummaries",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "details",
-            "in": "query",
-            "description": "true to return inventory summaries with additional summarized inventory details and quantities. Otherwise, returns inventory summaries only (default value).",
-            "required": false,
-            "type": "boolean",
-            "default": false
+    "host": "sellingpartnerapi-na.amazon.com",
+    "schemes": [
+      "https"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/fba/inventory/v1/summaries": {
+        "x-amzn-api-sandbox": {
+          "dynamic": {}
+        },
+        "get": {
+          "tags": [
+            "fbaInventory"
+          ],
+          "description": "Returns a list of inventory summaries. The summaries returned depend on the presence or absence of the startDateTime, sellerSkus and sellerSku parameters:\n\n- All inventory summaries with available details are returned when the startDateTime, sellerSkus and sellerSku parameters are omitted.\n- When startDateTime is provided, the operation returns inventory summaries that have had changes after the date and time specified. The sellerSkus and sellerSku parameters are ignored. Important: To avoid errors, use both startDateTime and nextToken to get the next page of inventory summaries that have changed after the date and time specified.\n- When the sellerSkus parameter is provided, the operation returns inventory summaries for only the specified sellerSkus. The sellerSku parameter is ignored.\n- When the sellerSku parameter is provided, the operation returns inventory summaries for only the specified sellerSku.\n\nNote: The parameters associated with this operation may contain special characters that must be encoded to successfully call the API. To avoid errors with SKUs when encoding URLs, refer to [URL Encoding](https://developer-docs.amazon.com/sp-api/docs/url-encoding).\n\nUsage Plan:\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 2 |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits).",
+          "operationId": "getInventorySummaries",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "details",
+              "in": "query",
+              "description": "true to return inventory summaries with additional summarized inventory details and quantities. Otherwise, returns inventory summaries only (default value).",
+              "required": false,
+              "type": "boolean",
+              "default": false
+            },
+            {
+              "name": "granularityType",
+              "in": "query",
+              "description": "The granularity type for the inventory aggregation level.",
+              "required": true,
+              "type": "string",
+              "enum": [
+                "Marketplace"
+              ],
+              "x-docgen-enum-table-extension": [
+                {
+                  "value": "Marketplace",
+                  "description": "Marketplace"
+                }
+              ]
+            },
+            {
+              "name": "granularityId",
+              "in": "query",
+              "description": "The granularity ID for the inventory aggregation level.",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "startDateTime",
+              "in": "query",
+              "description": "A start date and time in ISO8601 format. If specified, all inventory summaries that have changed since then are returned. You must specify a date and time that is no earlier than 18 months prior to the date and time when you call the API. Note: Changes in inboundWorkingQuantity, inboundShippedQuantity and inboundReceivingQuantity are not detected.",
+              "required": false,
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "name": "sellerSkus",
+              "in": "query",
+              "description": "A list of seller SKUs for which to return inventory summaries. You may specify up to 50 SKUs.",
+              "required": false,
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 50
+            },
+            {
+              "name": "sellerSku",
+              "in": "query",
+              "description": "A single seller SKU used for querying the specified seller SKU inventory summaries.",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "nextToken",
+              "in": "query",
+              "description": "String token returned in the response of your previous request. The string token will expire 30 seconds after being created.",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "marketplaceIds",
+              "in": "query",
+              "description": "The marketplace ID for the marketplace for which to return inventory summaries.",
+              "required": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 1
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/GetInventorySummariesResponse"
+              },
+              "headers": {
+                "x-amzn-RateLimit-Limit": {
+                  "type": "string",
+                  "description": "Your rate limit (requests per second) for this operation."
+                },
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "400": {
+              "description": "Request has missing or invalid parameters and cannot be parsed.",
+              "schema": {
+                "$ref": "#/definitions/GetInventorySummariesResponse"
+              },
+              "headers": {
+                "x-amzn-RateLimit-Limit": {
+                  "type": "string",
+                  "description": "Your rate limit (requests per second) for this operation."
+                },
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "403": {
+              "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+              "schema": {
+                "$ref": "#/definitions/GetInventorySummariesResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "404": {
+              "description": "The specified resource does not exist.",
+              "schema": {
+                "$ref": "#/definitions/GetInventorySummariesResponse"
+              },
+              "headers": {
+                "x-amzn-RateLimit-Limit": {
+                  "type": "string",
+                  "description": "Your rate limit (requests per second) for this operation."
+                },
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "429": {
+              "description": "The frequency of requests was greater than allowed.",
+              "schema": {
+                "$ref": "#/definitions/GetInventorySummariesResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "500": {
+              "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+              "schema": {
+                "$ref": "#/definitions/GetInventorySummariesResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "503": {
+              "description": "Temporary overloading or maintenance of the server.",
+              "schema": {
+                "$ref": "#/definitions/GetInventorySummariesResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            }
+          }
+        }
+      },
+      "/fba/inventory/v1/items": {
+        "x-amzn-api-sandbox": {
+          "dynamic": {}
+        },
+        "x-amzn-api-sandbox-only": true,
+        "post": {
+          "tags": [
+            "fbaInventory"
+          ],
+          "description": "Requests that Amazon create product-details in the Sandbox Inventory in the sandbox environment. This is a sandbox-only operation and must be directed to a sandbox endpoint. Refer to [Selling Partner API sandbox](https://developer-docs.amazon.com/sp-api/docs/the-selling-partner-api-sandbox) for more information.",
+          "operationId": "createInventoryItem",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "createInventoryItemRequestBody",
+              "in": "body",
+              "description": "CreateInventoryItem Request Body Parameter.",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/CreateInventoryItemRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/CreateInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "400": {
+              "description": "Request has missing or invalid parameters and cannot be parsed.",
+              "schema": {
+                "$ref": "#/definitions/CreateInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "403": {
+              "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+              "schema": {
+                "$ref": "#/definitions/CreateInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "404": {
+              "description": "The specified resource does not exist.",
+              "schema": {
+                "$ref": "#/definitions/CreateInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "429": {
+              "description": "The frequency of requests was greater than allowed.",
+              "schema": {
+                "$ref": "#/definitions/CreateInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "500": {
+              "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+              "schema": {
+                "$ref": "#/definitions/CreateInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "503": {
+              "description": "Temporary overloading or maintenance of the server.",
+              "schema": {
+                "$ref": "#/definitions/CreateInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            }
+          }
+        }
+      },
+      "/fba/inventory/v1/items/{sellerSku}": {
+        "x-amzn-api-sandbox": {
+          "dynamic": {}
+        },
+        "x-amzn-api-sandbox-only": true,
+        "delete": {
+          "tags": [
+            "fbaInventory"
+          ],
+          "description": "Requests that Amazon Deletes an item from the Sandbox Inventory in the sandbox environment. This is a sandbox-only operation and must be directed to a sandbox endpoint. Refer to [Selling Partner API sandbox](https://developer-docs.amazon.com/sp-api/docs/the-selling-partner-api-sandbox) for more information.",
+          "operationId": "deleteInventoryItem",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "sellerSku",
+              "in": "path",
+              "description": "A single seller SKU used for querying the specified seller SKU inventory summaries.",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "marketplaceId",
+              "in": "query",
+              "description": "The marketplace ID for the marketplace for which the sellerSku is to be deleted.",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/DeleteInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "400": {
+              "description": "Request has missing or invalid parameters and cannot be parsed.",
+              "schema": {
+                "$ref": "#/definitions/DeleteInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "403": {
+              "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+              "schema": {
+                "$ref": "#/definitions/DeleteInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "404": {
+              "description": "The specified resource does not exist.",
+              "schema": {
+                "$ref": "#/definitions/DeleteInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "429": {
+              "description": "The frequency of requests was greater than allowed.",
+              "schema": {
+                "$ref": "#/definitions/DeleteInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "500": {
+              "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+              "schema": {
+                "$ref": "#/definitions/DeleteInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "503": {
+              "description": "Temporary overloading or maintenance of the server.",
+              "schema": {
+                "$ref": "#/definitions/DeleteInventoryItemResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            }
+          }
+        }
+      },
+      "/fba/inventory/v1/items/inventory": {
+        "x-amzn-api-sandbox": {
+          "dynamic": {}
+        },
+        "x-amzn-api-sandbox-only": true,
+        "post": {
+          "tags": [
+            "fbaInventory"
+          ],
+          "description": "Requests that Amazon add items to the Sandbox Inventory with desired amount of quantity in the sandbox environment. This is a sandbox-only operation and must be directed to a sandbox endpoint. Refer to [Selling Partner API sandbox](https://developer-docs.amazon.com/sp-api/docs/the-selling-partner-api-sandbox) for more information.",
+          "operationId": "addInventory",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "x-amzn-idempotency-token",
+              "in": "header",
+              "description": "A unique token/requestId provided with each call to ensure idempotency.",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "addInventoryRequestBody",
+              "in": "body",
+              "description": "List of items to add to Sandbox inventory.",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/AddInventoryRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/AddInventoryResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "400": {
+              "description": "Request has missing or invalid parameters and cannot be parsed.",
+              "schema": {
+                "$ref": "#/definitions/AddInventoryResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "403": {
+              "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
+              "schema": {
+                "$ref": "#/definitions/AddInventoryResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "404": {
+              "description": "The specified resource does not exist.",
+              "schema": {
+                "$ref": "#/definitions/AddInventoryResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "429": {
+              "description": "The frequency of requests was greater than allowed.",
+              "schema": {
+                "$ref": "#/definitions/AddInventoryResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "500": {
+              "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+              "schema": {
+                "$ref": "#/definitions/AddInventoryResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            },
+            "503": {
+              "description": "Temporary overloading or maintenance of the server.",
+              "schema": {
+                "$ref": "#/definitions/AddInventoryResponse"
+              },
+              "headers": {
+                "x-amzn-RequestId": {
+                  "type": "string",
+                  "description": "Unique request reference identifier."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "CreateInventoryItemRequest": {
+        "description": "An item to be created in the inventory.",
+        "type": "object",
+        "properties": {
+          "sellerSku" : {
+            "description": "The seller SKU of the item.",
+            "type": "string"
           },
-          {
-            "name": "granularityType",
-            "in": "query",
-            "description": "The granularity type for the inventory aggregation level.",
-            "required": true,
+          "marketplaceId" : {
+            "description": "The marketplaceId.",
+            "type": "string"
+          },
+          "productName": {
+            "description": "The name of the item.",
+            "type": "string"
+          }
+        },
+        "required": ["sellerSku", "marketplaceId", "productName"]
+      },
+      "AddInventoryRequest": {
+        "description": "The object with the list of Inventory to be added",
+        "type": "object",
+        "properties": {
+          "inventoryItems": {
+            "$ref": "#/definitions/InventoryItems"
+          }
+        }
+      },
+      "InventoryItems": {
+        "description": "List of Inventory to be added",
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/InventoryItem"
+        }
+      },
+      "InventoryItem": {
+        "description": "An item in the list of inventory to be added.",
+        "type": "object",
+        "properties": {
+          "sellerSku" : {
+            "description": "The seller SKU of the item.",
+            "type": "string"
+          },
+          "marketplaceId" : {
+            "description": "The marketplaceId.",
+            "type": "string"
+          },
+          "quantity": {
+            "description": "The quantity of item to add.",
+            "type": "integer"
+          }
+        },
+        "required": ["sellerSku", "marketplaceId", "quantity"]
+      },
+      "CreateInventoryItemResponse": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "description": "One or more unexpected errors occurred during the CreateInventoryItem operation.",
+            "$ref": "#/definitions/ErrorList"
+          }
+        },
+        "description": "The response schema for the CreateInventoryItem operation."
+      },
+      "DeleteInventoryItemResponse": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "description": "One or more unexpected errors occurred during the DeleteInventoryItem operation.",
+            "$ref": "#/definitions/ErrorList"
+          }
+        },
+        "description": "The response schema for the DeleteInventoryItem operation."
+      },
+      "AddInventoryResponse": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "description": "One or more unexpected errors occurred during the AddInventory operation.",
+            "$ref": "#/definitions/ErrorList"
+          }
+        },
+        "description": "The response schema for the AddInventory operation."
+      },
+      "Granularity": {
+        "type": "object",
+        "properties": {
+          "granularityType": {
             "type": "string",
-            "enum": [
-              "Marketplace"
-            ],
+            "description": "The granularity type for the inventory aggregation level.",
             "x-docgen-enum-table-extension": [
               {
                 "value": "Marketplace",
@@ -59,623 +664,276 @@
               }
             ]
           },
-          {
-            "name": "granularityId",
-            "in": "query",
-            "description": "The granularity ID for the inventory aggregation level.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "startDateTime",
-            "in": "query",
-            "description": "A start date and time in ISO8601 format. If specified, all inventory summaries that have changed since then are returned. You must specify a date and time that is no earlier than 18 months prior to the date and time when you call the API. Note: Changes in inboundWorkingQuantity, inboundShippedQuantity and inboundReceivingQuantity are not detected.",
-            "required": false,
+          "granularityId": {
             "type": "string",
-            "format": "date-time"
-          },
-          {
-            "name": "sellerSkus",
-            "in": "query",
-            "description": "A list of seller SKUs for which to return inventory summaries. You may specify up to 50 SKUs.",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "maxItems": 50
-          },
-          {
-            "name": "sellerSku",
-            "in": "query",
-            "description": "A single seller SKU used for querying the specified seller SKU inventory summaries.",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "nextToken",
-            "in": "query",
-            "description": "String token returned in the response of your previous request. The string token will expire 30 seconds after being created.",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "marketplaceIds",
-            "in": "query",
-            "description": "The marketplace ID for the marketplace for which to return inventory summaries.",
-            "required": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "maxItems": 1
+            "description": "The granularity ID for the specified granularity type. When granularityType is Marketplace, specify the marketplaceId."
           }
+        },
+        "description": "Describes a granularity at which inventory data can be aggregated. For example, if you use Marketplace granularity, the fulfillable quantity will reflect inventory that could be fulfilled in the given marketplace."
+      },
+      "ReservedQuantity": {
+        "type": "object",
+        "properties": {
+          "totalReservedQuantity": {
+            "type": "integer",
+            "description": "The total number of units in Amazon's fulfillment network that are currently being picked, packed, and shipped; or are sidelined for measurement, sampling, or other internal processes."
+          },
+          "pendingCustomerOrderQuantity": {
+            "type": "integer",
+            "description": "The number of units reserved for customer orders."
+          },
+          "pendingTransshipmentQuantity": {
+            "type": "integer",
+            "description": "The number of units being transferred from one fulfillment center to another."
+          },
+          "fcProcessingQuantity": {
+            "type": "integer",
+            "description": "The number of units that have been sidelined at the fulfillment center for additional processing."
+          }
+        },
+        "description": "The quantity of reserved inventory."
+      },
+      "ResearchingQuantityEntry": {
+        "type": "object",
+        "required": [
+          "name",
+          "quantity"
         ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/GetInventorySummariesResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The duration of the research.",
+            "enum": [
+              "researchingQuantityInShortTerm",
+              "researchingQuantityInMidTerm",
+              "researchingQuantityInLongTerm"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "researchingQuantityInShortTerm",
+                "description": "Short Term for 1-10 days."
               },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "details": {
-                        "value": true
-                      },
-                      "granularityType": {
-                        "value": "Marketplace"
-                      },
-                      "granularityId": {
-                        "value": "ATVPDKIKX0DER"
-                      },
-                      "marketplaceIds": {
-                        "value": [
-                          "ATVPDKIKX0DER"
-                        ]
-                      }
-                    }
-                  },
-                  "response": {
-                    "pagination": {
-                      "nextToken": "seed"
-                    },
-                    "payload": {
-                      "granularity": {
-                        "granularityType": "Marketplace",
-                        "granularityId": "ATVPDKIKX0DER"
-                      },
-                      "inventorySummaries": [
-                        {
-                          "asin": "B0020MLK00",
-                          "fnSku": "B0020MLK00",
-                          "sellerSku": "EMTEC 1 GB",
-                          "condition": "NewItem",
-                          "inventoryDetails": {
-                            "fulfillableQuantity": 0,
-                            "inboundWorkingQuantity": 0,
-                            "inboundShippedQuantity": 0,
-                            "inboundReceivingQuantity": 0,
-                            "reservedQuantity": {
-                              "totalReservedQuantity": 0,
-                              "pendingCustomerOrderQuantity": 0,
-                              "pendingTransshipmentQuantity": 0,
-                              "fcProcessingQuantity": 0
-                            },
-                            "researchingQuantity": {
-                              "totalResearchingQuantity": 0,
-                              "researchingQuantityBreakdown": []
-                            },
-                            "unfulfillableQuantity": {
-                              "totalUnfulfillableQuantity": 0,
-                              "customerDamagedQuantity": 0,
-                              "warehouseDamagedQuantity": 0,
-                              "distributorDamagedQuantity": 0,
-                              "carrierDamagedQuantity": 0,
-                              "defectiveQuantity": 0,
-                              "expiredQuantity": 0
-                            }
-                          },
-                          "lastUpdatedTime": "",
-                          "productName": "EMTEC 1 GB 60x SD Flash Memory Card with USB 2.0 Card Reader",
-                          "totalQuantity": 0
-                        },
-                        {
-                          "asin": "B0020MLK00",
-                          "fnSku": "B0020MLK00",
-                          "sellerSku": "EMTEC-SdCard-reader",
-                          "condition": "NewItem",
-                          "inventoryDetails": {
-                            "fulfillableQuantity": 0,
-                            "inboundWorkingQuantity": 0,
-                            "inboundShippedQuantity": 0,
-                            "inboundReceivingQuantity": 0,
-                            "reservedQuantity": {
-                              "totalReservedQuantity": 0,
-                              "pendingCustomerOrderQuantity": 0,
-                              "pendingTransshipmentQuantity": 0,
-                              "fcProcessingQuantity": 0
-                            },
-                            "researchingQuantity": {
-                              "totalResearchingQuantity": 0,
-                              "researchingQuantityBreakdown": []
-                            },
-                            "unfulfillableQuantity": {
-                              "totalUnfulfillableQuantity": 0,
-                              "customerDamagedQuantity": 0,
-                              "warehouseDamagedQuantity": 0,
-                              "distributorDamagedQuantity": 0,
-                              "carrierDamagedQuantity": 0,
-                              "defectiveQuantity": 0,
-                              "expiredQuantity": 0
-                            }
-                          },
-                          "lastUpdatedTime": "",
-                          "productName": "EMTEC 1 GB 60x SD Flash Memory Card with USB 2.0 Card Reader",
-                          "totalQuantity": 0
-                        },
-                        {
-                          "asin": "B00T9QONN6",
-                          "fnSku": "B00T9QONN6",
-                          "sellerSku": "Silicon Power 32GB",
-                          "condition": "NewItem",
-                          "inventoryDetails": {
-                            "fulfillableQuantity": 66,
-                            "inboundWorkingQuantity": 21,
-                            "inboundShippedQuantity": 0,
-                            "inboundReceivingQuantity": 0,
-                            "reservedQuantity": {
-                              "totalReservedQuantity": 0,
-                              "pendingCustomerOrderQuantity": 0,
-                              "pendingTransshipmentQuantity": 0,
-                              "fcProcessingQuantity": 0
-                            },
-                            "researchingQuantity": {
-                              "totalResearchingQuantity": 0,
-                              "researchingQuantityBreakdown": [
-                                {
-                                  "name": "researchingQuantityInShortTerm",
-                                  "quantity": 0
-                                },
-                                {
-                                  "name": "researchingQuantityInMidTerm",
-                                  "quantity": 0
-                                },
-                                {
-                                  "name": "researchingQuantityInLongTerm",
-                                  "quantity": 0
-                                }
-                              ]
-                            },
-                            "unfulfillableQuantity": {
-                              "totalUnfulfillableQuantity": 0,
-                              "customerDamagedQuantity": 0,
-                              "warehouseDamagedQuantity": 0,
-                              "distributorDamagedQuantity": 0,
-                              "carrierDamagedQuantity": 0,
-                              "defectiveQuantity": 0,
-                              "expiredQuantity": 0
-                            }
-                          },
-                          "lastUpdatedTime": "2018-03-31T23:40:39Z",
-                          "productName": "Silicon Power 32GB up to 85MB/s MicroSDHC UHS-1 Class10, Elite Flash Memory Card with Adaptor (SP032GBSTHBU1V20SP)",
-                          "totalQuantity": 87
-                        }
-                      ]
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "schema": {
-              "$ref": "#/definitions/GetInventorySummariesResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
+              {
+                "value": "researchingQuantityInMidTerm",
+                "description": "Mid Term for 11-20 days."
               },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
+              {
+                "value": "researchingQuantityInLongTerm",
+                "description": "Long Term for 21 days or longer."
               }
-            }
+            ]
           },
-          "403": {
-            "description": "Indicates access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, Invalid Signature or Resource Not Found.",
-            "schema": {
-              "$ref": "#/definitions/GetInventorySummariesResponse"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
+          "quantity": {
+            "type": "integer",
+            "description": "The number of units."
+          }
+        },
+        "description": "The misplaced or warehouse damaged inventory that is actively being confirmed at our fulfillment centers."
+      },
+      "ResearchingQuantity": {
+        "type": "object",
+        "properties": {
+          "totalResearchingQuantity": {
+            "type": "integer",
+            "description": "The total number of units currently being researched in Amazon's fulfillment network."
           },
-          "404": {
-            "description": "The specified resource does not exist.",
-            "schema": {
-              "$ref": "#/definitions/GetInventorySummariesResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "schema": {
-              "$ref": "#/definitions/GetInventorySummariesResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            }
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "schema": {
-              "$ref": "#/definitions/GetInventorySummariesResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "marketplaceIds": {
-                        "value": [
-                          "1"
-                        ]
-                      }
-                    }
-                  },
-                  "response": {
-                    "errors": [
-                      {
-                        "message": "We encountered an internal error. Please try again.",
-                        "code": "InternalFailure"
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "schema": {
-              "$ref": "#/definitions/GetInventorySummariesResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference ID."
-              }
+          "researchingQuantityBreakdown": {
+            "type": "array",
+            "description": "A list of quantity details for items currently being researched.",
+            "items": {
+              "$ref": "#/definitions/ResearchingQuantityEntry"
             }
           }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "Granularity": {
-      "type": "object",
-      "properties": {
-        "granularityType": {
-          "type": "string",
-          "description": "The granularity type for the inventory aggregation level.",
-          "x-docgen-enum-table-extension": [
-            {
-              "value": "Marketplace",
-              "description": "Marketplace"
-            }
-          ]
         },
-        "granularityId": {
-          "type": "string",
-          "description": "The granularity ID for the specified granularity type. When granularityType is Marketplace, specify the marketplaceId."
-        }
+        "description": "The number of misplaced or warehouse damaged units that are actively being confirmed at our fulfillment centers."
       },
-      "description": "Describes a granularity at which inventory data can be aggregated. For example, if you use Marketplace granularity, the fulfillable quantity will reflect inventory that could be fulfilled in the given marketplace."
-    },
-    "ReservedQuantity": {
-      "type": "object",
-      "properties": {
-        "totalReservedQuantity": {
-          "type": "integer",
-          "description": "The total number of units in Amazon's fulfillment network that are currently being picked, packed, and shipped; or are sidelined for measurement, sampling, or other internal processes."
-        },
-        "pendingCustomerOrderQuantity": {
-          "type": "integer",
-          "description": "The number of units reserved for customer orders."
-        },
-        "pendingTransshipmentQuantity": {
-          "type": "integer",
-          "description": "The number of units being transferred from one fulfillment center to another."
-        },
-        "fcProcessingQuantity": {
-          "type": "integer",
-          "description": "The number of units that have been sidelined at the fulfillment center for additional processing."
-        }
-      },
-      "description": "The quantity of reserved inventory."
-    },
-    "ResearchingQuantityEntry": {
-      "type": "object",
-      "required": [
-        "name",
-        "quantity"
-      ],
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The duration of the research.",
-          "enum": [
-            "researchingQuantityInShortTerm",
-            "researchingQuantityInMidTerm",
-            "researchingQuantityInLongTerm"
-          ],
-          "x-docgen-enum-table-extension": [
-            {
-              "value": "researchingQuantityInShortTerm",
-              "description": "Short Term for 1-10 days."
-            },
-            {
-              "value": "researchingQuantityInMidTerm",
-              "description": "Mid Term for 11-20 days."
-            },
-            {
-              "value": "researchingQuantityInLongTerm",
-              "description": "Long Term for 21 days or longer."
-            }
-          ]
-        },
-        "quantity": {
-          "type": "integer",
-          "description": "The number of units."
-        }
-      },
-      "description": "The misplaced or warehouse damaged inventory that is actively being confirmed at our fulfillment centers."
-    },
-    "ResearchingQuantity": {
-      "type": "object",
-      "properties": {
-        "totalResearchingQuantity": {
-          "type": "integer",
-          "description": "The total number of units currently being researched in Amazon's fulfillment network."
-        },
-        "researchingQuantityBreakdown": {
-          "type": "array",
-          "description": "A list of quantity details for items currently being researched.",
-          "items": {
-            "$ref": "#/definitions/ResearchingQuantityEntry"
+      "UnfulfillableQuantity": {
+        "type": "object",
+        "properties": {
+          "totalUnfulfillableQuantity": {
+            "type": "integer",
+            "description": "The total number of units in Amazon's fulfillment network in unsellable condition."
+          },
+          "customerDamagedQuantity": {
+            "type": "integer",
+            "description": "The number of units in customer damaged disposition."
+          },
+          "warehouseDamagedQuantity": {
+            "type": "integer",
+            "description": "The number of units in warehouse damaged disposition."
+          },
+          "distributorDamagedQuantity": {
+            "type": "integer",
+            "description": "The number of units in distributor damaged disposition."
+          },
+          "carrierDamagedQuantity": {
+            "type": "integer",
+            "description": "The number of units in carrier damaged disposition."
+          },
+          "defectiveQuantity": {
+            "type": "integer",
+            "description": "The number of units in defective disposition."
+          },
+          "expiredQuantity": {
+            "type": "integer",
+            "description": "The number of units in expired disposition."
           }
+        },
+        "description": "The quantity of unfulfillable inventory."
+      },
+      "InventoryDetails": {
+        "type": "object",
+        "properties": {
+          "fulfillableQuantity": {
+            "type": "integer",
+            "description": "The item quantity that can be picked, packed, and shipped."
+          },
+          "inboundWorkingQuantity": {
+            "type": "integer",
+            "description": "The number of units in an inbound shipment for which you have notified Amazon."
+          },
+          "inboundShippedQuantity": {
+            "type": "integer",
+            "description": "The number of units in an inbound shipment that you have notified Amazon about and have provided a tracking number."
+          },
+          "inboundReceivingQuantity": {
+            "type": "integer",
+            "description": "The number of units that have not yet been received at an Amazon fulfillment center for processing, but are part of an inbound shipment with some units that have already been received and processed."
+          },
+          "reservedQuantity": {
+            "$ref": "#/definitions/ReservedQuantity"
+          },
+          "researchingQuantity": {
+            "$ref": "#/definitions/ResearchingQuantity"
+          },
+          "unfulfillableQuantity": {
+            "$ref": "#/definitions/UnfulfillableQuantity"
+          }
+        },
+        "description": "Summarized inventory details. This object will not appear if the details parameter in the request is false."
+      },
+      "InventorySummary": {
+        "type": "object",
+        "properties": {
+          "asin": {
+            "type": "string",
+            "description": "The Amazon Standard Identification Number (ASIN) of an item."
+          },
+          "fnSku": {
+            "type": "string",
+            "description": "Amazon's fulfillment network SKU identifier."
+          },
+          "sellerSku": {
+            "type": "string",
+            "description": "The seller SKU of the item."
+          },
+          "condition": {
+            "type": "string",
+            "description": "The condition of the item as described by the seller (for example, New Item)."
+          },
+          "inventoryDetails": {
+            "$ref": "#/definitions/InventoryDetails"
+          },
+          "lastUpdatedTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time that any quantity was last updated."
+          },
+          "productName": {
+            "type": "string",
+            "description": "The localized language product title of the item within the specific marketplace."
+          },
+          "totalQuantity": {
+            "type": "integer",
+            "description": "The total number of units in an inbound shipment or in Amazon fulfillment centers."
+          },
+          "stores": {
+            "type": "array",
+            "description": "A list of seller-enrolled stores that apply to this seller SKU.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "Inventory summary for a specific item."
+      },
+      "InventorySummaries": {
+        "type": "array",
+        "description": "A list of inventory summaries.",
+        "items": {
+          "$ref": "#/definitions/InventorySummary"
         }
       },
-      "description": "The number of misplaced or warehouse damaged units that are actively being confirmed at our fulfillment centers."
-    },
-    "UnfulfillableQuantity": {
-      "type": "object",
-      "properties": {
-        "totalUnfulfillableQuantity": {
-          "type": "integer",
-          "description": "The total number of units in Amazon's fulfillment network in unsellable condition."
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "nextToken": {
+            "type": "string",
+            "description": "A generated string used to retrieve the next page of the result. If nextToken is returned, pass the value of nextToken to the next request. If nextToken is not returned, there are no more items to return."
+          }
         },
-        "customerDamagedQuantity": {
-          "type": "integer",
-          "description": "The number of units in customer damaged disposition."
-        },
-        "warehouseDamagedQuantity": {
-          "type": "integer",
-          "description": "The number of units in warehouse damaged disposition."
-        },
-        "distributorDamagedQuantity": {
-          "type": "integer",
-          "description": "The number of units in distributor damaged disposition."
-        },
-        "carrierDamagedQuantity": {
-          "type": "integer",
-          "description": "The number of units in carrier damaged disposition."
-        },
-        "defectiveQuantity": {
-          "type": "integer",
-          "description": "The number of units in defective disposition."
-        },
-        "expiredQuantity": {
-          "type": "integer",
-          "description": "The number of units in expired disposition."
-        }
+        "description": "The process of returning the results to a request in batches of a defined size called pages. This is done to exercise some control over result size and overall throughput. It's a form of traffic management."
       },
-      "description": "The quantity of unfulfillable inventory."
-    },
-    "InventoryDetails": {
-      "type": "object",
-      "properties": {
-        "fulfillableQuantity": {
-          "type": "integer",
-          "description": "The item quantity that can be picked, packed, and shipped."
+      "GetInventorySummariesResult": {
+        "type": "object",
+        "required": [
+          "granularity",
+          "inventorySummaries"
+        ],
+        "properties": {
+          "granularity": {
+            "$ref": "#/definitions/Granularity"
+          },
+          "inventorySummaries": {
+            "$ref": "#/definitions/InventorySummaries"
+          }
         },
-        "inboundWorkingQuantity": {
-          "type": "integer",
-          "description": "The number of units in an inbound shipment for which you have notified Amazon."
-        },
-        "inboundShippedQuantity": {
-          "type": "integer",
-          "description": "The number of units in an inbound shipment that you have notified Amazon about and have provided a tracking number."
-        },
-        "inboundReceivingQuantity": {
-          "type": "integer",
-          "description": "The number of units that have not yet been received at an Amazon fulfillment center for processing, but are part of an inbound shipment with some units that have already been received and processed."
-        },
-        "reservedQuantity": {
-          "$ref": "#/definitions/ReservedQuantity"
-        },
-        "researchingQuantity": {
-          "$ref": "#/definitions/ResearchingQuantity"
-        },
-        "unfulfillableQuantity": {
-          "$ref": "#/definitions/UnfulfillableQuantity"
-        }
+        "description": "The payload schema for the getInventorySummaries operation."
       },
-      "description": "Summarized inventory details. This object will not appear if the details parameter in the request is false."
-    },
-    "InventorySummary": {
-      "type": "object",
-      "properties": {
-        "asin": {
-          "type": "string",
-          "description": "The Amazon Standard Identification Number (ASIN) of an item."
+      "GetInventorySummariesResponse": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "description": "The payload for the getInventorySummaries operation.",
+            "$ref": "#/definitions/GetInventorySummariesResult"
+          },
+          "pagination": {
+            "$ref": "#/definitions/Pagination"
+          },
+          "errors": {
+            "description": "One or more unexpected errors occurred during the getInventorySummaries operation.",
+            "$ref": "#/definitions/ErrorList"
+          }
         },
-        "fnSku": {
-          "type": "string",
-          "description": "Amazon's fulfillment network SKU identifier."
-        },
-        "sellerSku": {
-          "type": "string",
-          "description": "The seller SKU of the item."
-        },
-        "condition": {
-          "type": "string",
-          "description": "The condition of the item as described by the seller (for example, New Item)."
-        },
-        "inventoryDetails": {
-          "$ref": "#/definitions/InventoryDetails"
-        },
-        "lastUpdatedTime": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The date and time that any quantity was last updated."
-        },
-        "productName": {
-          "type": "string",
-          "description": "The localized language product title of the item within the specific marketplace."
-        },
-        "totalQuantity": {
-          "type": "integer",
-          "description": "The total number of units in an inbound shipment or in Amazon fulfillment centers."
-        }
+        "description": "The Response schema."
       },
-      "description": "Inventory summary for a specific item."
-    },
-    "InventorySummaries": {
-      "type": "array",
-      "description": "A list of inventory summaries.",
-      "items": {
-        "$ref": "#/definitions/InventorySummary"
-      }
-    },
-    "Pagination": {
-      "type": "object",
-      "properties": {
-        "nextToken": {
-          "type": "string",
-          "description": "A generated string used to retrieve the next page of the result. If nextToken is returned, pass the value of nextToken to the next request. If nextToken is not returned, there are no more items to return."
-        }
+      "Error": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "An error code that identifies the type of error that occurred."
+          },
+          "message": {
+            "type": "string",
+            "description": "A message that describes the error condition in a human-readable form."
+          },
+          "details": {
+            "type": "string",
+            "description": "Additional information that can help the caller understand or fix the issue."
+          }
+        },
+        "description": "An error response returned when the request is unsuccessful."
       },
-      "description": "The process of returning the results to a request in batches of a defined size called pages. This is done to exercise some control over result size and overall throughput. It's a form of traffic management."
-    },
-    "GetInventorySummariesResult": {
-      "type": "object",
-      "required": [
-        "granularity",
-        "inventorySummaries"
-      ],
-      "properties": {
-        "granularity": {
-          "$ref": "#/definitions/Granularity"
-        },
-        "inventorySummaries": {
-          "$ref": "#/definitions/InventorySummaries"
+      "ErrorList": {
+        "type": "array",
+        "description": "A list of error responses returned when a request is unsuccessful.",
+        "items": {
+          "$ref": "#/definitions/Error"
         }
-      },
-      "description": "The payload schema for the getInventorySummaries operation."
-    },
-    "GetInventorySummariesResponse": {
-      "type": "object",
-      "properties": {
-        "payload": {
-          "description": "The payload for the getInventorySummaries operation.",
-          "$ref": "#/definitions/GetInventorySummariesResult"
-        },
-        "pagination": {
-          "$ref": "#/definitions/Pagination"
-        },
-        "errors": {
-          "description": "One or more unexpected errors occurred during the getInventorySummaries operation.",
-          "$ref": "#/definitions/ErrorList"
-        }
-      },
-      "description": "The Response schema."
-    },
-    "Error": {
-      "type": "object",
-      "required": [
-        "code"
-      ],
-      "properties": {
-        "code": {
-          "type": "string",
-          "description": "An error code that identifies the type of error that occurred."
-        },
-        "message": {
-          "type": "string",
-          "description": "A message that describes the error condition in a human-readable form."
-        },
-        "details": {
-          "type": "string",
-          "description": "Additional information that can help the caller understand or fix the issue."
-        }
-      },
-      "description": "An error response returned when the request is unsuccessful."
-    },
-    "ErrorList": {
-      "type": "array",
-      "description": "A list of error responses returned when a request is unsuccessful.",
-      "items": {
-        "$ref": "#/definitions/Error"
       }
     }
   }
-}
