@@ -70,7 +70,7 @@ This package returns a custom LWAException when there is an error returned durin
 ```
 
 ## Version
-Selling Partner API Authentication/Authorization Library version 2.0.
+Selling Partner API Authentication/Authorization Library version 3.0.
 
 ## Resources
 This package features Mustache templates designed for use with [swagger codegen](https://swagger.io/tools/swagger-codegen/). 

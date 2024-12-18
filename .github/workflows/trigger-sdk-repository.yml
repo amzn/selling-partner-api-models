@@ -1,0 +1,21 @@
+name: Send dispatch event to selling-partner-api-sdk
+
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'clients/**'
+      - 'models/**'
+
+jobs:
+  trigger-event:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger workflow
+        run: |
+          curl -X POST https://api.github.com/repos/amzn/selling-partner-api-sdk/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.MAFGE_PAT }} \
+          --data '{"event_type": "trigger-build"}'
