@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "The [Selling Partner API for Sellers](https://developer-docs.amazon.com/sp-api/docs/sellers-api-v1-reference) (Sellers API) provides essential information about seller accounts, such as:\n\n- The marketplaces a seller can list in\n- The default language and currency of a marketplace\n- Whether the seller has suspended listings\n\nRefer to the [Sellers API reference](https://developer-docs.amazon.com/sp-api/docs/sellers-api-v1-reference) for details about this API's operations, data types, and schemas.",
+    "description": "The Selling Partner API for Sellers lets you retrieve information on behalf of sellers about their seller account, such as the marketplaces they participate in. Along with listing the marketplaces that a seller can sell in, the API also provides additional information about the marketplace such as the default language and the default currency. The API also provides seller-specific information such as whether the seller has suspended listings in that marketplace.",
     "version": "v1",
-    "title": "Selling Partner API for Sellers",
+    "title": "The Selling Partner API for Sellers",
     "contact": {
       "name": "Selling Partner API Developer Support",
       "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
@@ -29,7 +29,7 @@
         "tags": [
           "sellers"
         ],
-        "description": "Returns a list of marketplaces where the seller can list items and information about the seller's participation in those marketplaces.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.016 | 15 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns a list of marketplaces that the seller submitting the request can sell in and information about the seller's participation in those marketplaces.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.016 | 15 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getMarketplaceParticipations",
         "parameters": [],
         "responses": {
@@ -49,6 +49,7 @@
                     "defaultLanguageCode": "en_US",
                     "domainName": "www.amazon.com"
                   },
+                  "storeName": "BestSellerStore",       
                   "participation": {
                     "isParticipating": true,
                     "hasSuspendedListings": false
@@ -83,6 +84,7 @@
                           "defaultLanguageCode": "en_US",
                           "domainName": "www.amazon.com"
                         },
+                        "storeName": "BestSellerStore",                        
                         "participation": {
                           "isParticipating": true,
                           "hasSuspendedListings": false
@@ -226,7 +228,7 @@
         "tags": [
           "sellers"
         ],
-        "description": "Returns information about a seller account and its marketplaces.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.016 | 15 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns information about a seller account and its marketplaces.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.016 | 15 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getAccount",
         "parameters": [],
         "responses": {
@@ -239,7 +241,7 @@
               "application/json": {
                 "payload": {
                   "businessType": "PRIVATE_LIMITED",
-                  "marketplaceLevelAttributes": [
+                  "marketplaceParticipationList": [
                     {
                       "marketplace": {
                         "id": "ATVPDKIKX0DER",
@@ -248,10 +250,13 @@
                         "domainName": "www.amazon.com"
                       },
                       "storeName": "BestSellerStore",
-                      "listingStatus": "ACTIVE",
-                      "sellingPlan": "PROFESSIONAL"
+                      "participation": {
+                        "isParticipating": true,
+                        "hasSuspendedListings": false
+                      }
                     }
                   ],
+                  "sellingPlan": "PROFESSIONAL",                  
                   "business": {
                     "name": "BestSeller Inc.",
                     "nonLatinName": "ベストセラー株式会社",
@@ -263,7 +268,8 @@
                       "postalCode": "98101",
                       "countryCode": "US"
                     },
-                    "companyRegistrationNumber": "123456789"
+                    "companyRegistrationNumber": "123456789",
+                    "companyTaxIdentificationNumber": "987654321"
                   },
                   "primaryContact": {
                     "name": "John Doe",
@@ -293,9 +299,13 @@
             "x-amzn-api-sandbox": {
               "static": [
                 {
+                  "request": {
+                    "parameters": {}
+                  },                  
                   "response": {
                     "payload": {
-                      "marketplaceLevelAttributes": [
+                      "businessType": "PRIVATE_LIMITED",
+                      "marketplaceParticipationList": [
                         {
                           "marketplace": {
                             "id": "ATVPDKIKX0DER",
@@ -304,13 +314,16 @@
                             "domainName": "www.amazon.com"
                           },
                           "storeName": "BestSellerStore",
-                          "listingStatus": "ACTIVE",
-                          "sellingPlan": "PROFESSIONAL"
+                          "participation": {
+                            "isParticipating": true,
+                            "hasSuspendedListings": false
+                          }
                         }
                       ],
-                      "businessType": "SOLE_PROPRIETORSHIP",
+                      "sellingPlan": "PROFESSIONAL",
                       "business": {
                         "name": "BestSeller Inc.",
+                        "nonLatinName": "ベストセラー株式会社",                        
                         "registeredBusinessAddress": {
                           "addressLine1": "123 Main St",
                           "addressLine2": "Suite 500",
@@ -319,7 +332,8 @@
                           "postalCode": "98101",
                           "countryCode": "US"
                         },
-                        "companyTaxIdentificationNumber": "TAX123456"
+                        "companyRegistrationNumber": "123456789",
+                        "companyTaxIdentificationNumber": "987654321"
                       },
                       "primaryContact": {
                         "name": "John Doe",
@@ -344,16 +358,6 @@
             "schema": {
               "$ref": "#/definitions/GetAccountResponse"
             },
-            "examples": {
-              "application/json": {
-                "errors": [
-                  {
-                    "code": "400",
-                    "message": "Validation failed for obfuscatedId:ACUULBDVZHYZ1"
-                  }
-                ]
-              }
-            },
             "headers": {
               "x-amzn-RateLimit-Limit": {
                 "type": "string",
@@ -367,11 +371,14 @@
             "x-amzn-api-sandbox": {
               "static": [
                 {
+                  "request": {
+                    "parameters": {}
+                  },                  
                   "response": {
                     "errors": [
                       {
-                        "code": "400",
-                        "message": "Validation failed for obfuscatedId:ACUULBDVZHYZ1"
+                        "code": "InvalidInput",
+                        "message": "Invalid Input"
                       }
                     ]
                   }
@@ -409,14 +416,14 @@
           },
           "413": {
             "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/GetAccountResponse"
+            },            
             "headers": {
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
               }
-            },
-            "schema": {
-              "$ref": "#/definitions/GetAccountResponse"
             }
           },
           "415": {
@@ -489,7 +496,7 @@
         },
         "details": {
           "type": "string",
-          "description": "Additional details that can help you understand or fix the issue."
+          "description": "Additional details that can help the caller understand or fix the issue."
         }
       },
       "description": "Error response returned when the request is unsuccessful."
@@ -505,7 +512,8 @@
       "type": "object",
       "required": [
         "marketplace",
-        "participation"
+        "participation",
+        "storeName"
       ],
       "properties": {
         "marketplace": {
@@ -513,6 +521,10 @@
         },
         "participation": {
           "$ref": "#/definitions/Participation"
+        },
+        "storeName": {
+          "type": "string",
+          "description": "The name of the seller's store as displayed in the marketplace."
         }
       }
     },
@@ -531,7 +543,7 @@
           "$ref": "#/definitions/MarketplaceParticipationList"
         },
         "errors": {
-          "description": "The errors encountered by the `getMarketplaceParticipations` operation.",
+          "description": "A list of errors that occurred with the `getMarketplaceParticipations` operation.",
           "$ref": "#/definitions/ErrorList"
         }
       },
@@ -554,7 +566,7 @@
         },
         "name": {
           "type": "string",
-          "description": "The marketplace name."
+          "description": "Marketplace name."
         },
         "countryCode": {
           "type": "string",
@@ -574,7 +586,7 @@
           "description": "The domain name of the marketplace."
         }
       },
-      "description": "Information about an Amazon marketplace where a seller can list items and customers can view and purchase items."
+      "description": "Detailed information about an Amazon market where a seller can list items for sale and customers can view and purchase items."
     },
     "Participation": {
       "type": "object",
@@ -585,14 +597,14 @@
       "properties": {
         "isParticipating": {
           "type": "boolean",
-          "description": "If `true`, the seller participates in the marketplace. Otherwise `false`."
+          "description": "If true, the seller participates in the marketplace."
         },
         "hasSuspendedListings": {
           "type": "boolean",
-          "description": "Specifies if the seller has suspended listings. `true` if the seller Listing Status is set to Inactive, otherwise `false`."
+          "description": "If true, the seller has suspended listings."
         }
       },
-      "description": "Information that is specific to a seller in a marketplace."
+      "description": "Detailed information that is specific to a seller in a marketplace."
     },
     "GetAccountResponse": {
       "description": "The response schema for the `getAccount` operation.",
@@ -602,74 +614,22 @@
           "$ref": "#/definitions/Account"
         },
         "errors": {
-          "description": "The errors encountered by the `getAccount` operation.",
+          "description": "A list of errors that occurred with the `getAccount` operation.",
           "$ref": "#/definitions/ErrorList"
         }
       }
-    },
-    "MarketplaceLevelAttributes": {
-      "type": "object",
-      "required": [
-        "marketplace",
-        "storeName",
-        "listingStatus",
-        "sellingPlan"
-      ],
-      "properties": {
-        "marketplace": {
-          "$ref": "#/definitions/Marketplace"
-        },
-        "storeName": {
-          "type": "string",
-          "description": "The name of the seller's store as displayed in the marketplace."
-        },
-        "listingStatus": {
-          "type": "string",
-          "description": "The current status of the seller's listings.",
-          "enum": ["ACTIVE", "INACTIVE"],
-          "x-docgen-enum-table-extension": [
-            {
-              "value": "ACTIVE",
-              "description": "The seller's listings are currently active."
-            },
-            {
-              "value": "INACTIVE",
-              "description": "The seller's listings are currently inactive."
-            }
-          ]
-        },
-        "sellingPlan": {
-          "type": "string",
-          "description": "The selling plan details.",
-          "enum": ["PROFESSIONAL", "INDIVIDUAL"],
-          "x-docgen-enum-table-extension": [
-            {
-              "value": "PROFESSIONAL",
-              "description": "The seller has a professional selling plan."
-            },
-            {
-              "value": "INDIVIDUAL",
-              "description": "The seller has an individual selling plan."
-            }
-          ]
-        }
-      },
-      "description": "Attributes that define the seller's presence and status within a specific marketplace. These attributes include the marketplace details, store name, listing status, and the selling plan the seller is subscribed to."
     },
     "Account": {
       "description": "The response schema for the `getAccount` operation.",
       "type": "object",
       "required": [
         "businessType",
-        "marketplaceLevelAttributes"
+        "sellingPlan",
+        "marketplaceParticipationList"
       ],
       "properties": {
-        "marketplaceLevelAttributes": {
-          "type": "array",
-          "description": "A list of details of the marketplaces where the seller account is active.",
-          "items": {
-            "$ref": "#/definitions/MarketplaceLevelAttributes"
-          }
+        "marketplaceParticipationList": {
+          "$ref": "#/definitions/MarketplaceParticipationList"
         },
         "businessType": {
           "type": "string",
@@ -719,6 +679,21 @@
             }
           ]
         },
+        "sellingPlan": {
+          "type": "string",
+          "description": "The selling plan details.",
+          "enum": ["PROFESSIONAL", "INDIVIDUAL"],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "PROFESSIONAL",
+              "description": "The seller has a professional selling plan."
+            },
+            {
+              "value": "INDIVIDUAL",
+              "description": "The seller has an individual selling plan."
+            }
+          ]
+        },        
         "business": {
           "$ref": "#/definitions/Business"
         },
@@ -729,7 +704,7 @@
     },
     "Business": {
       "type": "object",
-      "description": "Information about the seller's business. Certain fields may be omitted depending on the seller's `businessType`.",
+      "description": "Information about the Seller's business. These fields may be omitted if the Seller is registered as an individual.",
       "required": [
         "name",
         "registeredBusinessAddress"
