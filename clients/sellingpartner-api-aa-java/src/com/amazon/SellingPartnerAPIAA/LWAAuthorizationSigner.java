@@ -1,9 +1,9 @@
 package com.amazon.SellingPartnerAPIAA;
 
+import com.squareup.okhttp.Request;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import okhttp3.Request;
 
 /**
  * LWA Authorization Signer
