@@ -2,13 +2,13 @@ package com.amazon.SellingPartnerAPIAA;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import okhttp3.Call;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Protocol;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
 import okio.Buffer;
 import org.junit.Before;
 import org.junit.Test;
@@ -205,19 +205,6 @@ public class LWAClientTest {
             underTest.getAccessToken(testLwaAccessTokenRequestMeta);
                 });
     }
-
-    @ParameterizedTest
-    @MethodSource("lwaClient")
-    public void missingResponseBodyThrowsLwaException(String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException {
-        when(mockOkHttpClient.newCall(any(Request.class)))
-                .thenReturn(mockCall);
-        when(mockCall.execute())
-                .thenReturn(buildResponse(200));
-
-        Assertions.assertThrows(LWAException.class, () -> {
-            underTest.getAccessToken(testLwaAccessTokenRequestMeta);
-        });
-    }
     
     //Test for Access Token getting from cache
     @Test
@@ -252,7 +239,7 @@ public class LWAClientTest {
         assertEquals("Azta|foo1", client.getAccessToken(lwaAccessTokenRequestMetaSeller));
     }
     
-    private static Response buildResponse(int code, String accessToken, String expiryInSeconds, String errorCode, String errorMessage) {
+    private static Response buildResponse(int code, String accessToken, String expiryInSeconds,String errorCode, String errorMessage) {
         ResponseBody responseBody = ResponseBody.create(EXPECTED_MEDIA_TYPE,
                     String.format("{%s:%s,%s:%s,%s:%s,%s:%s}", "access_token", accessToken, "expires_in", expiryInSeconds, "error", errorCode, "error_description", errorMessage));
 
@@ -281,16 +268,6 @@ public class LWAClientTest {
                 .request(new Request.Builder().url(TEST_ENDPOINT).build())
                 .code(code)
                 .body(responseBody)
-                .protocol(Protocol.HTTP_1_1)
-                .message("OK")
-                .build();
-    }
-
-    private static Response buildResponse(int code) {
-        return new Response.Builder()
-                .request(new Request.Builder().url(TEST_ENDPOINT).build())
-                .code(code)
-                .body(null)
                 .protocol(Protocol.HTTP_1_1)
                 .message("OK")
                 .build();
