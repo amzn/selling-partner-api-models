@@ -53,6 +53,21 @@ type Analytics_vendorAnalytics_2024_09_30 {
 "Costs metric group. Null value for a given metric means that this metric is not available yet."
 type Costs {
   """
+  The average selling discount per unit of shipped items. The average sales
+  discount is equal to the sales discount divided by the shipped quantity.
+  """
+  averageSalesDiscount: Amount @resultRetention(duration : "P30D")
+  """
+  The total Contra Cost of Goods Sold (COGS), equal to the dollars realized by
+  customer outbound shipments minus Display Ads Contra COGS.
+  """
+  contraCogs: Amount @resultRetention(duration : "P30D")
+  """
+  The average Vendor Funded Contra-COGS (VFCC) of shipped items. Contra-COGS per
+  unit is equal to Contra-COGS divided by the shipped quantity.
+  """
+  contraCogsPerUnit: Amount @resultRetention(duration : "P30D")
+  """
   Net Pure Product Margin (PPM) is defined as Amazon's margin after taking into
   account CCOGs and sales discounts. Net PPM = (Shipped Revenue - Shipped CCOGS
   + CCOGS - Sales Discount) / Shipped Revenue.
@@ -66,6 +81,11 @@ type Costs {
   Promotion Amount + Cross-GL Bounceback Amount + Loyalty Points Amount
   """
   salesDiscount: Amount @resultRetention(duration : "P30D")
+  """
+  The shipped cost of goods sold (COGS), which is the price Amazon paid to a
+  vendor for item procurement, and is a component of contribution profit.
+  """
+  shippedCogs: Amount @resultRetention(duration : "P30D")
 }
 
 "Customer satisfaction metric group. Null value for a given metric means that this metric is not available yet."
@@ -102,10 +122,14 @@ type ForecastedDemandWeekly {
 type GroupByAttributes {
   "Amazon Standard Identification Number, used to uniquely identify products in Amazon's catalog."
   asin: String @resultRetention(duration : "P30D")
+  "The format or type of the item, such as Hardcover, T-Shirt, or DVD-Audio."
+  binding: String @resultRetention(duration : "P30D")
   "Brand name."
   brand: String @resultRetention(duration : "P30D")
   "Amazon brand code for the owning brand."
   brandCode: String @resultRetention(duration : "P30D")
+  "The color of the item, such as Red, Navy Blue, Pink, or Green."
+  color: String @resultRetention(duration : "P30D")
   "European Article Number. A 13-digit product identifier, often represented on products as a barcode."
   ean: String @resultRetention(duration : "P30D")
   "13-digit International Standard Book Number."
@@ -114,6 +138,8 @@ type GroupByAttributes {
   manufacturerCode: String @resultRetention(duration : "P30D")
   "The model or style number of the product."
   modelNumber: String @resultRetention(duration : "P30D")
+  "The manufacturer's suggested retail price (MSRP) of the item. Also known as the list price."
+  msrp: Amount @resultRetention(duration : "P30D")
   """
   Products with variations (size, color, etc.) have a Parent ASIN and Child
   ASINs. The Parent ASIN represents the generic overall product
@@ -141,6 +167,8 @@ type GroupByAttributes {
   shipToCountryCode: String @resultRetention(duration : "P30D")
   "Customer State or Province for a shipment."
   shipToStateOrProvince: String @resultRetention(duration : "P30D")
+  "The shipment destination's ZIP Code."
+  shipToZipCode: String @resultRetention(duration : "P30D")
   "The Universal Product Code (UPC) used for retail packaging scanning at the point of sale."
   upc: String @resultRetention(duration : "P30D")
 }
@@ -220,6 +248,11 @@ type ProductAvailability {
   "The number of units and their cost in Amazon FCs that is in sellable condition on the last day of the selected time frame."
   sellableOnHandInventory: UnitsWithValue
   """
+  The sourceable replenishment out of stock percentage, which is the percentage
+  of retail that is available for all ASINs with a sourceable retail vendor.
+  """
+  sourceableROOS: Float @resultRetention(duration : "P30D")
+  """
   Ultra Fast Track (UFT), is an hourly measure of the percentage of time an ASIN
   is available to be shipped to the customer from an FC via Prime shipping,
   versus the selection Amazon intended to carry. This metric takes into account
@@ -248,6 +281,11 @@ type Query {
 "Shipped orders metric group. Null value for a given metric means that this metric is not available yet."
 type ShippedOrders {
   """
+  The average selling price of shipped items, excluding sales tax or value-added
+  taxes. This is calculated by dividing revenue by the number of shipped units.
+  """
+  averageSellingPrice: Amount @resultRetention(duration : "P30D")
+  """
   The number of items shipped and the associated gross price the customer paid
   for them. Shipped Revenue Amount = Gross Price (the price the customer sees in
   the cart) * Shipped Units.
@@ -257,6 +295,8 @@ type ShippedOrders {
 
 "Sourcing metric group. Null value for a given metric means that this metric is not available yet."
 type Sourcing {
+  "Number of purchase order units that are confirmed to be shipped to Amazon."
+  confirmedUnits: Long @resultRetention(duration : "P30D")
   """
   Net number of units and their cost received by Amazon after subtracting the
   units returned to the supplier in the selected time frame.

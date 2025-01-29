@@ -35,6 +35,15 @@ type AggregatedDetail {
   null when quantity is null.
   """
   amountPerUnit: Amount @resultRetention(duration : "P30D")
+  """
+  The per unit amount delta is calculated by subtracting the previous
+  amountPerUnit from the current amountPerUnit. This value is mainly used to
+  indicate the change in amountPerUnit before and after an Amazon fee change.
+  This value will be null if there are no Amazon fee change in the selected time
+  range or if the previous amountPerUnit is null.
+  Example: if the previous amountPerUnit is $5 and the current amountPerUnit is $7, the amountPerUnitDelta would be $2.
+  """
+  amountPerUnitDelta: Amount @resultRetention(duration : "P30D")
   "The promotion amount associated with this transaction type. This value is deducted from amount when computing totalAmount."
   promotionAmount: Amount! @resultRetention(duration : "P30D")
   """
@@ -64,7 +73,10 @@ type Analytics_Economics_2024_03_15 {
   """
   A query to retrieve seller economics data for the seller's account aggregated
   by date and product identifier. The seller economics data consists of
-  aggregated sales, fees, and cost for selected period.
+  aggregated sales, fees, and cost for selected period. The data sets are
+  refreshed daily with the latest sales, fees, and cost data. The supported fee
+  types and advertisement charge types can be found
+  [here](https://sellercentral.amazon.com/gp/help/GZ8Y22NL2FSRY8M5).
   """
   economics(
     "Determines how the seller economics data should be aggregated. By default it's aggregated by MSKU and DAY."
@@ -79,7 +91,7 @@ type Analytics_Economics_2024_03_15 {
     "Specifies which fee types to breakdown into individual components."
     includeComponentsForFeeTypes: [FeeType], 
     "The marketplace identifiers to retrieve seller economics data for."
-    marketplaceIds: [String]!, 
+    marketplaceIds: [String!]!, 
     """
     The start date of the seller economics data to retrieve. The start date must
     be no more than two years ago. If the provided start date occurs mid-week or
@@ -88,15 +100,35 @@ type Analytics_Economics_2024_03_15 {
     """
     startDate: Date!
   ): [Economics]
+  """
+  A query to preview seller economics data for the seller's account aggregated
+  by date range specified by startDate and endDate. The seller preview economics
+  data consists of aggregated estimated sales, fees, and cost for selected
+  period. The data sets are refreshed daily with the latest estimated sales,
+  fees, and cost data. The supported fee types and advertisement charge types can be found
+  [here](https://sellercentral.amazon.com/help/hub/reference/GQNVDV46U9JQ25HY).
+  """
+  economicsPreview(
+    """
+    This determines how the seller economics data should be aggregated. For
+    economics preview, the currently supported product identifier and date
+    aggregation level are MSKU and RANGE respectively.
+    """
+    aggregateBy: EconomicsPreviewAggregation, 
+    "The end date of the seller economics preview data to retrieve. The end date must be no more than 30 days after today."
+    endDate: Date!, 
+    "Specifies which fee types to preview. Supported fee types can be found [here](https://sellercentral.amazon.com/help/hub/reference/GQNVDV46U9JQ25HY)."
+    feeTypes: [PreviewFeeType!]!, 
+    "The marketplace identifiers to retrieve seller preview economics data for."
+    marketplaceIds: [String!]!, 
+    "The start date of the seller preview economics data to retrieve. The start date must be not earlier than today."
+    startDate: Date!
+  ): [Economics]
 }
 
 "The seller economics data for a given product in the seller's account."
 type Economics {
-  """
-  The advertising spend data for the product within the specified date range.
-  Supported advertisement charge types can be found
-  [here](https://sellercentral.amazon.com/gp/help/GZ8Y22NL2FSRY8M5).
-  """
+  "The advertising spend data for the product within the specified date range."
   ads: [AdSummary]
   """
   The Amazon Standard Identification Number of the child product. Child products
@@ -112,13 +144,9 @@ type Economics {
   Calculator](https://sellercentral.amazon.com/revcal).
   """
   cost: PerUnitCost
-  "The end date of the seller economics data, please note this date may be adjusted to the end of DateGranularity."
+  "The end date of the seller economics data. Note that this date may be adjusted to the end of DateGranularity."
   endDate: Date! @resultRetention(duration : "P30D")
-  """
-  The fees applied to the product within the specified date range. Supported fee
-  types can be found
-  [here](https://sellercentral.amazon.com/gp/help/GZ8Y22NL2FSRY8M5.)
-  """
+  "The fees applied to the product within the specified date range."
   fees: [FeeSummary]!
   """
   The Fulfillment Network Stock Keeping Unit (FNSKU) of the product. Note: This
@@ -148,8 +176,16 @@ type Economics {
   parentAsin: String! @resultRetention(duration : "P30D")
   "The sales data for the product within the specified date range."
   sales: Sales!
-  "The start date of the seller economics data, please note this date may be adjusted to the start of DateGranularity."
+  "The start date of the seller economics data. Note that this date may be adjusted to the start of DateGranularity."
   startDate: Date! @resultRetention(duration : "P30D")
+}
+
+"The properties used in economics calculation."
+type EconomicsProperty {
+  "Property name"
+  propertyName: String! @resultRetention(duration : "P30D")
+  "Property value"
+  propertyValue: String! @resultRetention(duration : "P30D")
 }
 
 """
@@ -179,6 +215,38 @@ type Fee {
   fee types that cannot be divided into individual components.
   """
   components: [FeeComponent] @resultRetention(duration : "P30D")
+  """
+  The end date of the seller economics data for current fee. In most cases, this
+  value is the same as the request 'endDate'. However, when the request date
+  range includes the Amazon fee change date, in order to better show the impact
+  of the Amazon fee changes before and after the fee change date, the response
+  will split the request date range and display the fee separately. This will
+  cause the 'endDate' in 'Fee' to be different than the request 'endDate'.
+  Example: If the request date range is [2024-07-01, 2024-07-30] and the Amazon
+  fee change date is 2024-07-15, then the request date range will be split into
+  [2024-07-01, 2024-07-14], [2024-07-15, 2024-07-30].
+  """
+  endDate: Date @resultRetention(duration : "P30D")
+  "A unique identifier used to track this fee"
+  identifier: String! @resultRetention(duration : "P30D")
+  """
+  The properties used to calculate the 'aggregatedDetail' value in 'Fee'.
+  Example: Product Size Tier, an important property that determines the
+  amountPerUnit of FBA_FULFILLMENT_FEE.
+  """
+  properties: [EconomicsProperty]
+  """
+  The start date of the seller economics data for current fee. In most cases,
+  this value is the same as the request 'startDate'. However, when the request
+  date range includes the Amazon fee change date, in order to better show the
+  impact of the Amazon fee changes before and after the fee change date, the
+  response will split the request date range and display the fee separately.
+  This will cause the 'startDate' in 'Fee' to be different than the request 'startDate'.
+  Example: If the request date range is [2024-07-01, 2024-07-30] and the Amazon
+  fee change date is 2024-07-15, then the request date range will be split into
+  [2024-07-01, 2024-07-14], [2024-07-15, 2024-07-30].
+  """
+  startDate: Date @resultRetention(duration : "P30D")
 }
 
 """
@@ -190,12 +258,20 @@ type FeeComponent {
   aggregatedDetail: AggregatedDetail!
   "Fee component name, for example: \"Base fulfillment fee\"."
   name: String! @resultRetention(duration : "P30D")
+  """
+  The properties used to calculate the 'aggregatedDetail' value in
+  'FeeComponent'. Example: Product Size Tier, an important property that
+  determines the amountPerUnit of FBA_FULFILLMENT_FEE component.
+  """
+  properties: [EconomicsProperty]
 }
 
 "The fees data summary for the seller's account aggregated by transaction event type: charge."
 type FeeSummary {
   "Charge summary for a fee type."
-  charge: Fee
+  charge: Fee @deprecated(reason : "No longer recommended. Use the `charges` field to retrieve the charge summary.")
+  "Charge summary for a fee type."
+  charges: [Fee]
   "Fee type name, for example: \"FBA fulfillment fees\""
   feeTypeName: String! @resultRetention(duration : "P30D")
 }
@@ -304,12 +380,89 @@ enum DateGranularity {
   WEEK
 }
 
+"The date granularity used in economics preview aggregation."
+enum EconomicsPreviewDateGranularity {
+  "Seller economics preview data is aggregated by the entire date range specified by startDate and endDate."
+  RANGE
+}
+
+"The product identifier granularity used in economics preview aggregation."
+enum EconomicsPreviewProductIdentifierGranularity {
+  "Seller Economics preview data is aggregated by merchant sku."
+  MSKU
+}
+
 "The fee type used in filter fee components generation."
 enum FeeType {
   "Fulfillment by Amazon (FBA) Fulfillment Fees, including base rate and surcharges."
   FBA_FULFILLMENT_FEE
   "Fulfillment by Amazon (FBA) Monthly Inventory Storage Fee, including base rate and surcharges."
   FBA_STORAGE_FEE
+}
+
+"The fee types supported in economics preview."
+enum PreviewFeeType {
+  """
+  Aged Inventory Surcharge, previously known as the Long-term Storage Fee. For
+  details about this fee, refer to [Aged inventory surcharge](https://sellercentral.amazon.com/help/hub/reference/external/GJQNPA23YWVA4SBD).
+  """
+  AGED_INVENTORY_SURCHARGE
+  """
+  Fulfillment by Amazon (FBA) Fulfillment Fee, base fee. For details about this
+  fee, refer to [FBA base fee](https://sellercentral.amazon.com/help/hub/reference/external/GPDC3KPYAGDTVDJP).
+  """
+  BASE_FBA_FULFILLMENT_FEE
+  """
+  Monthly Inventory Storage Fee, base fee. For details about this fee, refer to
+  [Monthly inventory storage fee](https://sellercentral.amazon.com/help/hub/reference/external/G3EDYEF6KUCFQTNM).
+  """
+  BASE_MONTHLY_STORAGE_FEE
+  """
+  Closing Fees, also know as Variable Closing Fees. For details about this fee,
+  refer to [Closing fees](https://sellercentral.amazon.com/help/hub/reference/external/GKD9U5REK5DKB38Y).
+  """
+  CLOSING_FEES
+  "Fulfillment by Amazon (FBA) Fulfillment Fees, including base rate and surcharges."
+  FBA_FULFILLMENT_FEES
+  """
+  High Return Rate Fee, also know as Returns Processing Fee for Non-apparel and
+  Non-shoes. For details about this fee, refer to [High return rate fee](https://sellercentral.amazon.com/help/hub/reference/external/G64LS955WNFT6EDP).
+  """
+  HIGH_RETURN_RATE_FEE
+  """
+  Fulfillment by Amazon (FBA) Fulfillment Fee Low Level Inventory Surcharge. For
+  details about this fee, refer to [FBA low level inventory surcharge](https://sellercentral.amazon.com/help/hub/reference/external/GV43F6S76Y9DHYRH).
+  """
+  LOW_INVENTORY_LEVEL_FEE
+  "Monthly Inventory Storage Fees, including base rate and surcharges."
+  MONTHLY_INVENTORY_STORAGE_FEES
+  """
+  Fulfillment by Amazon (FBA) Fulfillment Fee Pan-EU Oversize Surcharge. For
+  details about this fee, refer to [Pan-EU FBA oversize surcharge](https://sellercentral-europe.amazon.com/help/hub/reference/external/GQP742SNPWTVNGVA).
+  """
+  PAN_EU_OVERSIZE_FEE
+  """
+  Per-item Selling Fees, also know as Fixed Closing Fee. For details about this
+  fee, refer to [Per-item selling fees](https://sellercentral.amazon.com/help/hub/reference/external/G8TPCFJRDFPKAZ6M).
+  """
+  PER_ITEM_SELLING_FEES
+  "Referral Fees. For details about this fee, refer to [Referral fees](https://sellercentral.amazom.com/help/hub/reference/external/GTG4BAWSY39Z98Z3)."
+  REFERRAL_FEES
+  """
+  Return Processing Fee, also know as Returns Processing Fee for apparel and
+  shoes. For details about this fee, refer to [Return processing fee](https://sellercentral.amazon.com/help/hub/reference/external/G64LS955WNFT6EDP).
+  """
+  RETURN_PROCESSING_FEE
+  """
+  Sponsored Products Charges. For details about this fee, refer to [Sponsored
+  product charges](https://advertising.amazon.com/help/GY3YNTWRZYVPLADL).
+  """
+  SPONSORED_PRODUCTS_CHARGES
+  """
+  Monthly Inventory Storage Fee Storage Utilization Surcharge. For details about
+  this fee, refer to [Monthly inventory storage - storage utilization surcharge](https://sellercentral.amazon.com/help/hub/reference/external/G3EDYEF6KUCFQTNM).
+  """
+  STORAGE_UTILIZATION_SURCHARGE
 }
 
 "The product identifier granularity used in aggregation."
@@ -336,4 +489,12 @@ input EconomicsAggregation {
   date: DateGranularity
   "The product identifier granularity used in aggregation. By default the results will be aggregated by MSKU."
   productId: ProductIdentifierGranularity
+}
+
+"Defines how the seller economics preview data will be aggregated."
+input EconomicsPreviewAggregation {
+  "The date granularity used in aggregation. By default the results will be aggregated by RANGE."
+  date: EconomicsPreviewDateGranularity
+  "The product identifier granularity used in aggregation. By default the results will be aggregated by MSKU."
+  productId: EconomicsPreviewProductIdentifierGranularity
 }
