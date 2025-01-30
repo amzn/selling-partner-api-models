@@ -8,36 +8,25 @@ Obtains and signs a request with an access token from LWA (Login with Amazon) fo
 
 *Example*
 ```
-$request = new \GuzzleHttp\Psr7\Request(
-    "method", "uri", ...
-);
-
-// Seller APIs
-
 $lwaAuthorizationCredentials = new LWAAuthorizationCredentials([
-    "clientId" => "...",
-    "clientSecret" => "...",
-    "refreshToken" => "...",
-    "endpoint" => "..."
+"clientId" => '.....',
+"clientSecret" => '.....',
+"refreshToken" => '.....',
+"endpoint" => 'https://api.amazon.com/auth/o2/token'
 ]);
 
-/* Sellerless APIs
-The Selling Partner API scopes can be retrieved from the ScopeConstants class and passed as 
-argument(s) to either the "scopes" => "..." or setScopes(...) method during 
-lwaAuthorizationCredentials object instantiation. 
-*/
+// Initialize LWAAuthorizationSigner instance
+$lwaAuthorizationSigner = new LWAAuthorizationSigner($lwaAuthorizationCredentials);
+$config = new Configuration([], $lwaAuthorizationCredentials);
 
-use SpApi\AuthAndAuth\ScopeConstants;
+// Setting SP-API endpoint region. Change it according to the desired region
+$config->setHost('https://sellingpartnerapi-na.amazon.com');
 
-$lwaAuthorizationCredentials = new LWAAuthorizationCredentials([
-    "clientId" => "...",
-    "clientSecret" => "...",
-    "scopes" => "...",
-    "endpoint" => "..."
-]);
+// Create a new HTTP client
+$client = new GuzzleHttp\Client();
 
-$signedRequest = (new LWAAuthorizationSigner($lwaAuthorizationCredentials))
-    ->sign($request);
+// Create an instance of the Orders Api client
+$api = new OrdersApi($config, null, $client);
 ```
 
 ## LWAAccessTokenCache
@@ -54,6 +43,7 @@ $rateLimitOption = new RateLimitConfigurationOnRequests([
     "waitTimeOutInMilliSeconds" => "..."
 ]);
 ```
+
 
 ## Resources
 This package features Mustache templates designed for use with [openapi generator](https://openapi-generator.tech/).
