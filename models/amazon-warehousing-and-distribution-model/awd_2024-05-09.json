@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "The Selling Partner API for AWD",
+    "title": "The Selling Partner API for Amazon Warehousing and Distribution",
     "version": "2024-05-09",
-    "description": "The Selling Partner API for Amazon Warehousing and Distribution (AWD).",
+    "description": "The Selling Partner API for Amazon Warehousing and Distribution (AWD) provides programmatic access to information about AWD shipments and inventory. ",
     "contact": {
       "name": "Selling Partner API Developer Support",
       "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
@@ -23,7 +23,7 @@
   "produces": [
     "application/json"
   ],
-  "paths": {
+  "paths": {   
     "/awd/2024-05-09/inboundShipments/{shipmentId}": {
       "get": {
         "produces": [
@@ -37,6 +37,27 @@
             "name": "shipmentId",
             "required": true,
             "type": "string"
+          },
+          {
+            "description": "If equal to `SHOW`, the response includes the shipment SKU quantity details.\n\nDefaults to `HIDE`, in which case the response does not contain SKU quantities",
+            "enum": [
+              "SHOW",
+              "HIDE"
+            ],
+            "in": "query",
+            "name": "skuQuantities",
+            "type": "string",
+            "x-example": "SHOW",
+            "x-docgen-enum-table-extension": [
+              {
+                "description": "Show the additional SKU quantity details.",
+                "value": "SHOW"
+              },
+              {
+                "description": "Hide the additional SKU quantity details.",
+                "value": "HIDE"
+              }
+            ]
           }
         ],
         "responses": {
@@ -127,6 +148,19 @@
                     ],
                     "shipmentId": "TestShipmentId",
                     "shipmentStatus": "CREATED",
+                    "shipmentSkuQuantities": [
+                      {
+                        "sku": "testPen",
+                        "expectedQuantity": {
+                          "quantity": 2,
+                          "unitOfMeasurement": "CASE"
+                        },
+                        "receivedQuantity": {
+                          "quantity": 0,
+                          "unitOfMeasurement": "CASE"
+                        }
+                      }
+                    ],
                     "updatedAt": "2023-06-07T12:12:09.061Z"
                   }
                 }
@@ -263,7 +297,7 @@
         "tags": [
           "awd"
         ],
-        "description": "Retrieves an AWD inbound shipment.",
+        "description": "Retrieves an AWD inbound shipment.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 2 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api)",
         "operationId": "getInboundShipment"
       }
     },
@@ -274,7 +308,7 @@
         ],
         "parameters": [
           {
-            "description": "Field to sort results by. Required if `sortOrder` is provided.",
+            "description": "Field to sort results by. By default, the response will be sorted by UPDATED_AT.",
             "enum": [
               "UPDATED_AT",
               "CREATED_AT"
@@ -284,17 +318,17 @@
             "type": "string",
             "x-docgen-enum-table-extension": [
               {
-                "description": "Sort by `Updated at`timestamp.",
+                "description": "Sort by the time of update.",
                 "value": "UPDATED_AT"
               },
               {
-                "description": "Sort by `Created at` timestamp.",
+                "description": "Sort by the time of creation.",
                 "value": "CREATED_AT"
               }
             ]
           },
           {
-            "description": "Sort the response in `ASCENDING` or `DESCENDING` order.",
+            "description": "Sort the response in ASCENDING or DESCENDING order. By default, the response will be sorted in DESCENDING order.",
             "enum": [
               "ASCENDING",
               "DESCENDING"
@@ -388,7 +422,7 @@
             "x-example": "10"
           },
           {
-            "description": "Token to retrieve the next set of paginated results.",
+            "description": "A token that is used to retrieve the next page of results. The response includes `nextToken` when the number of results exceeds the specified `maxResults` value. To get the next page of results, call the operation with this token and include the same arguments as the call that produced the token. To get a complete list, call this operation until `nextToken` is null. Note that this operation can return empty pages.",
             "in": "query",
             "name": "nextToken",
             "type": "string",
@@ -560,7 +594,7 @@
         "tags": [
           "awd"
         ],
-        "description": "Retrieves a summary for all the inbound AWD shipments associated with a merchant, with the ability to apply optional filters.",
+        "description": "Retrieves a summary of all the inbound AWD shipments associated with a merchant, with the ability to apply optional filters.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 1 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "listInboundShipments"
       }
     },
@@ -619,7 +653,7 @@
             "x-example": "SHOW"
           },
           {
-            "description": "Token to retrieve the next set of paginated results.",
+            "description": "A token that is used to retrieve the next page of results. The response includes `nextToken` when the number of results exceeds the specified `maxResults` value. To get the next page of results, call the operation with this token and include the same arguments as the call that produced the token. To get a complete list, call this operation until `nextToken` is null. Note that this operation can return empty pages.",
             "in": "query",
             "name": "nextToken",
             "type": "string",
@@ -661,19 +695,35 @@
                     "inventory": [
                       {
                         "totalOnhandQuantity": 20,
+                        "totalInboundQuantity": 10,
                         "sku": "100TestSKU1Pen",
                         "inventoryDetails": {
                           "availableDistributableQuantity": 10,
-                          "reservedDistributableQuantity": 10
-                        }
+                          "reservedDistributableQuantity": 10,
+                          "replenishmentQuantity": 10
+                        },
+                        "expirationDetails": [{
+                          "onhandQuantity": 10,
+                          "expiration": "2027-01-12T10:00:00.000Z"
+                        },
+                        {
+                          "onhandQuantity": 10,
+                          "expiration": "2028-01-12T10:00:00.000Z"
+                        }]
                       },
                       {
                         "totalOnhandQuantity": 20,
+                        "totalInboundQuantity": 5,
                         "sku": "2U-BKEX-VW4D",
                         "inventoryDetails": {
                           "availableDistributableQuantity": 10,
-                          "reservedDistributableQuantity": 10
-                        }
+                          "reservedDistributableQuantity": 10,
+                          "replenishmentQuantity": 10
+                        },
+                        "expirationDetails": [{
+                          "onhandQuantity": 20,
+                          "expiration": "2027-01-12T10:00:00.000Z"
+                        }]
                       }
                     ]
                   }
@@ -811,7 +861,7 @@
         "tags": [
           "awd"
         ],
-        "description": "Lists AWD inventory associated with a merchant with the ability to apply optional filters.",
+        "description": "Lists AWD inventory associated with a merchant with the ability to apply optional filters.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 2 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "listInventory"
       }
     }
@@ -915,7 +965,7 @@
       "type": "string",
       "x-docgen-enum-table-extension": [
         {
-          "description": "Standard Carrier Alpha Code. Ref: https://help.cbp.gov/s/article/Article-572?language=en_US.",
+          "description": "Standard Carrier Alpha Code. Refer to [What is a Standard Carrier Alpha Code](https://www.help.cbp.gov/s/article/Article-1420?language=en_US) for more information.",
           "value": "SCAC"
         }
       ],
@@ -967,7 +1017,17 @@
           "products": [
             {
               "quantity": 1,
-              "sku": "testPen"
+              "sku": "testPen",
+              "expiration": "2025-06-07T12:12:09.061Z",
+              "prepDetails": {
+                "prepCategory": "PERFORATED",
+                "prepOwner": "AMAZON",
+                "labelOwner": "SELF",
+                "prepInstructions": [{
+                  "prepType": "ITEM_POLYBAGGING",
+                  "prepOwner": "AMAZON"
+                }]
+              }
             }
           ]
         },
@@ -1034,7 +1094,17 @@
             "products": [
               {
                 "quantity": 1,
-                "sku": "testPen"
+                "sku": "testPen",
+                "expiration": "2025-06-07T12:12:09.061Z",
+                "prepDetails": {
+                  "prepCategory": "PERFORATED",
+                  "prepOwner": "AMAZON",
+                  "labelOwner": "SELF",
+                  "prepInstructions": [{
+                    "prepType": "ITEM_POLYBAGGING",
+                    "prepOwner": "AMAZON"
+                  }]
+                }
               }
             ]
           },
@@ -1169,6 +1239,18 @@
           "minLength": 1,
           "type": "string"
         },
+        "shipmentSkuQuantities": {
+          "description": "Quantity details at SKU level for the shipment. This attribute will only appear if the skuQuantities parameter in the request is set to SHOW.",
+          "items": {
+            "$ref": "#/definitions/SkuQuantity"
+          },
+          "type": "array"
+        },
+        "destinationRegion": {
+          "description": "Assigned region where the order will be shipped. This can differ from what was passed as preference. AWD currently supports following region IDs: [us-west, us-east]",
+          "type": "string",
+          "example": "us-west"
+        },
         "shipmentStatus": {
           "description": "Current status of this shipment.",
           "$ref": "#/definitions/InboundShipmentStatus"
@@ -1281,11 +1363,32 @@
       ],
       "type": "object"
     },
+    "ExpirationDetails": {
+      "description": "The expiration details of the inventory. This object will only appear if the details parameter in the request is set to `SHOW`.",
+      "properties": {
+        "expiration": {
+          "description": "The expiration date of the SKU.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "onhandQuantity": {
+          "description": "The quantity that is present in AWD.",
+          "format": "int64",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
     "InventoryDetails": {
       "description": "Additional inventory details. This object is only displayed if the details parameter in the request is set to `SHOW`.",
       "properties": {
         "availableDistributableQuantity": {
           "description": "Quantity that is available for downstream channel replenishment.",
+          "format": "int64",
+          "type": "integer"
+        },
+        "replenishmentQuantity": {
+          "description": "Quantity that is in transit from AWD and has not yet been received at FBA.",
           "format": "int64",
           "type": "integer"
         },
@@ -1296,25 +1399,6 @@
         }
       },
       "type": "object"
-    },
-    "InventoryDetailsVisibility": {
-      "description": "Enum to specify if returned summaries should include additional summarized inventory details and quantities.",
-      "enum": [
-        "SHOW",
-        "HIDE"
-      ],
-      "type": "string",
-      "x-docgen-enum-table-extension": [
-        {
-          "description": "Show the additional summarized inventory details.",
-          "value": "SHOW"
-        },
-        {
-          "description": "Hide the additional summarized inventory details.",
-          "value": "HIDE"
-        }
-      ],
-      "example": "SHOW"
     },
     "InventoryListing": {
       "description": "AWD inventory payload.",
@@ -1358,12 +1442,24 @@
     "InventorySummary": {
       "description": "Summary of inventory per SKU.",
       "properties": {
+        "expirationDetails": {
+          "description": "The expiration details of the inventory. This object will only appear if the `details` parameter in the request is set to `SHOW`.",
+          "items": {
+            "$ref": "#/definitions/ExpirationDetails"
+          },
+          "type": "array"
+        },
         "inventoryDetails": {
           "$ref": "#/definitions/InventoryDetails"
         },
         "sku": {
           "description": "The seller or merchant SKU.",
           "type": "string"
+        },
+        "totalInboundQuantity": {
+          "description": "Total quantity that is in-transit from the seller and has not yet been received at an AWD Distribution Center",
+          "format": "int64",
+          "type": "integer"
         },
         "totalOnhandQuantity": {
           "description": "Total quantity that is present in AWD distribution centers.",
@@ -1396,6 +1492,24 @@
         {
           "description": "Measures a discrete amount of pallets.",
           "value": "PALLETS"
+        }
+      ]
+    },
+    "LabelOwner": {
+      "description": "The entity that labels the products.",
+      "enum": [
+        "AMAZON",
+        "SELF"
+      ],
+      "type": "string",
+      "x-docgen-enum-table-extension": [
+        {
+          "description": "Amazon labels the products.",
+          "value": "AMAZON"
+        },
+        {
+          "description": "The seller labels the products.",
+          "value": "SELF"
         }
       ]
     },
@@ -1489,6 +1603,60 @@
       ],
       "type": "object"
     },
+    "PrepDetails": {
+      "description": "The preparation details for a product. This contains the prep category, prep owner, and label owner.\nPrep instructions are generated based on the specified category.",
+      "properties": {
+        "labelOwner": {
+          "$ref": "#/definitions/LabelOwner"
+        },
+        "prepCategory": {
+          "description": "The preparation category for shipping an item to Amazon's fulfillment network.",
+          "type": "string"
+        },
+        "prepInstructions": {
+          "description": "Information that pertains to the preparation of inbound products. This is generated based on the specified category.",
+          "items": {
+            "$ref": "#/definitions/PrepInstruction"
+          },
+          "type": "array"
+        },
+        "prepOwner": {
+          "$ref": "#/definitions/PrepOwner"
+        }
+      },
+      "type": "object"
+    },
+    "PrepInstruction": {
+      "description": "Information pertaining to the preparation of inbound products.",
+      "properties": {
+        "prepOwner": {
+          "$ref": "#/definitions/PrepOwner"
+        },
+        "prepType": {
+          "description": "The type of preparation to be done. For more information about preparing items, refer to [Prep guidance](https://sellercentral.amazon.com/help/hub/reference/external/GF4G7547KSLDX2KC) on Seller Central.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "PrepOwner": {
+      "description": "The owner of the preparations, if special preparations are required.",
+      "enum": [
+        "AMAZON",
+        "SELF"
+      ],
+      "type": "string",
+      "x-docgen-enum-table-extension": [
+        {
+          "description": "Amazon owns the preparation.",
+          "value": "AMAZON"
+        },
+        {
+          "description": "The seller owns the preparation",
+          "value": "SELF"
+        }
+      ]
+    },
     "ProductAttribute": {
       "description": "Product instance attribute that is not described at the SKU level in the catalog.",
       "properties": {
@@ -1531,6 +1699,15 @@
         "sku": {
           "description": "The seller or merchant SKU.",
           "type": "string"
+        },
+        "expiration": {
+          "description": "The expiration date for the SKU. Values are in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "prepDetails": {
+          "description": "Preparation details of a product which contains the prep category, prep owner and the label owner.\nIf not passed while creating an inbound order, NO_PREP will be used on the product by-default.\nPrep instructions will be generated based on the category passed",
+          "$ref": "#/definitions/PrepDetails"
         }
       },
       "required": [
@@ -1543,7 +1720,7 @@
       "description": "A list of inbound shipment summaries filtered by the attributes specified in the request.",
       "properties": {
         "nextToken": {
-          "description": "Token to retrieve the next set of paginated results.",
+          "description": "A token that is used to retrieve the next page of results. The response includes `nextToken` when the number of results exceeds the specified `maxResults` value. To get the next page of results, call the operation with this token and include the same arguments as the call that produced the token. To get a complete list, call this operation until `nextToken` is null. Note that this operation can return empty pages.",
           "type": "string",
           "example": "SampleToken"
         },
@@ -1557,43 +1734,25 @@
       },
       "type": "object"
     },
-    "ShipmentSortableField": {
-      "description": "Denotes the field name on which the shipments are to be sorted.",
-      "enum": [
-        "UPDATED_AT",
-        "CREATED_AT"
-      ],
-      "type": "string",
-      "x-docgen-enum-table-extension": [
-        {
-          "description": "Sort by updated at timestamp.",
-          "value": "UPDATED_AT"
+    "SkuQuantity": {
+      "description": "Quantity details for a SKU as part of a shipment",
+      "properties": {
+        "expectedQuantity": {
+          "$ref": "#/definitions/InventoryQuantity"
         },
-        {
-          "description": "Sort by created at timestamp.",
-          "value": "CREATED_AT"
-        }
-      ],
-      "example": "CREATED_AT"
-    },
-    "SortOrder": {
-      "description": "Sort order for a collection of items. For example, order or shipment.",
-      "enum": [
-        "ASCENDING",
-        "DESCENDING"
-      ],
-      "type": "string",
-      "x-docgen-enum-table-extension": [
-        {
-          "description": "Sorts the collection in ascending order.",
-          "value": "ASCENDING"
+        "receivedQuantity": {
+          "$ref": "#/definitions/InventoryQuantity"
         },
-        {
-          "description": "Sorts the collection in descending order.",
-          "value": "DESCENDING"
+        "sku": {
+          "description": "The merchant stock keeping unit",
+          "type": "string"
         }
+      },
+      "required": [
+        "expectedQuantity",
+        "sku"
       ],
-      "example": "ASCENDING"
+      "type": "object"
     },
     "VolumeUnitOfMeasurement": {
       "description": "Unit of measurement for the package volume.",
