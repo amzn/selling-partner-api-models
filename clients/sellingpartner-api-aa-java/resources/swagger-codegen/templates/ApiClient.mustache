@@ -78,6 +78,8 @@ public class ApiClient {
 
     private HttpLoggingInterceptor loggingInterceptor;
 
+    private String rdt = null;
+
     private LWAAuthorizationSigner lwaAuthorizationSigner;
     private RateLimiter rateLimiter;
     private RateLimitConfiguration rateLimitConfiguration;
@@ -124,6 +126,11 @@ public class ApiClient {
      */
     public ApiClient setBasePath(String basePath) {
         this.basePath = basePath;
+        return this;
+    }
+
+    public ApiClient setRdt(String rdt) {
+        this.rdt = rdt;
         return this;
     }
 
@@ -495,7 +502,8 @@ public class ApiClient {
         this.lwaAuthorizationSigner = lwaAuthorizationSigner;
         return this;
     }
-     
+
+
     /**
      * Sets the RateLimiter
      * A rate limiter is used to manage a high volume of traffic allowing N requests per second
@@ -1038,7 +1046,16 @@ public class ApiClient {
             request = reqBuilder.method(method, reqBody).build();
         }
 
-        request = lwaAuthorizationSigner.sign(request);
+
+
+        if (rdt == null) {
+            request = lwaAuthorizationSigner.sign(request);
+        } else {
+            request = request.newBuilder()
+            .addHeader("x-amz-access-token", rdt)
+            .build();
+        }
+        // request = awsSigV4Signer.sign(request); //removed from upstream (jazva changes)
 
         return request;
     }
