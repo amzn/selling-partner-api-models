@@ -22,6 +22,44 @@
           "title": "Feed Identifier",
           "description": "The identifier for the feed. This identifier is unique only in combination with a seller ID.",
           "type": "string"
+        },
+        "report": {
+          "title": "Report",
+          "description": "The report information for the feed submission.",
+          "properties": {
+            "includedData": {
+              "title": "Included Data",
+              "description": "When \"includedData\" elements are in the feed submission, the processing report that generates for the feed submission includes the listings items output from the Selling Partner Listings Items API with the \"includedData\" elements from the request. The report includes issues that prevent the acceptance of messages regardless of the \"includedData\" elements in the feed request.",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "summaries",
+                  "attributes",
+                  "issues",
+                  "offers",
+                  "fulfillmentAvailability",
+                  "procurement",
+                  "relationships",
+                  "productTypes"
+                ]
+              }
+            },
+            "apiVersion": {
+              "title": "Selling Partner Listings Items API Version",
+              "description": "The version of the Selling Partner Listings Items API to use to retrieve the listing items.",
+              "type": "string",
+              "enum": [
+                "2021-08-01"
+              ]
+            }
+          },
+          "required": [
+            "includedData",
+            "apiVersion"
+          ],
+          "type": "object"
         }
       },
       "required": [
@@ -94,7 +132,7 @@
     },
     "summary": {
       "title": "Processing Report Summary",
-      "description": "Aggregate Count of Errors, Warnings, and the status of message submissions.",
+      "description": "Aggregate counts of errors, warnings, and statuses related to the acceptance of feed messages. When requested, Item Summary includes aggregate counts of items, errors, and warnings related to the listing items created or updated by this feed submission.",
       "properties": {
         "errors": {
           "title": "Errors",
@@ -140,6 +178,45 @@
           ],
           "minimum": 0,
           "type": "integer"
+        },
+        "itemSummary": {
+          "title": "Item Summary",
+          "description": "Aggregate counts of items, errors, and warnings related to the listing items created or updated by this feed submission and included in the Items section of this report.",
+          "type": "object",
+          "properties": {
+            "items": {
+              "title": "Items",
+              "description": "Number of listing items created or updated by this feed submission and included in the Items section of this report.",
+              "examples": [
+                1
+              ],
+              "minimum": 0,
+              "type": "integer"
+            },
+            "errors": {
+              "title": "Errors",
+              "description": "Number of errors across all listing items created or updated by this feed submission.",
+              "examples": [
+                1
+              ],
+              "minimum": 0,
+              "type": "integer"
+            },
+            "warnings": {
+              "title": "Warnings",
+              "description": "Number of warnings across all listing items created or updated by this feed submission.",
+              "examples": [
+                1
+              ],
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "items",
+            "errors",
+            "warnings"
+          ]
         }
       },
       "required": [
@@ -150,6 +227,18 @@
         "messagesInvalid"
       ],
       "type": "object"
+    },
+    "items": {
+      "title": "Listings Items",
+      "description": "A set of listings items and their specific data sets that originates from the feed request’s \"includedData\" header parameter.",
+      "type": "array",
+      "items": {
+        "title": "Item",
+        "description": "A listings item.",
+        "additionalProperties": true,
+        "minProperties": 1,
+        "type": "object"
+      }
     }
   },
   "required": [
