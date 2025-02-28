@@ -220,6 +220,10 @@ type ManufacturingViewMetricsGroupedBy {
 
 "Orders metric group. Null value for a given metric means that this metric is not available yet."
 type Orders {
+  "The net Gross Merchandise Sales (GMS) for all orders on a given day."
+  netOrderedGMS: Amount @resultRetention(duration : "P30D")
+  "The net shipped Gross Merchandise Sales (GMS) amount."
+  netShipmentGMS: Amount @resultRetention(duration : "P30D")
   """
   The number of ordered units and the associated revenue in a given time period
   with adjustments made for prior sales, like returns/cancellations. This metric
@@ -245,6 +249,8 @@ type ProductAvailability {
   (Sellable On Hand Units + Net Received Units).
   """
   sellThroughRate: Float @resultRetention(duration : "P30D")
+  "The number of sellable units in transit inventory at the end of a specified time period."
+  sellableInTransitInventory: Long @resultRetention(duration : "P30D")
   "The number of units and their cost in Amazon FCs that is in sellable condition on the last day of the selected time frame."
   sellableOnHandInventory: UnitsWithValue
   """
@@ -265,6 +271,8 @@ type ProductAvailability {
   frame based on forecasted demand. (Note:Not Available for Daily/Custom Time selections)
   """
   unhealthyInventory: UnitsWithValue
+  "The number of unsellable units in transit inventory at the end of a specified time period."
+  unsellableInTransitInventory: Long @resultRetention(duration : "P30D")
   """
   The number of units and their cost in Amazon FCs that is in unsellable
   condition on the last day of the selected time frame.
@@ -297,6 +305,8 @@ type ShippedOrders {
 type Sourcing {
   "Number of purchase order units that are confirmed to be shipped to Amazon."
   confirmedUnits: Long @resultRetention(duration : "P30D")
+  "The number of units Amazon has ordered in the most recent purchase orders of the week."
+  mostRecentSubmitted: Long @resultRetention(duration : "P30D")
   """
   Net number of units and their cost received by Amazon after subtracting the
   units returned to the supplier in the selected time frame.
