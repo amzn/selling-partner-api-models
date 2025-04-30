@@ -293,7 +293,7 @@
         },
         "transactionStatus": {
           "type": "string",
-          "description": "The status for the transaction. \n\nPossible values:\n\n* Deferred *Released"
+          "description": "The status of the transaction.\n\n**Possible values:**\n\n* `DEFERRED`: the transaction is currently deferred.\n* `RELEASED`: the transaction is currently released.\n* `DEFERRED_RELEASED`: the transaction was deferred in the past, but is now released. Deferred transactions will have their status updated to `DEFERRED_RELEASED` when released."
         },
         "description": {
           "type": "string",
@@ -357,31 +357,25 @@
               "currencyAmount": 10,
               "currencyCode": "USD"
             },
-            "relatedIdentifiers": [
-              {
-                "itemRelatedIdentifierName": "ORDER_ADJUSTMENT_ITEM_ID",
-                "itemRelatedIdentifierValue": "81297625-121-27551"
-              }
-            ],
-            "breakdowns": [
-              {
-                "breakdownType": "Product Charges",
+            "relatedIdentifiers": [{
+              "itemRelatedIdentifierName": "ORDER_ADJUSTMENT_ITEM_ID",
+              "itemRelatedIdentifierValue": "81297625-121-27551"
+            }],
+            "breakdowns": [{
+              "breakdownType": "Product Charges",
+              "breakdownAmount": {
+                "currencyAmount": 10,
+                "currencyCode": "USD"
+              },
+              "breakdowns": [{
+                "breakdownType": "Principle",
                 "breakdownAmount": {
                   "currencyAmount": 10,
                   "currencyCode": "USD"
                 },
-                "breakdowns": [
-                  {
-                    "breakdownType": "Principle",
-                    "breakdownAmount": {
-                      "currencyAmount": 10,
-                      "currencyCode": "USD"
-                    },
-                    "breakdowns": []
-                  }
-                ]
-              }
-            ],
+                "breakdowns": []
+              }]
+            }],
             "contexts": [
               {
                 "contextType": "ProductContext",
@@ -394,25 +388,21 @@
           }
         ],
         "breakdowns": {
-          "breakdowns": [
-            {
-              "breakdownType": "Sales",
+          "breakdowns": [{
+            "breakdownType": "Sales",
+            "breakdownAmount": {
+              "currencyAmount": 10,
+              "currencyCode": "USD"
+            },
+            "breakdowns": [{
+              "breakdownType": "Product Charges",
               "breakdownAmount": {
                 "currencyAmount": 10,
                 "currencyCode": "USD"
               },
-              "breakdowns": [
-                {
-                  "breakdownType": "Product Charges",
-                  "breakdownAmount": {
-                    "currencyAmount": 10,
-                    "currencyCode": "USD"
-                  },
-                  "breakdowns": []
-                }
-              ]
-            }
-          ]
+              "breakdowns": []
+            }]
+          }]
         },
         "contexts": [
           {
@@ -473,7 +463,9 @@
             "REFUND_ID",
             "INVOICE_ID",
             "DISBURSEMENT_ID",
-            "TRANSFER_ID"
+            "TRANSFER_ID",
+            "DEFERRED_TRANSACTION_ID",
+            "RELEASE_TRANSACTION_ID"
           ],
           "x-docgen-enum-table-extension": [
             {
@@ -502,7 +494,15 @@
             },
             {
               "value": "TRANSFER_ID",
-              "description": "Associated TransferId of transaction"
+              "description": "The `TransferId` associated with the transaction."
+            },
+            {
+              "value": "DEFERRED_TRANSACTION_ID",
+              "description": "The transaction ID for the related deferred transaction"
+            },
+            {
+              "value": "RELEASE_TRANSACTION_ID",
+              "description": "The transaction ID for the related released transaction"
             }
           ]
         },
@@ -662,30 +662,18 @@
       "allOf": [
         {
           "type": "object",
-          "required": [
-            "contextType"
-          ],
+          "required": [ "contextType" ],
           "properties": {
             "contextType": {
               "type": "string"
             }
           }
         },
-        {
-          "$ref": "#/definitions/AmazonPayContext"
-        },
-        {
-          "$ref": "#/definitions/ProductContext"
-        },
-        {
-          "$ref": "#/definitions/PaymentsContext"
-        },
-        {
-          "$ref": "#/definitions/DeferredContext"
-        },
-        {
-          "$ref": "#/definitions/TimeRangeContext"
-        }
+        {"$ref": "#/definitions/AmazonPayContext"},
+        {"$ref": "#/definitions/ProductContext"},
+        {"$ref": "#/definitions/PaymentsContext"},
+        {"$ref": "#/definitions/DeferredContext"},
+        {"$ref": "#/definitions/TimeRangeContext"}
       ],
       "x-example": [
         {
@@ -694,8 +682,7 @@
           "sku": "sku-12",
           "quantityShipped": 1,
           "fulfillmentNetwork": "MFN"
-        },
-        {
+        }, {
           "contextType": "AmazonPayContext",
           "storeName": "Store 1",
           "orderType": "Order Type",
@@ -789,21 +776,16 @@
       "properties": {
         "deferralReason": {
           "type": "string",
-          "description": "Deferral policy applied on the transaction.\n\nExample: 'B2B','DD7'"
+          "description": "The deferral policy applied to the transaction.\n\n**Examples:** `B2B` (invoiced orders), `DD7` (delivery date policy)"
         },
         "maturityDate": {
           "$ref": "#/definitions/Date",
-          "description": "Release Date of the transaction."
-        },
-        "deferralStatus": {
-          "type": "string",
-          "description": "Status of the transaction. \n\nExample: 'HOLD','RELEASE'"
+          "description": "The release date of the transaction."
         }
       },
       "example": {
         "deferralReason": "B2B",
-        "maturityDate": "2024-07-14T00:00:00Z",
-        "deferralStatus": "HOLD"
+        "maturityDate": "2024-07-14T00:00:00Z"
       }
     },
     "TimeRangeContext": {
