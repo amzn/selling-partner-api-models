@@ -2,13 +2,13 @@ package com.amazon.SellingPartnerAPIAA;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Protocol;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okio.Buffer;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +53,10 @@ public class LWAClientTest {
 
     private static final String SELLER_TYPE_SELLER = "seller";
     private static final String SELLER_TYPE_SELLERLESS = "sellerless";
-    
+
+    private static final String LWA_EXCEPTION_MSG ="Error getting LWA Token";
+    private static final String LWA_CLIENT_AUTH_MSG ="Client_authentication_failed";
+    private static final String LWA_ACCESS_DENIED_MSG ="Authorization_server_denied_the_request";
     @Mock
     private OkHttpClient mockOkHttpClient;
 
@@ -101,7 +104,7 @@ public class LWAClientTest {
 
     @ParameterizedTest
     @MethodSource("lwaClient")
-    public void makeRequestFromMeta (String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException {
+    public void makeRequestFromMeta (String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws LWAException,IOException {
         ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
         when(mockOkHttpClient.newCall(requestArgumentCaptor.capture()))
                 .thenReturn(mockCall);
@@ -134,7 +137,7 @@ public class LWAClientTest {
 
     @ParameterizedTest
     @MethodSource("lwaClient")
-    public void returnAccessTokenFromResponse(String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException {
+    public void returnAccessTokenFromResponse(String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException, LWAException {
         when(mockOkHttpClient.newCall(any(Request.class)))
                 .thenReturn(mockCall);
         when(mockCall.execute())
@@ -145,20 +148,54 @@ public class LWAClientTest {
 
     @ParameterizedTest
     @MethodSource("lwaClient")
-    public void unsuccessfulPostThrowsException(String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException {
+    public void unsuccessfulPostThrowsLwaExceptionUnknownErrorCode(String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException, LWAException {
         when(mockOkHttpClient.newCall(any(Request.class)))
                 .thenReturn(mockCall);
         when(mockCall.execute())
                 .thenReturn(buildResponse(400, "Azta|foo"));
 
-        Assertions.assertThrows(RuntimeException.class, () -> {
+        Throwable exception = Assertions.assertThrows(LWAException.class, () -> {
             underTest.getAccessToken(testLwaAccessTokenRequestMeta);
         });
+        assertEquals(LWAExceptionErrorCode.other.toString(),((LWAException)exception).getErrorCode());
+        assertEquals(LWA_EXCEPTION_MSG, exception.getMessage());
     }
 
     @ParameterizedTest
     @MethodSource("lwaClient")
-    public void missingAccessTokenInResponseThrowsException(String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException {
+    public void unsuccessfulPostThrowsLwaExceptionKnownErrorCode1(String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException, LWAException {
+        when(mockOkHttpClient.newCall(any(Request.class)))
+                .thenReturn(mockCall);
+        when(mockCall.execute())
+                .thenReturn(buildResponse(401, "Azta|foo","invalid_client","Client_authentication_failed"));
+
+        Throwable exception = Assertions.assertThrows(LWAException.class, () -> {
+            underTest.getAccessToken(testLwaAccessTokenRequestMeta);
+        });
+        assertEquals(LWAExceptionErrorCode.invalid_client.toString(),((LWAException)exception).getErrorCode());
+        assertEquals(LWA_EXCEPTION_MSG, exception.getMessage());
+        assertEquals(LWA_CLIENT_AUTH_MSG,((LWAException)exception).getErrorMessage());
+    }
+
+    @ParameterizedTest
+    @MethodSource("lwaClient")
+    public void unsuccessfulPostThrowsLwaExceptionKnownErrorCode2(String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException, LWAException {
+        when(mockOkHttpClient.newCall(any(Request.class)))
+                .thenReturn(mockCall);
+        when(mockCall.execute())
+                .thenReturn(buildResponse(401, "Azta|foo","access_denied","Authorization_server_denied_the_request"));
+
+        Throwable exception = Assertions.assertThrows(LWAException.class, () -> {
+            underTest.getAccessToken(testLwaAccessTokenRequestMeta);
+        });
+        assertEquals(LWAExceptionErrorCode.access_denied.toString(),((LWAException)exception).getErrorCode());
+        assertEquals(LWA_EXCEPTION_MSG, exception.getMessage());
+        assertEquals(LWA_ACCESS_DENIED_MSG,((LWAException)exception).getErrorMessage());
+    }
+
+    @ParameterizedTest
+    @MethodSource("lwaClient")
+    public void missingAccessTokenInResponseThrowsException(String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException, LWAException {
         when(mockOkHttpClient.newCall(any(Request.class)))
                 .thenReturn(mockCall);
         when(mockCall.execute())
@@ -168,10 +205,23 @@ public class LWAClientTest {
             underTest.getAccessToken(testLwaAccessTokenRequestMeta);
                 });
     }
+
+    @ParameterizedTest
+    @MethodSource("lwaClient")
+    public void missingResponseBodyThrowsLwaException(String sellerType, LWAAccessTokenRequestMeta testLwaAccessTokenRequestMeta) throws IOException {
+        when(mockOkHttpClient.newCall(any(Request.class)))
+                .thenReturn(mockCall);
+        when(mockCall.execute())
+                .thenReturn(buildResponse(200));
+
+        Assertions.assertThrows(LWAException.class, () -> {
+            underTest.getAccessToken(testLwaAccessTokenRequestMeta);
+        });
+    }
     
     //Test for Access Token getting from cache
     @Test
-    public void returnAccessTokenFromCache() throws IOException, InterruptedException {
+    public void returnAccessTokenFromCache() throws IOException, InterruptedException, LWAException {
         
         when(mockOkHttpClient.newCall(any(Request.class)))
         .thenReturn(mockCall);
@@ -187,7 +237,7 @@ public class LWAClientTest {
     }
     
     @Test
-    public void returnAccessTokenFromCacheWithExpiry() throws IOException, InterruptedException {
+    public void returnAccessTokenFromCacheWithExpiry() throws IOException, InterruptedException, LWAException {
         LWAClient client = new LWAClient(TEST_ENDPOINT);
         client.setOkHttpClient(mockOkHttpClient);
         when(mockOkHttpClient.newCall(any(Request.class)))
@@ -202,9 +252,9 @@ public class LWAClientTest {
         assertEquals("Azta|foo1", client.getAccessToken(lwaAccessTokenRequestMetaSeller));
     }
     
-    private static Response buildResponse(int code, String accessToken, String expiryInSeconds) {
+    private static Response buildResponse(int code, String accessToken, String expiryInSeconds, String errorCode, String errorMessage) {
         ResponseBody responseBody = ResponseBody.create(EXPECTED_MEDIA_TYPE,
-                String.format("{%s:%s,%s:%s}", "access_token", accessToken, "expires_in", expiryInSeconds));
+                    String.format("{%s:%s,%s:%s,%s:%s,%s:%s}", "access_token", accessToken, "expires_in", expiryInSeconds, "error", errorCode, "error_description", errorMessage));
 
         return new Response.Builder()
                 .request(new Request.Builder().url(TEST_ENDPOINT).build())
@@ -215,7 +265,34 @@ public class LWAClientTest {
                 .build();
     }
     
+    private static Response buildResponse(int code, String accessToken,String errorCode, String errorMessage) {
+        return buildResponse(code, accessToken, "3600",errorCode,errorMessage);
+    }
+
     private static Response buildResponse(int code, String accessToken) {
         return buildResponse(code, accessToken, "3600");
+    }
+
+    private static Response buildResponse(int code, String accessToken,String expiryInSeconds) {
+        ResponseBody  responseBody = ResponseBody.create(EXPECTED_MEDIA_TYPE,
+                    String.format("{%s:%s,%s:%s}", "access_token", accessToken, "expires_in", expiryInSeconds));
+
+        return new Response.Builder()
+                .request(new Request.Builder().url(TEST_ENDPOINT).build())
+                .code(code)
+                .body(responseBody)
+                .protocol(Protocol.HTTP_1_1)
+                .message("OK")
+                .build();
+    }
+
+    private static Response buildResponse(int code) {
+        return new Response.Builder()
+                .request(new Request.Builder().url(TEST_ENDPOINT).build())
+                .code(code)
+                .body(null)
+                .protocol(Protocol.HTTP_1_1)
+                .message("OK")
+                .build();
     }
 }

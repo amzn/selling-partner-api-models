@@ -1,9 +1,9 @@
 package com.amazon.SellingPartnerAPIAA;
 
-import com.squareup.okhttp.Request;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import okhttp3.Request;
 
 /**
  * LWA Authorization Signer
@@ -64,8 +64,9 @@ public class LWAAuthorizationSigner {
      *  Signs a Request with an LWA Access Token
      * @param originalRequest Request to sign (treated as immutable)
      * @return Copy of originalRequest with LWA signature
+     * @throws LWAException If calls to fetch LWA access token fails
      */
-    public Request sign(Request originalRequest) {
+    public Request sign(Request originalRequest) throws LWAException {
         String accessToken = lwaClient.getAccessToken(lwaAccessTokenRequestMeta);
 
         return originalRequest.newBuilder()

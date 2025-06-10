@@ -29,7 +29,7 @@
         "tags": [
           "fees"
         ],
-        "description": "Returns the estimated fees for the item indicated by the specified seller SKU in the marketplace specified in the request body.\n\nYou can call `getMyFeesEstimateForSKU` for an item on behalf of a selling partner before the selling partner sets the item's price. The selling partner can then take any estimated fees into account. Each fees estimate request must include an original identifier. This identifier is included in the fees estimate so that you can correlate a fees estimate with the original request.\n\n**Note:** The identifier value is only an estimate, actual costs may vary. Search \"fees\" in [Seller Central](https://sellercentral.amazon.com/) and consult the store-specific fee schedule for the most up-to-date information.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 10 | 20 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns the estimated fees for the item indicated by the specified seller SKU in the marketplace specified in the request body.\n\n**Note:** The parameters associated with this operation may contain special characters that require URL encoding to call the API. To avoid errors with SKUs when encoding URLs, refer to [URL Encoding](https://developer-docs.amazon.com/sp-api/docs/url-encoding).\n\nYou can call `getMyFeesEstimateForSKU` for an item on behalf of a selling partner before the selling partner sets the item's price. The selling partner can then take any estimated fees into account. Each fees estimate request must include an original identifier. This identifier is included in the fees estimate so that you can correlate a fees estimate with the original request.\n\n**Note:** This identifier value is used to identify an estimate. Actual costs may vary. Search \"fees\" in [Seller Central](https://sellercentral.amazon.com/) and consult the store-specific fee schedule for the most up-to-date information.\n\n**Note:** When sellers use the `getMyFeesEstimateForSKU` operation with their `SellerSKU`, they get accurate fees based on real item measurements, but only after they've sent their items to Amazon.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 2 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getMyFeesEstimateForSKU",
         "parameters": [
           {
@@ -63,6 +63,40 @@
                             "IsAmazonFulfilled": false,
                             "PriceToEstimateFees": {
                               "ListingPrice": {
+                                "CurrencyCode": "USD",
+                                "Amount": 10
+                              },
+                              "Shipping": {
+                                "CurrencyCode": "USD",
+                                "Amount": 10
+                              },
+                              "Points": {
+                                "PointsNumber": 0,
+                                "PointsMonetaryValue": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 0
+                                }
+                              }
+                            },
+                            "Identifier": "UmaS1"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "payload": {
+                      "FeesEstimateResult": {
+                        "Status": "Success",
+                        "FeesEstimateIdentifier": {
+                          "MarketplaceId": "ATVPDKIKX0DER",
+                          "IdType": "ASIN",
+                          "SellerId": "AXXXXXXXXXXXXX",
+                          "SellerInputIdentifier": "UmaS1",
+                          "IsAmazonFulfilled": false,
+                          "IdValue": "B00V5DG6IQ",
+                          "PriceToEstimateFees": {
+                            "ListingPrice": {
                               "CurrencyCode": "USD",
                               "Amount": 10
                             },
@@ -77,59 +111,25 @@
                                 "Amount": 0
                               }
                             }
-                          },
-                          "Identifier": "UmaS1"
-                        }
-                      }
-                    }
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "FeesEstimateResult": {
-                      "Status": "Success",
-                      "FeesEstimateIdentifier": {
-                        "MarketplaceId": "ATVPDKIKX0DER",
-                        "IdType": "ASIN",
-                        "SellerId": "AXXXXXXXXXXXXX",
-                        "SellerInputIdentifier": "UmaS1",
-                        "IsAmazonFulfilled": false,
-                        "IdValue": "B00V5DG6IQ",
-                        "PriceToEstimateFees": {
-                          "ListingPrice": {
-                            "CurrencyCode": "USD",
-                            "Amount": 10
-                          },
-                          "Shipping": {
-                            "CurrencyCode": "USD",
-                            "Amount": 10
-                          },
-                          "Points": {
-                            "PointsNumber": 0,
-                            "PointsMonetaryValue": {
-                              "CurrencyCode": "USD",
-                              "Amount": 0
-                            }
                           }
-                        }
-                      },
-                      "FeesEstimate": {
-                        "TimeOfFeesEstimation": "Mon Oct 28 18:49:32 UTC 2019",
-                        "TotalFeesEstimate": {
-                          "CurrencyCode": "USD",
-                          "Amount": 3.0
                         },
-                        "FeeDetailList": []
-                      },
-                      "Error": {
-                        "Type": "",
-                        "Code": "",
-                        "Message": "",
-                        "Detail": []
+                        "FeesEstimate": {
+                          "TimeOfFeesEstimation": "Mon Oct 28 18:49:32 UTC 2019",
+                          "TotalFeesEstimate": {
+                            "CurrencyCode": "USD",
+                            "Amount": 3.0
+                          },
+                          "FeeDetailList": []
+                        },
+                        "Error": {
+                          "Type": "",
+                          "Code": "",
+                          "Message": "",
+                          "Detail": []
+                        }
                       }
                     }
                   }
-                }
                 }
               ]
             },
@@ -161,8 +161,8 @@
                           }
                         }
                       }
-                  }
-                },
+                    }
+                  },
                   "response": {
                     "errors": [
                       {
@@ -290,7 +290,7 @@
         "tags": [
           "fees"
         ],
-        "description": "Returns the estimated fees for the item indicated by the specified ASIN in the marketplace specified in the request body.\n\nYou can call `getMyFeesEstimateForASIN` for an item on behalf of a selling partner before the selling partner sets the item's price. The selling partner can then take estimated fees into account. Each fees request must include an original identifier. This identifier is included in the fees estimate so you can correlate a fees estimate with the original request.\n\n**Note:** This identifier value is only an estimate, actual costs may vary. Search \"fees\" in [Seller Central](https://sellercentral.amazon.com/) and consult the store-specific fee schedule for the most up-to-date information.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 10 | 20 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns the estimated fees for the item indicated by the specified ASIN in the marketplace specified in the request body.\n\nYou can call `getMyFeesEstimateForASIN` for an item on behalf of a selling partner before the selling partner sets the item's price. The selling partner can then take estimated fees into account. Each fees request must include an original identifier. This identifier is included in the fees estimate so you can correlate a fees estimate with the original request.\n\n**Note:** This identifier value is used to identify an estimate. Actual costs may vary. Search \"fees\" in [Seller Central](https://sellercentral.amazon.com/) and consult the store-specific fee schedule for the most up-to-date information.\n\n**Note:** When using the `getMyFeesEstimateForASIN` operation with an ASIN, the fee estimates might be different. This is because these estimates use the item's catalog size, which might not always match the actual size of the item sent to Amazon.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 2 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getMyFeesEstimateForASIN",
         "parameters": [
           {
@@ -324,6 +324,40 @@
                             "IsAmazonFulfilled": false,
                             "PriceToEstimateFees": {
                               "ListingPrice": {
+                                "CurrencyCode": "USD",
+                                "Amount": 10
+                              },
+                              "Shipping": {
+                                "CurrencyCode": "USD",
+                                "Amount": 10
+                              },
+                              "Points": {
+                                "PointsNumber": 0,
+                                "PointsMonetaryValue": {
+                                  "CurrencyCode": "USD",
+                                  "Amount": 0
+                                }
+                              }
+                            },
+                            "Identifier": "UmaS1"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "payload": {
+                      "FeesEstimateResult": {
+                        "Status": "Success",
+                        "FeesEstimateIdentifier": {
+                          "MarketplaceId": "ATVPDKIKX0DER",
+                          "IdType": "ASIN",
+                          "SellerId": "AXXXXXXXXXXXXX",
+                          "SellerInputIdentifier": "UmaS1",
+                          "IsAmazonFulfilled": false,
+                          "IdValue": "B00V5DG6IQ",
+                          "PriceToEstimateFees": {
+                            "ListingPrice": {
                               "CurrencyCode": "USD",
                               "Amount": 10
                             },
@@ -338,59 +372,25 @@
                                 "Amount": 0
                               }
                             }
-                          },
-                          "Identifier": "UmaS1"
-                        }
-                      }
-                    }
-                  }
-                },
-                "response": {
-                  "payload": {
-                    "FeesEstimateResult": {
-                      "Status": "Success",
-                      "FeesEstimateIdentifier": {
-                        "MarketplaceId": "ATVPDKIKX0DER",
-                        "IdType": "ASIN",
-                        "SellerId": "AXXXXXXXXXXXXX",
-                        "SellerInputIdentifier": "UmaS1",
-                        "IsAmazonFulfilled": false,
-                        "IdValue": "B00V5DG6IQ",
-                        "PriceToEstimateFees": {
-                          "ListingPrice": {
-                            "CurrencyCode": "USD",
-                            "Amount": 10
-                          },
-                          "Shipping": {
-                            "CurrencyCode": "USD",
-                            "Amount": 10
-                          },
-                          "Points": {
-                            "PointsNumber": 0,
-                            "PointsMonetaryValue": {
-                              "CurrencyCode": "USD",
-                              "Amount": 0
-                            }
                           }
-                        }
-                      },
-                      "FeesEstimate": {
-                        "TimeOfFeesEstimation": "Mon Oct 28 18:49:32 UTC 2019",
-                        "TotalFeesEstimate": {
-                          "CurrencyCode": "USD",
-                          "Amount": 3.0
                         },
-                        "FeeDetailList": []
-                      },
-                      "Error": {
-                        "Type": "",
-                        "Code": "",
-                        "Message": "",
-                        "Detail": []
+                        "FeesEstimate": {
+                          "TimeOfFeesEstimation": "Mon Oct 28 18:49:32 UTC 2019",
+                          "TotalFeesEstimate": {
+                            "CurrencyCode": "USD",
+                            "Amount": 3.0
+                          },
+                          "FeeDetailList": []
+                        },
+                        "Error": {
+                          "Type": "",
+                          "Code": "",
+                          "Message": "",
+                          "Detail": []
+                        }
                       }
                     }
                   }
-                }
                 }
               ]
             },
@@ -422,8 +422,8 @@
                           }
                         }
                       }
-                  }
-                },
+                    }
+                  },
                   "response": {
                     "errors": [
                       {
@@ -551,7 +551,7 @@
         "tags": [
           "fees"
         ],
-        "description": "Returns the estimated fees for a list of products.",
+        "description": "Returns the estimated fees for a list of products.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 1 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getMyFeesEstimates",
         "parameters": [
           {
@@ -932,8 +932,13 @@
       }
     },
     "FeesEstimateRequest": {
+      "description": "A product, marketplace, and proposed price used to request estimated fees.",
       "type": "object",
-      "required": ["MarketplaceId", "PriceToEstimateFees", "Identifier"],
+      "required": [
+        "MarketplaceId",
+        "PriceToEstimateFees",
+        "Identifier"
+      ],
       "properties": {
         "MarketplaceId": {
           "description": "A marketplace identifier.",
@@ -1000,7 +1005,9 @@
     "GetMyFeesEstimatesErrorList": {
       "type": "object",
       "description": "A list of error responses returned when a request is unsuccessful.",
-      "required": ["errors"],
+      "required": [
+        "errors"
+      ],
       "properties": {
         "errors": {
           "type": "array",
@@ -1034,7 +1041,7 @@
         },
         "details": {
           "type": "string",
-          "description": "Additional information that can help the caller understand or fix the issue."
+          "description": "Additional details that can help the caller understand or fix the issue."
         }
       }
     },
@@ -1183,7 +1190,9 @@
       "description": "The type of fee, fee amount, and other details.",
       "type": "object",
       "required": [
-        "FeeType", "FeeAmount", "FinalFee"
+        "FeeType",
+        "FeeAmount",
+        "FinalFee"
       ],
       "properties": {
         "FeeType": {
@@ -1222,7 +1231,9 @@
       "description": "The type of fee, fee amount, and other details.",
       "type": "object",
       "required": [
-        "FeeType", "FeeAmount", "FinalFee"
+        "FeeType",
+        "FeeAmount",
+        "FinalFee"
       ],
       "properties": {
         "FeeType": {
@@ -1275,7 +1286,7 @@
         },
         {
           "value": "FBA_SNL",
-          "description": "Returns the FBA Small and Light (SNL) fees for the offer. The SNL program offers reduced fulfillment costs on qualified items. To check item eligibility for the SNL program, use the getSmallAndLightEligibilityBySellerSKU operation of the FBA Small And Light API."
+          "description": "Returns the FBA Small and Light (SNL) fees for the offer. The SNL program offers reduced fulfillment costs on qualified items. To check item eligibility for the SNL program, use the getSmallAndLightEligibilityBySellerSKU operation of the FBA Small And Light API.\n\n**Note:** The FBA Small and Light program sunset in the US and EU regions on **September 26, 2023**. The program will be deprecated in the JP region on **March 31, 2024** and sunset on **April 1, 2024**. APIs announcing deprecation will no longer be supported after their deprecation date. Calls to deprecated APIs will fail beginning on their sunset date. For more information, refer to [FBA Small and Light program deprecation](https://developer-docs.amazon.com/sp-api/changelog/fba-small-and-light-program-deprecation)."
         },
         {
           "value": "FBA_EFN",

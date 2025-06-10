@@ -1,13 +1,12 @@
 package com.amazon.SellingPartnerAPIAA;
 
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Protocol;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +24,7 @@ import java.util.HashSet;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -97,7 +97,7 @@ public class LWAAuthorizationSignerTest {
 
     @ParameterizedTest
     @MethodSource("lwaAuthSigner")
-    public void requestLWAAccessTokenFromConfiguration(String sellerType, LWAAuthorizationSigner testAuthSigner) {
+    public void requestLWAAccessTokenFromConfiguration(String sellerType, LWAAuthorizationSigner testAuthSigner) throws LWAException {
         LWAClient mockLWAClient = mock(LWAClient.class);
         ArgumentCaptor<LWAAccessTokenRequestMeta> lwaAccessTokenRequestMetaArgumentCaptor = ArgumentCaptor.forClass(LWAAccessTokenRequestMeta.class);
 
@@ -108,24 +108,24 @@ public class LWAAuthorizationSignerTest {
         testAuthSigner.sign(request);
 
         LWAAccessTokenRequestMeta actualLWAAccessTokenRequestMeta = lwaAccessTokenRequestMetaArgumentCaptor.getValue();
-        assertEquals(TEST_REFRESH_TOKEN, actualLWAAccessTokenRequestMeta.getRefreshToken());
         assertEquals(TEST_CLIENT_SECRET, actualLWAAccessTokenRequestMeta.getClientSecret());
         assertEquals(TEST_CLIENT_ID, actualLWAAccessTokenRequestMeta.getClientId());
 
         if(sellerType.equals(SELLER_TYPE_SELLER)){
+            assertEquals(TEST_REFRESH_TOKEN, actualLWAAccessTokenRequestMeta.getRefreshToken());
             Assert.assertTrue(actualLWAAccessTokenRequestMeta.getScopes().getScopes().isEmpty());
             assertEquals("refresh_token", actualLWAAccessTokenRequestMeta.getGrantType());
         }
         else if (sellerType.equals(SELLER_TYPE_SELLERLESS)){
+            assertNull(actualLWAAccessTokenRequestMeta.getRefreshToken());
             assertEquals(new HashSet<String>(Arrays.asList(TEST_SCOPE_1, TEST_SCOPE_2)), actualLWAAccessTokenRequestMeta.getScopes().getScopes());
             assertEquals("client_credentials", actualLWAAccessTokenRequestMeta.getGrantType());
         }
-
     }
 
     @ParameterizedTest
     @MethodSource("lwaAuthSigner")
-    public void returnSignedRequestWithAccessTokenFromLWAClient(String sellerType, LWAAuthorizationSigner testAuthSigner) {
+    public void returnSignedRequestWithAccessTokenFromLWAClient(String sellerType, LWAAuthorizationSigner testAuthSigner) throws LWAException {
         LWAClient mockLWAClient = mock(LWAClient.class);
 
         when(mockLWAClient.getAccessToken(any(LWAAccessTokenRequestMeta.class)))
@@ -139,7 +139,7 @@ public class LWAAuthorizationSignerTest {
 
     @ParameterizedTest
     @MethodSource("lwaAuthSigner")
-    public void originalRequestIsImmutable(String sellerType, LWAAuthorizationSigner testAuthSigner) {
+    public void originalRequestIsImmutable(String sellerType, LWAAuthorizationSigner testAuthSigner) throws LWAException {
         LWAClient mockLWAClient = mock(LWAClient.class);
 
         when(mockLWAClient.getAccessToken(any(LWAAccessTokenRequestMeta.class)))
@@ -150,7 +150,7 @@ public class LWAAuthorizationSignerTest {
     }
     
     @Test
-    public void returnSignedRequestWithAccessTokenFromLWACache() throws IOException { 
+    public void returnSignedRequestWithAccessTokenFromLWACache() throws IOException, LWAException {
         LWAClient testLWAClient = new LWAClient(TEST_ENDPOINT);
         testLWAClient.setOkHttpClient(mockOkHttpClient);
         

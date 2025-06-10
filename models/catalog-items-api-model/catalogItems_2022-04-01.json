@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "The Selling Partner API for Catalog Items provides programmatic access to information about items in the Amazon catalog.\n\nFor more information, refer to the [Catalog Items API Use Case Guide](doc:catalog-items-api-v2022-04-01-use-case-guide).",
+    "description": "Use the Selling Partner API for Catalog Items to retrieve information about items in the Amazon catalog.\n\nFor more information, refer to the [Catalog Items API Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/:catalog-items-api-v2022-04-01-use-case-guide).",
     "version": "2022-04-01",
     "title": "Selling Partner API for Catalog Items",
     "contact": {
@@ -29,7 +29,7 @@
         "tags": [
           "catalog"
         ],
-        "description": "Search for and return a list of Amazon catalog items and associated information either by identifier or by keywords.\n\n**Usage Plans:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may observe higher rate and burst values than those shown here. For more information, refer to the [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Search for a list of Amazon catalog items and item-related information. You can search by identifier or by keywords.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "searchCatalogItems",
         "consumes": [
           "application/json"
@@ -40,7 +40,7 @@
         "parameters": [
           {
             "name": "identifiers",
-            "description": "A comma-delimited list of product identifiers to search the Amazon catalog for. **Note:** Cannot be used with `keywords`.",
+            "description": "A comma-delimited list of product identifiers that you can use to search the Amazon catalog. **Note:** You cannot include `identifiers` and `keywords` in the same request.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -53,7 +53,7 @@
           },
           {
             "name": "identifiersType",
-            "description": "Type of product identifiers to search the Amazon catalog for. **Note:** Required when `identifiers` are provided.",
+            "description": "The type of product identifiers that you can use to search the Amazon catalog. **Note:** `identifiersType` is required when `identifiers` is in the request.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -70,27 +70,27 @@
             "x-docgen-enum-table-extension": [
               {
                 "value": "ASIN",
-                "description": "Amazon Standard Identification Number."
+                "description": "Amazon Standard Identification Number"
               },
               {
                 "value": "EAN",
-                "description": "European Article Number."
+                "description": "European Article Number"
               },
               {
                 "value": "GTIN",
-                "description": "Global Trade Item Number."
+                "description": "Global Trade Item Number"
               },
               {
                 "value": "ISBN",
-                "description": "International Standard Book Number."
+                "description": "International Standard Book Number"
               },
               {
                 "value": "JAN",
-                "description": "Japanese Article Number."
+                "description": "Japanese Article Number"
               },
               {
                 "value": "MINSAN",
-                "description": "Minsan Code."
+                "description": "Minsan Code"
               },
               {
                 "value": "SKU",
@@ -98,14 +98,14 @@
               },
               {
                 "value": "UPC",
-                "description": "Universal Product Code."
+                "description": "Universal Product Code"
               }
             ],
             "x-example": "ASIN"
           },
           {
             "name": "marketplaceIds",
-            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "description": "A comma-delimited list of Amazon marketplace identifiers. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
             "in": "query",
             "required": true,
             "type": "array",
@@ -118,13 +118,14 @@
           },
           {
             "name": "includedData",
-            "description": "A comma-delimited list of data sets to include in the response. Default: `summaries`.",
+            "description": "A comma-delimited list of datasets to include in the response.",
             "in": "query",
             "required": false,
             "type": "array",
             "items": {
               "enum": [
                 "attributes",
+                "classifications",
                 "dimensions",
                 "identifiers",
                 "images",
@@ -138,15 +139,19 @@
               "x-docgen-enum-table-extension": [
                 {
                   "value": "attributes",
-                  "description": "A JSON object containing structured item attribute data keyed by attribute name. Catalog item attributes conform to the related Amazon product type definitions available in the Selling Partner API for Product Type Definitions."
+                  "description": "A JSON object containing structured item attribute data that is keyed by attribute name. Catalog item attributes conform to the related Amazon product type definitions that you can get from the [Product Type Definitions API](https://developer-docs.amazon.com/sp-api/docs/product-type-definitions-api-v2020-09-01-reference)."
+                },
+                {
+                  "value": "classifications",
+                  "description": "Classifications (browse nodes) for an item in the Amazon catalog."
                 },
                 {
                   "value": "dimensions",
-                  "description": "Dimensions for an item in the Amazon catalog."
+                  "description": "Dimensions of an item in the Amazon catalog."
                 },
                 {
                   "value": "identifiers",
-                  "description": "Identifiers associated with the item in the Amazon catalog, such as UPC and EAN identifiers."
+                  "description": "Identifiers that are associated with the item in the Amazon catalog, such as UPC and EAN."
                 },
                 {
                   "value": "images",
@@ -166,11 +171,11 @@
                 },
                 {
                   "value": "summaries",
-                  "description": "Summary details of an Amazon catalog item. Refer to the `attributes` of an Amazon catalog item for more details."
+                  "description": "Summary of an Amazon catalog item. For more information, refer to the `attributes` of an Amazon catalog item."
                 },
                 {
                   "value": "vendorDetails",
-                  "description": "Vendor details associated with an Amazon catalog item. Vendor details are available to vendors only."
+                  "description": "Vendor details associated with an Amazon catalog item. Vendor details are only available to vendors."
                 }
               ]
             },
@@ -180,7 +185,7 @@
           },
           {
             "name": "locale",
-            "description": "Locale for retrieving localized summaries. Defaults to the primary locale of the marketplace.",
+            "description": "The locale for which you want to retrieve localized summaries. Defaults to the primary locale of the marketplace.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -195,7 +200,7 @@
           },
           {
             "name": "keywords",
-            "description": "A comma-delimited list of words to search the Amazon catalog for. **Note:** Cannot be used with `identifiers`.",
+            "description": "A comma-delimited list of keywords that you can use to search the Amazon catalog. **Note:** You cannot include `keywords` and `identifiers` in the same request.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -208,7 +213,7 @@
           },
           {
             "name": "brandNames",
-            "description": "A comma-delimited list of brand names to limit the search for `keywords`-based queries. **Note:** Cannot be used with `identifiers`.",
+            "description": "A comma-delimited list of brand names that you can use to limit the search in queries based on `keywords`. **Note:** Cannot be used with `identifiers`.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -220,7 +225,7 @@
           },
           {
             "name": "classificationIds",
-            "description": "A comma-delimited list of classification identifiers to limit the search for `keywords`-based queries. **Note:** Cannot be used with `identifiers`.",
+            "description": "A comma-delimited list of classification identifiers that you can use to limit the search in queries based on `keywords`. **Note:** Cannot be used with `identifiers`.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -232,7 +237,7 @@
           },
           {
             "name": "pageSize",
-            "description": "Number of results to be returned per page.",
+            "description": "The number of results to include on each page.",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -242,7 +247,7 @@
           },
           {
             "name": "pageToken",
-            "description": "A token to fetch a certain page when there are multiple pages worth of results.",
+            "description": "A token that you can use to fetch a specific page when there are multiple pages of results.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -250,7 +255,7 @@
           },
           {
             "name": "keywordsLocale",
-            "description": "The language of the keywords provided for `keywords`-based queries. Defaults to the primary locale of the marketplace. **Note:** Cannot be used with `identifiers`.",
+            "description": "The language of the keywords that are included in queries based on `keywords`. Defaults to the primary locale of the marketplace. **Note:** Cannot be used with `identifiers`.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -277,8 +282,8 @@
               "application/json": {
                 "numberOfResults": 1,
                 "pagination": {
-                  "nextPage": "xsdflkj324lkjsdlkj3423klkjsdfkljlk2j34klj2l3k4jlksdjl234",
-                  "previousPage": "ilkjsdflkj234lkjds234234lkjl234lksjdflkj234234lkjsfsdflkj333d"
+                  "nextToken": "xsdflkj324lkjsdlkj3423klkjsdfkljlk2j34klj2l3k4jlksdjl234",
+                  "previousToken": "ilkjsdflkj234lkjds234234lkjl234lksjdflkj234234lkjsfsdflkj333d"
                 },
                 "refinements": {
                   "brands": [
@@ -378,28 +383,6 @@
                         {
                           "language_tag": "en_US",
                           "value": "SAMSUNG",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "generic_keyword": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "oled 65 inch smart tv qled 75 inch tv 85 inch 4k tv smart tv 4k tv 65 inch qled 82 inch tv 8k tv oled 65 smart tv qled 65 inch 80 inch tv 4k 4k tv shield tv 2018",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "q9fn qled 2018 oled 4k 4k oled toshiba antenna dvd player outdoor tv kitchen tv fire tv firetv hdtv hd tv android shield tv gaming deals tv ears dvr speakers digital tv antenna tv android tv frame mount",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "4k hdr tv 70 tv shield tv 90 inch tv gaming tv 75 tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "smart tv 4k tv tv tv oled tv 65 inch smart tv 4k tv 65 inch smart tv shield tv 2018 tv 4k oled tv 65 4k tv 4k smart tv 4k hdr tv shield tv gaming tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
                           "marketplace_id": "ATVPDKIKX0DER"
                         }
                       ],
@@ -819,6 +802,29 @@
                         }
                       ]
                     },
+                    "classifications": [
+                      {
+                        "marketplaceId": "ATVPDKIKX0DER",
+                        "classifications": [
+                          {
+                            "displayName": "QLED TVs",
+                            "classificationId": "21489946011",
+                            "parent": {
+                              "displayName": "Televisions",
+                              "classificationId": "172659",
+                              "parent": {
+                                "displayName": "Television & Video",
+                                "classificationId": "1266092011",
+                                "parent": {
+                                  "displayName": "Electronics",
+                                  "classificationId": "172282"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ],
                     "dimensions": [
                       {
                         "marketplaceId": "ATVPDKIKX0DER",
@@ -1098,7 +1104,8 @@
                         "partNumber": "QN82Q60RAFXZA",
                         "size": "82-Inch",
                         "style": "TV only",
-                        "websiteDisplayGroup": "ce_display_on_website"
+                        "websiteDisplayGroup": "home_theater_display_on_website",
+                        "websiteDisplayGroupName": "Home Theater"
                       }
                     ],
                     "relationships": [
@@ -1148,13 +1155,37 @@
                 {
                   "request": {
                     "parameters": {
+                      "keywords": {
+                        "value": [
+                          "samsung",
+                          "tv"
+                        ]
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                      },
+                      "includedData": {
+                        "value": [
+                          "classifications",
+                          "dimensions",
+                          "identifiers",
+                          "images",
+                          "productTypes",
+                          "relationships",
+                          "salesRanks",
+                          "summaries",
+                          "vendorDetails"
+                        ]
+                      }
                     }
                   },
                   "response": {
                     "numberOfResults": 1,
                     "pagination": {
-                      "nextPage": "xsdflkj324lkjsdlkj3423klkjsdfkljlk2j34klj2l3k4jlksdjl234",
-                      "previousPage": "ilkjsdflkj234lkjds234234lkjl234lksjdflkj234234lkjsfsdflkj333d"
+                      "nextToken": "xsdflkj324lkjsdlkj3423klkjsdfkljlk2j34klj2l3k4jlksdjl234",
+                      "previousToken": "ilkjsdflkj234lkjds234234lkjl234lksjdflkj234234lkjsfsdflkj333d"
                     },
                     "refinements": {
                       "brands": [
@@ -1174,527 +1205,29 @@
                     "items": [
                       {
                         "asin": "B07N4M94X4",
-                        "attributes": {
-                          "total_hdmi_ports": [
-                            {
-                              "value": 4,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "resolution": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "4K",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "item_weight": [
-                            {
-                              "unit": "pounds",
-                              "value": 107.6,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "product_subcategory": [
-                            {
-                              "value": "50400120",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "bullet_point": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "SMART TV WITH UNIVERSAL GUIDE: Simple on-screen Guide is an easy way to find streaming content and live TV shows",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "100% COLOR VOLUME WITH QUANTUM DOTS: Powered by Quantum dots, Samsung’s 4K QLED TV offers over a billion shades of brilliant color and 100% color volume for exceptional depth of detail that will draw you in to the picture for the best 4K TV experience",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "QUANTUM PROCESSOR 4K: Intelligently powered processor instantly upscales content to 4K for sharp detail and refined color",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "QUANTUM HDR 4X: 4K depth of detail with high dynamic range powered by HDR10+ delivers the lightest to darkest colors, scene by scene, for amazing picture realism",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "AMBIENT MODE: Customizes and complements your living space by turning a blank screen of this big screen TV into enticing visuals including décor, info, photos and artwork",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "SMART TV FEATURES: OneRemote to control all compatible devices, Bixby voice command, on-screen universal guide, SmartThings to control compatible home appliances and devices, smart speaker expandability with Alexa and Google Assistant compatibility, and more",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "item_dimensions": [
-                            {
-                              "width": {
-                                "unit": "inches",
-                                "value": 72.4
-                              },
-                              "length": {
-                                "unit": "inches",
-                                "value": 2.4
-                              },
-                              "height": {
-                                "unit": "inches",
-                                "value": 41.4
-                              },
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "brand": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "SAMSUNG",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "generic_keyword": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "oled 65 inch smart tv qled 75 inch tv 85 inch 4k tv smart tv 4k tv 65 inch qled 82 inch tv 8k tv oled 65 smart tv qled 65 inch 80 inch tv 4k 4k tv shield tv 2018",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "q9fn qled 2018 oled 4k 4k oled toshiba antenna dvd player outdoor tv kitchen tv fire tv firetv hdtv hd tv android shield tv gaming deals tv ears dvr speakers digital tv antenna tv android tv frame mount",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "4k hdr tv 70 tv shield tv 90 inch tv gaming tv 75 tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "smart tv 4k tv tv tv oled tv 65 inch smart tv 4k tv 65 inch smart tv shield tv 2018 tv 4k oled tv 65 4k tv 4k smart tv 4k hdr tv shield tv gaming tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "control_method": [
-                            {
-                              "value": "voice",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "item_package_dimensions": [
-                            {
-                              "length": {
-                                "unit": "centimeters",
-                                "value": 26.67
-                              },
-                              "width": {
-                                "unit": "centimeters",
-                                "value": 121.92
-                              },
-                              "height": {
-                                "unit": "centimeters",
-                                "value": 203.2
-                              },
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "image_aspect_ratio": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "16:9",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "part_number": [
-                            {
-                              "value": "QN82Q60RAFXZA",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "includes_remote": [
-                            {
-                              "value": true,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "style": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "TV only",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "item_type_name": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "TV",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "battery": [
-                            {
-                              "cell_composition": [
-                                {
-                                  "value": "alkaline"
+                        "classifications": [
+                          {
+                            "marketplaceId": "ATVPDKIKX0DER",
+                            "classifications": [
+                              {
+                                "displayName": "QLED TVs",
+                                "classificationId": "21489946011",
+                                "parent": {
+                                  "displayName": "Televisions",
+                                  "classificationId": "172659",
+                                  "parent": {
+                                    "displayName": "Television & Video",
+                                    "classificationId": "1266092011",
+                                    "parent": {
+                                      "displayName": "Electronics",
+                                      "classificationId": "172282"
+                                    }
+                                  }
                                 }
-                              ],
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "image_contrast_ratio": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "QLED 4K",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "manufacturer": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "Samsung",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "number_of_boxes": [
-                            {
-                              "value": 1,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "total_usb_ports": [
-                            {
-                              "value": 2,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "model_number": [
-                            {
-                              "value": "QN82Q60RAFXZA",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "supplier_declared_dg_hz_regulation": [
-                            {
-                              "value": "not_applicable",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "num_batteries": [
-                            {
-                              "quantity": 2,
-                              "type": "aaa",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "california_proposition_65": [
-                            {
-                              "compliance_type": "on_product_combined_cancer_reproductive",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "compliance_type": "chemical",
-                              "chemical_names": [
-                                "di_2_ethylhexyl_phthalate_dehp"
-                              ],
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "display": [
-                            {
-                              "resolution_maximum": [
-                                {
-                                  "unit": "pixels",
-                                  "language_tag": "en_US",
-                                  "value": "3840 x 2160"
-                                }
-                              ],
-                              "size": [
-                                {
-                                  "unit": "inches",
-                                  "value": 82
-                                }
-                              ],
-                              "type": [
-                                {
-                                  "language_tag": "en_US",
-                                  "value": "QLED"
-                                }
-                              ],
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "item_name": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "Samsung QN82Q60RAFXZA Flat 82-Inch QLED 4K Q60 Series (2019) Ultra HD Smart TV with HDR and Alexa Compatibility",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "list_price": [
-                            {
-                              "currency": "USD",
-                              "value": 3799.99,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "batteries_required": [
-                            {
-                              "value": false,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "includes_rechargable_battery": [
-                            {
-                              "value": false,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "product_site_launch_date": [
-                            {
-                              "value": "2019-03-11T08:00:01.000Z",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "product_category": [
-                            {
-                              "value": "50400100",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "batteries_included": [
-                            {
-                              "value": false,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "connectivity_technology": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "Bluetooth",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "USB",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "Wireless",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "HDMI",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "included_components": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "QLED Standard Smart Remote",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "Power Cable",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "Stand",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "Samsung Smart Control",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "specification_met": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "parental_control_technology": [
-                            {
-                              "value": "V-Chip",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "power_consumption": [
-                            {
-                              "unit": "watts",
-                              "value": 120,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "cpsia_cautionary_statement": [
-                            {
-                              "value": "no_warning_applicable",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "item_type_keyword": [
-                            {
-                              "value": "qled-televisions",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "number_of_items": [
-                            {
-                              "value": 1,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "warranty_description": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "1 year manufacturer",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "max_resolution": [
-                            {
-                              "unit": "pixels",
-                              "value": 8.3,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "color": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "Black",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "screen_surface_description": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "Flat",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "item_package_weight": [
-                            {
-                              "unit": "kilograms",
-                              "value": 62.142,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "speaker_type": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "2CH",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "supported_internet_services": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "Amazon Instant Video",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "YouTube",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "Netflix",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "Hulu",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "Browser",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "tuner_technology": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "Analog Tuner",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "controller_type": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "SmartThings",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "Voice Control",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "special_feature": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "100% Color Volume with Quantum Dot; Quantum Processor 4K; Ambient Mode; Quantum HDR 4X; Real Game Enhancer",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "wireless_communication_technology": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "Wi-Fi::Wi-Fi Direct::Bluetooth",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "model_year": [
-                            {
-                              "value": 2019,
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "power_source_type": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "Corded Electric",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "street_date": [
-                            {
-                              "value": "2019-03-21T00:00:01Z",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "mounting_type": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "Table Mount",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            },
-                            {
-                              "language_tag": "en_US",
-                              "value": "Wall Mount",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ],
-                          "refresh_rate": [
-                            {
-                              "unit": "hertz",
-                              "language_tag": "en_US",
-                              "value": "120",
-                              "marketplace_id": "ATVPDKIKX0DER"
-                            }
-                          ]
-                        },
+                              }
+                            ]
+                          }
+                        ],
                         "dimensions": [
                           {
                             "marketplaceId": "ATVPDKIKX0DER",
@@ -1974,7 +1507,8 @@
                             "partNumber": "QN82Q60RAFXZA",
                             "size": "82-Inch",
                             "style": "TV only",
-                            "websiteDisplayGroup": "ce_display_on_website"
+                            "websiteDisplayGroup": "home_theater_display_on_website",
+                            "websiteDisplayGroupName": "Home Theater"
                           }
                         ],
                         "relationships": [
@@ -2134,7 +1668,7 @@
         "tags": [
           "catalog"
         ],
-        "description": "Retrieves details for an item in the Amazon catalog.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may observe higher rate and burst values than those shown here. For more information, refer to the [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Retrieves details for an item in the Amazon catalog.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getCatalogItem",
         "consumes": [
           "application/json"
@@ -2152,7 +1686,7 @@
           },
           {
             "name": "marketplaceIds",
-            "description": "A comma-delimited list of Amazon marketplace identifiers. Data sets in the response contain data only for the specified marketplaces.",
+            "description": "A comma-delimited list of Amazon marketplace identifiers. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
             "in": "query",
             "required": true,
             "type": "array",
@@ -2164,13 +1698,14 @@
           },
           {
             "name": "includedData",
-            "description": "A comma-delimited list of data sets to include in the response. Default: `summaries`.",
+            "description": "A comma-delimited list of datasets to include in the response.",
             "in": "query",
             "required": false,
             "type": "array",
             "items": {
               "enum": [
                 "attributes",
+                "classifications",
                 "dimensions",
                 "identifiers",
                 "images",
@@ -2184,15 +1719,19 @@
               "x-docgen-enum-table-extension": [
                 {
                   "value": "attributes",
-                  "description": "A JSON object containing structured item attribute data keyed by attribute name. Catalog item attributes conform to the related Amazon product type definitions available in the Selling Partner API for Product Type Definitions."
+                  "description": "A JSON object containing structured item attribute data that is keyed by attribute name. Catalog item attributes conform to the related Amazon product type definitions that you can get from the [Product Type Definitions API](https://developer-docs.amazon.com/sp-api/docs/product-type-definitions-api-v2020-09-01-reference)."
+                },
+                {
+                  "value": "classifications",
+                  "description": "Classifications (browse nodes) for an item in the Amazon catalog."
                 },
                 {
                   "value": "dimensions",
-                  "description": "Dimensions for an item in the Amazon catalog."
+                  "description": "Dimensions of an item in the Amazon catalog."
                 },
                 {
                   "value": "identifiers",
-                  "description": "Identifiers associated with the item in the Amazon catalog, such as UPC and EAN identifiers."
+                  "description": "Identifiers that are associated with the item in the Amazon catalog, such as UPC and EA."
                 },
                 {
                   "value": "images",
@@ -2208,7 +1747,7 @@
                 },
                 {
                   "value": "summaries",
-                  "description": "Summary details of an Amazon catalog item. Refer to the \"attributes\" of an Amazon catalog item for more details."
+                  "description": "Summary of an Amazon catalog item. For more information, refer to the `attributes` of an Amazon catalog item."
                 },
                 {
                   "value": "relationships",
@@ -2216,7 +1755,7 @@
                 },
                 {
                   "value": "vendorDetails",
-                  "description": "Vendor details associated with an Amazon catalog item. Vendor details are available to vendors only."
+                  "description": "Vendor details associated with an Amazon catalog item. Vendor details are only available to vendors."
                 }
               ]
             },
@@ -2226,7 +1765,7 @@
           },
           {
             "name": "locale",
-            "description": "Locale for retrieving localized summaries. Defaults to the primary locale of the marketplace.",
+            "description": "The locale for which you want to retrieve localized summaries. Defaults to the primary locale of the marketplace.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -2332,28 +1871,6 @@
                     {
                       "language_tag": "en_US",
                       "value": "SAMSUNG",
-                      "marketplace_id": "ATVPDKIKX0DER"
-                    }
-                  ],
-                  "generic_keyword": [
-                    {
-                      "language_tag": "en_US",
-                      "value": "oled 65 inch smart tv qled 75 inch tv 85 inch 4k tv smart tv 4k tv 65 inch qled 82 inch tv 8k tv oled 65 smart tv qled 65 inch 80 inch tv 4k 4k tv shield tv 2018",
-                      "marketplace_id": "ATVPDKIKX0DER"
-                    },
-                    {
-                      "language_tag": "en_US",
-                      "value": "q9fn qled 2018 oled 4k 4k oled toshiba antenna dvd player outdoor tv kitchen tv fire tv firetv hdtv hd tv android shield tv gaming deals tv ears dvr speakers digital tv antenna tv android tv frame mount",
-                      "marketplace_id": "ATVPDKIKX0DER"
-                    },
-                    {
-                      "language_tag": "en_US",
-                      "value": "4k hdr tv 70 tv shield tv 90 inch tv gaming tv 75 tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
-                      "marketplace_id": "ATVPDKIKX0DER"
-                    },
-                    {
-                      "language_tag": "en_US",
-                      "value": "smart tv 4k tv tv tv oled tv 65 inch smart tv 4k tv 65 inch smart tv shield tv 2018 tv 4k oled tv 65 4k tv 4k smart tv 4k hdr tv shield tv gaming tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
                       "marketplace_id": "ATVPDKIKX0DER"
                     }
                   ],
@@ -2773,6 +2290,29 @@
                     }
                   ]
                 },
+                "classifications": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "classifications": [
+                      {
+                        "displayName": "QLED TVs",
+                        "classificationId": "21489946011",
+                        "parent": {
+                          "displayName": "Televisions",
+                          "classificationId": "172659",
+                          "parent": {
+                            "displayName": "Television & Video",
+                            "classificationId": "1266092011",
+                            "parent": {
+                              "displayName": "Electronics",
+                              "classificationId": "172282"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ],
                 "dimensions": [
                   {
                     "marketplaceId": "ATVPDKIKX0DER",
@@ -3052,7 +2592,8 @@
                     "partNumber": "QN82Q60RAFXZA",
                     "size": "82-Inch",
                     "style": "TV only",
-                    "websiteDisplayGroup": "ce_display_on_website"
+                    "websiteDisplayGroup": "home_theater_display_on_website",
+                    "websiteDisplayGroupName": "Home Theater"
                   }
                 ],
                 "relationships": [
@@ -3100,531 +2641,54 @@
                 {
                   "request": {
                     "parameters": {
+                      "asin": {
+                        "value": "B07N4M94X4"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "ATVPDKIKX0DER"
+                        ]
+                      },
+                      "includedData": {
+                        "value": [
+                          "classifications",
+                          "dimensions",
+                          "identifiers",
+                          "images",
+                          "productTypes",
+                          "relationships",
+                          "salesRanks",
+                          "summaries",
+                          "vendorDetails"
+                        ]
+                      }
                     }
                   },
                   "response": {
                     "asin": "B07N4M94X4",
-                    "attributes": {
-                      "total_hdmi_ports": [
-                        {
-                          "value": 4,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "resolution": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "4K",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "item_weight": [
-                        {
-                          "unit": "pounds",
-                          "value": 107.6,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "product_subcategory": [
-                        {
-                          "value": "50400120",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "bullet_point": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "SMART TV WITH UNIVERSAL GUIDE: Simple on-screen Guide is an easy way to find streaming content and live TV shows",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "100% COLOR VOLUME WITH QUANTUM DOTS: Powered by Quantum dots, Samsung’s 4K QLED TV offers over a billion shades of brilliant color and 100% color volume for exceptional depth of detail that will draw you in to the picture for the best 4K TV experience",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "QUANTUM PROCESSOR 4K: Intelligently powered processor instantly upscales content to 4K for sharp detail and refined color",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "QUANTUM HDR 4X: 4K depth of detail with high dynamic range powered by HDR10+ delivers the lightest to darkest colors, scene by scene, for amazing picture realism",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "AMBIENT MODE: Customizes and complements your living space by turning a blank screen of this big screen TV into enticing visuals including décor, info, photos and artwork",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "SMART TV FEATURES: OneRemote to control all compatible devices, Bixby voice command, on-screen universal guide, SmartThings to control compatible home appliances and devices, smart speaker expandability with Alexa and Google Assistant compatibility, and more",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "item_dimensions": [
-                        {
-                          "width": {
-                            "unit": "inches",
-                            "value": 72.4
-                          },
-                          "length": {
-                            "unit": "inches",
-                            "value": 2.4
-                          },
-                          "height": {
-                            "unit": "inches",
-                            "value": 41.4
-                          },
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "brand": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "SAMSUNG",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "generic_keyword": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "oled 65 inch smart tv qled 75 inch tv 85 inch 4k tv smart tv 4k tv 65 inch qled 82 inch tv 8k tv oled 65 smart tv qled 65 inch 80 inch tv 4k 4k tv shield tv 2018",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "q9fn qled 2018 oled 4k 4k oled toshiba antenna dvd player outdoor tv kitchen tv fire tv firetv hdtv hd tv android shield tv gaming deals tv ears dvr speakers digital tv antenna tv android tv frame mount",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "4k hdr tv 70 tv shield tv 90 inch tv gaming tv 75 tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "smart tv 4k tv tv tv oled tv 65 inch smart tv 4k tv 65 inch smart tv shield tv 2018 tv 4k oled tv 65 4k tv 4k smart tv 4k hdr tv shield tv gaming tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "control_method": [
-                        {
-                          "value": "voice",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "item_package_dimensions": [
-                        {
-                          "length": {
-                            "unit": "centimeters",
-                            "value": 26.67
-                          },
-                          "width": {
-                            "unit": "centimeters",
-                            "value": 121.92
-                          },
-                          "height": {
-                            "unit": "centimeters",
-                            "value": 203.2
-                          },
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "image_aspect_ratio": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "16:9",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "part_number": [
-                        {
-                          "value": "QN82Q60RAFXZA",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "includes_remote": [
-                        {
-                          "value": true,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "style": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "TV only",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "item_type_name": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "TV",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "battery": [
-                        {
-                          "cell_composition": [
-                            {
-                              "value": "alkaline"
+                    "classifications": [
+                      {
+                        "marketplaceId": "ATVPDKIKX0DER",
+                        "classifications": [
+                          {
+                            "displayName": "QLED TVs",
+                            "classificationId": "21489946011",
+                            "parent": {
+                              "displayName": "Televisions",
+                              "classificationId": "172659",
+                              "parent": {
+                                "displayName": "Television & Video",
+                                "classificationId": "1266092011",
+                                "parent": {
+                                  "displayName": "Electronics",
+                                  "classificationId": "172282"
+                                }
+                              }
                             }
-                          ],
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "image_contrast_ratio": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "QLED 4K",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "manufacturer": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "Samsung",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "number_of_boxes": [
-                        {
-                          "value": 1,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "total_usb_ports": [
-                        {
-                          "value": 2,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "model_number": [
-                        {
-                          "value": "QN82Q60RAFXZA",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "supplier_declared_dg_hz_regulation": [
-                        {
-                          "value": "not_applicable",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "num_batteries": [
-                        {
-                          "quantity": 2,
-                          "type": "aaa",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "california_proposition_65": [
-                        {
-                          "compliance_type": "on_product_combined_cancer_reproductive",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "compliance_type": "chemical",
-                          "chemical_names": [
-                            "di_2_ethylhexyl_phthalate_dehp"
-                          ],
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "display": [
-                        {
-                          "resolution_maximum": [
-                            {
-                              "unit": "pixels",
-                              "language_tag": "en_US",
-                              "value": "3840 x 2160"
-                            }
-                          ],
-                          "size": [
-                            {
-                              "unit": "inches",
-                              "value": 82
-                            }
-                          ],
-                          "type": [
-                            {
-                              "language_tag": "en_US",
-                              "value": "QLED"
-                            }
-                          ],
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "item_name": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "Samsung QN82Q60RAFXZA Flat 82-Inch QLED 4K Q60 Series (2019) Ultra HD Smart TV with HDR and Alexa Compatibility",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "list_price": [
-                        {
-                          "currency": "USD",
-                          "value": 3799.99,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "batteries_required": [
-                        {
-                          "value": false,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "includes_rechargable_battery": [
-                        {
-                          "value": false,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "product_site_launch_date": [
-                        {
-                          "value": "2019-03-11T08:00:01.000Z",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "product_category": [
-                        {
-                          "value": "50400100",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "batteries_included": [
-                        {
-                          "value": false,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "connectivity_technology": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "Bluetooth",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "USB",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "Wireless",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "HDMI",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "included_components": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "QLED Standard Smart Remote",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "Power Cable",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "Stand",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "Samsung Smart Control",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "specification_met": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "parental_control_technology": [
-                        {
-                          "value": "V-Chip",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "power_consumption": [
-                        {
-                          "unit": "watts",
-                          "value": 120,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "cpsia_cautionary_statement": [
-                        {
-                          "value": "no_warning_applicable",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "item_type_keyword": [
-                        {
-                          "value": "qled-televisions",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "number_of_items": [
-                        {
-                          "value": 1,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "warranty_description": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "1 year manufacturer",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "max_resolution": [
-                        {
-                          "unit": "pixels",
-                          "value": 8.3,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "color": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "Black",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "screen_surface_description": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "Flat",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "item_package_weight": [
-                        {
-                          "unit": "kilograms",
-                          "value": 62.142,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "speaker_type": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "2CH",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "supported_internet_services": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "Amazon Instant Video",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "YouTube",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "Netflix",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "Hulu",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "Browser",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "tuner_technology": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "Analog Tuner",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "controller_type": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "SmartThings",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "Voice Control",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "special_feature": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "100% Color Volume with Quantum Dot; Quantum Processor 4K; Ambient Mode; Quantum HDR 4X; Real Game Enhancer",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "wireless_communication_technology": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "Wi-Fi::Wi-Fi Direct::Bluetooth",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "model_year": [
-                        {
-                          "value": 2019,
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "power_source_type": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "Corded Electric",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "street_date": [
-                        {
-                          "value": "2019-03-21T00:00:01Z",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "mounting_type": [
-                        {
-                          "language_tag": "en_US",
-                          "value": "Table Mount",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        },
-                        {
-                          "language_tag": "en_US",
-                          "value": "Wall Mount",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ],
-                      "refresh_rate": [
-                        {
-                          "unit": "hertz",
-                          "language_tag": "en_US",
-                          "value": "120",
-                          "marketplace_id": "ATVPDKIKX0DER"
-                        }
-                      ]
-                    },
+                          }
+                        ]
+                      }
+                    ],
                     "dimensions": [
                       {
                         "marketplaceId": "ATVPDKIKX0DER",
@@ -3904,7 +2968,8 @@
                         "partNumber": "QN82Q60RAFXZA",
                         "size": "82-Inch",
                         "style": "TV only",
-                        "websiteDisplayGroup": "ce_display_on_website"
+                        "websiteDisplayGroup": "home_theater_display_on_website",
+                        "websiteDisplayGroupName": "Home Theater"
                       }
                     ],
                     "relationships": [
@@ -4105,6 +3170,9 @@
         "attributes": {
           "$ref": "#/definitions/ItemAttributes"
         },
+        "classifications": {
+          "$ref": "#/definitions/ItemBrowseClassifications"
+        },
         "dimensions": {
           "$ref": "#/definitions/ItemDimensions"
         },
@@ -4136,24 +3204,28 @@
       "type": "object"
     },
     "ItemAsin": {
-      "description": "Amazon Standard Identification Number (ASIN) is the unique identifier for an item in the Amazon catalog.",
+      "description": "The unique identifier of an item in the Amazon catalog.",
       "type": "string"
     },
     "ItemAttributes": {
-      "description": "A JSON object that contains structured item attribute data keyed by attribute name. Catalog item attributes conform to the related product type definitions available in the Selling Partner API for Product Type Definitions.",
+      "description": "A JSON object containing structured item attribute data that is keyed by attribute name. Catalog item attributes conform to the related Amazon product type definitions that you can get from the [Product Type Definitions API](https://developer-docs.amazon.com/sp-api/docs/product-type-definitions-api-v2020-09-01-reference).",
       "additionalProperties": true,
       "type": "object"
     },
     "ItemBrowseClassification": {
-      "description": "Classification (browse node) associated with an Amazon catalog item.",
+      "description": "Classification (browse node) for an Amazon catalog item.",
       "properties": {
         "displayName": {
           "description": "Display name for the classification.",
           "type": "string"
         },
         "classificationId": {
-          "description": "Identifier of the classification (browse node identifier).",
+          "description": "Identifier of the classification.",
           "type": "string"
+        },
+        "parent": {
+          "description": "Parent classification of the current classification.",
+          "$ref": "#/definitions/ItemBrowseClassification"
         }
       },
       "required": [
@@ -4162,15 +3234,76 @@
       ],
       "type": "object"
     },
-    "Dimension": {
-      "description": "Individual dimension value of an Amazon catalog item or item package.",
+    "ItemContributor": {
+      "description": "Individual contributor to the creation of an item, such as an author or actor.",
       "properties": {
-        "unit": {
-          "description": "Measurement unit of the dimension value.",
+        "role": {
+          "$ref": "#/definitions/ItemContributorRole"
+        },
+        "value": {
+          "description": "Name of the contributor, such as `Jane Austen`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "role"
+      ],
+      "type": "object"
+    },
+    "ItemContributorRole": {
+      "description": "Role of an individual contributor in the creation of an item, such as author or actor.",
+      "properties": {
+        "displayName": {
+          "description": "Display name of the role in the requested locale, such as `Author` or `Actor`.",
           "type": "string"
         },
         "value": {
-          "description": "Numeric dimension value.",
+          "description": "Role value for the Amazon catalog item, such as `author` or `actor`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "type": "object"
+    },
+    "ItemBrowseClassifications": {
+      "description": "An array of classifications (browse nodes) that is associated with the item in the Amazon catalog, grouped by `marketplaceId`.",
+      "items": {
+        "$ref": "#/definitions/ItemBrowseClassificationsByMarketplace"
+      },
+      "type": "array"
+    },
+    "ItemBrowseClassificationsByMarketplace": {
+      "description": "Classifications (browse nodes) that are associated with the item in the Amazon catalog for the indicated `marketplaceId`.",
+      "properties": {
+        "marketplaceId": {
+          "description": "Amazon marketplace identifier. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
+          "type": "string"
+        },
+        "classifications": {
+          "description": "Classifications (browse nodes) that are associated with the item in the Amazon catalog.",
+          "items": {
+            "$ref": "#/definitions/ItemBrowseClassification"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "marketplaceId"
+      ],
+      "type": "object"
+    },
+    "Dimension": {
+      "description": "The value of an individual dimension for an Amazon catalog item or item package.",
+      "properties": {
+        "unit": {
+          "description": "Unit of measurement for the dimension value.",
+          "type": "string"
+        },
+        "value": {
+          "description": "Numeric value of the dimension.",
           "type": "number"
         }
       },
@@ -4199,17 +3332,17 @@
       "type": "object"
     },
     "ItemDimensions": {
-      "description": "Array of dimensions associated with the item in the Amazon catalog by Amazon marketplace.",
+      "description": "An array of dimensions that are associated with the item in the Amazon catalog, grouped by `marketplaceId`.",
       "items": {
         "$ref": "#/definitions/ItemDimensionsByMarketplace"
       },
       "type": "array"
     },
     "ItemDimensionsByMarketplace": {
-      "description": "Dimensions associated with the item in the Amazon catalog for the indicated Amazon marketplace.",
+      "description": "Dimensions that are associated with the item in the Amazon catalog for the indicated `marketplaceId`.",
       "properties": {
         "marketplaceId": {
-          "description": "Amazon marketplace identifier.",
+          "description": "Amazon marketplace identifier. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
           "type": "string"
         },
         "item": {
@@ -4217,7 +3350,7 @@
           "$ref": "#/definitions/Dimensions"
         },
         "package": {
-          "description": "Dimensions of an Amazon catalog item in its packaging.",
+          "description": "Dimensions of a package that contains an Amazon catalog item.",
           "$ref": "#/definitions/Dimensions"
         }
       },
@@ -4234,14 +3367,14 @@
       "type": "array"
     },
     "ItemIdentifiersByMarketplace": {
-      "description": "Identifiers associated with the item in the Amazon catalog for the indicated Amazon marketplace.",
+      "description": "Identifiers that are associated with the item in the Amazon catalog, grouped by `marketplaceId`.",
       "properties": {
         "marketplaceId": {
-          "description": "Amazon marketplace identifier.",
+          "description": "Amazon marketplace identifier. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).identifier.",
           "type": "string"
         },
         "identifiers": {
-          "description": "Identifiers associated with the item in the Amazon catalog for the indicated Amazon marketplace.",
+          "description": "Identifiers associated with the item in the Amazon catalog for the indicated `marketplaceId`.",
           "items": {
             "$ref": "#/definitions/ItemIdentifier"
           },
@@ -4255,14 +3388,14 @@
       "type": "object"
     },
     "ItemIdentifier": {
-      "description": "Identifier associated with the item in the Amazon catalog, such as a UPC or EAN identifier.",
+      "description": "The identifier that is associated with the item in the Amazon catalog, such as a UPC or EAN identifier.",
       "properties": {
         "identifierType": {
           "description": "Type of identifier, such as UPC, EAN, or ISBN.",
           "type": "string"
         },
         "identifier": {
-          "description": "Identifier.",
+          "description": "Identifier of the item.",
           "type": "string"
         }
       },
@@ -4273,21 +3406,21 @@
       "type": "object"
     },
     "ItemImages": {
-      "description": "Images for an item in the Amazon catalog.",
+      "description": "The images for an item in the Amazon catalog.",
       "items": {
         "$ref": "#/definitions/ItemImagesByMarketplace"
       },
       "type": "array"
     },
     "ItemImagesByMarketplace": {
-      "description": "Images for an item in the Amazon catalog for the indicated Amazon marketplace.",
+      "description": "Images for an item in the Amazon catalog, grouped by `marketplaceId`.",
       "properties": {
         "marketplaceId": {
-          "description": "Amazon marketplace identifier.",
+          "description": "Amazon marketplace identifier. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
           "type": "string"
         },
         "images": {
-          "description": "Images for an item in the Amazon catalog for the indicated Amazon marketplace.",
+          "description": "Images for an item in the Amazon catalog, grouped by `marketplaceId`.",
           "items": {
             "$ref": "#/definitions/ItemImage"
           },
@@ -4322,48 +3455,48 @@
           "x-docgen-enum-table-extension": [
             {
               "value": "MAIN",
-              "description": "Main image for the item."
+              "description": "Main image for the item"
             },
             {
               "value": "PT01",
-              "description": "Other image #1 for the item."
+              "description": "Other image #1 for the item"
             },
             {
               "value": "PT02",
-              "description": "Other image #2 for the item."
+              "description": "Other image #2 for the item"
             },
             {
               "value": "PT03",
-              "description": "Other image #3 for the item."
+              "description": "Other image #3 for the item"
             },
             {
               "value": "PT04",
-              "description": "Other image #4 for the item."
+              "description": "Other image #4 for the item"
             },
             {
               "value": "PT05",
-              "description": "Other image #5 for the item."
+              "description": "Other image #5 for the item"
             },
             {
               "value": "PT06",
-              "description": "Other image #6 for the item."
+              "description": "Other image #6 for the item"
             },
             {
               "value": "PT07",
-              "description": "Other image #7 for the item."
+              "description": "Other image #7 for the item"
             },
             {
               "value": "PT08",
-              "description": "Other image #8 for the item."
+              "description": "Other image #8 for the item"
             },
             {
               "value": "SWCH",
-              "description": "Swatch image for the item."
+              "description": "Swatch image for the item"
             }
           ]
         },
         "link": {
-          "description": "Link, or URL, for the image.",
+          "description": "URL for the image.",
           "type": "string"
         },
         "height": {
@@ -4384,21 +3517,21 @@
       "type": "object"
     },
     "ItemProductTypes": {
-      "description": "Product types associated with the Amazon catalog item.",
+      "description": "Product types that are associated with the Amazon catalog item.",
       "items": {
         "$ref": "#/definitions/ItemProductTypeByMarketplace"
       },
       "type": "array"
     },
     "ItemProductTypeByMarketplace": {
-      "description": "Product type associated with the Amazon catalog item for the indicated Amazon marketplace.",
+      "description": "Product type that is associated with the Amazon catalog item, grouped by `marketplaceId`.",
       "properties": {
         "marketplaceId": {
-          "description": "Amazon marketplace identifier.",
+          "description": "Amazon marketplace identifier. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
           "type": "string"
         },
         "productType": {
-          "description": "Name of the product type associated with the Amazon catalog item.",
+          "description": "Name of the product type that is associated with the Amazon catalog item.",
           "example": "LUGGAGE",
           "type": "string"
         }
@@ -4413,21 +3546,21 @@
       "type": "array"
     },
     "ItemSalesRanksByMarketplace": {
-      "description": "Sales ranks of an Amazon catalog item for the indicated Amazon marketplace.",
+      "description": "Sales ranks of an Amazon catalog item, grouped by `marketplaceId`.",
       "properties": {
         "marketplaceId": {
-          "description": "Amazon marketplace identifier.",
+          "description": "Amazon marketplace identifier. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
           "type": "string"
         },
         "classificationRanks": {
-          "description": "Sales ranks of an Amazon catalog item for an Amazon marketplace by classification.",
+          "description": "Sales ranks of an Amazon catalog item for a `marketplaceId`, grouped by classification.",
           "items": {
             "$ref": "#/definitions/ItemClassificationSalesRank"
           },
           "type": "array"
         },
         "displayGroupRanks": {
-          "description": "Sales ranks of an Amazon catalog item for an Amazon marketplace by website display group.",
+          "description": "Sales ranks of an Amazon catalog item for a `marketplaceId`, grouped by website display group.",
           "items": {
             "$ref": "#/definitions/ItemDisplayGroupSalesRank"
           },
@@ -4440,22 +3573,22 @@
       "type": "object"
     },
     "ItemClassificationSalesRank": {
-      "description": "Sales rank of an Amazon catalog item by classification.",
+      "description": "Sales rank of an Amazon catalog item.",
       "properties": {
         "classificationId": {
-          "description": "Identifier of the classification associated with the sales rank.",
+          "description": "Identifier of the classification that is associated with the sales rank.",
           "type": "string"
         },
         "title": {
-          "description": "Title, or name, of the sales rank.",
+          "description": "Name of the sales rank.",
           "type": "string"
         },
         "link": {
-          "description": "Corresponding Amazon retail website link, or URL, for the sales rank.",
+          "description": "Corresponding Amazon retail website URL for the sales category.",
           "type": "string"
         },
         "rank": {
-          "description": "Sales rank value.",
+          "description": "Sales rank.",
           "type": "integer"
         }
       },
@@ -4467,22 +3600,22 @@
       "type": "object"
     },
     "ItemDisplayGroupSalesRank": {
-      "description": "Sales rank of an Amazon catalog item by website display group.",
+      "description": "Sales rank of an Amazon catalog item, grouped by website display group.",
       "properties": {
         "websiteDisplayGroup": {
-          "description": "Name of the website display group associated with the sales rank",
+          "description": "Name of the website display group that is associated with the sales rank",
           "type": "string"
         },
         "title": {
-          "description": "Title, or name, of the sales rank.",
+          "description": "Name of the sales rank.",
           "type": "string"
         },
         "link": {
-          "description": "Corresponding Amazon retail website link, or URL, for the sales rank.",
+          "description": "Corresponding Amazon retail website URL for the sales rank.",
           "type": "string"
         },
         "rank": {
-          "description": "Sales rank value.",
+          "description": "Sales rank.",
           "type": "integer"
         }
       },
@@ -4494,33 +3627,48 @@
       "type": "object"
     },
     "ItemSummaries": {
-      "description": "Summary details of an Amazon catalog item.",
+      "description": "Summaries of Amazon catalog items.",
       "items": {
         "$ref": "#/definitions/ItemSummaryByMarketplace"
       },
       "type": "array"
     },
     "ItemSummaryByMarketplace": {
-      "description": "Summary details of an Amazon catalog item for the indicated Amazon marketplace.",
+      "description": "Information about an Amazon catalog item for the indicated `marketplaceId`.",
       "properties": {
         "marketplaceId": {
-          "description": "Amazon marketplace identifier.",
+          "description": "Amazon marketplace identifier. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
           "type": "string"
         },
+        "adultProduct": {
+          "description": "When `true`, the Amazon catalog item is intended for an adult audience or is sexual in nature.",
+          "type": "boolean"
+        },
+        "autographed": {
+          "description": "When `true`, the Amazon catalog item is autographed.",
+          "type": "boolean"
+        },
         "brand": {
-          "description": "Name of the brand associated with an Amazon catalog item.",
+          "description": "Name of the brand that is associated with the Amazon catalog item.",
           "type": "string"
         },
         "browseClassification": {
-          "description": "Classification (browse node) associated with an Amazon catalog item.",
+          "description": "Classification (browse node) that is associated with the Amazon catalog item.",
           "$ref": "#/definitions/ItemBrowseClassification"
         },
         "color": {
-          "description": "Name of the color associated with an Amazon catalog item.",
+          "description": "The color that is associated with the Amazon catalog item.",
           "type": "string"
         },
+        "contributors": {
+          "description": "Individual contributors to the creation of the item, such as the authors or actors.",
+          "items": {
+            "$ref": "#/definitions/ItemContributor"
+          },
+          "type": "array"
+        },
         "itemClassification": {
-          "description": "Classification type associated with the Amazon catalog item.",
+          "description": "Classification type that is associated with the Amazon catalog item.",
           "enum": [
             "BASE_PRODUCT",
             "OTHER",
@@ -4530,53 +3678,70 @@
           "x-docgen-enum-table-extension": [
             {
               "value": "BASE_PRODUCT",
-              "description": "Represents a standard standalone or a variation child item in the Amazon catalog."
+              "description": "A product that can be directly purchased. Can be a standalone ASIN or a variation child item in the Amazon catalog."
             },
             {
               "value": "OTHER",
-              "description": "Represents an item in the Amazon catalog that is not `BASE_PRODUCT`, `PRODUCT_BUNDLE`, or `VARIATION_PARENT`."
+              "description": "An item in the Amazon catalog that is not `BASE_PRODUCT`, `PRODUCT_BUNDLE`, or `VARIATION_PARENT`."
             },
             {
               "value": "PRODUCT_BUNDLE",
-              "description": "Represents a parent Amazon catalog item representing a bundle of items."
+              "description": "A parent catalog item that represents a bundle of items."
             },
             {
               "value": "VARIATION_PARENT",
-              "description": "Represents a parent Amazon catalog item grouping child items into a variation family."
+              "description": "A parent catalog item that groups child items into a variation family."
             }
           ],
           "type": "string"
         },
         "itemName": {
-          "description": "Name, or title, associated with an Amazon catalog item.",
+          "description": "The name that is associated with the Amazon catalog item.",
           "type": "string"
         },
         "manufacturer": {
-          "description": "Name of the manufacturer associated with an Amazon catalog item.",
+          "description": "The name of the manufacturer that is associated with the Amazon catalog item.",
           "type": "string"
         },
+        "memorabilia": {
+          "description": "When true, the item is classified as memorabilia.",
+          "type": "boolean"
+        },
         "modelNumber": {
-          "description": "Model number associated with an Amazon catalog item.",
+          "description": "The model number that is associated with the Amazon catalog item.",
           "type": "string"
         },
         "packageQuantity": {
-          "description": "Quantity of an Amazon catalog item in one package.",
+          "description": "The quantity of the Amazon catalog item within one package.",
           "type": "integer"
         },
         "partNumber": {
-          "description": "Part number associated with an Amazon catalog item.",
+          "description": "The part number that is associated with the Amazon catalog item.",
+          "type": "string"
+        },
+        "releaseDate": {
+          "description": "The earliest date on which the Amazon catalog item can be shipped to customers.",
+          "format": "date",
           "type": "string"
         },
         "size": {
-          "description": "Name of the size associated with an Amazon catalog item.",
+          "description": "The name of the size of the Amazon catalog item.",
           "type": "string"
         },
         "style": {
-          "description": "Name of the style associated with an Amazon catalog item.",
+          "description": "The name of the style that is associated with the Amazon catalog item.",
           "type": "string"
         },
+        "tradeInEligible": {
+          "description": "When true, the Amazon catalog item is eligible for trade-in.",
+          "type": "boolean"
+        },
         "websiteDisplayGroup": {
-          "description": "Name of the website display group associated with an Amazon catalog item.",
+          "description": "The identifier of the website display group that is associated with the Amazon catalog item.",
+          "type": "string"
+        },
+        "websiteDisplayGroupName": {
+          "description": "The display name of the website display group that is associated with the Amazon catalog item.",
           "type": "string"
         }
       },
@@ -4586,17 +3751,17 @@
       "type": "object"
     },
     "ItemVariationTheme": {
-      "description": "Variation theme indicating the combination of Amazon item catalog attributes that define the variation family.",
+      "description": "The variation theme is a list of Amazon catalog item attributes that define the variation family.",
       "properties": {
         "attributes": {
-          "description": "Names of the Amazon catalog item attributes associated with the variation theme.",
+          "description": "Names of the Amazon catalog item attributes that are associated with the variation theme.",
           "items": {
             "type": "string"
           },
           "type": "array"
         },
         "theme": {
-          "description": "Variation theme indicating the combination of Amazon item catalog attributes that define the variation family.",
+          "description": "Variation theme that indicates the combination of Amazon catalog item attributes that define the variation family.",
           "example": "COLOR_NAME/STYLE_NAME",
           "type": "string"
         }
@@ -4604,17 +3769,17 @@
       "type": "object"
     },
     "ItemRelationships": {
-      "description": "Relationships by marketplace for an Amazon catalog item (for example, variations).",
+      "description": "Relationships grouped by `marketplaceId` for an Amazon catalog item (for example, variations).",
       "items": {
         "$ref": "#/definitions/ItemRelationshipsByMarketplace"
       },
       "type": "array"
     },
     "ItemRelationshipsByMarketplace": {
-      "description": "Relationship details for the Amazon catalog item for the indicated Amazon marketplace.",
+      "description": "Relationship details for the Amazon catalog item for the specified Amazon `marketplaceId`.",
       "properties": {
         "marketplaceId": {
-          "description": "Amazon marketplace identifier.",
+          "description": "Amazon marketplace identifier. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
           "type": "string"
         },
         "relationships": {
@@ -4635,21 +3800,21 @@
       "description": "Relationship details for an Amazon catalog item.",
       "properties": {
         "childAsins": {
-          "description": "Identifiers (ASINs) of the related items that are children of this item.",
+          "description": "ASINs of the related items that are children of this item.",
           "items": {
             "type": "string"
           },
           "type": "array"
         },
         "parentAsins": {
-          "description": "Identifiers (ASINs) of the related items that are parents of this item.",
+          "description": "ASINs of the related items that are parents of this item.",
           "items": {
             "type": "string"
           },
           "type": "array"
         },
         "variationTheme": {
-          "description": "For \"VARIATION\" relationships, variation theme indicating the combination of Amazon item catalog attributes that define the variation family.",
+          "description": "For `VARIATION` relationships, the variation theme indicates the combination of Amazon catalog item attributes that define the variation family.",
           "$ref": "#/definitions/ItemVariationTheme"
         },
         "type": {
@@ -4662,11 +3827,11 @@
           "x-docgen-enum-table-extension": [
             {
               "value": "VARIATION",
-              "description": "The Amazon catalog item in the request is a variation parent or variation child of the related item(s) indicated by ASIN."
+              "description": "The Amazon catalog item in the request is a variation parent or variation child of the related items that are identified by ASIN."
             },
             {
               "value": "PACKAGE_HIERARCHY",
-              "description": "The Amazon catalog item in the request is a package container or is contained by the related item(s) indicated by ASIN."
+              "description": "The Amazon catalog item in the request is a package container or is contained by the related items that are identified by ASIN."
             }
           ],
           "type": "string"
@@ -4678,59 +3843,59 @@
       "type": "object"
     },
     "ItemVendorDetailsCategory": {
-      "description": "Product category or subcategory associated with an Amazon catalog item.",
+      "description": "The product category or subcategory that is associated with an Amazon catalog item.",
       "properties": {
         "displayName": {
-          "description": "Display name of the product category or subcategory",
+          "description": "The display name of the product category or subcategory.",
           "type": "string"
         },
         "value": {
-          "description": "Value (code) of the product category or subcategory.",
+          "description": "The code that identifies the product category or subcategory.",
           "type": "string"
         }
       },
       "type": "object"
     },
     "ItemVendorDetails": {
-      "description": "Vendor details associated with an Amazon catalog item. Vendor details are available to vendors only.",
+      "description": "The vendor details that are associated with an Amazon catalog item. Vendor details are only available to vendors.",
       "items": {
         "$ref": "#/definitions/ItemVendorDetailsByMarketplace"
       },
       "type": "array"
     },
     "ItemVendorDetailsByMarketplace": {
-      "description": "Vendor details associated with an Amazon catalog item for the indicated Amazon marketplace.",
+      "description": "The vendor details that are associated with an Amazon catalog item for the specified `marketplaceId`.",
       "properties": {
         "marketplaceId": {
-          "description": "Amazon marketplace identifier.",
+          "description": "Amazon marketplace identifier. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
           "type": "string"
         },
         "brandCode": {
-          "description": "Brand code associated with an Amazon catalog item.",
+          "description": "The brand code that is associated with an Amazon catalog item.",
           "type": "string"
         },
         "manufacturerCode": {
-          "description": "Manufacturer code associated with an Amazon catalog item.",
+          "description": "The manufacturer code that is associated with an Amazon catalog item.",
           "type": "string"
         },
         "manufacturerCodeParent": {
-          "description": "Parent vendor code of the manufacturer code.",
+          "description": "The parent vendor code of the manufacturer code.",
           "type": "string"
         },
         "productCategory": {
-          "description": "Product category associated with an Amazon catalog item.",
+          "description": "The product category that is associated with an Amazon catalog item.",
           "$ref": "#/definitions/ItemVendorDetailsCategory"
         },
         "productGroup": {
-          "description": "Product group associated with an Amazon catalog item.",
+          "description": "The product group that is associated with an Amazon catalog item.",
           "type": "string"
         },
         "productSubcategory": {
-          "description": "Product subcategory associated with an Amazon catalog item.",
+          "description": "The product subcategory that is associated with an Amazon catalog item.",
           "$ref": "#/definitions/ItemVendorDetailsCategory"
         },
         "replenishmentCategory": {
-          "description": "Replenishment category associated with an Amazon catalog item.",
+          "description": "The replenishment category that is associated with an Amazon catalog item.",
           "enum": [
             "ALLOCATED",
             "BASIC_REPLENISHMENT",
@@ -4746,27 +3911,27 @@
           "x-docgen-enum-table-extension": [
             {
               "value": "ALLOCATED",
-              "description": "Indicates non-automated purchasing of inventory that has been allocated to Amazon by the vendor."
+              "description": "The vendor allocates the inventory to Amazon and Amazon manually purchases it."
             },
             {
               "value": "BASIC_REPLENISHMENT",
-              "description": "Indicates non-automated purchasing of inventory."
+              "description": "Inventory is manually purchased."
             },
             {
               "value": "IN_SEASON",
-              "description": "Indicates non-automated purchasing of inventory for seasonal items."
+              "description": "Seasonal item that is manually purchased."
             },
             {
               "value": "LIMITED_REPLENISHMENT",
-              "description": "Holding queue replenishment status before an item is `NEW_PRODUCT`."
+              "description": "Amazon generates orders for this item automatically based on unfilled demand."
             },
             {
               "value": "MANUFACTURER_OUT_OF_STOCK",
-              "description": "Indicates vendor is out of stock for a longer period of time and cannot backorder."
+              "description": "The vendor is out of stock for an extended period of time and cannot backorder."
             },
             {
               "value": "NEW_PRODUCT",
-              "description": "Indicates a new item that Amazon does not yet stock in inventory."
+              "description": "Amazon does not yet stock this item."
             },
             {
               "value": "NON_REPLENISHABLE",
@@ -4774,15 +3939,15 @@
             },
             {
               "value": "NON_STOCKUPABLE",
-              "description": "Indicates drop ship inventory that Amazon does not stock in its fulfillment centers."
+              "description": "Drop ship inventory that Amazon does not stock in its fulfillment centers."
             },
             {
               "value": "OBSOLETE",
-              "description": "Indicates item is obsolete and should not be ordered."
+              "description": "The item is obsolete and should not be ordered."
             },
             {
               "value": "PLANNED_REPLENISHMENT",
-              "description": "Indicates active items that should be automatically ordered."
+              "description": "Active items that should be automatically ordered."
             }
           ],
           "type": "string"
@@ -4794,18 +3959,18 @@
       "type": "object"
     },
     "ItemSearchResults": {
-      "description": "Items in the Amazon catalog and search related metadata.",
+      "description": "Items in the Amazon catalog and search-related metadata.",
       "properties": {
         "numberOfResults": {
-          "description": "For `identifiers`-based searches, the total number of Amazon catalog items found. For `keywords`-based searches, the estimated total number of Amazon catalog items matched by the search query (only results up to the page count limit will be returned per request regardless of the number found).\n\nNote: The maximum number of items (ASINs) that can be returned and paged through is 1000.",
+          "description": "For searches that are based on `identifiers`, `numberOfResults` is the total number of Amazon catalog items found. For searches that are based on `keywords`, `numberOfResults` is the estimated total number of Amazon catalog items that are matched by the search query. Only results up to the page count limit are returned per request regardless of the number found.\n\n**Note:** The maximum number of items (ASINs) that can be returned and paged through is 1,000.",
           "type": "integer"
         },
         "pagination": {
-          "description": "If available, the `nextToken` and/or `previousToken` values required to return paginated results.",
+          "description": "The `nextToken` and `previousToken` values that are required to retrieve paginated results.",
           "$ref": "#/definitions/Pagination"
         },
         "refinements": {
-          "description": "Search refinements for `keywords`-based searches.",
+          "description": "Search refinements for searches that are based on `keywords`.",
           "$ref": "#/definitions/Refinements"
         },
         "items": {
@@ -4825,31 +3990,31 @@
       "type": "object"
     },
     "Pagination": {
-      "description": "When a request produces a response that exceeds the `pageSize`, pagination occurs. This means the response is divided into individual pages. To retrieve the next page or the previous page, you must pass the `nextToken` value or the `previousToken` value as the `pageToken` parameter in the next request. When you receive the last page, there will be no `nextToken` key in the pagination object.",
+      "description": "Pagination occurs when a request produces a response that exceeds the `pageSize`. This means that the response is divided into individual pages. To retrieve the next page or the previous page of results, you must pass the `nextToken` value or the `previousToken` value as the `pageToken` parameter in the next request. There is no `nextToken` in the pagination object on the last page.",
       "properties": {
         "nextToken": {
-          "description": "A token that can be used to fetch the next page.",
+          "description": "A token that you can use to retrieve the next page.",
           "type": "string"
         },
         "previousToken": {
-          "description": "A token that can be used to fetch the previous page.",
+          "description": "A token that you can use to retrieve the previous page.",
           "type": "string"
         }
       },
       "type": "object"
     },
     "Refinements": {
-      "description": "Search refinements.",
+      "description": "Optional fields that you can use to refine your search results.",
       "properties": {
         "brands": {
-          "description": "Brand search refinements.",
+          "description": "A list of brands you can use to refine your search.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/BrandRefinement"
           }
         },
         "classifications": {
-          "description": "Classification search refinements.",
+          "description": "A list of classifications you can use to refine your search.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/ClassificationRefinement"
@@ -4863,14 +4028,14 @@
       "type": "object"
     },
     "BrandRefinement": {
-      "description": "Description of a brand that can be used to get more fine-grained search results.",
+      "description": "A brand that you can use to refine your search.",
       "properties": {
         "numberOfResults": {
-          "description": "The estimated number of results that would still be returned if refinement key applied.",
+          "description": "The estimated number of results that would be returned if you refine your search by the specified `brandName`.",
           "type": "integer"
         },
         "brandName": {
-          "description": "Brand name. For display and can be used as a search refinement.",
+          "description": "The brand name that you can use to refine your search.",
           "type": "string"
         }
       },
@@ -4881,10 +4046,10 @@
       "type": "object"
     },
     "ClassificationRefinement": {
-      "description": "Description of a classification that can be used to get more fine-grained search results.",
+      "description": "A classification that you can use to refine your search.",
       "properties": {
         "numberOfResults": {
-          "description": "The estimated number of results that would still be returned if refinement key applied.",
+          "description": "The estimated number of results that would be returned if you refine your search by the specified `classificationId`.",
           "type": "integer"
         },
         "displayName": {
@@ -4892,7 +4057,7 @@
           "type": "string"
         },
         "classificationId": {
-          "description": "Identifier for the classification that can be used for search refinement purposes.",
+          "description": "The identifier of the classification that you can use to refine your search.",
           "type": "string"
         }
       },

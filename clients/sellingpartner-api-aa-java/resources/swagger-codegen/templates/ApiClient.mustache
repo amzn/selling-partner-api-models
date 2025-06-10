@@ -2,10 +2,10 @@
 
 package {{invokerPackage}};
 
-import com.squareup.okhttp.*;
-import com.squareup.okhttp.internal.http.HttpMethod;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor.Level;
+import okhttp3.*;
+import okhttp3.internal.http.HttpMethod;
+import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor.Level;
 import okio.BufferedSink;
 import okio.Okio;
 {{#joda}}
@@ -29,11 +29,6 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.security.SecureRandom;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 {{#java8}}
 import java.time.LocalDate;
@@ -51,10 +46,10 @@ import {{invokerPackage}}.auth.HttpBasicAuth;
 import {{invokerPackage}}.auth.ApiKeyAuth;
 import {{invokerPackage}}.auth.OAuth;
 
-import com.amazon.SellingPartnerAPIAA.AWSSigV4Signer;
 import com.amazon.SellingPartnerAPIAA.LWAAuthorizationSigner;
 import com.google.common.util.concurrent.RateLimiter;
 import com.amazon.SellingPartnerAPIAA.RateLimitConfiguration;
+import com.amazon.SellingPartnerAPIAA.LWAException;
 
 public class ApiClient {
 
@@ -71,7 +66,6 @@ public class ApiClient {
     private int dateLength;
 
     private InputStream sslCaCert;
-    private boolean verifyingSsl;
     private KeyManager[] keyManagers;
 
     private OkHttpClient httpClient;
@@ -80,7 +74,6 @@ public class ApiClient {
     private HttpLoggingInterceptor loggingInterceptor;
 
     private LWAAuthorizationSigner lwaAuthorizationSigner;
-    private AWSSigV4Signer awsSigV4Signer;
     private RateLimiter rateLimiter;
     private RateLimitConfiguration rateLimitConfiguration;
 
@@ -94,8 +87,6 @@ public class ApiClient {
         // Enable gzip request compression
         httpClient.interceptors().add(new GzipRequestInterceptor());
         {{/useGzipFeature}}
-
-        verifyingSsl = true;
 
         json = new JSON();
 
@@ -168,68 +159,6 @@ public class ApiClient {
      */
     public ApiClient setJSON(JSON json) {
         this.json = json;
-        return this;
-    }
-
-    /**
-     * True if isVerifyingSsl flag is on
-     *
-     * @return True if isVerifySsl flag is on
-     */
-    public boolean isVerifyingSsl() {
-        return verifyingSsl;
-    }
-
-    /**
-     * Configure whether to verify certificate and hostname when making https requests.
-     * Default to true.
-     * NOTE: Do NOT set to false in production code, otherwise you would face multiple types of cryptographic attacks.
-     *
-     * @param verifyingSsl True to verify TLS/SSL connection
-     * @return ApiClient
-     */
-    public ApiClient setVerifyingSsl(boolean verifyingSsl) {
-        this.verifyingSsl = verifyingSsl;
-        applySslSettings();
-        return this;
-    }
-
-    /**
-     * Get SSL CA cert.
-     *
-     * @return Input stream to the SSL CA cert
-     */
-    public InputStream getSslCaCert() {
-        return sslCaCert;
-    }
-
-    /**
-     * Configure the CA certificate to be trusted when making https requests.
-     * Use null to reset to default.
-     *
-     * @param sslCaCert input stream for SSL CA cert
-     * @return ApiClient
-     */
-    public ApiClient setSslCaCert(InputStream sslCaCert) {
-        this.sslCaCert = sslCaCert;
-        applySslSettings();
-        return this;
-    }
-
-    public KeyManager[] getKeyManagers() {
-        return keyManagers;
-    }
-
-    /**
-     * Configure client keys to use for authorization in an SSL session.
-     * Use null to reset to default.
-     *
-     * @param managers The KeyManagers to use
-     * @return ApiClient
-     */
-    public ApiClient setKeyManagers(KeyManager[] managers) {
-        this.keyManagers = managers;
-        applySslSettings();
         return this;
     }
 
@@ -452,20 +381,7 @@ public class ApiClient {
      * @return Timeout in milliseconds
      */
     public int getConnectTimeout() {
-        return httpClient.getConnectTimeout();
-    }
-
-    /**
-     * Sets the connect timeout (in milliseconds).
-     * A value of 0 means no timeout, otherwise values must be between 1 and
-     * {@link Integer#MAX_VALUE}.
-     *
-     * @param connectionTimeout connection timeout in milliseconds
-     * @return Api client
-     */
-    public ApiClient setConnectTimeout(int connectionTimeout) {
-        httpClient.setConnectTimeout(connectionTimeout, TimeUnit.MILLISECONDS);
-        return this;
+        return httpClient.connectTimeoutMillis();
     }
 
     /**
@@ -474,20 +390,7 @@ public class ApiClient {
      * @return Timeout in milliseconds
      */
     public int getReadTimeout() {
-        return httpClient.getReadTimeout();
-    }
-
-    /**
-     * Sets the read timeout (in milliseconds).
-     * A value of 0 means no timeout, otherwise values must be between 1 and
-     * {@link Integer#MAX_VALUE}.
-     *
-     * @param readTimeout read timeout in milliseconds
-     * @return Api client
-     */
-    public ApiClient setReadTimeout(int readTimeout) {
-        httpClient.setReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
-        return this;
+        return httpClient.readTimeoutMillis();
     }
 
     /**
@@ -496,20 +399,7 @@ public class ApiClient {
      * @return Timeout in milliseconds
      */
     public int getWriteTimeout() {
-        return httpClient.getWriteTimeout();
-    }
-
-    /**
-     * Sets the write timeout (in milliseconds).
-     * A value of 0 means no timeout, otherwise values must be between 1 and
-     * {@link Integer#MAX_VALUE}.
-     *
-     * @param writeTimeout connection timeout in milliseconds
-     * @return Api client
-     */
-    public ApiClient setWriteTimeout(int writeTimeout) {
-        httpClient.setWriteTimeout(writeTimeout, TimeUnit.MILLISECONDS);
-        return this;
+        return httpClient.writeTimeoutMillis();
     }
 
     /**
@@ -522,17 +412,6 @@ public class ApiClient {
         this.lwaAuthorizationSigner = lwaAuthorizationSigner;
         return this;
     }
-
-    /**
-     * Sets the AWSSigV4Signer
-     *
-     * @param awsSigV4Signer AWSSigV4Signer instance
-     * @return Api client
-     */
-     public ApiClient setAWSSigV4Signer(AWSSigV4Signer awsSigV4Signer) {
-          this.awsSigV4Signer = awsSigV4Signer;
-          return this;
-     }
      
     /**
      * Sets the RateLimiter
@@ -940,15 +819,15 @@ public class ApiClient {
     public <T> void executeAsync(Call call, final Type returnType, final ApiCallback<T> callback) {
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 callback.onFailure(new ApiException(e), 0, null);
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) {
                 T result;
                 try {
-                    result = (T) handleResponse(response, returnType);
+                    result = handleResponse(response, returnType);
                 } catch (ApiException e) {
                     callback.onFailure(e, response.code(), response.headers().toMultimap());
                     return;
@@ -976,7 +855,7 @@ public class ApiClient {
                 if (response.body() != null) {
                     try {
                         response.body().close();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         throw new ApiException(response.message(), e, response.code(), response.headers().toMultimap());
                     }
                 }
@@ -1011,8 +890,9 @@ public class ApiClient {
      * @param progressRequestListener Progress request listener
      * @return The HTTP call
      * @throws ApiException If fail to serialize the request body object
+     * @throws LWAException If calls to fetch LWA access token fails
      */
-    public Call buildCall(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call buildCall(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException, LWAException {
         Request request = buildRequest(path, method, queryParams, collectionQueryParams, body, headerParams, formParams, authNames, progressRequestListener);
 
         return httpClient.newCall(request);
@@ -1032,8 +912,9 @@ public class ApiClient {
      * @param progressRequestListener Progress request listener
      * @return The HTTP request 
      * @throws ApiException If fail to serialize the request body object
+     * @throws LWAException If calls to fetch LWA access token fails
      */
-    public Request buildRequest(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Request buildRequest(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException, LWAException {
         updateParamsForAuth(authNames, queryParams, headerParams);
 
         final String url = buildUrl(path, queryParams, collectionQueryParams);
@@ -1075,7 +956,6 @@ public class ApiClient {
         }
 
         request = lwaAuthorizationSigner.sign(request);
-        request = awsSigV4Signer.sign(request);
 
         return request;
     }
@@ -1168,7 +1048,7 @@ public class ApiClient {
      * @return RequestBody
      */
     public RequestBody buildRequestBodyFormEncoding(Map<String, Object> formParams) {
-        FormEncodingBuilder formBuilder  = new FormEncodingBuilder();
+        FormBody.Builder formBuilder = new FormBody.Builder();
         for (Entry<String, Object> param : formParams.entrySet()) {
             formBuilder.add(param.getKey(), parameterToString(param.getValue()));
         }
@@ -1183,7 +1063,7 @@ public class ApiClient {
      * @return RequestBody
      */
     public RequestBody buildRequestBodyMultipart(Map<String, Object> formParams) {
-        MultipartBuilder mpBuilder = new MultipartBuilder().type(MultipartBuilder.FORM);
+        MultipartBody.Builder mpBuilder = new MultipartBody.Builder();
         for (Entry<String, Object> param : formParams.entrySet()) {
             if (param.getValue() instanceof File) {
                 File file = (File) param.getValue();
@@ -1210,60 +1090,6 @@ public class ApiClient {
             return "application/octet-stream";
         } else {
             return contentType;
-        }
-    }
-
-    /**
-     * Apply SSL related settings to httpClient according to the current values of
-     * verifyingSsl and sslCaCert.
-     */
-    private void applySslSettings() {
-        try {
-            TrustManager[] trustManagers = null;
-            HostnameVerifier hostnameVerifier = null;
-            if (!verifyingSsl) {
-                TrustManager trustAll = new X509TrustManager() {
-                    @Override
-                    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
-                    @Override
-                    public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
-                    @Override
-                    public X509Certificate[] getAcceptedIssuers() { return null; }
-                };
-                SSLContext sslContext = SSLContext.getInstance("TLS");
-                trustManagers = new TrustManager[]{ trustAll };
-                hostnameVerifier = new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String hostname, SSLSession session) { return true; }
-                };
-            } else if (sslCaCert != null) {
-                char[] password = null; // Any password will work.
-                CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-                Collection<? extends Certificate> certificates = certificateFactory.generateCertificates(sslCaCert);
-                if (certificates.isEmpty()) {
-                    throw new IllegalArgumentException("expected non-empty set of trusted certificates");
-                }
-                KeyStore caKeyStore = newEmptyKeyStore(password);
-                int index = 0;
-                for (Certificate certificate : certificates) {
-                    String certificateAlias = "ca" + Integer.toString(index++);
-                    caKeyStore.setCertificateEntry(certificateAlias, certificate);
-                }
-                TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-                trustManagerFactory.init(caKeyStore);
-                trustManagers = trustManagerFactory.getTrustManagers();
-            }
-
-            if (keyManagers != null || trustManagers != null) {
-                SSLContext sslContext = SSLContext.getInstance("TLS");
-                sslContext.init(keyManagers, trustManagers, new SecureRandom());
-                httpClient.setSslSocketFactory(sslContext.getSocketFactory());
-            } else {
-                httpClient.setSslSocketFactory(null);
-            }
-            httpClient.setHostnameVerifier(hostnameVerifier);
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
         }
     }
 

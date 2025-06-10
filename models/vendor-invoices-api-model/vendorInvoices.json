@@ -29,7 +29,7 @@
         "tags": [
           "vendorPayments"
         ],
-        "description": "Submit new invoices to Amazon.\n\n**Usage Plans:**\n\n| Plan type | Rate (requests per second) | Burst |\n| ---- | ---- | ---- |\n|Default| 10 | 10 |\n|Selling partner specific| Variable | Variable |\n\nThe x-amzn-RateLimit-Limit response header returns the usage plan rate limits that were applied to the requested operation. Rate limits for some selling partners will vary from the default rate and burst shown in the table above. For more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation.",
+        "description": "Submit new invoices to Amazon.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 10 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "submitInvoices",
         "parameters": [
           {
@@ -48,12 +48,12 @@
                       "remitToParty": {
                         "partyId": "XYZ12345",
                         "address": {
-                          "name": "XYZ INDIA PRIVATE LIMITED",
-                          "addressLine1": "4TH FLOOR",
-                          "city": "GURUGRAM",
-                          "stateOrRegion": "HR",
-                          "postalOrZipCode": "122002",
-                          "countryCode": "IN"
+                          "name": "ANYCOMPANY MANUFACTURING",
+                          "addressLine1": "123 ANY STREET",
+                          "city": "ANYTOWN",
+                          "stateOrRegion": "AZ",
+                          "postalOrZipCode": "12345",
+                          "countryCode": "USA"
                         },
                         "taxRegistrationDetails": [
                           {
@@ -63,41 +63,41 @@
                         ]
                       },
                       "shipToParty": {
-                        "partyId": "AMAZONIN",
+                        "partyId": "XYZ12345",
                         "address": {
-                          "name": "AMAZON INDIA",
-                          "addressLine1": "Chowranghee Mansion JN Road",
-                          "city": "Kolkata",
-                          "stateOrRegion": "WB",
-                          "countryCode": "IN"
+                          "name": "ANYCOMPANY MANUFACTURING",
+                          "addressLine1": "123 ANY STREET",
+                          "city": "ANYTOWN",
+                          "stateOrRegion": "AZ",
+                          "countryCode": "USA"
                         }
                       },
                       "shipFromParty": {
                         "partyId": "XYZ12345",
                         "address": {
-                          "name": "XYZ RETAIL PVT LTD",
-                          "addressLine1": "Chowranghee Mansion JN Road",
-                          "city": "Kolkata",
-                          "stateOrRegion": "WB",
-                          "postalOrZipCode": "700016",
-                          "countryCode": "IN"
+                          "name": "ANYCOMPANY MANUFACTURING",
+                          "addressLine1": "123 ANY STREET",
+                          "city": "ANYTOWN",
+                          "stateOrRegion": "AZ",
+                          "postalOrZipCode": "12345",
+                          "countryCode": "USA"
                         }
                       },
                       "billToParty": {
-                        "partyId": "AMAZONIN",
+                        "partyId": "XYZ12345",
                         "address": {
-                          "name": "AMAZON INDIA",
-                          "addressLine1": "Arrjaw Industrial & Warehouse Park",
-                          "addressLine2": "Near Coal India Complex",
-                          "city": "Hooghly",
-                          "stateOrRegion": "WB",
-                          "postalOrZipCode": "712310",
-                          "countryCode": "IN"
+                          "name": "ANYCOMPANY MANUFACTURING",
+                          "addressLine1": "123 ANY STREET",
+                          "addressLine2": "",
+                          "city": "ANYTOWN",
+                          "stateOrRegion": "AZ",
+                          "postalOrZipCode": "12345",
+                          "countryCode": "USA"
                         },
                         "taxRegistrationDetails": [
                           {
                             "taxRegistrationType": "VAT",
-                            "taxRegistrationNumber": "AMAZONVATID"
+                            "taxRegistrationNumber": "AMAZONVATNUMBER"
                           }
                         ]
                       },
@@ -280,7 +280,8 @@
                   ]
                 }
               }
-            }
+            },
+            "description": "The request body containing the invoice data to submit."
           }
         ],
         "responses": {
@@ -303,7 +304,7 @@
               },
               "x-amzn-RequestId": {
                 "type": "string",
-                "description": "Unique request reference identifier. "
+                "description": "Unique request reference identifier."
               }
             },
             "x-amzn-api-sandbox": {
@@ -318,18 +319,18 @@
                               "id": "TestInvoice202",
                               "date": "2020-06-08T12:00:00.000Z",
                               "billToParty": {
-                              "partyId": "TES1"
-                            },
-                            "invoiceType": "Invoice",
-                            "remitToParty": {
-                              "partyId": "ABCDE"
-                            },
-                            "invoiceTotal": {
-                              "amount": "112.05",
-                              "currencyCode": "USD"
+                                "partyId": "TES1"
+                              },
+                              "invoiceType": "Invoice",
+                              "remitToParty": {
+                                "partyId": "ABCDE"
+                              },
+                              "invoiceTotal": {
+                                "amount": "112.05",
+                                "currencyCode": "USD"
+                              }
                             }
-                          }
-                        ]
+                          ]
                         }
                       }
                     }
@@ -370,24 +371,24 @@
                               "invoiceType": "Invoic"
                             }
                           ]
+                        }
                       }
                     }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Value 'Invoic' is not valid with respect to enumeration '[CreditNote, Invoice]'. It must be a value from the enumeration.",
+                        "details": ""
+                      },
+                      {
+                        "code": "InvalidInput",
+                        "message": "The value 'Invoic' of element 'invoiceType' is not valid.",
+                        "details": ""
+                      }
+                    ]
                   }
-                },
-                "response": {
-                  "errors": [
-                    {
-                      "code": "InvalidInput",
-                      "message": "Value 'Invoic' is not valid with respect to enumeration '[CreditNote, Invoice]'. It must be a value from the enumeration.",
-                      "details": ""
-                    },
-                    {
-                      "code": "InvalidInput",
-                      "message": "The value 'Invoic' of element 'invoiceType' is not valid.",
-                      "details": ""
-                    }
-                  ]
-                }
                 }
               ]
             }
@@ -416,7 +417,7 @@
               },
               "x-amzn-RequestId": {
                 "type": "string",
-                "description": "unique request reference identifier."
+                "description": "Unique request reference identifier."
               }
             }
           },
@@ -426,10 +427,6 @@
               "$ref": "#/definitions/SubmitInvoicesResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -442,10 +439,6 @@
               "$ref": "#/definitions/SubmitInvoicesResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -458,10 +451,6 @@
               "$ref": "#/definitions/SubmitInvoicesResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -474,10 +463,6 @@
               "$ref": "#/definitions/SubmitInvoicesResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -490,10 +475,6 @@
               "$ref": "#/definitions/SubmitInvoicesResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -525,7 +506,8 @@
           "type": "string",
           "description": "GUID to identify this transaction. This value can be used with the Transaction Status API to return the status of this transaction."
         }
-      }
+      },
+      "description": "Response containing the transaction ID."
     },
     "ErrorList": {
       "type": "array",
@@ -563,7 +545,8 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Invoice"
-          }
+          },
+          "description": "An array of Invoice objects representing the invoices or credit notes to be submitted."
         }
       },
       "description": "The request schema for the submitInvoices operation."
@@ -667,9 +650,11 @@
             "$ref": "#/definitions/InvoiceItem"
           }
         }
-      }
+      },
+      "description": "Represents an invoice or credit note document with details about the transaction, parties involved, and line items."
     },
     "PartyIdentification": {
+      "description": "Name, address and tax details of a party.",
       "type": "object",
       "required": [
         "partyId"
@@ -719,7 +704,7 @@
         },
         "taxRegistrationNumber": {
           "type": "string",
-          "description": "The tax registration number for the entity. For example, VAT ID."
+          "description": "The tax registration number for the entity. For example, VAT ID, Consumption Tax ID."
         }
       },
       "description": "Tax registration details of the entity."
@@ -805,8 +790,12 @@
           "$ref": "#/definitions/ItemQuantity"
         },
         "netCost": {
-          "description": "The item cost to Amazon, which should match the cost on the order. Price information should not be zero or negative. It indicates net unit price. Net cost means VAT is not included in cost.",
+          "description": "The item cost to Amazon, which should match the cost on the order. Price information should not be zero or negative. It indicates net unit price. Net cost means VAT is not included in cost. If items are priced by weight, this cost need to be considered in conjunction with netCostUnitOfMeasure. E.g.: $5/LB",
           "$ref": "#/definitions/Money"
+        },
+        "netCostUnitOfMeasure": {
+          "description": "This field represents weight unit of measure of items that are ordered by cases and supporting priced by weight.",
+          "$ref": "#/definitions/NetCostUnitOfMeasure"
         },
         "purchaseOrderNumber": {
           "type": "string",
@@ -1239,6 +1228,34 @@
       },
       "description": "References required in order to process a credit note. This information is required only if InvoiceType is CreditNote."
     },
+    "NetCostUnitOfMeasure": {
+      "type": "string",
+      "description": "This field represents weight unit of measure of items that are ordered by cases and supporting priced by weight.",
+      "enum": [
+        "POUNDS",
+        "OUNCES",
+        "GRAMS",
+        "KILOGRAMS"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "POUNDS",
+          "description": "Priced per Pound."
+        },
+        {
+          "value": "OUNCES",
+          "description": "Priced per Ounce."
+        },
+        {
+          "value": "GRAMS",
+          "description": "Priced per Gram."
+        },
+        {
+          "value": "KILOGRAMS",
+          "description": "Priced per Kilogram."
+        }
+      ]
+    },
     "ItemQuantity": {
       "type": "object",
       "required": [
@@ -1271,9 +1288,53 @@
         "unitSize": {
           "type": "integer",
           "description": "The case size, if the unit of measure value is Cases."
+        },
+        "totalWeight": {
+          "$ref": "#/definitions/TotalWeight"
         }
       },
       "description": "Details of quantity."
+    },
+    "TotalWeight": {
+      "type": "object",
+      "required": [
+        "amount",
+        "unitOfMeasure"
+      ],
+      "properties": {
+        "unitOfMeasure": {
+          "type": "string",
+          "description": "The unit of measure for items sold by weight.",
+          "enum": [
+            "POUNDS",
+            "OUNCES",
+            "GRAMS",
+            "KILOGRAMS"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "POUNDS",
+              "description": "Weight in Pound."
+            },
+            {
+              "value": "OUNCES",
+              "description": "Weight in Ounce."
+            },
+            {
+              "value": "GRAMS",
+              "description": "Weight in Gram."
+            },
+            {
+              "value": "KILOGRAMS",
+              "description": "Weight in Kilogram."
+            }
+          ]
+        },
+        "amount": {
+          "$ref": "#/definitions/Decimal"
+        }
+      },
+      "description": "The aggregate weight of this item being invoiced. This information will be available for items sold by weight."
     },
     "Decimal": {
       "type": "string",

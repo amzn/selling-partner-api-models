@@ -43,14 +43,12 @@ import java.util.List;
 import java.util.Map;
 {{/fullJavaUtil}}
 
-import com.amazon.SellingPartnerAPIAA.AWSAuthenticationCredentials;
-import com.amazon.SellingPartnerAPIAA.AWSAuthenticationCredentialsProvider;
-import com.amazon.SellingPartnerAPIAA.AWSSigV4Signer;
 import com.amazon.SellingPartnerAPIAA.LWAAccessTokenCache;
 import com.amazon.SellingPartnerAPIAA.LWAAccessTokenCacheImpl;
 import com.amazon.SellingPartnerAPIAA.LWAAuthorizationCredentials;
 import com.amazon.SellingPartnerAPIAA.LWAAuthorizationSigner;
 import com.amazon.SellingPartnerAPIAA.RateLimitConfiguration;
+import com.amazon.SellingPartnerAPIAA.LWAException;
 
 {{#operations}}
 public class {{classname}} {
@@ -80,6 +78,7 @@ public class {{classname}} {
      * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
+     * @throws LWAException If calls to fetch LWA access token fails
      {{#isDeprecated}}
      * @deprecated
      {{/isDeprecated}}
@@ -91,7 +90,7 @@ public class {{classname}} {
     {{#isDeprecated}}
     @Deprecated
     {{/isDeprecated}}
-    public com.squareup.okhttp.Call {{operationId}}Call({{#allParams}}{{{dataType}}} {{paramName}}, {{/allParams}}final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public okhttp3.Call {{operationId}}Call({{#allParams}}{{{dataType}}} {{paramName}}, {{/allParams}}final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException, LWAException {
         Object {{localVariablePrefix}}localVarPostBody = {{#bodyParam}}{{paramName}}{{/bodyParam}}{{^bodyParam}}null{{/bodyParam}};
 
         // create path and map variables
@@ -124,10 +123,10 @@ public class {{classname}} {
         {{localVariablePrefix}}localVarHeaderParams.put("Content-Type", {{localVariablePrefix}}localVarContentType);
 
         if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+            apiClient.getHttpClient().networkInterceptors().add(new okhttp3.Interceptor() {
                 @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                public okhttp3.Response intercept(okhttp3.Interceptor.Chain chain) throws IOException {
+                    okhttp3.Response originalResponse = chain.proceed(chain.request());
                     return originalResponse.newBuilder()
                     .body(new ProgressResponseBody(originalResponse.body(), progressListener))
                     .build();
@@ -143,7 +142,7 @@ public class {{classname}} {
     @Deprecated
     {{/isDeprecated}}
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call {{operationId}}ValidateBeforeCall({{#allParams}}{{{dataType}}} {{paramName}}, {{/allParams}}final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private okhttp3.Call {{operationId}}ValidateBeforeCall({{#allParams}}{{{dataType}}} {{paramName}}, {{/allParams}}final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException, LWAException {
         {{^performBeanValidation}}
         {{#allParams}}{{#required}}
         // verify the required parameter '{{paramName}}' is set
@@ -152,7 +151,7 @@ public class {{classname}} {
         }
         {{/required}}{{/allParams}}
 
-        com.squareup.okhttp.Call {{localVariablePrefix}}call = {{operationId}}Call({{#allParams}}{{paramName}}, {{/allParams}}progressListener, progressRequestListener);
+        okhttp3.Call {{localVariablePrefix}}call = {{operationId}}Call({{#allParams}}{{paramName}}, {{/allParams}}progressListener, progressRequestListener);
         return {{localVariablePrefix}}call;
 
         {{/performBeanValidation}}
@@ -167,7 +166,7 @@ public class {{classname}} {
                     parameterValues);
 
             if (violations.size() == 0) {
-                com.squareup.okhttp.Call {{localVariablePrefix}}call = {{operationId}}Call({{#allParams}}{{paramName}}, {{/allParams}}progressListener, progressRequestListener);
+                okhttp3.Call {{localVariablePrefix}}call = {{operationId}}Call({{#allParams}}{{paramName}}, {{/allParams}}progressListener, progressRequestListener);
                 return {{localVariablePrefix}}call;
 
             } else {
@@ -190,6 +189,7 @@ public class {{classname}} {
      * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}{{#returnType}}
      * @return {{returnType}}{{/returnType}}
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws LWAException If calls to fetch LWA access token fails
      {{#isDeprecated}}
      * @deprecated
      {{/isDeprecated}}
@@ -201,7 +201,7 @@ public class {{classname}} {
     {{#isDeprecated}}
     @Deprecated
     {{/isDeprecated}}
-    public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{operationId}}({{#allParams}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws ApiException {
+    public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{operationId}}({{#allParams}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws ApiException,LWAException {
         {{#returnType}}ApiResponse<{{{returnType}}}> {{localVariablePrefix}}resp = {{/returnType}}{{operationId}}WithHttpInfo({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{#returnType}}
         return {{localVariablePrefix}}resp.getData();{{/returnType}}
     }
@@ -212,6 +212,7 @@ public class {{classname}} {
      * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
      * @return ApiResponse&lt;{{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Void{{/returnType}}&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws LWAException If calls to fetch LWA access token fails
      {{#isDeprecated}}
      * @deprecated
      {{/isDeprecated}}
@@ -223,8 +224,8 @@ public class {{classname}} {
     {{#isDeprecated}}
     @Deprecated
     {{/isDeprecated}}
-    public ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{operationId}}WithHttpInfo({{#allParams}}{{#useBeanValidation}}{{>beanValidationQueryParams}}{{/useBeanValidation}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws ApiException {
-        com.squareup.okhttp.Call {{localVariablePrefix}}call = {{operationId}}ValidateBeforeCall({{#allParams}}{{paramName}}, {{/allParams}}null, null);
+    public ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{operationId}}WithHttpInfo({{#allParams}}{{#useBeanValidation}}{{>beanValidationQueryParams}}{{/useBeanValidation}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws ApiException,LWAException {
+        okhttp3.Call {{localVariablePrefix}}call = {{operationId}}ValidateBeforeCall({{#allParams}}{{paramName}}, {{/allParams}}null, null);
         {{#returnType}}Type {{localVariablePrefix}}localVarReturnType = new TypeToken<{{{returnType}}}>(){}.getType();
         return {{localVariablePrefix}}apiClient.execute({{localVariablePrefix}}call, {{localVariablePrefix}}localVarReturnType);{{/returnType}}{{^returnType}}return {{localVariablePrefix}}apiClient.execute({{localVariablePrefix}}call);{{/returnType}}
     }
@@ -236,6 +237,7 @@ public class {{classname}} {
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @throws LWAException If calls to fetch LWA access token fails
      {{#isDeprecated}}
      * @deprecated
      {{/isDeprecated}}
@@ -247,7 +249,7 @@ public class {{classname}} {
     {{#isDeprecated}}
     @Deprecated
     {{/isDeprecated}}
-    public com.squareup.okhttp.Call {{operationId}}Async({{#allParams}}{{{dataType}}} {{paramName}}, {{/allParams}}final ApiCallback<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{localVariablePrefix}}callback) throws ApiException {
+    public okhttp3.Call {{operationId}}Async({{#allParams}}{{{dataType}}} {{paramName}}, {{/allParams}}final ApiCallback<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{localVariablePrefix}}callback) throws ApiException, LWAException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -268,7 +270,7 @@ public class {{classname}} {
             };
         }
 
-        com.squareup.okhttp.Call {{localVariablePrefix}}call = {{operationId}}ValidateBeforeCall({{#allParams}}{{paramName}}, {{/allParams}}progressListener, progressRequestListener);
+        okhttp3.Call {{localVariablePrefix}}call = {{operationId}}ValidateBeforeCall({{#allParams}}{{paramName}}, {{/allParams}}progressListener, progressRequestListener);
         {{#returnType}}Type {{localVariablePrefix}}localVarReturnType = new TypeToken<{{{returnType}}}>(){}.getType();
         {{localVariablePrefix}}apiClient.executeAsync({{localVariablePrefix}}call, {{localVariablePrefix}}localVarReturnType, {{localVariablePrefix}}callback);{{/returnType}}{{^returnType}}{{localVariablePrefix}}apiClient.executeAsync({{localVariablePrefix}}call, {{localVariablePrefix}}callback);{{/returnType}}
         return {{localVariablePrefix}}call;
@@ -276,18 +278,12 @@ public class {{classname}} {
     {{/operation}}
 
     public static class Builder {
-        private AWSAuthenticationCredentials awsAuthenticationCredentials;
         private LWAAuthorizationCredentials lwaAuthorizationCredentials;
         private String endpoint;
         private LWAAccessTokenCache lwaAccessTokenCache;
         private Boolean disableAccessTokenCache = false;
-        private AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider;
         private RateLimitConfiguration rateLimitConfiguration;
 
-        public Builder awsAuthenticationCredentials(AWSAuthenticationCredentials awsAuthenticationCredentials) {
-            this.awsAuthenticationCredentials = awsAuthenticationCredentials;
-            return this;
-        }
 
         public Builder lwaAuthorizationCredentials(LWAAuthorizationCredentials lwaAuthorizationCredentials) {
             this.lwaAuthorizationCredentials = lwaAuthorizationCredentials;
@@ -308,12 +304,7 @@ public class {{classname}} {
             this.disableAccessTokenCache = true;
             return this;
         }
-        
-        public Builder awsAuthenticationCredentialsProvider(AWSAuthenticationCredentialsProvider awsAuthenticationCredentialsProvider) {
-            this.awsAuthenticationCredentialsProvider = awsAuthenticationCredentialsProvider;
-            return this;
-        }
-        
+
         public Builder rateLimitConfigurationOnRequests(RateLimitConfiguration rateLimitConfiguration){
             this.rateLimitConfiguration = rateLimitConfiguration;
             return this;
@@ -323,27 +314,14 @@ public class {{classname}} {
             this.rateLimitConfiguration = null;
             return this;
         }
-        
 
         public {{classname}} build() {
-            if (awsAuthenticationCredentials == null) {
-                throw new RuntimeException("AWSAuthenticationCredentials not set");
-            }
-
             if (lwaAuthorizationCredentials == null) {
                 throw new RuntimeException("LWAAuthorizationCredentials not set");
             }
 
             if (StringUtil.isEmpty(endpoint)) {
                 throw new RuntimeException("Endpoint not set");
-            }
-
-            AWSSigV4Signer awsSigV4Signer;
-            if ( awsAuthenticationCredentialsProvider == null) {
-                awsSigV4Signer = new AWSSigV4Signer(awsAuthenticationCredentials);
-            }
-            else {
-                awsSigV4Signer = new AWSSigV4Signer(awsAuthenticationCredentials,awsAuthenticationCredentialsProvider);
             }
             
             LWAAuthorizationSigner lwaAuthorizationSigner = null;            
@@ -358,7 +336,6 @@ public class {{classname}} {
             }
 
             return new {{classname}}(new ApiClient()
-                .setAWSSigV4Signer(awsSigV4Signer)
                 .setLWAAuthorizationSigner(lwaAuthorizationSigner)
                 .setBasePath(endpoint)
                 .setRateLimiter(rateLimitConfiguration));
