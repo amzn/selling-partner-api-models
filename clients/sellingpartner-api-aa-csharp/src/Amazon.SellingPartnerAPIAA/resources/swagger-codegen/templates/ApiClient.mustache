@@ -105,7 +105,29 @@ namespace {{packageName}}.Client
         public RestClient RestClient { get; set; }
 
         // Creates and sets up a RestRequest prior to a call.
+        // Wrapper on PrepareRequestHelper that proactively replaces pathParams to address the following issue:
+        // https://github.com/amzn/selling-partner-api-models/issues/42        
         private RestRequest PrepareRequest(
+            String path, {{^netStandard}}RestSharp.{{/netStandard}}Method method, List<KeyValuePair<String, String>> queryParams, Object postBody,
+            Dictionary<String, String> headerParams, Dictionary<String, String> formParams,
+            Dictionary<String, FileParameter> fileParams, Dictionary<String, String> pathParams,
+            String contentType)
+        {            
+            if (pathParams.Any())
+            {
+                var tempRequest = PrepareRequestHelper(path, method, queryParams, postBody, headerParams, formParams, fileParams, pathParams, contentType);
+
+                var pathWithVariablesReplaced = RestClient.BuildUri(tempRequest).LocalPath;
+                return PrepareRequestHelper(pathWithVariablesReplaced, method, queryParams, postBody, headerParams, formParams, fileParams, new Dictionary<string, string> { }, contentType);
+            }
+            else
+            {
+                return PrepareRequestHelper(path, method, queryParams, postBody, headerParams, formParams, fileParams, pathParams, contentType);
+            }
+        }
+
+        // Creates and sets up a RestRequest prior to a call.  Does not do anything special with pathParams.
+        private RestRequest PrepareRequestHelper(
             String path, {{^netStandard}}RestSharp.{{/netStandard}}Method method, List<KeyValuePair<String, String>> queryParams, Object postBody,
             Dictionary<String, String> headerParams, Dictionary<String, String> formParams,
             Dictionary<String, FileParameter> fileParams, Dictionary<String, String> pathParams,
