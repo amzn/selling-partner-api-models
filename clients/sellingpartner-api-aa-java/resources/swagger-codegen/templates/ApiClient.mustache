@@ -635,22 +635,14 @@ public class ApiClient {
     /**
      * Escape the given string to be used as URL query value.
      *
-     * @param input String to be escaped
+     * @param str String to be escaped
      * @return Escaped string
      */
-    public String escapeString(String input) {
+    public String escapeString(String str) {
         try {
-                        String baseEncoded = URLEncoder.encode(input, "UTF-8");
-
-                        // Double-encode critical characters
-                        String doubleEncoded = baseEncoded
-                        .replace("%", "%25")     // Fix '%'
-                        .replace("%25252B", "%252B")  // Fix '+'
-                        .replace("%25252C", "%252C"); // Fix ','
-
-                        return doubleEncoded;
+            return URLEncoder.encode(str, "utf8").replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
-            return input;
+            return str;
         }
     }
 
