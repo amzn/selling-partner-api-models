@@ -26,13 +26,13 @@
   "paths": {
     "/finances/2024-06-19/transactions": {
       "get": {
-        "description": "Returns transactions for the given parameters. It may take up to 48 hours for transactions to appear in your transaction events.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns transactions for the given parameters. Financial events might not include orders from the last 48 hours.\n\n**Usage plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits).",
         "operationId": "listTransactions",
         "parameters": [
           {
             "name": "postedAfter",
             "in": "query",
-            "description": "A date used for selecting transactions posted after (or at) a specified time. The date-time must be no later than two minutes before the request was submitted, in ISO 8601 date time format.",
+            "description": "The response includes financial events posted on or after this date. This date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format. The date-time must be more than two minutes before the time of the request.",
             "required": true,
             "type": "string",
             "format": "date-time",
@@ -50,10 +50,18 @@
           {
             "name": "marketplaceId",
             "in": "query",
-            "description": "A string token used to select Marketplace ID.",
+            "description": "The identifier of the marketplace from which you want to retrieve transactions. The marketplace ID is the globally unique identifier of a marketplace. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
             "required": false,
             "type": "string",
             "x-example": "ATIV93840DER"
+          },
+          {
+            "name": "transactionStatus",
+            "in": "query",
+            "description": "The status of the transaction.\n\n**Possible values:**\n\n* `DEFERRED`: the transaction is currently deferred.\n* `RELEASED`: the transaction is currently released.\n* `DEFERRED_RELEASED`: the transaction was deferred in the past, but is now released. The status of a deferred transaction is updated to `DEFERRED_RELEASED` when the transaction is released.",
+            "required": false,
+            "type": "string",
+            "x-example": "RELEASED"
           },
           {
             "name": "nextToken",
@@ -94,28 +102,30 @@
                     }
                   },
                   "response": {
-                    "nextToken": "Next token value",
-                    "transactions": [
-                      {
-                        "sellingPartnerMetadata": {
-                          "sellingPartnerId": "A3TH9S8BH6GOGM",
-                          "accountType": "PAYABLE",
-                          "marketplaceId": "ATIV93840DER"
-                        },
-                        "relatedIdentifiers": [
-                          {
-                            "relatedIdentifierName": "ORDER_ID",
-                            "relatedIdentifierValue": "8129762527551"
+                    "payload": {
+                      "nextToken": "Next token value",
+                      "transactions": [
+                        {
+                          "sellingPartnerMetadata": {
+                            "sellingPartnerId": "A3TH9S8BH6GOGM",
+                            "accountType": "PAYABLE",
+                            "marketplaceId": "ATIV93840DER"
+                          },
+                          "relatedIdentifiers": [
+                            {
+                              "relatedIdentifierName": "ORDER_ID",
+                              "relatedIdentifierValue": "8129762527551"
+                            }
+                          ],
+                          "transactionType": "Shipment",
+                          "postedDate": "2020-07-14T03:35:13.214Z",
+                          "totalAmount": {
+                            "currencyAmount": 10,
+                            "currencyCode": "USD"
                           }
-                        ],
-                        "transactionType": "Shipment",
-                        "postedDate": "2020-07-14T03:35:13.214Z",
-                        "totalAmount": {
-                          "currencyAmount": 10,
-                          "currencyCode": "USD"
                         }
-                      }
-                    ]
+                      ]
+                    }
                   }
                 }
               ]
@@ -255,6 +265,16 @@
     "ListTransactionsResponse": {
       "type": "object",
       "properties": {
+        "payload": {
+          "$ref": "#/definitions/TransactionsPayload",
+          "description": "The payload for the `listTransactions` operation."
+        }
+      },
+      "description": "The response schema for the `listTransactions` operation."
+    },
+    "TransactionsPayload": {
+      "type": "object",
+      "properties": {
         "nextToken": {
           "type": "string",
           "description": "When present and not empty, pass this string token in the next request to return the next response page."
@@ -263,7 +283,7 @@
           "$ref": "#/definitions/Transactions"
         }
       },
-      "description": "The Response schema."
+      "description": "The payload for the `listTransactions` operation."
     },
     "Transactions": {
       "type": "array",
@@ -293,7 +313,7 @@
         },
         "transactionStatus": {
           "type": "string",
-          "description": "The status of the transaction.\n\n**Possible values:**\n\n* `DEFERRED`: the transaction is currently deferred.\n* `RELEASED`: the transaction is currently released.\n* `DEFERRED_RELEASED`: the transaction was deferred in the past, but is now released. Deferred transactions will have their status updated to `DEFERRED_RELEASED` when released."
+          "description": "The status of the transaction.\n\n**Possible values:**\n\n* `DEFERRED`: the transaction is currently deferred.\n* `RELEASED`: the transaction is currently released.\n* `DEFERRED_RELEASED`: the transaction was deferred in the past, but is now released. The status of a deferred transaction is updated to `DEFERRED_RELEASED` when the transaction is released."
         },
         "description": {
           "type": "string",
@@ -320,8 +340,11 @@
           "$ref": "#/definitions/Contexts"
         },
         "breakdowns": {
-          "description": "List of breakdowns which will provide the details on how the total amount is calculated for the financial transaction.",
-          "$ref": "#/definitions/Breakdowns"
+          "type": "array",
+          "description": "A list of breakdowns that detail how the total amount is calculated for the transaction.",
+          "items": {
+            "$ref": "#/definitions/Breakdown"
+          }
         }
       },
       "description": "Contains all information related to the transaction.",
@@ -445,7 +468,7 @@
         },
         "marketplaceId": {
           "type": "string",
-          "description": "Marketplace identifier of transaction."
+          "description": "The identifier of the marketplace where the transaction occurred. The marketplace ID is the globally unique identifier of a marketplace. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids)."
         }
       },
       "description": "Metadata describing the seller."
@@ -459,26 +482,31 @@
           "enum": [
             "ORDER_ID",
             "SHIPMENT_ID",
-            "EVENT_GROUP_ID",
+            "FINANCIAL_EVENT_GROUP_ID",
             "REFUND_ID",
             "INVOICE_ID",
             "DISBURSEMENT_ID",
             "TRANSFER_ID",
             "DEFERRED_TRANSACTION_ID",
-            "RELEASE_TRANSACTION_ID"
+            "RELEASE_TRANSACTION_ID",
+            "SETTLEMENT_ID"
           ],
           "x-docgen-enum-table-extension": [
             {
               "value": "ORDER_ID",
-              "description": "Associated OrderId of transaction"
+              "description": "The `OrderId` that is associated with the transaction."
             },
             {
               "value": "SHIPMENT_ID",
-              "description": "Associated ShipmentId of transaction"
+              "description": "The `ShipmentId` that is associated with the transaction."
             },
             {
-              "value": "EVENT_GROUP_ID",
-              "description": "Associated identifier of the transaction's financial event group."
+              "value": "FINANCIAL_EVENT_GROUP_ID",
+              "description": "The identifier that is associated with the transaction's financial event group."
+            },
+            {
+              "value": "SETTLEMENT_ID",
+              "description": "The identifier that is associated with the transaction's settlement group."
             },
             {
               "value": "REFUND_ID",
@@ -530,7 +558,7 @@
       "properties": {
         "marketplaceId": {
           "type": "string",
-          "description": "The identifier of the marketplace where the transaction was made."
+          "description": "The identifier of the marketplace where the transaction occurred. The marketplace ID is the globally unique identifier of a marketplace. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids)."
         },
         "marketplaceName": {
           "type": "string",
@@ -566,8 +594,11 @@
           "$ref": "#/definitions/Currency"
         },
         "breakdowns": {
-          "description": "List of breakdowns which will provide the details on how the total amount is calculated for the financial transaction.",
-          "$ref": "#/definitions/Breakdowns"
+          "type": "array",
+          "description": "A list of breakdowns that detail how the total amount is calculated for the transaction.",
+          "items": {
+            "$ref": "#/definitions/Breakdown"
+          }
         },
         "contexts": {
           "description": "Additional Information about the item.",
@@ -627,10 +658,27 @@
     },
     "Breakdowns": {
       "type": "array",
-      "description": "List of breakdowns which will provide the details on how the total amount is calculated for the financial transaction.",
+      "description": "A list of breakdowns that detail how the total amount is calculated for the transaction.",
       "items": {
         "$ref": "#/definitions/Breakdown"
-      }
+      },
+      "example": [
+        {
+          "breakdownType": "Sales",
+          "breakdownAmount": {
+            "currencyAmount": 10,
+            "currencyCode": "USD"
+          },
+          "breakdowns": [{
+            "breakdownType": "Product Charges",
+            "breakdownAmount": {
+              "currencyAmount": 10,
+              "currencyCode": "USD"
+            },
+            "breakdowns": []
+          }]
+        }
+      ]
     },
     "Breakdown": {
       "type": "object",
@@ -644,8 +692,11 @@
           "$ref": "#/definitions/Currency"
         },
         "breakdowns": {
-          "description": "Further granular breakdowns of the BreakdownType.",
-          "$ref": "#/definitions/Breakdown"
+          "type": "array",
+          "description": "A list of breakdowns that detail how the total amount is calculated for the transaction.",
+          "items": {
+            "$ref": "#/definitions/Breakdown"
+          }
         }
       },
       "description": "Breakdown provides details regarding the money movement under the financial transaction. Breakdowns get categorized further into breakdown types, breakdown amounts, and further breakdowns into a hierarchical structure."
@@ -673,6 +724,7 @@
         {"$ref": "#/definitions/ProductContext"},
         {"$ref": "#/definitions/PaymentsContext"},
         {"$ref": "#/definitions/DeferredContext"},
+        {"$ref": "#/definitions/BusinessContext"},
         {"$ref": "#/definitions/TimeRangeContext"}
       ],
       "x-example": [
@@ -786,6 +838,22 @@
       "example": {
         "deferralReason": "B2B",
         "maturityDate": "2024-07-14T00:00:00Z"
+      }
+    },
+    "BusinessContext": {
+      "description": "Information about the line of business associated with a transaction.",
+      "type": "object",
+      "properties": {
+        "storeName": {
+          "type": "string",
+          "description": "The store name associated with the transaction.",
+          "enum": [
+            "AMAZON_HAUL"
+          ]
+        }
+      },
+      "example": {
+        "storeName": "AMAZON_HAUL"
       }
     },
     "TimeRangeContext": {
