@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Request;
 
 class LWAAuthorizationSigner
 {
-    private const SIGNED_ACCESS_TOKEN_HEADER_NAME = "x-amz-access-token";
+    public const SIGNED_ACCESS_TOKEN_HEADER_NAME = "x-amz-access-token";
 
     private LWAClient $lwaClient;
 
