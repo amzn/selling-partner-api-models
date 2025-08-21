@@ -1,4 +1,4 @@
-package com.amazon.SellingPartnerAPIAA;
+package com.oriental.SellingPartnerAPIAA;
 
 import okhttp3.Request;
 import java.util.Arrays;

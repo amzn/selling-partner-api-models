@@ -1,4 +1,4 @@
-package com.amazon.SellingPartnerAPIAA;
+package com.oriental.SellingPartnerAPIAA;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

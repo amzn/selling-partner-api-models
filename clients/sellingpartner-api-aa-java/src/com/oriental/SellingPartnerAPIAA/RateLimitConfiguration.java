@@ -1,4 +1,4 @@
-package com.amazon.SellingPartnerAPIAA;
+package com.oriental.SellingPartnerAPIAA;
 
 public interface RateLimitConfiguration {
 

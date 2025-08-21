@@ -1,4 +1,4 @@
-package com.amazon.SellingPartnerAPIAA;
+package com.oriental.SellingPartnerAPIAA;
 
 import lombok.Builder;
 import lombok.Data;

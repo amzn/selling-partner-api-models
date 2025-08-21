@@ -25,7 +25,7 @@ LWAAuthorizationCredentials lwaAuthorizationCredentials = LWAAuthorizationCreden
 /* Sellerless APIs
 The Selling Partner API scopes can be retrieved from the ScopeConstants class and passed as argument(s) to either the withScope(String scope) or withScopes(String... scopes) method during lwaAuthorizationCredentials object instantiation. */
 
-import static com.amazon.SellingPartnerAPIAA.ScopeConstants.SCOPE_NOTIFICATIONS_API;
+import static com.oriental.SellingPartnerAPIAA.ScopeConstants.SCOPE_NOTIFICATIONS_API;
 
 LWAAuthorizationCredentials lwaAuthorizationCredentials = LWAAuthorizationCredentials.builder()
     .clientId("...")
