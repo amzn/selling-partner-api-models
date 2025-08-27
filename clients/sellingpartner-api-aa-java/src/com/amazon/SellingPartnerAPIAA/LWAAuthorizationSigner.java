@@ -9,7 +9,7 @@ import okhttp3.Request;
  * LWA Authorization Signer
  */
 public class LWAAuthorizationSigner {
-    private static final String SIGNED_ACCESS_TOKEN_HEADER_NAME = "x-amz-access-token";
+    public static final String SIGNED_ACCESS_TOKEN_HEADER_NAME = "x-amz-access-token";
 
     @Getter(AccessLevel.PACKAGE)
     @Setter(AccessLevel.PACKAGE)

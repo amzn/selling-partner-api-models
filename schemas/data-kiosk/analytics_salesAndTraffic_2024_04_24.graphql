@@ -66,6 +66,40 @@ type Analytics_SalesAndTraffic_2024_04_24 {
     """
     startDate: Date!
   ): [SalesAndTrafficByDate]
+  """
+  This query retrieves sales and traffic trend data for a specified list of
+  ASINs within a date range. The data can be aggregated at different time
+  intervals to support various analytical needs.
+  """
+  salesAndTrafficTrends(
+    "Specifies the ASIN level for data aggregation (currently only CHILD supported)."
+    asinAggregation: AsinGranularity!, 
+    "Specifies the time period for data aggregation (DAY, WEEK, or MONTH)."
+    dateAggregation: DateGranularity!, 
+    """
+    The end date of the sales and traffic data to retrieve. If the provided end
+    date occurs mid-week or mid-month, the preceding Saturday for WEEK date
+    granularity or the last day of the previous month for MONTH date granularity
+    will be used instead.
+    """
+    endDate: Date!, 
+    """
+    Specifies the marketplace and child ASIN combinations for which to retrieve sales and traffic metrics.
+    Each filter represents a single marketplace and can include up to 30 child ASINs.
+        
+    Note: If an ASIN does not exist or has no sales and traffic data for the
+    specified marketplace during the requested time period,
+    no data will be returned for that ASIN-marketplace combination. The response includes only ASINs with available data.
+    """
+    filters: [MarketplaceAsinFilter!]!, 
+    """
+    The start date of the sales and traffic data to retrieve. The start date
+    must be no more than two years ago. If the provided start date occurs
+    mid-week or mid-month, the following Sunday for WEEK date granularity or the
+    first day of the next month for MONTH date granularity will be used instead.
+    """
+    startDate: Date!
+  ): [SalesAndTrafficTrends]
 }
 
 "The sales data for the seller's account aggregated by ASIN."
@@ -547,6 +581,39 @@ type SalesAndTrafficByDate {
   traffic: ByDateTraffic!
 }
 
+type SalesAndTrafficTrends {
+  "Indicates the ASIN level at which the data is aggregated. Currently only CHILD is supported."
+  asinAggregation: AsinGranularity! @resultRetention(duration : "P30D")
+  """
+  The Amazon Standard Identification Number of the child product. Child products
+  are unique, sellable products that are related in our catalog to a single,
+  non-sellable parent product. Note: This field is only present when ASIN
+  aggregation is CHILD or SKU.
+  """
+  childAsin: String @resultRetention(duration : "P30D")
+  "The end date of the period of the aggregated sales and traffic data."
+  endDate: Date! @resultRetention(duration : "P30D")
+  "The marketplace identifier of the sales and traffic data."
+  marketplaceId: String! @resultRetention(duration : "P30D")
+  """
+  The Amazon Standard Identification Number of the parent product. A parent
+  product appears in our catalog as a non-buyable, generic identifier for a
+  product that has buyable variations (child products).
+  """
+  parentAsin: String! @resultRetention(duration : "P30D")
+  "The sales data for the parentAsin/childAsin/sku within the specified date range."
+  sales: ByAsinSales!
+  """
+  The Stock Keeping Unit of the product. The SKU is a seller specific product
+  identifier. Note: This field is only present when ASIN aggregation is SKU.
+  """
+  sku: String @resultRetention(duration : "P30D")
+  "The start date of the period of the aggregated sales and traffic data."
+  startDate: Date! @resultRetention(duration : "P30D")
+  "The traffic data for the parentAsin/childAsin/sku within the specified date range."
+  traffic: ByAsinTraffic!
+}
+
 "The ASIN granularity used in aggregation."
 enum AsinGranularity {
   "Sales and traffic data is aggregated by child ASIN."
@@ -572,3 +639,14 @@ scalar Date
 
 "A Scalar for the primitive long type."
 scalar Long
+
+input MarketplaceAsinFilter {
+  """
+  The child asins to fetch sales and traffic trend data for. Maximum size of the
+  list is 30. Note: ASINs with no sales or traffic data in the specified
+  marketplace during the date range will not be included in the results.
+  """
+  asins: [String!]!
+  "The marketplace to retrieve sales and traffic data for."
+  marketplaceId: String!
+}
