@@ -1,0 +1,1500 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "description": "The root schema comprises the entire JSON document.",
+  "definitions": {
+    "DefectsCount": {
+      "type": "integer",
+      "description": "The number of defects within a given reporting date range for 1 requested marketplace.",
+      "examples": [
+        27833
+      ]
+    },
+    "OrderCount": {
+      "type": "integer",
+      "description": "The number of orders within a given reporting date range.",
+      "examples": [
+        869118
+      ]
+    },
+    "OrderDefectRate": {
+      "type": "object",
+      "description": "Seller's order defect rate within a given reporting date range for 1 requested marketplace.",
+      "examples": [
+        {
+          "reportingDateRange": {
+            "reportingDateFrom": "2020-09-06T00:00Z",
+            "reportingDateTo": "2020-11-04T23:59Z"
+          },
+          "orderCount": 539000,
+          "orderWithDefects": {
+            "count": 1078,
+            "status": "GOOD"
+          },
+          "claims": {
+            "count": 442,
+            "status": "NONE"
+          },
+          "chargebacks": {
+            "count": 15,
+            "status": "NONE"
+          },
+          "negativeFeedback": {
+            "count": 628,
+            "status": "NONE"
+          },
+          "fulfillmentType": "mfn",
+          "status": "GOOD",
+          "rate": 0.009,
+          "targetValue": 0.01,
+          "targetCondition": "LESS_THAN"
+        }
+      ],
+      "required": [
+        "reportingDateRange",
+        "orderCount",
+        "orderWithDefects",
+        "claims",
+        "chargebacks",
+        "negativeFeedback",
+        "fulfillmentType",
+        "status",
+        "rate",
+        "targetValue",
+        "targetCondition"
+      ],
+      "properties": {
+        "reportingDateRange": {
+          "$ref": "#/definitions/ReportingDateRange"
+        },
+        "orderCount": {
+          "$ref": "#/definitions/OrderCount"
+        },
+        "orderWithDefects": {
+          "type": "object",
+          "description": "Order defects.",
+          "examples": [
+            {
+              "count": 1061,
+              "status": "GOOD"
+            }
+          ],
+          "required": [
+            "count",
+            "status"
+          ],
+          "properties": {
+            "count": {
+              "description": "Order defects count.",
+              "type": "integer",
+              "examples": [
+                27833
+              ]
+            },
+            "status": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "claims": {
+          "description": "Order defects due to claims",
+          "type": "object",
+          "examples": [
+            {
+              "count": 1061,
+              "status": "GOOD"
+            }
+          ],
+          "required": [
+            "count",
+            "status"
+          ],
+          "properties": {
+            "count": {
+              "description": "Order defects count.",
+              "type": "integer",
+              "examples": [
+                27833
+              ]
+            },
+            "status": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "chargebacks": {
+          "description": "Order defects due to chargebacks",
+          "type": "object",
+          "examples": [
+            {
+              "count": 1061,
+              "status": "GOOD"
+            }
+          ],
+          "required": [
+            "count",
+            "status"
+          ],
+          "properties": {
+            "count": {
+              "description": "Order defects count.",
+              "type": "integer",
+              "examples": [
+                27833
+              ]
+            },
+            "status": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "negativeFeedback": {
+          "description": "Order defects due to negative feedback",
+          "type": "object",
+          "examples": [
+            {
+              "count": 1061,
+              "status": "GOOD"
+            }
+          ],
+          "required": [
+            "count",
+            "status"
+          ],
+          "properties": {
+            "count": {
+              "description": "Order defects count.",
+              "type": "integer",
+              "examples": [
+                27833
+              ]
+            },
+            "status": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "status": {
+          "$ref": "#/definitions/Status"
+        },
+        "rate": {
+          "$ref": "#/definitions/Rate"
+        },
+        "targetValue": {
+          "$ref": "#/definitions/TargetValue"
+        },
+        "targetCondition": {
+          "$ref": "#/definitions/TargetCondition"
+        }
+      }
+    },
+    "Rate": {
+      "type": "number",
+      "description": "Performance metric rate in percentage within a given reporting date range for 1 requested marketplace.",
+      "examples": [
+        0.005
+      ]
+    },
+    "ReportingDateRange": {
+      "description": "ReportingDateRange with start timestamp and end timestamp defined.",
+      "type": "object",
+      "examples": [
+        {
+          "reportingDateFrom": "2020-10-20T00:00Z",
+          "reportingDateTo": "2020-11-18T23:59Z"
+        }
+      ],
+      "required": [
+        "reportingDateTo",
+        "reportingDateFrom"
+      ],
+      "properties": {
+        "reportingDateTo": {
+          "description": "Reporting end date in UTC.",
+          "type": "string",
+          "examples": [
+            "2020-11-18T23:59Z"
+          ]
+        },
+        "reportingDateFrom": {
+          "description": "Reporting start date in UTC.",
+          "type": "string",
+          "examples": [
+            "2020-10-20T00:00Z"
+          ]
+        }
+      }
+    },
+    "Status": {
+      "type": "string",
+      "description": "Listing level violations status within a given reporting date range for 1 requested marketplace. It could be GOOD or BAD or NONE.",
+      "examples": [
+        "GOOD"
+      ],
+      "enum": [
+        "GOOD",
+        "BAD",
+        "NONE"
+      ]
+    },
+    "TargetValue": {
+      "type": "number",
+      "description": "Performance metric target value to stay in good status.",
+      "examples": [
+        0.04
+      ]
+    },
+    "TargetCondition": {
+      "type": "string",
+      "description": "Performance metric target condition to stay in good status. Possible values are GREATER_THAN, LESS_THAN and EQUALS.",
+      "examples": [
+        "EQUALS"
+      ],
+      "enum": [
+        "GREATER_THAN",
+        "LESS_THAN",
+        "EQUALS"
+      ]
+    },
+    "ListingLevelViolation": {
+      "type": "object",
+      "description": "Seller's listing level violation metric within a given reporting date range for 1 requested marketplace.",
+      "examples": [
+        {
+          "reportingDateRange": {
+            "reportingDateFrom": "2020-05-24T00:00Z",
+            "reportingDateTo": "2020-11-19T23:59Z"
+          },
+          "defectsCount": 86,
+          "status": "BAD",
+          "targetValue": 0,
+          "targetCondition": "EQUALS"
+        }
+      ],
+      "required": [
+        "reportingDateRange",
+        "defectsCount",
+        "status",
+        "targetValue",
+        "targetCondition"
+      ],
+      "properties": {
+        "reportingDateRange": {
+          "$ref": "#/definitions/ReportingDateRange"
+        },
+        "defectsCount": {
+          "$ref": "#/definitions/DefectsCount"
+        },
+        "status": {
+          "$ref": "#/definitions/Status"
+        },
+        "targetValue": {
+          "$ref": "#/definitions/TargetValue"
+        },
+        "targetCondition": {
+          "$ref": "#/definitions/TargetCondition"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "accountStatuses": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "status": "AT_RISK"
+        },
+        {
+          "marketplaceId": "A2EUQ1WTGCTBG2",
+          "status": "NORMAL"
+        },
+        {
+          "marketplaceId": "A1AM78C64UM0Y8",
+          "status": "SUSPENDED"
+        }
+      ],
+      "performanceMetrics": [
+        {
+          "invoiceDefectRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-10-21T00:00Z",
+              "reportingDateTo": "2020-10-27T23:59Z"
+            },
+            "orderCount": 9001,
+            "invoiceDefect": {
+              "count": 315,
+              "status": "GOOD"
+            },
+            "missingInvoice": {
+              "count": 214,
+              "status": "NONE"
+            },
+            "lateInvoice": {
+              "count": 101,
+              "status": "NONE"
+            },
+            "status": "GOOD",
+            "rate": 0.03499611,
+            "targetValue": 0.05,
+            "targetCondition": "LESS_THAN"
+          },
+          "lateShipmentRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-10-21T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "orderCount": 870669,
+            "lateShipmentCount": 27896,
+            "status": "GOOD",
+            "rate": 0.03203973037,
+            "targetValue": 0.04,
+            "targetCondition": "LESS_THAN"
+          },
+          "productSafetyCustomerComplaints": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-22T00:00Z",
+              "reportingDateTo": "2020-11-17T23:59Z"
+            },
+            "defectsCount": 165,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "prefulfillmentCancelRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-11-12T00:00Z",
+              "reportingDateTo": "2020-11-18T23:59Z"
+            },
+            "orderCount": 17197,
+            "cancellationCount": 551,
+            "status": "GOOD",
+            "rate": 0.005,
+            "targetValue": 0.01,
+            "targetCondition": "LESS_THAN"
+          },
+          "receivedIntellectualPropertyComplaints": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-24T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "defectsCount": 75,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "onTimeDeliveryRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-10-11T00:00Z",
+              "reportingDateTo": "2020-11-09T23:59Z"
+            },
+            "shipmentCountWithValidTracking": 808046,
+            "onTimeDeliveryCount": 847987,
+            "status": "GOOD",
+            "rate": 0.9529,
+            "targetValue": 0.95,
+            "targetCondition": "GREATER_THAN"
+          },
+          "unitOnTimeDeliveryRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-10-11T00:00Z",
+              "reportingDateTo": "2020-11-09T23:59Z"
+            },
+            "status": "GOOD",
+            "targetValue": 0.9,
+            "targetCondition": "GREATER_THAN",
+            "unitOnTimeDeliveryCount": 146,
+            "totalUnitCount": 165,
+            "rate": 0.8848
+          },
+          "listingPolicyViolations": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-24T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "defectsCount": 86,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "accountHealthRating": {
+            "ahrStatus": "WARNED",
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-23T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            }
+          },
+          "foodAndProductSafetyIssues": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-24T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "defectsCount": 37,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "productAuthenticityCustomerComplaints": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-22T00:00Z",
+              "reportingDateTo": "2020-11-17T23:59Z"
+            },
+            "defectsCount": 212,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "marketplaceId": "ATVPDKIKX0DER",
+          "orderDefectRate": {
+            "mfn": {
+              "reportingDateRange": {
+                "reportingDateFrom": "2020-09-06T00:00Z",
+                "reportingDateTo": "2020-11-04T23:59Z"
+              },
+              "orderCount": 539000,
+              "orderWithDefects": {
+                "count": 1078,
+                "status": "GOOD"
+              },
+              "claims": {
+                "count": 442,
+                "status": "NONE"
+              },
+              "chargebacks": {
+                "count": 15,
+                "status": "NONE"
+              },
+              "negativeFeedback": {
+                "count": 628,
+                "status": "NONE"
+              },
+              "fulfillmentType": "mfn",
+              "status": "GOOD",
+              "rate": 0.009,
+              "targetValue": 0.01,
+              "targetCondition": "LESS_THAN"
+            },
+            "afn": {
+              "reportingDateRange": {
+                "reportingDateFrom": "2020-09-06T00:00Z",
+                "reportingDateTo": "2020-11-04T23:59Z"
+              },
+              "orderCount": 539000,
+              "orderWithDefects": {
+                "count": 1078,
+                "status": "GOOD"
+              },
+              "claims": {
+                "count": 442,
+                "status": "NONE"
+              },
+              "chargebacks": {
+                "count": 15,
+                "status": "NONE"
+              },
+              "negativeFeedback": {
+                "count": 628,
+                "status": "NONE"
+              },
+              "fulfillmentType": "mfn",
+              "status": "GOOD",
+              "rate": 0.009,
+              "targetValue": 0.01,
+              "targetCondition": "LESS_THAN"
+            }
+          },
+          "documentRequest": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-11-21T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "defectsCount": 8,
+            "status": "GOOD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "validTrackingRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-10-11T00:00Z",
+              "reportingDateTo": "2020-11-09T23:59Z"
+            },
+            "shipmentCount": 878443,
+            "validTrackingCount": 896462,
+            "status": "GOOD",
+            "rate": 0.9529,
+            "targetValue": 0.95,
+            "targetCondition": "GREATER_THAN"
+          },
+          "productConditionCustomerComplaints": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-22T00:00Z",
+              "reportingDateTo": "2020-11-17T23:59Z"
+            },
+            "defectsCount": 337,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "otherPolicyViolations": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-24T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "defectsCount": 86,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "warningState": [
+            {
+              "warningType": "spammingSellerMessaging",
+              "status": "BAD"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "required": [
+    "accountStatuses",
+    "performanceMetrics"
+  ],
+  "properties": {
+    "accountStatuses": {
+      "type": "array",
+      "description": "Seller's corresponding account status for each requested marketplace.",
+      "additionalItems": false,
+      "examples": [
+        [
+          {
+            "marketplaceId": "ATVPDKIKX0DER",
+            "status": "AT_RISK"
+          },
+          {
+            "marketplaceId": "A2EUQ1WTGCTBG2",
+            "status": "NORMAL"
+          },
+          {
+            "marketplaceId": "A1AM78C64UM0Y8",
+            "status": "SUSPENDED"
+          }
+        ]
+      ],
+      "items": {
+        "type": "object",
+        "description": "Seller's corresponding account status for 1 requested marketplace.",
+        "examples": [
+          {
+            "marketplaceId": "A1AM78C64UM0Y8",
+            "status": "SUSPENDED"
+          }
+        ],
+        "required": [
+          "marketplaceId",
+          "status"
+        ],
+        "properties": {
+          "marketplaceId": {
+            "description": "A requested marketplace ID.",
+            "type": "string",
+            "examples": [
+              "ATVPDKIKX0DER"
+            ]
+          },
+          "status": {
+            "description": "Seller's account status for a requested marketplace.",
+            "type": "string",
+            "examples": [
+              "DEACTIVATED"
+            ],
+            "enum": [
+              "NORMAL",
+              "AT_RISK",
+              "DEACTIVATED"
+            ]
+          }
+        }
+      }
+    },
+    "performanceMetrics": {
+      "type": "array",
+      "description": "Seller's performance metrics for requeted marketpalces.",
+      "additionalItems": false,
+      "examples": [
+        {
+          "invoiceDefectRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-10-21T00:00Z",
+              "reportingDateTo": "2020-10-27T23:59Z"
+            },
+            "orderCount": 9001,
+            "invoiceDefect": {
+              "count": 315,
+              "status": "GOOD"
+            },
+            "missingInvoice": {
+              "count": 214,
+              "status": "NONE"
+            },
+            "lateInvoice": {
+              "count": 101,
+              "status": "NONE"
+            },
+            "status": "GOOD",
+            "rate": 0.03499611,
+            "targetValue": 0.05,
+            "targetCondition": "LESS_THAN"
+          },
+          "lateShipmentRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-10-21T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "orderCount": 870669,
+            "lateShipmentCount": 27896,
+            "status": "GOOD",
+            "rate": 0.03203973037,
+            "targetValue": 0.04,
+            "targetCondition": "LESS_THAN"
+          },
+          "productSafetyCustomerComplaints": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-22T00:00Z",
+              "reportingDateTo": "2020-11-17T23:59Z"
+            },
+            "defectsCount": 165,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "prefulfillmentCancelRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-11-12T00:00Z",
+              "reportingDateTo": "2020-11-18T23:59Z"
+            },
+            "orderCount": 17197,
+            "cancellationCount": 551,
+            "status": "GOOD",
+            "rate": 0.005,
+            "targetValue": 0.01,
+            "targetCondition": "LESS_THAN"
+          },
+          "receivedIntellectualPropertyComplaints": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-24T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "defectsCount": 75,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "onTimeDeliveryRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-10-11T00:00Z",
+              "reportingDateTo": "2020-11-09T23:59Z"
+            },
+            "shipmentCountWithValidTracking": 808046,
+            "onTimeDeliveryCount": 847987,
+            "status": "GOOD",
+            "rate": 0.9529,
+            "targetValue": 0.95,
+            "targetCondition": "GREATER_THAN"
+          },
+          "unitOnTimeDeliveryRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-10-11T00:00Z",
+              "reportingDateTo": "2020-11-09T23:59Z"
+            },
+            "status": "GOOD",
+            "targetValue": 0.9,
+            "targetCondition": "GREATER_THAN",
+            "unitOnTimeDeliveryCount": 146,
+            "totalUnitCount": 165,
+            "rate": 0.8848
+          },
+          "listingPolicyViolations": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-24T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "defectsCount": 86,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "accountHealthRating": {
+            "ahrStatus": "WARNED",
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-23T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            }
+          },
+          "foodAndProductSafetyIssues": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-24T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "defectsCount": 37,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "productAuthenticityCustomerComplaints": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-22T00:00Z",
+              "reportingDateTo": "2020-11-17T23:59Z"
+            },
+            "defectsCount": 212,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "marketplaceId": "ATVPDKIKX0DER",
+          "orderDefectRate": {
+            "mfn": {
+              "reportingDateRange": {
+                "reportingDateFrom": "2020-09-06T00:00Z",
+                "reportingDateTo": "2020-11-04T23:59Z"
+              },
+              "orderCount": 539000,
+              "orderWithDefects": {
+                "count": 1078,
+                "status": "GOOD"
+              },
+              "claims": {
+                "count": 442,
+                "status": "NONE"
+              },
+              "chargebacks": {
+                "count": 15,
+                "status": "NONE"
+              },
+              "negativeFeedback": {
+                "count": 628,
+                "status": "NONE"
+              },
+              "fulfillmentType": "mfn",
+              "status": "GOOD",
+              "rate": 0.009,
+              "targetValue": 0.01,
+              "targetCondition": "LESS_THAN"
+            },
+            "afn": {
+              "reportingDateRange": {
+                "reportingDateFrom": "2020-09-06T00:00Z",
+                "reportingDateTo": "2020-11-04T23:59Z"
+              },
+              "orderCount": 539000,
+              "orderWithDefects": {
+                "count": 1078,
+                "status": "GOOD"
+              },
+              "claims": {
+                "count": 442,
+                "status": "NONE"
+              },
+              "chargebacks": {
+                "count": 15,
+                "status": "NONE"
+              },
+              "negativeFeedback": {
+                "count": 628,
+                "status": "NONE"
+              },
+              "fulfillmentType": "mfn",
+              "status": "GOOD",
+              "rate": 0.009,
+              "targetValue": 0.01,
+              "targetCondition": "LESS_THAN"
+            }
+          },
+          "documentRequest": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-11-21T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "defectsCount": 8,
+            "status": "GOOD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "validTrackingRate": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-10-11T00:00Z",
+              "reportingDateTo": "2020-11-09T23:59Z"
+            },
+            "shipmentCount": 878443,
+            "validTrackingCount": 896462,
+            "status": "GOOD",
+            "rate": 0.9529,
+            "targetValue": 0.95,
+            "targetCondition": "GREATER_THAN"
+          },
+          "productConditionCustomerComplaints": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-22T00:00Z",
+              "reportingDateTo": "2020-11-17T23:59Z"
+            },
+            "defectsCount": 337,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "otherPolicyViolations": {
+            "reportingDateRange": {
+              "reportingDateFrom": "2020-05-24T00:00Z",
+              "reportingDateTo": "2020-11-19T23:59Z"
+            },
+            "defectsCount": 86,
+            "status": "BAD",
+            "targetValue": 0,
+            "targetCondition": "EQUALS"
+          },
+          "warningState": [
+            {
+              "warningType": "spammingSellerMessaging",
+              "status": "BAD"
+            }
+          ]
+        }
+      ],
+      "items": {
+        "type": "object",
+        "description": "Report data for the program.",
+        "required": [
+          "marketplaceId",
+          "invoiceDefectRate",
+          "lateShipmentRate",
+          "orderDefectRate",
+          "onTimeDeliveryRate",
+          "unitOnTimeDeliveryRate",
+          "validTrackingRate",
+          "preFulfillmentCancellationRate",
+          "warningStates",
+          "accountHealthRating",
+          "listingPolicyViolations",
+          "productAuthenticityCustomerComplaints",
+          "productConditionCustomerComplaints",
+          "productSafetyCustomerComplaints",
+          "receivedIntellectualPropertyComplaints",
+          "restrictedProductPolicyViolations",
+          "suspectedIntellectualPropertyViolations",
+          "foodAndProductSafetyIssues",
+          "otherPolicyViolations",
+          "documentRequests"
+        ],
+        "properties": {
+          "marketplaceId": {
+            "description": "A requested marketplace ID.",
+            "type": "string"
+          },
+          "invoiceDefectRate": {
+            "type": "object",
+            "description": "Seller's invoice defect rate within a given reporting date range for 1 requested marketplace.",
+            "examples": [
+              {
+                "reportingDateRange": {
+                  "reportingDateFrom": "2020-10-21T00:00Z",
+                  "reportingDateTo": "2020-10-27T23:59Z"
+                },
+                "orderCount": 9001,
+                "invoiceDefect": {
+                  "count": 315,
+                  "status": "GOOD"
+                },
+                "missingInvoice": {
+                  "count": 214,
+                  "status": "NONE"
+                },
+                "lateInvoice": {
+                  "count": 101,
+                  "status": "NONE"
+                },
+                "status": "GOOD",
+                "rate": 0.03499611,
+                "targetValue": 0.05,
+                "targetCondition": "LESS_THAN"
+              }
+            ],
+            "required": [
+              "reportingDateRange",
+              "orderCount",
+              "invoiceDefect",
+              "missingInvoice",
+              "lateInvoice",
+              "status",
+              "rate",
+              "targetValue",
+              "targetCondition"
+            ],
+            "properties": {
+              "reportingDateRange": {
+                "$ref": "#/definitions/ReportingDateRange"
+              },
+              "orderCount": {
+                "$ref": "#/definitions/OrderCount"
+              },
+              "invoiceDefect": {
+                "description": "Total invoice defects count due to missing invoice and late invoice.",
+                "type": "object",
+                "examples": [
+                  {
+                    "count": 315,
+                    "status": "GOOD"
+                  }
+                ],
+                "required": [
+                  "count",
+                  "status"
+                ],
+                "properties": {
+                  "count": {
+                    "description": "Invoice defects count.",
+                    "type": "integer",
+                    "examples": [
+                      315
+                    ]
+                  },
+                  "status": {
+                    "$ref": "#/definitions/Status"
+                  }
+                }
+              },
+              "missingInvoice": {
+                "description": "Total missing invoice count in the time window.",
+                "type": "object",
+                "examples": [
+                  {
+                    "count": 214,
+                    "status": "GOOD"
+                  }
+                ],
+                "required": [
+                  "count",
+                  "status"
+                ],
+                "properties": {
+                  "count": {
+                    "description": "Missing invoice defects count.",
+                    "type": "integer",
+                    "examples": [
+                      214
+                    ]
+                  },
+                  "status": {
+                    "$ref": "#/definitions/Status"
+                  }
+                }
+              },
+              "lateInvoice": {
+                "description": "Total late invoice count in the time window.",
+                "type": "object",
+                "examples": [
+                  {
+                    "count": 101,
+                    "status": "GOOD"
+                  }
+                ],
+                "required": [
+                  "count",
+                  "status"
+                ],
+                "properties": {
+                  "count": {
+                    "description": "Late invoice defects count.",
+                    "type": "integer",
+                    "examples": [
+                      101
+                    ]
+                  },
+                  "status": {
+                    "$ref": "#/definitions/Status"
+                  }
+                }
+              },
+              "status": {
+                "$ref": "#/definitions/Status"
+              },
+              "rate": {
+                "$ref": "#/definitions/Rate"
+              },
+              "targetValue": {
+                "$ref": "#/definitions/TargetValue"
+              },
+              "targetCondition": {
+                "$ref": "#/definitions/TargetCondition"
+              }
+            }
+          },
+          "lateShipmentRate": {
+            "type": "object",
+            "description": "Seller's late shipment rate within a given reporting date range for 1 requested marketplace.",
+            "examples": [
+              {
+                "reportingDateRange": {
+                  "reportingDateFrom": "2020-10-21T00:00Z",
+                  "reportingDateTo": "2020-11-19T23:59Z"
+                },
+                "orderCount": 870669,
+                "lateShipmentCount": 27896,
+                "status": "GOOD",
+                "rate": 0.03203973037,
+                "targetValue": 0.04,
+                "targetCondition": "LESS_THAN"
+              }
+            ],
+            "required": [
+              "reportingDateRange",
+              "orderCount",
+              "lateShipmentCount",
+              "status",
+              "rate",
+              "targetValue",
+              "targetCondition"
+            ],
+            "properties": {
+              "reportingDateRange": {
+                "$ref": "#/definitions/ReportingDateRange"
+              },
+              "orderCount": {
+                "$ref": "#/definitions/OrderCount"
+              },
+              "lateShipmentCount": {
+                "type": "integer",
+                "description": "Order defects count due to late shipment.",
+                "examples": [
+                  27833
+                ]
+              },
+              "status": {
+                "$ref": "#/definitions/Status"
+              },
+              "rate": {
+                "$ref": "#/definitions/Rate"
+              },
+              "targetValue": {
+                "$ref": "#/definitions/TargetValue"
+              },
+              "targetCondition": {
+                "$ref": "#/definitions/TargetCondition"
+              }
+            }
+          },
+          "orderDefectRate": {
+            "type": "object",
+            "description": "Seller's MFN/AFN order defect rate within a given reporting date range for 1 requested marketplace.",
+            "examples": [
+              {
+                "mfn": {
+                  "reportingDateRange": {
+                    "reportingDateFrom": "2020-09-06T00:00Z",
+                    "reportingDateTo": "2020-11-04T23:59Z"
+                  },
+                  "orderCount": 539000,
+                  "orderWithDefects": {
+                    "count": 1078,
+                    "status": "GOOD"
+                  },
+                  "claims": {
+                    "count": 442,
+                    "status": "NONE"
+                  },
+                  "chargebacks": {
+                    "count": 15,
+                    "status": "NONE"
+                  },
+                  "negativeFeedback": {
+                    "count": 628,
+                    "status": "NONE"
+                  },
+                  "fulfillmentType": "mfn",
+                  "status": "GOOD",
+                  "rate": 0.009,
+                  "targetValue": 0.01,
+                  "targetCondition": "LESS_THAN"
+                },
+                "afn": {
+                  "reportingDateRange": {
+                    "reportingDateFrom": "2020-09-06T00:00Z",
+                    "reportingDateTo": "2020-11-04T23:59Z"
+                  },
+                  "orderCount": 539000,
+                  "orderWithDefects": {
+                    "count": 1078,
+                    "status": "GOOD"
+                  },
+                  "claims": {
+                    "count": 442,
+                    "status": "NONE"
+                  },
+                  "chargebacks": {
+                    "count": 15,
+                    "status": "NONE"
+                  },
+                  "negativeFeedback": {
+                    "count": 628,
+                    "status": "NONE"
+                  },
+                  "fulfillmentType": "mfn",
+                  "status": "GOOD",
+                  "rate": 0.009,
+                  "targetValue": 0.01,
+                  "targetCondition": "LESS_THAN"
+                }
+              }
+            ],
+            "required": [
+              "mfn",
+              "afn"
+            ],
+            "properties": {
+              "mfn": {
+                "$ref": "#/definitions/OrderDefectRate"
+              },
+              "afn": {
+                "$ref": "#/definitions/OrderDefectRate"
+              }
+            }
+          },
+          "onTimeDeliveryRate": {
+            "type": "object",
+            "description": "Seller's on-time delivery rate within a given reporting date range for 1 requested marketplace.",
+            "examples": [
+              {
+                "reportingDateRange": {
+                  "reportingDateFrom": "2020-10-11T00:00Z",
+                  "reportingDateTo": "2020-11-09T23:59Z"
+                },
+                "shipmentCountWithValidTracking": 808046,
+                "onTimeDeliveryCount": 847987,
+                "status": "GOOD",
+                "rate": 0.9529,
+                "targetValue": 0.95,
+                "targetCondition": "GREATER_THAN"
+              }
+            ],
+            "required": [
+              "reportingDateRange",
+              "shipmentCountWithValidTracking",
+              "onTimeDeliveryCount",
+              "status",
+              "rate",
+              "targetValue",
+              "targetCondition"
+            ],
+            "properties": {
+              "reportingDateRange": {
+                "$ref": "#/definitions/ReportingDateRange"
+              },
+              "shipmentCountWithValidTracking": {
+                "description": "The number of shipments with valid tracking associated within a given reporting date range for 1 requested marketplace.",
+                "type": "number",
+                "examples": [
+                  1234
+                ]
+              },
+              "onTimeDeliveryCount": {
+                "description": "On-time delivered shipment count within a given reporting date range for 1 requested marketplace.",
+                "type": "integer",
+                "examples": [
+                  1061
+                ]
+              },
+              "status": {
+                "$ref": "#/definitions/Status"
+              },
+              "rate": {
+                "$ref": "#/definitions/Rate"
+              },
+              "targetValue": {
+                "$ref": "#/definitions/TargetValue"
+              },
+              "targetCondition": {
+                "$ref": "#/definitions/TargetCondition"
+              }
+            }
+          },
+          "unitOnTimeDeliveryRate": {
+            "type": "object",
+            "description": "The seller's on-time delivery rate at a unit level within a reporting date range for one marketplace that you specify. This metric is only available in the US marketplace.",
+            "examples": [
+              {
+                "reportingDateRange": {
+                  "reportingDateFrom": "2020-10-11T00:00Z",
+                  "reportingDateTo": "2020-11-09T23:59Z"
+                },
+                "status": "GOOD",
+                "targetValue": 0.9,
+                "targetCondition": "GREATER_THAN",
+                "unitOnTimeDeliveryCount": 146,
+                "totalUnitCount": 165,
+                "rate": 0.8848
+              }
+            ],
+            "required": [
+              "reportingDateRange",
+              "status",
+              "targetValue",
+              "targetCondition",
+              "unitOnTimeDeliveryCount",
+              "totalUnitCount",
+              "rate"
+            ],
+            "properties": {
+              "reportingDateRange": {
+                "$ref": "#/definitions/ReportingDateRange"
+              },
+              "status": {
+                "$ref": "#/definitions/Status"
+              },
+              "targetValue": {
+                "$ref": "#/definitions/TargetValue"
+              },
+              "targetCondition": {
+                "$ref": "#/definitions/TargetCondition"
+              },
+              "unitOnTimeDeliveryCount": {
+                "description": "The on-time delivery unit count within a reporting date range for one marketplace that you specify.",
+                "type": "integer",
+                "examples": [
+                  1061
+                ]
+              },
+              "totalUnitCount": {
+                "description": "The total unit count within a reporting date range for one marketplace that you specify.",
+                "type": "integer",
+                "examples": [
+                  2000
+                ]
+              },
+              "rate": {
+                "$ref": "#/definitions/Rate"
+              }
+            }
+          },
+          "validTrackingRate": {
+            "type": "object",
+            "description": "Seller's valid tracking rate within a given reporting date range for 1 requested marketplace.",
+            "examples": [
+              {
+                "reportingDateRange": {
+                  "reportingDateFrom": "2020-10-11T00:00Z",
+                  "reportingDateTo": "2020-11-09T23:59Z"
+                },
+                "shipmentCount": 878443,
+                "validTrackingCount": 896462,
+                "status": "GOOD",
+                "rate": 0.9529,
+                "targetValue": 0.95,
+                "targetCondition": "GREATER_THAN"
+              }
+            ],
+            "required": [
+              "reportingDateRange",
+              "shipmentCount",
+              "validTrackingCount",
+              "status",
+              "rate",
+              "targetValue",
+              "targetCondition"
+            ],
+            "properties": {
+              "reportingDateRange": {
+                "$ref": "#/definitions/ReportingDateRange"
+              },
+              "shipmentCount": {
+                "description": "The number of shipments within a given reporting date range for 1 requested marketplace.",
+                "type": "integer",
+                "examples": [
+                  1234
+                ]
+              },
+              "validTrackingCount": {
+                "description": "Shipment with valid tracking count within a given reporting date range for 1 requested marketplace.",
+                "type": "integer",
+                "examples": [
+                  1061
+                ]
+              },
+              "status": {
+                "$ref": "#/definitions/Status"
+              },
+              "rate": {
+                "$ref": "#/definitions/Rate"
+              },
+              "targetValue": {
+                "$ref": "#/definitions/TargetValue"
+              },
+              "targetCondition": {
+                "$ref": "#/definitions/TargetCondition"
+              }
+            }
+          },
+          "preFulfillmentCancellationRate": {
+            "type": "object",
+            "description": "Seller's pre-fulfillment cancellation rate within a given reporting date range for 1 requested marketplace.",
+            "examples": [
+              {
+                "reportingDateRange": {
+                  "reportingDateFrom": "2020-11-12T00:00Z",
+                  "reportingDateTo": "2020-11-18T23:59Z"
+                },
+                "orderCount": 17197,
+                "cancellationCount": 551,
+                "status": "GOOD",
+                "rate": 0.005,
+                "targetValue": 0.01,
+                "targetCondition": "LESS_THAN"
+              }
+            ],
+            "required": [
+              "reportingDateRange",
+              "orderCount",
+              "cancellationCount",
+              "status",
+              "rate",
+              "targetValue",
+              "targetCondition"
+            ],
+            "properties": {
+              "reportingDateRange": {
+                "$ref": "#/definitions/ReportingDateRange"
+              },
+              "orderCount": {
+                "$ref": "#/definitions/OrderCount"
+              },
+              "cancellationCount": {
+                "type": "integer",
+                "description": "The number of seller faulted cancelled orders within a given reporting date range for 1 requested marketplace.",
+                "examples": [
+                  27833
+                ]
+              },
+              "status": {
+                "$ref": "#/definitions/Status"
+              },
+              "rate": {
+                "$ref": "#/definitions/Rate"
+              },
+              "targetValue": {
+                "$ref": "#/definitions/TargetValue"
+              },
+              "targetCondition": {
+                "$ref": "#/definitions/TargetCondition"
+              }
+            }
+          },
+          "warningStates": {
+            "type": "array",
+            "description": "A list of seller warning states for 1 requested marketplace.",
+            "additionalItems": false,
+            "examples": [
+              [
+                {
+                  "warningType": "spammingSellerMessaging",
+                  "status": "BAD"
+                }
+              ]
+            ],
+            "items": {
+              "type": "object",
+              "description": "Seller account warning state for 1 requested marketplace.",
+              "required": [
+                "warningType",
+                "status"
+              ],
+              "properties": {
+                "warningType": {
+                  "description": "Seller account warning type for 1 requested marketplace.",
+                  "type": "string",
+                  "examples": [
+                    "spammingSellerMessaging"
+                  ]
+                },
+                "status": {
+                  "description": "Seller account warning state status for 1 requested marketplace. It could be GOOD or BAD or NONE.",
+                  "type": "string",
+                  "examples": [
+                    "BAD"
+                  ],
+                  "enum": [
+                    "GOOD",
+                    "BAD",
+                    "NONE"
+                  ]
+                }
+              }
+            }
+          },
+          "accountHealthRating": {
+            "type": "object",
+            "description": "Seller's account health rating within a given reporting date range for 1 requested marketplace.",
+            "examples": [
+              {
+                "ahrStatus": "WARNED",
+                "reportingDateRange": {
+                  "reportingDateFrom": "2020-05-23T00:00Z",
+                  "reportingDateTo": "2020-11-19T23:59Z",
+                  "dateOffset": {
+                    "duration": 181,
+                    "offset": 0
+                  }
+                }
+              }
+            ],
+            "required": [
+              "ahrStatus",
+              "reportingDateRange"
+            ],
+            "properties": {
+              "reportingDateRange": {
+                "$ref": "#/definitions/ReportingDateRange"
+              },
+              "accountHealthRatingStatus": {
+                "type": "string",
+                "description": "Seller's overall Account Health Rating status within a given reporting date range for 1 requested marketplace. It could be GREAT or WARNED",
+                "examples": [
+                  "WARNED"
+                ],
+                "enum": [
+                  "GREAT",
+                  "WARNED"
+                ]
+              }
+            }
+          },
+          "listingPolicyViolations": {
+            "$ref": "#/definitions/ListingLevelViolation"
+          },
+          "productAuthenticityCustomerComplaints": {
+            "$ref": "#/definitions/ListingLevelViolation"
+          },
+          "productConditionCustomerComplaints": {
+            "$ref": "#/definitions/ListingLevelViolation"
+          },
+          "productSafetyCustomerComplaints": {
+            "$ref": "#/definitions/ListingLevelViolation"
+          },
+          "receivedIntellectualPropertyComplaints": {
+            "$ref": "#/definitions/ListingLevelViolation"
+          },
+          "restrictedProductPolicyViolations": {
+            "$ref": "#/definitions/ListingLevelViolation"
+          },
+          "suspectedIntellectualPropertyViolations": {
+            "$ref": "#/definitions/ListingLevelViolation"
+          },
+          "foodAndProductSafetyIssues": {
+            "$ref": "#/definitions/ListingLevelViolation"
+          },
+          "otherPolicyViolations": {
+            "$ref": "#/definitions/ListingLevelViolation"
+          },
+          "documentRequests": {
+            "$ref": "#/definitions/ListingLevelViolation"
+          }
+        }
+      }
+    }
+  }
+}
