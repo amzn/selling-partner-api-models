@@ -1,0 +1,759 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "You can use the Amazon External Fulfillment Inventory API to manage inventory operations in Amazon's External Fulfillment network, including batch inventory updates and retrievals.",
+    "version": "2024-09-11",
+    "title": "The Selling Partner API for External Fulfillment Inventory Management",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/externalFulfillment/inventory/2024-09-11/inventories": {
+      "post": {
+        "tags": [
+          "batchInventory"
+        ],
+        "description": "Make up to 10 inventory requests. The response includes the set of responses that correspond to requests. The response for each successful request in the set includes the  inventory count for the provided `sku` and `locationId` pair.",
+        "operationId": "batchInventory",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchInventoryRequest"
+            },
+            "description": "A list of inventory requests.",
+            "x-example": {
+              "body": {
+                "value": {
+                  "requests": [
+                    {
+                      "method": "POST",
+                      "uri": "/inventory/update?locationId=EXSB&skuId=efptestsku1",
+                      "body": {
+                        "quantity": 15,
+                        "clientSequenceNumber":12345678,
+                        "marketplaceAttributes": {
+                          "marketplaceId": "AXJDDKDFDKDF",
+                          "channelName": "FBA"
+                        }
+                      }
+                    },
+                    {
+                      "method": "POST",
+                      "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku2",
+                      "body": {
+                        "marketplaceAttributes": {
+                          "marketplaceId": "AXJDDKDFDKDF",
+                          "channelName": "FBA"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "207": {
+            "description": "Multi-status response that contains information about numerous resources.",
+            "schema": {
+              "$ref": "#/definitions/BatchInventoryResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {
+                "responses": [
+                  {
+                    "status": {
+                      "statusCode": 200,
+                      "reasonPhrase": "Success"
+                    },
+                    "body": {
+                      "locationId": "EXSB",
+                      "sellableQuantity": 20,
+                      "reservedQuantity": 5,
+                      "clientSequenceNumber":12345678,
+                      "marketplaceAttributes": {
+                        "marketplaceId": "AXJDDKDFDKDF",
+                        "channelName": "FBA"
+                      },
+                      "skuId": "efptestsku1",
+                      "actionableErrors": []
+                    }
+                  },
+                  {
+                    "status": {
+                      "statusCode": 400,
+                      "reasonPhrase": "Invalid Input"
+                    },
+                    "body": {
+                      "skuId": "efptestsku2",
+                      "locationId": "EXSB",
+                      "actionableErrors": [
+                        {
+                          "errorType": "INVALID_SKU",
+                          "errorSubType": "The requested Sku does not exist for the seller in requested marketplace."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "requests": [
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/update?locationId=EXSB&skuId=efptestsku1",
+                              "body": {
+                                "quantity": 15,
+                                "clientSequenceNumber":12345678,
+                                "marketplaceAttributes": {
+                                  "marketplaceId": "AXJDDKDFDKDF",
+                                  "channelName": "FBA"
+                                }
+                              }
+                            },
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku2",
+                              "body": {
+                                "marketplaceAttributes": {
+                                  "marketplaceId": "AXJDDKDFDKDF",
+                                  "channelName": "FBA"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "responses": [
+                      {
+                        "status": {
+                          "statusCode": 200,
+                          "reasonPhrase": "Success"
+                        },
+                        "body": {
+                          "locationId": "EXSB",
+                          "sellableQuantity": 20,
+                          "reservedQuantity": 5,
+                          "clientSequenceNumber":12345678,
+                          "marketplaceAttributes": {
+                            "marketplaceId": "AXJDDKDFDKDF",
+                            "channelName": "FBA"
+                          },
+                          "skuId": "efptestsku1",
+                          "actionableErrors": []
+                        }
+                      },
+                      {
+                        "status": {
+                          "statusCode": 400,
+                          "reasonPhrase": "Invalid Input"
+                        },
+                        "body": {
+                          "skuId": "efptestsku2",
+                          "locationId": "EXSB",
+                          "actionableErrors": [
+                            {
+                              "errorType": "INVALID_SKU",
+                              "errorSubType": "The requested Sku does not exist for the seller in requested marketplace."
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "requests": [
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/update?locationId=EXSB&skuId=efptestsku3",
+                              "body": {
+                                "quantity": 15,
+                                "clientSequenceNumber":12345678,
+                                "marketplaceAttributes": {
+                                  "marketplaceId": "AXJDDKDFDKDF",
+                                  "channelName": "FBA"
+                                }
+                              }
+                            },
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku4",
+                              "body": {
+                                "marketplaceAttributes": {
+                                  "marketplaceId": "AXJDDKDFDKDF",
+                                  "channelName": "FBA"
+                                }
+                              }
+                            },
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku4",
+                              "body": {}
+                            },
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku5",
+                              "body": {}
+                            },
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku6",
+                              "body": {}
+                            },
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku7",
+                              "body": {}
+                            },
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku8",
+                              "body": {}
+                            },
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku9",
+                              "body": {}
+                            },
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku10",
+                              "body": {}
+                            },
+                            {
+                              "method": "POST",
+                              "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku11",
+                              "body": {}
+                            }
+                          ]
+
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "BATCH_SIZE_EXCEED",
+                        "message": "Maximum number for requests supported in batch is 10."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorList": {
+      "type": "object",
+      "description": "An object containing a list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "description": "A list of error responses returned when a request is unsuccessful.",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred.",
+          "example": "InvalidInput"
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition.",
+          "example": "Invalid input provided. Refer to the API documentation for further details."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "example": "Provided input contains more number of batches than max supported."
+        }
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    },
+    "MarketplaceAttributes": {
+      "description": "The channel name and marketplace ID. This is required only when multiple channels have the same location ID.",
+      "type": "object",
+      "properties": {
+        "channelName": {
+          "description": "The name of the fulfillment channel in which to update inventory.",
+          "type": "string",
+          "example": "FBA",
+          "enum": [
+            "FBA",
+            "MFN",
+            "DF"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "FBA",
+              "description": "Fulfilled By Amazon."
+            },
+            {
+              "value": "MFN",
+              "description": "Merchant Fulfillment Network."
+            },
+            {
+              "value": "DF",
+              "description": "Direct Fulfillment."
+            }
+          ]
+        },
+        "marketplaceId": {
+          "description": "The marketplace ID of the marketplace where you want to update inventory.",
+          "type": "string",
+          "example": "AXJDDKDFDKDF"
+        }
+      },
+      "example": {
+        "channelName": "FBA",
+        "marketplaceId": "AXJDDKDFDKDF"
+      }
+    },
+    "BatchInventoryRequest": {
+      "description": "A list of inventory requests.",
+      "type": "object",
+      "properties": {
+        "requests": {
+          "$ref": "#/definitions/BatchInventoryRequestList"
+        }
+      },
+      "example": {
+        "requests": [
+          {
+            "method": "POST",
+            "uri": "/inventory/update?locationId=EXSB&skuId=efptestsku1",
+            "body": {
+              "quantity": 15,
+              "clientSequenceNumber":12345678,
+              "marketplaceAttributes": {
+                "marketplaceId": "AXJDDKDFDKDF",
+                "channelName": "FBA"
+              }
+            }
+          },
+          {
+            "method": "POST",
+            "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku2",
+            "body": {
+              "marketplaceAttributes": {
+                "marketplaceId": "AXJDDKDFDKDF",
+                "channelName": "FBA"
+              }
+            }
+          }
+        ]
+
+      }
+    },
+    "BatchInventoryRequestList": {
+      "description": "A list of inventory requests.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InventoryRequest"
+      },
+      "minItems": 1,
+      "maxItems": 10,
+      "example": [
+        {
+          "method": "POST",
+          "uri": "/inventory/update?locationId=EXSB&skuId=efptestsku1",
+          "body": {
+            "quantity": 15,
+            "clientSequenceNumber":12345678,
+            "marketplaceAttributes": {
+              "marketplaceId": "AXJDDKDFDKDF",
+              "channelName": "FBA"
+            }
+          }
+        },
+        {
+          "method": "POST",
+          "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku2",
+          "body": {
+            "marketplaceAttributes": {
+              "marketplaceId": "AXJDDKDFDKDF",
+              "channelName": "FBA"
+            }
+          }
+        }
+      ]
+    },
+    "InventoryRequest": {
+      "description": "An inventory request.",
+      "type": "object",
+      "required": [
+        "uri",
+        "method"
+      ],
+      "properties": {
+        "uri": {
+          "description": "The URI associated with the individual APIs from the batch request. The user must provide the resource identifier for the operation they want to use. ",
+          "type": "string",
+          "example": "inventory/update?locationId=EXSB&skuId=efptestsku1"
+        },
+        "method": {
+          "description": "The method associated with the individual operation from the batch request. To make an update, use `POST`.",
+          "$ref": "#/definitions/HttpMethod"
+        },
+        "body": {
+          "description": "The body associated with the individual APIs being called as part of the batch request.",
+          "$ref": "#/definitions/InventoryRequestParams"
+        }
+      }
+    },
+    "InventoryRequestParams": {
+      "description": "The parameters for an individual request.",
+      "type": "object",
+      "properties": {
+        "clientSequenceNumber": {
+          "description": "The latest sequence number for the inventory update operation. You find this value in the `clientSequenceNumber` property in the response to the `batchInventory` operation.",
+          "type": "integer",
+          "example": 12345678
+        },
+        "quantity": {
+          "description": "The absolute inventory quantity.",
+          "type": "integer",
+          "example": 15
+        },
+        "marketplaceAttributes": {
+          "$ref": "#/definitions/MarketplaceAttributes"
+        }
+      },
+      "example": {
+        "quantity": 15,
+        "clientSequenceNumber": 12345678,
+        "marketplaceAttributes" : {
+          "channelName": "FBA",
+          "marketplaceId": "AXJDDKDFDKDF"
+        }
+      }
+    },
+    "BatchInventoryResponse": {
+      "description": "The response of the `batchInventory` operation.",
+      "type": "object",
+      "properties": {
+        "responses": {
+          "$ref": "#/definitions/BatchInventoryResponseList"
+        }
+      }
+    },
+    "BatchInventoryResponseList": {
+      "description": "A list of inventory request responses.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InventoryResponse"
+      },
+      "minItems": 1,
+      "maxItems": 25
+    },
+    "InventoryResponse": {
+      "description": "A response to an individual inventory request.",
+      "type": "object",
+      "required": [
+        "status",
+        "body"
+      ],
+      "properties": {
+        "status": {
+          "description": "The HTTP status code associated with the response.",
+          "$ref": "#/definitions/HttpStatusLine"
+        },
+        "body": {
+          "description": "The body of the response.",
+          "$ref": "#/definitions/InventoryResponseBody"
+        }
+      }
+    },
+    "InventoryResponseBody": {
+      "type": "object",
+      "description": "The response to an inventory request.",
+      "properties": {
+        "clientSequenceNumber": {
+          "description": "Latest sequence number for an inventory update.",
+          "type": "integer",
+          "example": 12345678
+        },
+        "locationId": {
+          "description": "The location where inventory is updated or retrieved.",
+          "type": "string",
+          "example": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045"
+        },
+        "skuId": {
+          "description": "The SKU ID for which inventory is updated or retrieved",
+          "type": "string",
+          "example": "efptestsku2"
+        },
+        "sellableQuantity": {
+          "description": "The number of items of the specified SKU that are available for purchase.",
+          "type": "integer",
+          "minimum": 0,
+          "example": 5
+        },
+        "reservedQuantity": {
+          "description": "The number of items of the specified SKU created in any marketplace that are reserved for shipment and yet to be fulfilled.",
+          "type": "integer",
+          "minimum": 0,
+          "example": 2
+        },
+        "marketplaceAttributes": {
+          "$ref": "#/definitions/MarketplaceAttributes"
+        },
+        "actionableErrors": {
+          "description": "Inventory operation errors that require seller action before retrying the inventory request.",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/ActionableError"
+          }
+        }
+      },
+      "example": {
+        "locationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb046",
+        "sellableQuantity": 20,
+        "reservedQuantity": 5,
+        "clientSequenceNumber":12345678,
+        "marketplaceAttributes": {
+          "marketplaceId": "AXJDDKDFDKDF",
+          "channelName": "FBA"
+        },
+        "skuId": "efptestsku3",
+        "actionableErrors": []
+      }
+    },
+    "ActionableError": {
+        "description": "Error details you can take action on.",
+        "type": "object",
+        "properties": {
+          "errorType": {
+            "description": "The top level error type that may contain multiple error subtypes.",
+            "example": "PRODUCT_VALIDATION_FAILURE",
+            "type": "string"
+          },
+          "errorSubType": {
+            "description": "The secondary level error type.",
+            "example": "INVALID_SKU",
+            "type": "string"
+          }
+        }
+     },
+    "HttpMethod": {
+      "description": "The HTTP method associated with an individual request within a batch.",
+      "type": "string",
+      "enum": [
+        "GET",
+        "POST"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "GET",
+          "description": "Retrieve inventory information."
+        },
+        {
+          "value": "POST",
+          "description": "Add new inventory information."
+        }
+      ],
+      "example": "GET"
+    },
+    "HttpStatusLine": {
+      "description": "The HTTP status associated with the response for an individual request within a batch.",
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "description": "The HTTP response status code.",
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599
+        },
+        "reasonPhrase": {
+          "description": "The HTTP response reason phrase.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

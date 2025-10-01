@@ -1,0 +1,2412 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "The Selling Partner API for Amazon External Fulfillment Return Item Processing",
+    "description": "You can use the Amazon External Fulfillment Return Item Processing API to retrieve, track, and process return items through Amazon's External Fulfillment returns management system.",
+    "version": "2024-09-11",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/externalFulfillment/2024-09-11/returns": {
+      "get": {
+        "tags": [
+          "returnRetrieval"
+        ],
+        "description": "Retrieve a list of return items. You can filter results by location, RMA ID, status, or time.",
+        "operationId": "listReturns",
+        "parameters": [
+          {
+            "name": "returnLocationId",
+            "in": "query",
+            "description": "The SmartConnect location ID of the location from which you want to retrieve return items.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "rmaId",
+            "in": "query",
+            "description": "The RMA ID of the return items you want to list.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "The status of return items you want to list. You can retrieve all new return items with the `CREATED` status.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "CREATED",
+              "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER",
+              "CARRIER_OUT_FOR_PICK_UP_FROM_CUSTOMER",
+              "CUSTOMER_CANCELLED_PICK_UP",
+              "CUSTOMER_RESCHEDULED_PICK_UP",
+              "PICKED_FROM_CUSTOMER",
+              "IN_TRANSIT",
+              "OUT_FOR_DELIVERY",
+              "DELIVERED",
+              "REPLANNED",
+              "CUSTOMER_DROPPED_OFF",
+              "PARTIALLY_PROCESSED",
+              "PROCESSED",
+              "REJECTED",
+              "CANCELLED"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "CREATED",
+                "description": "The return is created and is awaiting pickup."
+              },
+              {
+                "value": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER",
+                "description": "The carrier is notified to pick up the return from the customer."
+              },
+              {
+                "value": "CARRIER_OUT_FOR_PICK_UP_FROM_CUSTOMER",
+                "description": "The carrier is out for pickup from the customer."
+              },
+              {
+                "value": "CUSTOMER_CANCELLED_PICK_UP",
+                "description": "The customer cancelled the pickup request."
+              },
+              {
+                "value": "CUSTOMER_RESCHEDULED_PICK_UP",
+                "description": "The customer rescheduled the pickup."
+              },
+              {
+                "value": "PICKED_FROM_CUSTOMER",
+                "description": "The return is picked up from the customer."
+              },
+              {
+                "value": "IN_TRANSIT",
+                "description": "The return is in transit to the fulfillment location."
+              },
+              {
+                "value": "OUT_FOR_DELIVERY",
+                "description": "The return is out for delivery to the fulfillment location."
+              },
+              {
+                "value": "DELIVERED",
+                "description": "The return is delivered to the fulfillment location."
+              },
+              {
+                "value": "REPLANNED",
+                "description": "The return delivery is replanned."
+              },
+              {
+                "value": "CUSTOMER_DROPPED_OFF",
+                "description": "The customer dropped off the return at a designated location."
+              },
+              {
+                "value": "PARTIALLY_PROCESSED",
+                "description": "The return is partially processed."
+              },
+              {
+                "value": "PROCESSED",
+                "description": "The return is fully processed."
+              },
+              {
+                "value": "REJECTED",
+                "description": "The return is rejected."
+              },
+              {
+                "value": "CANCELLED",
+                "description": "The return is cancelled."
+              }
+            ]
+          },
+          {
+            "name": "reverseTrackingId",
+            "in": "query",
+            "description": "The reverse tracking ID of the return items you want to list.",
+            "required": false,
+            "type": "string",
+            "x-example": "10024773658"
+          },
+          {
+            "name": "createdSince",
+            "in": "query",
+            "description": "Return items created after the specified date are included in the response. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "x-example": "2021-03-18T15:23:58Z"
+          },
+          {
+            "name": "createdUntil",
+            "in": "query",
+            "description": "Return items created before the specified date are included in the response. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format.",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "x-example": "2021-03-19T15:23:58Z"
+          },
+          {
+            "name": "lastUpdatedSince",
+            "in": "query",
+            "description": "Return items updated after the specified date are included in the response. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format. If you supply this parameter, you must also supply `returnLocationId` and `status`.",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "x-example": "2021-03-18T20:13:08Z"
+          },
+          {
+            "name": "lastUpdatedUntil",
+            "in": "query",
+            "description": "Return items whose most recent update is before the specified date are included in the response. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format. If you supply this parameter, you must also supply `returnLocationId` and `status`.",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "x-example": "2021-03-19T20:13:08Z"
+          },
+          {
+            "name": "lastUpdatedAfter",
+            "in": "query",
+            "description": "DEPRECATED. Use the `createdSince` parameter.",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "lastUpdatedBefore",
+            "in": "query",
+            "description": "DEPRECATED. Use the `createdUntil` parameter.",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "x-example": "2021-03-19T15:23:58Z"
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "The number of return items you want to include in the response.\n\n**Default:** 10\n\n**Maximum:** 100",
+            "required": false,
+            "type": "integer",
+            "format": "int64",
+            "maximum": 100,
+            "x-example": 50
+          },
+          {
+            "name": "nextToken",
+            "in": "query",
+            "description": "A token that you use to retrieve the next page of results. The response includes `nextToken` when there are multiple pages of results. To get the next page of results, call the operation with this token and include the same arguments as the call that produced the token. To get a complete list, call this operation until `nextToken` is null. Note that this operation can return empty pages.",
+            "required": false,
+            "type": "string",
+            "x-example": "eyJsYXN0VXBkYXRlZFRpbWVzdGFtcCI6eyJzIjpu"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. The response contains a list of return items.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdOneShipmentOneItemOneQty200"
+                      }
+                    }
+                  },
+                  "response": {
+                    "returns": [
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "1002400773021",
+                          "customerOrderId": "407-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "TEST_CASE_200_FBA_SHIPMENT_ID",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2020-06-09T18:13:18Z",
+                        "fulfillmentLocationId": "TEST_CASE_200_LOCATION_ID",
+                        "id": "ee39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2020-06-09T23:10:55Z",
+                        "merchantSku": "1002400773021",
+                        "numberOfUnits": 1,
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "IN-ABCD-124"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "rmaIdOneShipmentOneItemOneQty200",
+                          "fulfillmentOrderId": "11d2dc2e-b678-5e64-a1db-688d5bf9423e"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "267232370774"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "10024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdOneShipmentMultItemOneQty200"
+                      }
+                    }
+                  },
+                  "response": {
+                    "returns": [
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT1",
+                          "customerOrderId": "207-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "D51EzWkeh",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-18T15:23:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "ff40dee3-3bbc-47b6-a5b1-7b6a1c6d45e3",
+                        "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+                        "merchantSku": "SerialYT1",
+                        "numberOfUnits": 1,
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-102"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "rmaIdOneShipmentMultItemOneQty200",
+                          "fulfillmentOrderId": "21d2dc2e-b678-5e64-a1db-688d5bf9423f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "367232370885"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "20024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT2",
+                          "customerOrderId": "217-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "D51EzWkeh",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-18T15:23:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "fg40dee3-3cbc-47b6-a5b1-7b6a1c6d45e3",
+                        "lastUpdatedDateTime": "2021-03-19T21:14:09Z",
+                        "merchantSku": "SerialYT2",
+                        "numberOfUnits": 1,
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-103"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "rmaIdOneShipmentMultItemOneQty200",
+                          "fulfillmentOrderId": "32d3dc4e-b678-5e64-a1db-688d5bf9423f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "367232370832"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "20024773658"
+                          },
+                          "deliveryDateTime": "2021-03-19T18:15:09Z",
+                          "pickupDateTime": "2021-03-20T21:15:09Z"
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdOneShipmentOneItemMultQty200"
+                      }
+                    }
+                  },
+                  "response": {
+                    "returns": [
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT3",
+                          "customerOrderId": "307-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "B40ExWpdh",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "replanningDetails": {
+                          "previousTrackingInfo": [
+                            {
+                              "carrierName": "ATS",
+                              "trackingId": "377232370329"
+                            },
+                            {
+                              "carrierName": "ATS",
+                              "trackingId": "377232370330"
+                            }
+                          ]
+                        },
+                        "creationDateTime": "2021-03-16T15:23:59Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "ga54cdd9-9caa-47b6-a5b1-7b6a1c6d43d2",
+                        "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+                        "merchantSku": "SerialYT3",
+                        "numberOfUnits": 10,
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-191"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "rmaIdOneShipmentOneItemMultQty200",
+                          "fulfillmentOrderId": "22f2dc2e-c671-5e64-a1db-688d5bf9423r"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "377232370331"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "30024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdOneShipmentMultItemMultQty200"
+                      }
+                    }
+                  },
+                  "response": {
+                    "returns": [
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT1",
+                          "customerOrderId": "407-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "R51EzWVee",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-18T15:23:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "fz40dee4-3bbc-47b6-a5b1-7b6a1c6d45e3",
+                        "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+                        "merchantSku": "SerialYT1",
+                        "numberOfUnits": 10,
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-106"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "rmaIdOneShipmentMultItemMultQty200",
+                          "fulfillmentOrderId": "21d2dc2e-b678-5e64-a1db-688d5bf9423f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "367232370885"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "40024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT2",
+                          "customerOrderId": "417-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "R51EzWVee",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-19T11:13:28Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "gf40dee3-33bc-47b6-a5b1-7b6a1c6d45e4",
+                        "lastUpdatedDateTime": "2021-03-19T21:13:01Z",
+                        "merchantSku": "SerialYT2",
+                        "numberOfUnits": 8,
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-107"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "rmaIdOneShipmentMultItemMultQty200",
+                          "fulfillmentOrderId": "892d3dc4e-b678-5e64-a1db-688d5bf9422g"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "7672323708009"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "40024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdMultShipmentMultItemOneQty200"
+                      }
+                    }
+                  },
+                  "response": {
+                    "returns": [
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT1",
+                          "customerOrderId": "507-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "D51EzWkeh",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-18T15:34:21Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "bd12dee3-3bbc-47b6-a5b1-7b6a1c6d45a4",
+                        "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+                        "merchantSku": "SerialYT1",
+                        "numberOfUnits": 1,
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-192"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "rmaIdMultShipmentMultItemOneQty200",
+                          "fulfillmentOrderId": "32e1cd2e-b678-5e64-a1db-688d5bf9432k"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "2672323708116"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "50024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT2",
+                          "customerOrderId": "517-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "E11DrWkjs",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-18T15:23:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "wr41dee3-3bbc-47b6-a5b1-7b6a1c6d45e1",
+                        "lastUpdatedDateTime": "2021-03-19T21:14:09Z",
+                        "merchantSku": "SerialYT2",
+                        "numberOfUnits": 1,
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-111"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "rmaIdMultShipmentMultItemOneQty200",
+                          "fulfillmentOrderId": "56a3dc4e-b678-5f64-w1db-688d5bf9423f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "367232310831"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "50024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdMultShipmentMultItemMultQty200"
+                      }
+                    }
+                  },
+                  "response": {
+                    "returns": [
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT1",
+                          "customerOrderId": "607-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "E51FzWkek",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-18T15:34:21Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "jk12dee3-3bbc-37b6-a5b1-7b6a1c6d45a6",
+                        "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+                        "merchantSku": "SerialYT1",
+                        "numberOfUnits": 19,
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-199"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "rmaIdMultShipmentMultItemMultQty200",
+                          "fulfillmentOrderId": "32e1cd2e-b678-5e64-a1db-688d5bf9432k"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "2672323708116"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "60024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT2",
+                          "customerOrderId": "617-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "R21RrWkjz",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-18T15:23:28Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "fb21dee4-3bbc-47b6-a5b1-7b2a1c6d45e2",
+                        "lastUpdatedDateTime": "2021-03-19T21:14:09Z",
+                        "merchantSku": "SerialYT2",
+                        "numberOfUnits": 12,
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-115"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "rmaIdMultShipmentMultItemMultQty200",
+                          "fulfillmentOrderId": "67b2dc4e-b678-5f64-w1db-688d5bf91fv"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "631232310132"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "60024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "returnLocationId": {
+                        "value": "testReturnLocationId"
+                      }
+                    }
+                  },
+                  "response": {
+                    "returns": [
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT1",
+                          "customerOrderId": "807-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "D51ExWpdg",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-18T15:23:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "aa39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+                        "merchantSku": "SerialYT1",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-140"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "22e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "357232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT2",
+                          "customerOrderId": "817-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "J51ExWpea",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-18T15:23:25Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "bb39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-18T20:13:22Z",
+                        "merchantSku": "SerialYT2",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-141"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "23e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "357232370196"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "DELIVERED"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT3",
+                          "customerOrderId": "827-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "D51ExWpdp",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-22T22:23:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "cc39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-22T23:13:08Z",
+                        "merchantSku": "SerialYT3",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-143"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "24e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "337232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT4",
+                          "customerOrderId": "837-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "E51ExWpdp",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-22T22:24:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "dd39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-22T23:14:08Z",
+                        "merchantSku": "SerialYT4",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-142"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "25e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "347232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT5",
+                          "customerOrderId": "847-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "F51ExWpdp",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-22T22:25:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "gg39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-22T23:15:08Z",
+                        "merchantSku": "SerialYT5",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-148"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "26e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "367232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "returnLocationId": {
+                        "value": "testReturnLocationId"
+                      },
+                      "status": {
+                        "value": "CREATED"
+                      }
+                    }
+                  },
+                  "response": {
+                    "returns": [
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT1",
+                          "customerOrderId": "807-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "D51ExWpdg",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-18T15:23:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "aa39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+                        "merchantSku": "SerialYT1",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-140"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "22e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "357232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT3",
+                          "customerOrderId": "827-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "D51ExWpdp",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-22T22:23:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "cc39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-22T23:13:08Z",
+                        "merchantSku": "SerialYT3",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-143"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "24e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "337232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT4",
+                          "customerOrderId": "837-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "E51ExWpdp",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-22T22:24:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "dd39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-22T23:14:08Z",
+                        "merchantSku": "SerialYT4",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-142"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "25e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "347232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT5",
+                          "customerOrderId": "847-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "F51ExWpdp",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-22T22:25:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "gg39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-22T23:15:08Z",
+                        "merchantSku": "SerialYT5",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-148"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "26e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "367232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "returnLocationId": {
+                        "value": "testReturnLocationId"
+                      },
+                      "status": {
+                        "value": "CREATED"
+                      },
+                      "lastUpdatedAfter": {
+                        "value": "2021-03-20T00:00:00Z"
+                      }
+                    }
+                  },
+                  "response": {
+                    "returns": [
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT3",
+                          "customerOrderId": "827-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "D51ExWpdp",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-22T22:23:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "cc39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-22T23:13:08Z",
+                        "merchantSku": "SerialYT3",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-143"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "24e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "337232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT4",
+                          "customerOrderId": "837-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "E51ExWpdp",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-22T22:24:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "dd39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-22T23:14:08Z",
+                        "merchantSku": "SerialYT4",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-142"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "25e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "347232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      },
+                      {
+                        "marketplaceChannelDetails": {
+                          "channelSku": "SerialYT5",
+                          "customerOrderId": "847-7727827-8514700",
+                          "merchantId": "YOUR_MERCHANT_ID",
+                          "returnLocationId": "EDD9",
+                          "shipmentId": "F51ExWpdp",
+                          "marketplaceChannel": {
+                            "marketplaceName": "AMAZON_US",
+                            "channelName": "FBA"
+                          }
+                        },
+                        "otpDetails":{
+                          "otp": "703669",
+                          "validTill": 1612933142
+                        },
+                        "packageDeliveryMode": "WITH_OTP",
+                        "creationDateTime": "2021-03-22T22:25:58Z",
+                        "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+                        "id": "gg39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                        "lastUpdatedDateTime": "2021-03-22T23:15:08Z",
+                        "merchantSku": "SerialYT5",
+                        "numberOfUnits": 1,
+                        "returnLocationId": "testReturnLocationId",
+                        "returnMetadata": {
+                          "invoiceInformation": {
+                            "id": "EDD9-148"
+                          },
+                          "returnReason": "Missed",
+                          "rmaId": "Es1ZkjzkRRMA",
+                          "fulfillmentOrderId": "26e2dc2e-b678-5e64-a1db-688d5bf9434f"
+                        },
+                        "returnShippingInfo": {
+                          "forwardTrackingInfo": {
+                            "carrierName": "ATS",
+                            "trackingId": "367232370195"
+                          },
+                          "reverseTrackingInfo": {
+                            "carrierName": "UPSN",
+                            "trackingId": "70024773658"
+                          }
+                        },
+                        "returnType": "CUSTOMER",
+                        "returnSubType": "NORMAL",
+                        "status": "CREATED"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "examples": {
+              "application/json": {
+                "nextToken": "eyJsYXN0VXBkYXRlZFRpbWVzdGFtcCI6eyJzIjpu",
+                "returns": [
+                  {
+                    "marketplaceChannelDetails": {
+                      "channelSku": "SerialYT1",
+                      "customerOrderId": "107-7727827-8514700",
+                      "returnLocationId": "EDD5",
+                      "shipmentId": "D39CwZpdj",
+                      "marketplaceChannel": {
+                        "marketplaceName": "AMAZON_IN",
+                        "channelName": "FBA"
+                      }
+                    },
+                    "otpDetails":{
+                      "otp": "703669",
+                      "validTill": 1612933142
+                    },
+                    "packageDeliveryMode": "WITH_OTP",
+                    "creationDateTime": "2021-03-18T15:23:58Z",
+                    "fulfillmentLocationId": "450a6661-1a97-4abd-99e4-45714bcf4439",
+                    "id": "ee39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                    "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+                    "merchantSku": "SerialYT1",
+                    "numberOfUnits": 1,
+                    "returnMetadata": {
+                      "invoiceInformation": {
+                        "id": "EDD5-101"
+                      },
+                      "returnReason": "Missed",
+                      "rmaId": "Test",
+                      "fulfillmentOrderId": "10d1db2e-a546-4d64-a5da-577d5bf9420d"
+                    },
+                    "returnShippingInfo": {
+                      "forwardTrackingInfo": {
+                        "carrierName": "ATS",
+                        "trackingId": "156121269663"
+                      }
+                    },
+                    "returnType": "CUSTOMER",
+                    "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER"
+                  },
+                  {
+                    "marketplaceChannelDetails": {
+                      "channelSku": "FBA_PERF_BOOK",
+                      "customerOrderId": "107-7727827-8514701",
+                      "returnLocationId": "EDD5",
+                      "shipmentId": "DXPQ1wCCZ",
+                      "marketplaceChannel": {
+                        "marketplaceName": "AMAZON_IN$",
+                        "channelName": "FBA"
+                      }
+                    },
+                    "otpDetails":{
+                      "otp": "703669",
+                      "validTill": 1612933142
+                    },
+                    "packageDeliveryMode": "WITH_OTP",
+                    "creationDateTime": "2021-04-02T10:13:50Z",
+                    "fulfillmentLocationId": "450a6661-1a97-4abd-99e4-45714bcf4439",
+                    "id": "add6bfb3-8d15-4c79-8bcf-810fe12b163c",
+                    "lastUpdatedDateTime": "2021-04-02T15:23:58Z",
+                    "merchantSku": "FBA_PERF_BOOK",
+                    "numberOfUnits": 1,
+                    "returnMetadata": {
+                      "invoiceInformation": {
+                        "id": "EDD5-92"
+                      },
+                      "returnReason": "Missed",
+                      "rmaId": "Test"
+                    },
+                    "returnShippingInfo": {
+                      "forwardTrackingInfo": {
+                        "carrierName": "ATS",
+                        "trackingId": "151987126617"
+                      },
+                      "reverseTrackingInfo": {
+                        "carrierName": "ATS",
+                        "trackingId": "19124773658"
+                      }
+                    },
+                    "returnType": "CUSTOMER",
+                    "status": "CREATED"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ReturnsResponse"
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "lastUpdatedAfter": {
+                        "value": "1110-13-89T43:99:99Z"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "LastUpdatedAfter value is an not a valid ISO date/time object."
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdTest403"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "Forbidden",
+                        "message": "Request is forbidden"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "409": {
+            "description": "The resource specified conflicts with the current state",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdTest409"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "DuplicateRequest",
+                        "message": "Duplicate request found for 'rmaId' 'rmaIdTest409'"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdTest429"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "RateLimited",
+                        "message": "Temporary failure occurred, retry operation after some time."
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdTest500"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InternalFailure",
+                        "message": "Internal failure occurred, contact Amazon support"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "rmaId": {
+                        "value": "rmaIdTest503"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "ServiceUnavailable",
+                        "message": "Temporary failure occurred, retry operation"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
+    },
+    "/externalFulfillment/2024-09-11/returns/{returnId}": {
+      "get": {
+        "tags": [
+          "returnRetrieval"
+        ],
+        "description": "Retrieve the return item with the specified ID.",
+        "operationId": "getReturn",
+        "parameters": [
+          {
+            "name": "returnId",
+            "in": "path",
+            "description": "The ID of the return item you want.",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "returnId": {
+                        "value": "rmaIdOneShipmentOneItemOneQty200"
+                      }
+                    }
+                  },
+                  "response": {
+                    "id": "rmaIdOneShipmentOneItemOneQty200",
+                    "returnLocationId": "bdd9cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                    "merchantSku": "mSku1",
+                    "returnType": "CUSTOMER",
+                    "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER",
+                    "numberOfUnits": 1,
+                    "fulfillmentLocationId": "450a6661-1a97-4abd-99e4-45714bcf4439",
+                    "creationDateTime": "2021-03-18T15:23:58Z",
+                    "lastUpdatedDateTime": "2021-03-18T15:26:59Z",
+                    "returnMetadata": {
+                      "invoiceInformation": {
+                        "id": "EDD5-101"
+                      },
+                      "returnReason": "Missed",
+                      "rmaId": "Test"
+                    },
+                    "returnShippingInfo": {
+                      "forwardTrackingInfo": {
+                        "carrierName": "ATS",
+                        "trackingId": "156121269663"
+                      },
+                      "reverseTrackingInfo": {
+                        "carrierName": "ATS",
+                        "trackingId": "19124773658"
+                      }
+                    },
+                    "marketplaceChannelDetails": {
+                      "channelSku": "SerialYT1",
+                      "customerOrderId": "107-7727827-8514700",
+                      "returnLocationId": "EDD5",
+                      "shipmentId": "D39CwZpdj",
+                      "marketplaceChannel": {
+                        "marketplaceName": "AMAZON_IN",
+                        "channelName": "FBA"
+                      }
+                    },
+                    "otpDetails":{
+                      "otp": "703669",
+                      "validTill": 1612933142
+                    },
+                    "packageDeliveryMode": "WITH_OTP"
+                  }
+                }
+              ]
+            },
+            "examples": {
+              "application/json": {
+                "marketplaceChannelDetails": {
+                  "channelSku": "SerialYT1",
+                  "customerOrderId": "107-7727827-8514700",
+                  "returnLocationId": "EDD5",
+                  "shipmentId": "D39CwZpdj",
+                  "marketplaceChannel": {
+                    "marketplaceName": "AMAZON_IN$",
+                    "channelName": "FBA"
+                  }
+                },
+                "otpDetails":{
+                  "otp": "703669",
+                  "validTill": 1612933142
+                },
+                "packageDeliveryMode": "WITH_OTP",
+                "creationDateTime": "2021-05-08T01:23:33Z",
+                "fulfillmentLocationId": "450a6661-1a97-4abd-99e4-45714bcf4439",
+                "id": "ee39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+                "lastUpdatedDateTime": "2021-05-08T10:23:38Z",
+                "merchantSku": "SerialYT1",
+                "numberOfUnits": 1,
+                "returnMetadata": {
+                  "invoiceInformation": {
+                    "id": "EDD5-101"
+                  },
+                  "returnReason": "Missed",
+                  "rmaId": "Test"
+                },
+                "returnShippingInfo": {
+                  "forwardTrackingInfo": {
+                    "carrierName": "ATS",
+                    "trackingId": "156121269663"
+                  },
+                  "reverseTrackingInfo": {
+                    "carrierName": "ATS",
+                    "trackingId": "19124773658"
+                  }
+                },
+                "returnType": "CUSTOMER",
+                "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Return"
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "returnId": {
+                        "value": "rmaIdInvalid"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Invalid input 'rmaIdInvalid' for parameter 'returnId'"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "409": {
+            "description": "The resource specified conflicts with the current state",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorList": {
+      "type": "object",
+      "description": "An object containing a list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "description": "A list of error responses returned when a request is unsuccessful.",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "Error": {
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "description": "An error code that identifies the type of error that occurred.",
+          "type": "string"
+        },
+        "message": {
+          "description": "A message that describes the error condition.",
+          "type": "string"
+        },
+        "details": {
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "type": "string",
+          "example": "The specified parameter value is invalid."
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "Return": {
+      "type": "object",
+      "description": "Information about the return item.",
+      "properties": {
+        "id": {
+          "description": "The return item's ID.",
+          "type": "string"
+        },
+        "returnLocationId": {
+          "description": "The SmartConnect identifier for where the return item was dropped for delivery.",
+          "type": "string"
+        },
+        "merchantSku": {
+          "description": "The seller's identifier for the SKU.",
+          "type": "string"
+        },
+        "returnType": {
+          "description": "The type of return.",
+          "type": "string",
+          "enum": [
+            "CUSTOMER",
+            "REJECT"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "CUSTOMER",
+              "description": "A return initiated by the customer."
+            },
+            {
+              "value": "REJECT",
+              "description": "A rejected return."
+            }
+          ]
+        },
+        "returnSubType": {
+          "description": "The sub-type of return.",
+          "type": "string",
+          "enum": [
+            "NORMAL",
+            "REPLACEMENT",
+            "EXCHANGE"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "NORMAL",
+              "description": "A standard return where the customer returns the item."
+            },
+            {
+              "value": "REPLACEMENT",
+              "description": "A return where the customer receives a replacement item."
+            },
+            {
+              "value": "EXCHANGE",
+              "description": "A return where the customer exchanges the item for a different one."
+            }
+          ]
+        },
+        "numberOfUnits": {
+          "description": "The total number of units in the return.",
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1
+        },
+        "status": {
+          "description": "The current status of the return.",
+          "type": "string",
+          "enum": [
+            "CREATED",
+            "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER",
+            "CARRIER_OUT_FOR_PICK_UP_FROM_CUSTOMER",
+            "CUSTOMER_CANCELLED_PICK_UP",
+            "CUSTOMER_RESCHEDULED_PICK_UP",
+            "PICKED_FROM_CUSTOMER",
+            "IN_TRANSIT",
+            "OUT_FOR_DELIVERY",
+            "DELIVERED",
+            "REPLANNED",
+            "CUSTOMER_DROPPED_OFF",
+            "PARTIALLY_PROCESSED",
+            "PROCESSED",
+            "REJECTED",
+            "CANCELLED"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "CREATED",
+              "description": "The return is created and awaiting pickup."
+            },
+            {
+              "value": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER",
+              "description": "The carrier is notified to pick up the return from the customer."
+            },
+            {
+              "value": "CARRIER_OUT_FOR_PICK_UP_FROM_CUSTOMER",
+              "description": "The carrier is out for pickup from the customer."
+            },
+            {
+              "value": "CUSTOMER_CANCELLED_PICK_UP",
+              "description": "The customer cancelled the pickup request."
+            },
+            {
+              "value": "CUSTOMER_RESCHEDULED_PICK_UP",
+              "description": "The customer rescheduled the pickup."
+            },
+            {
+              "value": "PICKED_FROM_CUSTOMER",
+              "description": "The return is picked up from the customer."
+            },
+            {
+              "value": "IN_TRANSIT",
+              "description": "The return is in transit to the fulfillment location."
+            },
+            {
+              "value": "OUT_FOR_DELIVERY",
+              "description": "The return is out for delivery to the fulfillment location."
+            },
+            {
+              "value": "DELIVERED",
+              "description": "The return is delivered to the fulfillment location."
+            },
+            {
+              "value": "REPLANNED",
+              "description": "The return delivery is replanned."
+            },
+            {
+              "value": "CUSTOMER_DROPPED_OFF",
+              "description": "The customer dropped off the return at a designated location."
+            },
+            {
+              "value": "PARTIALLY_PROCESSED",
+              "description": "The return is partially processed."
+            },
+            {
+              "value": "PROCESSED",
+              "description": "The return is fully processed."
+            },
+            {
+              "value": "REJECTED",
+              "description": "The return is rejected."
+            },
+            {
+              "value": "CANCELLED",
+              "description": "The return is cancelled."
+            }
+          ]
+        },
+        "fulfillmentLocationId": {
+          "description": "The ID of the location that fulfilled the order.",
+          "type": "string"
+        },
+        "creationDateTime": {
+          "description": "The date and time when the return was created.",
+          "$ref": "#/definitions/DateTime"
+        },
+        "lastUpdatedDateTime": {
+          "description": "The date and time of the most recent update to the return.",
+          "$ref": "#/definitions/DateTime"
+        },
+        "returnMetadata": {
+          "description": "Metadata about the return item.",
+          "$ref": "#/definitions/ReturnMetadata"
+        },
+        "returnShippingInfo": {
+          "description": "Information about the shipping of the return packages.",
+          "$ref": "#/definitions/ReturnShippingInfo"
+        },
+        "marketplaceChannelDetails": {
+          "description": "Channel-specific attributes for the return. These attributes are not mandatory and each channel can provide them differently.",
+          "$ref": "#/definitions/MarketplaceChannelDetails"
+        },
+        "otpDetails":{
+          "description": "The one-time password (OTP) details of the return item.",
+          "$ref": "#/definitions/OtpDetails"
+        },
+        "packageDeliveryMode": {
+          "description": "The package delivery mode. This indicates whether the return was delivered to the seller with or without a one-time password (OTP).",
+          "type": "string",
+          "enum": [
+            "WITH_OTP",
+            "WITHOUT_OTP"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "WITH_OTP",
+              "description": "The return package was delivered to the seller with OTP verification."
+            },
+            {
+              "value": "WITHOUT_OTP",
+              "description": "The return package was delivered to the seller without OTP verification."
+            }
+          ]
+        },
+        "replanningDetails": {
+          "description": "Details about the replanned returns.",
+          "$ref": "#/definitions/ReplanningDetails"
+        }
+      },
+      "required": [
+        "id",
+        "returnMetadata",
+        "status",
+        "fulfillmentLocationId",
+        "returnType",
+        "lastUpdatedDateTime",
+        "returnShippingInfo",
+        "marketplaceChannelDetails"
+      ]
+    },
+    "TrackingInfo": {
+      "description": "Information for tracking a return.",
+      "type": "object",
+      "properties": {
+        "carrierName": {
+          "description": "The name of the third party courier service used to ship the return package.",
+          "type": "string"
+        },
+        "trackingId": {
+          "description": "The tracking ID of the return package.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "carrierName",
+        "trackingId"
+      ]
+    },
+    "OtpDetails":{
+      "description": "One-time password (OTP) details of the return item.",
+      "type": "object",
+      "properties": {
+        "otp": {
+          "description": "One-time password to validate the return delivered to the seller.",
+          "type": "string"
+        },
+        "validTill": {
+          "description": "The UNIX timestamp of when the verification code expires.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "otp",
+        "validTill"
+      ]
+    },
+    "MarketplaceChannel": {
+      "description": "The marketplace and channel name.",
+      "type": "object",
+      "properties": {
+        "marketplaceName": {
+          "description": "The name of the marketplace.",
+          "type": "string"
+        },
+        "channelName": {
+          "description": "The name of the channel within the marketplace.",
+          "type": "string"
+        }
+      }
+    },
+    "MarketplaceChannelDetails": {
+      "type": "object",
+      "description": "Marketplace channel-specific attributes for the return. These attributes are not mandatory and each channel can provide them differently.",
+      "properties": {
+        "marketplaceChannel": {
+          "$ref": "#/definitions/MarketplaceChannel"
+        },
+        "merchantId": {
+          "description": "The ID of the merchant or seller to whom this return is created in the marketplace.",
+          "type": "string"
+        },
+        "shipmentId": {
+          "description": "The marketplace-specific shipment ID.",
+          "type": "string"
+        },
+        "customerOrderId": {
+          "description": "The marketplace-specific customer order ID.",
+          "type": "string"
+        },
+        "returnLocationId": {
+          "description": "The Amazon SmartConnect ID of the location to which this return is created.",
+          "type": "string"
+        },
+        "channelSku": {
+          "description": "The Amazon SmartConnect SKU of the channel.",
+          "type": "string"
+        },
+        "exchangeOrderId": {
+          "description": "The Amazon SmartConnect ID of the exchange order.",
+          "type": "string",
+          "example": "6cb83006-0597-4bc1-82ab-715b33eb6cf1"
+        }
+      }
+    },
+    "ReplanningDetails": {
+      "description": "Provides details about the replanned returns.",
+      "type": "object",
+      "properties": {
+        "previousTrackingInfo": {
+          "description": "A list of all the previous tracking information for the return.",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/TrackingInfo"
+          }
+        }
+      }
+    },
+    "InvoiceInformation": {
+      "description": "Invoice-related information for the return created for Amazon SmartConnect.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The unique ID of the invoice that corresponds to the return.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "ReturnMetadata": {
+      "description": "Metadata about the return item.",
+      "type": "object",
+      "properties": {
+        "returnReason": {
+          "description": "The reason for the return.",
+          "type": "string"
+        },
+        "rmaId": {
+          "description": "The RMA ID of the return.",
+          "type": "string"
+        },
+        "fulfillmentOrderId": {
+          "description": "The SmartConnect ID of the fulfillment order for which the return was placed.",
+          "type": "string"
+        },
+        "invoiceInformation": {
+          "$ref": "#/definitions/InvoiceInformation"
+        }
+      },
+      "required": [
+        "returnReason"
+      ]
+    },
+    "ReturnShippingInfo": {
+      "description": "Information about the shipping of the return packages.",
+      "type": "object",
+      "properties": {
+        "deliveryDateTime": {
+          "description": "The date and time when the seller received the return.",
+          "$ref": "#/definitions/DateTime"
+        },
+        "pickupDateTime": {
+          "description": "The date and time when the return was picked up.",
+          "$ref": "#/definitions/DateTime"
+        },
+        "forwardTrackingInfo": {
+          "$ref": "#/definitions/TrackingInfo"
+        },
+        "reverseTrackingInfo": {
+          "$ref": "#/definitions/TrackingInfo"
+        }
+      }
+    },
+    "DateTime": {
+      "description": "A date and time in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.",
+      "type": "string"
+    },
+    "ReturnsResponse": {
+      "description": "The response to the `listReturns` operation.",
+      "type": "object",
+      "properties": {
+        "returns": {
+          "description": "A list of returns.",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/Return"
+          }
+        },
+        "nextToken": {
+          "description": "A token that you use to retrieve the next page of results. The response includes `nextToken` when there are multiple pages of results. To get the next page of results, call the operation with this token and include the same arguments as the call that produced the token. To get a complete list, call this operation until `nextToken` is null. Note that this operation can return empty pages.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}
