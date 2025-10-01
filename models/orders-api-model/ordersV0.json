@@ -784,6 +784,17 @@
                     "PaymentMethodDetails": [
                       "Invoice"
                     ],
+                    "PaymentExecutionDetail": [
+                      {
+                        "Payment": {
+                          "CurrencyCode": "BRL",
+                          "Amount": "20.00"
+                        },
+                        "PaymentMethod": "Pix",
+                        "AcquirerId": "XX.XXX.XXX/0001-ZZ",
+                        "AuthorizationCode": "123456"
+                      }
+                    ],
                     "IsReplacementOrder": false,
                     "MarketplaceId": "A1PA6795UKMFR9",
                     "ShipmentServiceLevelCategory": "Standard",
@@ -3321,7 +3332,7 @@
           "description": "The number of items unshipped."
         },
         "PaymentExecutionDetail": {
-          "description": "Information about sub-payment methods for a cash-on-delivery (COD) order.\n\n__Note__: For a COD order that is paid for using one sub-payment method, one `PaymentExecutionDetailItem` object is returned, with `PaymentExecutionDetailItem`/`PaymentMethod = COD`. For a COD order that is paid for using multiple sub-payment methods, two or more `PaymentExecutionDetailItem` objects are returned.",
+          "description": "Information about the sub-payment methods for an order.",
           "$ref": "#/definitions/PaymentExecutionDetailItemList"
         },
         "PaymentMethod": {
@@ -4160,7 +4171,19 @@
         },
         "PaymentMethod": {
           "type": "string",
-          "description": "A sub-payment method for a COD order.\n\n**Possible values**:\n* `COD`: Cash on delivery \n* `GC`: Gift card \n* `PointsAccount`: Amazon Points\n* `Invoice`: Invoice"
+          "description": "The sub-payment method for an order. \n\n**Possible values**:\n* `COD`: Cash on delivery \n* `GC`: Gift card \n* `PointsAccount`: Amazon Points \n* `Invoice`: Invoice \n* `CreditCard`: Credit card \n* `Pix`: Pix \n* `Other`: Other."
+        },
+        "AcquirerId": {
+          "description": "The Brazilian Taxpayer Identifier (CNPJ) of the payment processor or acquiring bank that authorizes the payment. \n\n**Note**: This attribute is only available for orders in the Brazil (BR) marketplace when the `PaymentMethod` is `CreditCard` or `Pix`.",
+          "type": "string"
+        },
+        "CardBrand": {
+          "description": "The card network or brand used in the payment transaction (for example, Visa or Mastercard). \n\n**Note**: This attribute is only available for orders in the Brazil (BR) marketplace when the `PaymentMethod` is `CreditCard`.",
+          "type": "string"
+        },
+        "AuthorizationCode": {
+          "description": "The unique code that confirms the payment authorization. \n\n**Note**: This attribute is only available for orders in the Brazil (BR) marketplace when the `PaymentMethod` is `CreditCard` or `Pix`.",  
+          "type": "string"
         }
       },
       "description": "Information about a sub-payment method used to pay for a COD order."
