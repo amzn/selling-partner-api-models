@@ -50,7 +50,7 @@ type Analytics_vendorAnalytics_2024_09_30 {
   ): [SourcingView]
 }
 
-"Costs metric group. Null value for a given metric means that this metric is not available yet."
+"Costs metric group. A null value for a given metric means that the metric is not available."
 type Costs {
   """
   The average selling discount per unit of shipped items. The average sales
@@ -88,10 +88,91 @@ type Costs {
   shippedCogs: Amount @resultRetention(duration : "P30D")
 }
 
-"Customer satisfaction metric group. Null value for a given metric means that this metric is not available yet."
+"Customer return topics metric group. A null value for a given metric means that the metric is not available."
+type CustomerReturnTopics {
+  """
+  Month-over-month trends of the ten most common topics based on customer return
+  comments aggregated across all ASINs within the browse node (product category)
+  associated with this ASIN. For each topic, the occurrence percentage is shown
+  for each of the past six months.
+  """
+  browseNodeReturnTopicTrends: String @resultRetention(duration : "P30D")
+  """
+  The ten most common topics based on customer return comments, aggregated
+  across all ASINs within the browse node (product category) associated with
+  this ASIN, along with the occurrence percentage of each topic.
+  """
+  browseNodeReturnTopics: String @resultRetention(duration : "P30D")
+}
+
+"Customer review topics metric group. A null value for a given metric means that the metric is not available."
+type CustomerReviewTopics {
+  """
+  The ten most common negative topics extracted from customer reviews, based on how each topic impacts the star rating.
+  ASIN metrics include each topic's impact value for both the ASIN and the corresponding Parent ASIN.
+  Browse node metrics include each topic's impact value for both the overall
+  browse node and the top 25% of products within it.
+  """
+  negativeReviewTopicImpactOnStarRating: String @resultRetention(duration : "P30D")
+  """
+  Month-over-month trends of the ten most common negative topics based on customer reviews.
+  ASIN metrics include the occurrence percentage at both the ASIN and Parent ASIN level for each of the past six months.
+  Browse node metrics include the occurrence percentage at both the overall
+  browse node level and among the top 25% of products within the browse node,
+  for each of the past six months.
+  """
+  negativeReviewTopicTrends: String @resultRetention(duration : "P30D")
+  """
+  The ten most common negative topics based on customer reviews. For each topic,
+  the top three associated snippets are provided verbatim. Additionally, the top
+  five subtopics for each topic and the top three verbatim quotes are provided.
+  ASIN metrics include the number of mentions and occurrence percentage of each topic or subtopic.
+  Browse node metrics include the occurrence percentage of the topic or subtopic at the overall browse node level.
+  """
+  negativeReviewTopics: String @resultRetention(duration : "P30D")
+  """
+  The ten most common positive topics extracted from customer reviews, based on how each topic impacts the star rating.
+  ASIN metrics show each topic's impact value for both the ASIN and the corresponding Parent ASIN.
+  Browse node metrics show each topic's impact value for both the overall browse node and the top 25% of products within it.
+  """
+  positiveReviewTopicImpactOnStarRating: String @resultRetention(duration : "P30D")
+  """
+  Month-over-month trends of the ten most common positive topics based on customer reviews.
+  ASIN metrics show the occurrence percentage at both the ASIN and Parent ASIN level for each of the past six months.
+  Browse node metrics show the occurrence percentage at both the overall browse
+  node level and among the top 25% of products within the browse node, for each
+  of the past six months.
+  """
+  positiveReviewTopicTrends: String @resultRetention(duration : "P30D")
+  """
+  The ten most common positive topics based on customer reviews. For each topic,
+  the top three associated snippets are provided verbatim. Additionally, the top
+  five subtopics are included for each topic, along with the top three verbatim quotes.
+  ASIN metrics include the number of mentions and occurrence percentage of each topic or subtopic.
+  Browse node metrics include the occurrence percentage of the topic or subtopic at the overall browse node level.
+  """
+  positiveReviewTopics: String @resultRetention(duration : "P30D")
+}
+
+"Customer review metric group. A null value for a given metric means that the metric is not available."
+type CustomerReviews {
+  "Topics based on customer reviews for an ASIN."
+  asinReviewTopics: CustomerReviewTopics
+  """
+  Topics based on customer reviews, aggregated across all ASINs within the
+  browse node (product category) associated with this ASIN.
+  """
+  browseNodeReviewTopics: CustomerReviewTopics
+}
+
+"Customer satisfaction metric group. A null value for a given metric means that the metric is not available."
 type CustomerSatisfaction {
+  "Customer return topics metric group."
+  customerReturnTopics: CustomerReturnTopics
   "The number of items returned as recorded on the Customer Returns transaction table."
   customerReturns: Long @resultRetention(duration : "P30D")
+  "Customer reviews metric group."
+  customerReviews: CustomerReviews
 }
 
 "Amazon's estimate that customer demand will be at or below this value."
@@ -106,7 +187,7 @@ type ForecastedDemandStatistic {
   p90: Long @resultRetention(duration : "P30D")
 }
 
-"Forecasted customer demand by week. Null value for a given metric means that this metric is not available yet."
+"Forecasted customer demand by week. A null value for a given metric means that the metric is not available."
 type ForecastedDemandWeekly {
   "Amazon's estimate that customer demand will be at or below this value."
   demand: ForecastedDemandStatistic
@@ -171,6 +252,14 @@ type GroupByAttributes {
   shipToZipCode: String @resultRetention(duration : "P30D")
   "The Universal Product Code (UPC) used for retail packaging scanning at the point of sale."
   upc: String @resultRetention(duration : "P30D")
+  """
+  The hierarchy of vendor codes (parent-child relationships) plays an important
+  role in the storage and retrieval of vendor item information, for example,
+  cost (VCS) and external IDs (VXPS).
+  Child codes are generally assumed to be ordering codes that are for the same
+  vendor, represented by the parent vendor code.
+  """
+  vendorCode: String @resultRetention(duration : "P30D")
 }
 
 """
@@ -218,7 +307,7 @@ type ManufacturingViewMetricsGroupedBy {
   metrics: ManufacturingViewMetrics!
 }
 
-"Orders metric group. Null value for a given metric means that this metric is not available yet."
+"Orders metric group. A null value for a given metric means that the metric is not available."
 type Orders {
   "The net Gross Merchandise Sales (GMS) for all orders on a given day."
   netOrderedGMS: Amount @resultRetention(duration : "P30D")
@@ -235,7 +324,7 @@ type Orders {
   unfilledOrderedUnits: Long @resultRetention(duration : "P30D")
 }
 
-"Product availability metric group. Null value for a given metric means that this metric is not available yet."
+"Product availability metric group. A null value for a given metric means that the metric is not available."
 type ProductAvailability {
   """
   The number of units and their cost that is at least 90 days old and in
@@ -286,7 +375,7 @@ type Query {
   analytics_vendorAnalytics_2024_09_30: Analytics_vendorAnalytics_2024_09_30
 }
 
-"Shipped orders metric group. Null value for a given metric means that this metric is not available yet."
+"Shipped orders metric group. A null value for a given metric means that the metric is not available."
 type ShippedOrders {
   """
   The average selling price of shipped items, excluding sales tax or value-added
@@ -301,7 +390,7 @@ type ShippedOrders {
   shippedUnitsWithRevenue: UnitsWithValue
 }
 
-"Sourcing metric group. Null value for a given metric means that this metric is not available yet."
+"Sourcing metric group. A null value for a given metric means that the metric is not available."
 type Sourcing {
   "Number of purchase order units that are confirmed to be shipped to Amazon."
   confirmedUnits: Long @resultRetention(duration : "P30D")
@@ -379,7 +468,7 @@ type SourcingViewMetricsGroupedBy {
   metrics: SourcingViewMetrics!
 }
 
-"Traffic metric group. Null value for a given metric means that this metric is not available yet."
+"Traffic metric group. A null value for a given metric means that the metric is not available."
 type Traffic {
   "Glance views where Retail is the featured offer (i.e., winning the buy box)."
   glanceViews: Long @resultRetention(duration : "P30D")
