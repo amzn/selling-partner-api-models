@@ -80,6 +80,6 @@ done
 
 echo "***********************************************************"
 echo "SP-API SDK is created under ${SDK_DIR} and SDK source code "
-echo "should be found ${SDK_DIR}/src/<API (with verion) name>."
+echo "should be found ${SDK_DIR}/src/<API (with version) name>."
 echo "Please copy the SDK source DIRECTORIES (such as \"catalogItems_2022-04-01\")"
 echo "you want to use to the directory \"code/javascript/src/jsdsdk.\"."
