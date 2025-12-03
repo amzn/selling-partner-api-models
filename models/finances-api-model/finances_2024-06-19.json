@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "The Selling Partner API for Finances helps you obtain financial information relevant to a seller's business. You can obtain financial events for a given order or date range without having to wait until a statement period closes.",
+    "description": "The Selling Partner API for Finances provides financial information relevant to a seller's business. You can obtain financial events for a given order or date range without having to wait until a statement period closes.",
     "version": "2024-06-19",
     "title": "The Selling Partner API for Finances",
     "contact": {
@@ -32,8 +32,8 @@
           {
             "name": "postedAfter",
             "in": "query",
-            "description": "The response includes financial events posted on or after this date. This date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format. The date-time must be more than two minutes before the time of the request.",
-            "required": true,
+            "description": "The response includes financial events posted on or after this date. This date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format. The date-time must be more than two minutes before the time of the request.\n\nThis field is required if you do not specify a related identifier.",
+            "required": false,
             "type": "string",
             "format": "date-time",
             "x-example": "2023-01-12"
@@ -41,7 +41,7 @@
           {
             "name": "postedBefore",
             "in": "query",
-            "description": "A date used for selecting transactions posted before (but not at) a specified time. The date-time must be later than PostedAfter and no later than two minutes before the request was submitted, in ISO 8601 date time format. If PostedAfter and PostedBefore are more than 180 days apart, no transactions are returned. You must specify the PostedAfter parameter if you specify the PostedBefore parameter. Default: Now minus two minutes.",
+            "description": "The response includes financial events posted before (but not on) this date. This date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format.\n\nThe date-time must be later than `PostedAfter` and more than two minutes before the request was submitted. If `PostedAfter` and `PostedBefore` are more than 180 days apart, the response is empty.\n\n**Default:** Two minutes before the time of the request.",
             "required": false,
             "type": "string",
             "format": "date-time",
@@ -64,9 +64,25 @@
             "x-example": "RELEASED"
           },
           {
+            "name": "relatedIdentifierName",
+            "in": "query",
+            "description": "The name of the `relatedIdentifier`.\n\n**Possible values:**\n\n* `FINANCIAL_EVENT_GROUP_ID`: the financial event group ID associated with the transaction. \n\n**Note:**\n\n FINANCIAL_EVENT_GROUP_ID is the only `relatedIdentifier` with filtering capabilities at the moment. While other `relatedIdentifier` values will be included in the response when available, they cannot be used for filtering purposes." ,
+            "required": false,
+            "type": "string",
+            "x-example": "FINANCIAL_EVENT_GROUP_ID"
+          },
+          {
+            "name": "relatedIdentifierValue",
+            "in": "query",
+            "description": "The value of the `relatedIdentifier`.",
+            "required": false,
+            "type": "string",
+            "x-example": "8129762527551"
+          },
+          {
             "name": "nextToken",
             "in": "query",
-            "description": "A string token returned in the response of your previous request.",
+            "description": "The response includes `nextToken` when the number of results exceeds the specified `pageSize` value. To get the next page of results, call the operation with this token and include the same arguments as the call that produced the token. To get a complete list, call this operation until `nextToken` is null. Note that this operation can return empty pages.",
             "required": false,
             "type": "string",
             "x-example": "jehgri34yo7jr9e8f984tr9i4o"
@@ -112,6 +128,10 @@
                             "marketplaceId": "ATIV93840DER"
                           },
                           "relatedIdentifiers": [
+                            {
+                              "relatedIdentifierName": "FINANCIAL_EVENT_GROUP_ID",
+                              "relatedIdentifierValue": "4MVaHcsAfaYAlwlaPWrXJxrfUiKfYZ2ooWtY7528FUA"
+                            },
                             {
                               "relatedIdentifierName": "ORDER_ID",
                               "relatedIdentifierValue": "8129762527551"
@@ -277,7 +297,7 @@
       "properties": {
         "nextToken": {
           "type": "string",
-          "description": "When present and not empty, pass this string token in the next request to return the next response page."
+          "description": "The response includes `nextToken` when the number of results exceeds the specified `pageSize` value. To get the next page of results, call the operation with this token and include the same arguments as the call that produced the token. To get a complete list, call this operation until `nextToken` is null. Note that this operation can return empty pages."
         },
         "transactions": {
           "$ref": "#/definitions/Transactions"
@@ -287,7 +307,7 @@
     },
     "Transactions": {
       "type": "array",
-      "description": "Contains transactions within a given time period.",
+      "description": "A list of transactions within the specified time period.",
       "items": {
         "$ref": "#/definitions/Transaction"
       }
@@ -296,20 +316,20 @@
       "type": "object",
       "properties": {
         "sellingPartnerMetadata": {
-          "description": "Metadata describing the seller.",
+          "description": "Metadata that describes the seller.",
           "$ref": "#/definitions/SellingPartnerMetadata"
         },
         "relatedIdentifiers": {
-          "description": "Related business identifiers of the transaction.",
+          "description": "Identifiers related to the transaction, such as order and shipment IDs.",
           "$ref": "#/definitions/RelatedIdentifiers"
         },
         "transactionType": {
           "type": "string",
-          "description": "The type of transaction.\n\nPossible values:\n\n* Shipment"
+          "description": "The type of transaction.\n\n**Possible value:** `Shipment`"
         },
         "transactionId": {
           "type": "string",
-          "description": "The unique identifier for the transaction."
+          "description": "The unique identifier of the transaction."
         },
         "transactionStatus": {
           "type": "string",
@@ -317,14 +337,14 @@
         },
         "description": {
           "type": "string",
-          "description": "Describes the reasons for the transaction.\n\nExample: 'Order Payment','Refund Order'"
+          "description": "Describes the reasons for the transaction.\n\n**Example:** 'Order Payment', 'Refund Order'"
         },
         "postedDate": {
           "description": "The date and time when the transaction was posted.",
           "$ref": "#/definitions/Date"
         },
         "totalAmount": {
-          "description": "Total amount of transaction.",
+          "description": "The total amount of money in the transaction.",
           "$ref": "#/definitions/Currency"
         },
         "marketplaceDetails": {
@@ -332,7 +352,7 @@
           "$ref": "#/definitions/MarketplaceDetails"
         },
         "items": {
-          "description": "Additional information about the items in Transaction.",
+          "description": "Additional information about the items in the transaction.",
           "$ref": "#/definitions/Items"
         },
         "contexts": {
@@ -347,7 +367,7 @@
           }
         }
       },
-      "description": "Contains all information related to the transaction.",
+      "description": "All the information related to a transaction.",
       "example": {
         "sellingPartnerMetadata": {
           "sellingPartnerId": "XXXXXXXXXXXXXX",
@@ -439,7 +459,7 @@
     },
     "BigDecimal": {
       "type": "number",
-      "description": "Fields with a schema type of BigDecimal are a signed decimal number (for example CurrencyAmount)."
+      "description": "A signed decimal number."
     },
     "Currency": {
       "type": "object",
@@ -460,25 +480,25 @@
       "properties": {
         "sellingPartnerId": {
           "type": "string",
-          "description": "Unique seller identifier."
+          "description": "A unique seller identifier."
         },
         "accountType": {
           "type": "string",
-          "description": "Account type of transaction."
+          "description": "The type of account in the transaction."
         },
         "marketplaceId": {
           "type": "string",
           "description": "The identifier of the marketplace where the transaction occurred. The marketplace ID is the globally unique identifier of a marketplace. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids)."
         }
       },
-      "description": "Metadata describing the seller."
+      "description": "Metadata that describes the seller."
     },
     "RelatedIdentifier": {
       "type": "object",
       "properties": {
         "relatedIdentifierName": {
           "type": "string",
-          "description": "Enumerated set of related business identifier names.",
+          "description": "An enumerated set of related business identifier names.",
           "enum": [
             "ORDER_ID",
             "SHIPMENT_ID",
@@ -510,15 +530,15 @@
             },
             {
               "value": "REFUND_ID",
-              "description": "Associated RefundId of transaction"
+              "description": "The `RefundId` that is associated with the transaction."
             },
             {
               "value": "INVOICE_ID",
-              "description": "Associated InvoiceId of transaction"
+              "description": "The `InvoiceId` that is associated with the transaction."
             },
             {
               "value": "DISBURSEMENT_ID",
-              "description": "Disbursement Id for Amazon's bank transfer."
+              "description": "The disbursement ID for Amazon's bank transfer."
             },
             {
               "value": "TRANSFER_ID",
@@ -536,7 +556,7 @@
         },
         "relatedIdentifierValue": {
           "type": "string",
-          "description": "Corresponding value of RelatedIdentifierName"
+          "description": "Corresponding value of `RelatedIdentifierName`."
         }
       },
       "description": "Related business identifier of the transaction."
@@ -551,7 +571,7 @@
     "Date": {
       "type": "string",
       "format": "date-time",
-      "description": "Fields with a schema type of date are in ISO 8601 date time format (for example GroupBeginDate)."
+      "description": "A date in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format."
     },
     "MarketplaceDetails": {
       "type": "object",
@@ -562,7 +582,7 @@
         },
         "marketplaceName": {
           "type": "string",
-          "description": "The name of the marketplace where the transaction occurred. \n\nExample: 'Amazon.com','Amazon.in'"
+          "description": "The name of the marketplace where the transaction occurred. For example: `Amazon.com`,`Amazon.in`"
         }
       },
       "description": "Information about the marketplace where the transaction occurred.",
@@ -573,7 +593,7 @@
     },
     "Items": {
       "type": "array",
-      "description": "List of items in the transaction",
+      "description": "A list of items in the transaction.",
       "items": {
         "$ref": "#/definitions/Item"
       }
@@ -583,14 +603,14 @@
       "properties": {
         "description": {
           "type": "string",
-          "description": "Description of items in the transaction"
+          "description": "A description of the items in a transaction."
         },
         "relatedIdentifiers": {
           "description": "Related business identifiers of the item.",
           "$ref": "#/definitions/ItemRelatedIdentifiers"
         },
         "totalAmount": {
-          "description": "The total amount of the item.",
+          "description": "The total monetary amount of the item.",
           "$ref": "#/definitions/Currency"
         },
         "breakdowns": {
@@ -605,7 +625,7 @@
           "$ref": "#/definitions/Contexts"
         }
       },
-      "description": "Additional information about the items in Transaction."
+      "description": "Additional information about the items in a transaction."
     },
     "ItemRelatedIdentifier": {
       "type": "object",
@@ -626,7 +646,7 @@
             },
             {
               "value": "COUPON_ID",
-              "description": "An identifier for Coupon applied on transaction."
+              "description": "An identifier for a coupon that is applied to a transaction."
             },
             {
               "value": "REMOVAL_SHIPMENT_ITEM_ID",
@@ -634,13 +654,13 @@
             },
             {
               "value": "TRANSACTION_ID",
-              "description": "Transaction id for the item."
+              "description": "The transaction ID of the item."
             }
           ]
         },
         "itemRelatedIdentifierValue": {
           "type": "string",
-          "description": "Corresponding value of ItemRelatedIdentifierName"
+          "description": "Corresponding value to `ItemRelatedIdentifierName`."
         }
       },
       "description": "Related business identifiers of the item.",
@@ -651,7 +671,7 @@
     },
     "ItemRelatedIdentifiers": {
       "type": "array",
-      "description": "Related Business identifiers of the item in Transaction.",
+      "description": "Related business identifiers of the item in the transaction.",
       "items": {
         "$ref": "#/definitions/ItemRelatedIdentifier"
       }
@@ -688,7 +708,7 @@
           "description": "The type of charge."
         },
         "breakdownAmount": {
-          "description": "The amount of the charge.",
+          "description": "The monetary amount of the charge.",
           "$ref": "#/definitions/Currency"
         },
         "breakdowns": {
@@ -699,11 +719,11 @@
           }
         }
       },
-      "description": "Breakdown provides details regarding the money movement under the financial transaction. Breakdowns get categorized further into breakdown types, breakdown amounts, and further breakdowns into a hierarchical structure."
+      "description": "Details about the movement of money in the financial transaction. Breakdowns are further categorized into breakdown types, breakdown amounts, and further breakdowns."
     },
     "Contexts": {
       "type": "array",
-      "description": "List of additional Information about the item.",
+      "description": "A list of additional information about the item.",
       "items": {
         "$ref": "#/definitions/Context"
       }
@@ -748,20 +768,20 @@
       "properties": {
         "asin": {
           "type": "string",
-          "description": "Amazon Standard Identification Number (ASIN) of the item."
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
         },
         "sku": {
           "type": "string",
-          "description": "Stock keeping unit (SKU) of the item."
+          "description": "The Stock Keeping Unit (SKU) of the item."
         },
         "quantityShipped": {
           "type": "integer",
           "format": "int32",
-          "description": "Quantity of the item shipped."
+          "description": "The quantity of the item shipped."
         },
         "fulfillmentNetwork": {
           "type": "string",
-          "description": "Fulfillment network of the item."
+          "description": "The fulfillment network of the item."
         }
       },
       "example": {
@@ -777,11 +797,11 @@
       "properties": {
         "storeName": {
           "type": "string",
-          "description": "Store name related to transaction."
+          "description": "The name of the store that is related to the transaction."
         },
         "orderType": {
           "type": "string",
-          "description": "Order type of the transaction."
+          "description": "The transaction's order type."
         },
         "channel": {
           "type": "string",
@@ -795,24 +815,24 @@
       }
     },
     "PaymentsContext": {
-      "description": "Additional information related to Payments related transactions.",
+      "description": "Additional information related to payments-related transactions.",
       "type": "object",
       "properties": {
         "paymentType": {
           "type": "string",
-          "description": "Type of payment made."
+          "description": "The type of payment."
         },
         "paymentMethod": {
           "type": "string",
-          "description": "Method of payment made."
+          "description": "The method of payment."
         },
         "paymentReference": {
           "type": "string",
-          "description": "Reference number of payment made."
+          "description": "The reference number of the payment."
         },
         "paymentDate": {
           "$ref": "#/definitions/Date",
-          "description": "Date of payment made."
+          "description": "The date of the payment."
         }
       },
       "example": {
@@ -823,7 +843,7 @@
       }
     },
     "DeferredContext": {
-      "description": "Additional information related to Deferred transactions.",
+      "description": "Additional information related to deferred transactions.",
       "type": "object",
       "properties": {
         "deferralReason": {
@@ -857,16 +877,16 @@
       }
     },
     "TimeRangeContext": {
-      "description": "Additional information related to time range for transaction.",
+      "description": "Additional information that is related to the time range of the transaction.",
       "type": "object",
       "properties": {
         "startTime": {
           "$ref": "#/definitions/Date",
-          "description": "Start time of the transaction."
+          "description": "The start time of the transaction."
         },
         "endTime": {
           "$ref": "#/definitions/Date",
-          "description": "End time of the transaction."
+          "description": "The end time of the transaction."
         }
       },
       "example": {
@@ -882,7 +902,7 @@
       ],
       "properties": {
         "errors": {
-          "description": "Error response returned when the request is unsuccessful.",
+          "description": "The error responses that are returned when the request is unsuccessful.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/Error"
@@ -910,7 +930,7 @@
           "description": "Additional details that can help the caller understand or fix the issue."
         }
       },
-      "description": "Error response returned when the request is unsuccessful."
+      "description": "An error response returned when the request is unsuccessful."
     }
   }
 }
