@@ -115,13 +115,34 @@ type Analytics_Economics_2024_03_15 {
     aggregation level are MSKU and RANGE respectively.
     """
     aggregateBy: EconomicsPreviewAggregation, 
-    "The end date of the seller economics preview data to retrieve. The end date must be no more than 30 days after today."
+    "The end date of the seller economics preview data to retrieve. The end date must be no more than 120 days after today."
     endDate: Date!, 
     "Specifies which fee types to preview. Supported fee types can be found [here](https://sellercentral.amazon.com/help/hub/reference/GQNVDV46U9JQ25HY)."
     feeTypes: [PreviewFeeType!]!, 
     "The marketplace identifiers to retrieve seller preview economics data for."
     marketplaceIds: [String!]!, 
     "The start date of the seller preview economics data to retrieve. The start date must be not earlier than today."
+    startDate: Date!
+  ): [Economics]
+  """
+  A query that simulates seller economics data for specified items, aggregated
+  by a date range between startDate and endDate. The data includes estimated
+  sales, fees, and costs, which vary based on the action type during the
+  selected period.
+  """
+  economicsSimulation(
+    "Specifies which action types to simulate."
+    actionTypes: [ActionType!]!, 
+    "The end date of the seller economics simulation data to retrieve. The end date must be no more than 90 days after today."
+    endDate: Date!, 
+    "The marketplace identifiers to retrieve seller simulation economics data for."
+    marketplaceId: String!, 
+    """
+    List of products to include in the economics simulation. Maximum 100
+    products per request. Each product must contain required identifiers for fee calculations.
+    """
+    products: [Product!]!, 
+    "The start date of the seller economics simulation data to retrieve. The start date must be not earlier than today."
     startDate: Date!
   ): [Economics]
 }
@@ -368,6 +389,25 @@ type Sales {
   unitsRefunded: Long! @resultRetention(duration : "P30D")
 }
 
+"""
+Supported action types in economic simulations. Economic results will only be
+returned for products eligible for the selected actions.
+"""
+enum ActionType {
+  """
+  Amazon Warehousing and Distribution - simulate business impact of using AWD services.
+  Provides upstream supply chain solutions including bulk storage and automatic replenishment.
+  For details, refer to [Amazon Warehousing and Distribution](https://sellercentral.amazon.com/help/hub/reference/external/GF6ZC8VEBM7HCEGV).
+  """
+  AWD
+  """
+  Ships in Product Packaging program - simulate business impact of adding products to this program.
+  Reduces packaging waste and costs by shipping items in their original packaging.
+  For details, refer to [Ships in Product Packaging](https://sellercentral.amazon.com/help/hub/reference/external/GDTDMAWM8FG2CX6U).
+  """
+  SIPP
+}
+
 "The date granularity used in aggregation."
 enum DateGranularity {
   "Seller economics data is aggregated by day against marketplace local time."
@@ -477,12 +517,20 @@ enum PreviewFeeType {
 enum ProductIdentifierGranularity {
   "Seller Economics data is aggregated by child ASIN."
   CHILD_ASIN
-  "Seller Economics data is aggregated by fulfillment network sku."
-  FNSKU
   "Seller Economics data is aggregated by merchant sku."
   MSKU
   "Seller Economics data is aggregated by parent ASIN."
   PARENT_ASIN
+}
+
+"The productIdentifier types that are supported in economics simulation."
+enum ProductIdentifierType {
+  "Amazon Standard Identification Number - unique catalog identifier"
+  ASIN
+  "Fulfillment Network SKU - warehouse/fulfillment identifier"
+  FNSKU
+  "Merchant SKU - seller's unique identifier for this product"
+  MSKU
 }
 
 "An RFC-3339 compliant Full Date Scalar. Example: \"2024-03-15\""
@@ -490,6 +538,14 @@ scalar Date
 
 "A Scalar for the primitive long type."
 scalar Long
+
+"Monetary amount with the corresponding currency code."
+input AmountInput {
+  "The amount."
+  amount: Float!
+  "Currency code of the amount in ISO 4217 format."
+  currencyCode: String!
+}
 
 "Defines how the seller economics data will be aggregated."
 input EconomicsAggregation {
@@ -505,4 +561,63 @@ input EconomicsPreviewAggregation {
   date: EconomicsPreviewDateGranularity
   "The product identifier granularity used in aggregation. By default the results will be aggregated by MSKU."
   productId: EconomicsPreviewProductIdentifierGranularity
+}
+
+"""
+A product entity with various Amazon identifiers and input context.
+This type contains the core identifiers used across Amazon's fulfillment and catalog systems
+@example
+{
+  idType: ASIN
+  idValue: "B08N5WRWNW"
+  inputContext: { ... }
+}
+"""
+input Product {
+  "The product identifier."
+  identifier: ProductIdentifier!
+  "Context information about how this product data was input/sourced."
+  inputContext: ProductInputContext
+}
+
+"The product identifier."
+input ProductIdentifier {
+  "The type of the product identifier."
+  type: ProductIdentifierType!
+  "The value of the product identifier."
+  value: String!
+}
+
+"""
+Input context containing operational and financial parameters for product
+processing. This type captures the business context needed for seller economics calculations.
+@example
+{
+  itemPrice: { amount: 29.99, currencyCode: "USD" }
+  shippingCost: { amount: 1.99, currencyCode: "USD" }
+  unitPerCarton: 12
+  historicalAverageWeeklySales: 150
+  sendToAWDQuantity: 500
+  shipmentLeadTime: 2
+}
+"""
+input ProductInputContext {
+  "Historical Weekly Sales (units). Default value calculated based on the average weekly sales in the past 90 days."
+  historicalAverageWeeklySales: Long
+  "The item price, will use default value of the listing if it is empty."
+  itemPrice: AmountInput
+  """
+  Send to AWD quantity - units allocated to Amazon Warehousing and Distribution.
+  Default value is 12 weeks of Historical Weekly Sales.
+  """
+  sendToAWDQuantity: Long
+  "Shipment lead time (weeks) - time required from shipment to delivery for supply planning. Default value is 1 week."
+  shipmentLeadTime: Long
+  "The shipping cost, will use default value of the listing if it is empty."
+  shippingCost: AmountInput
+  """
+  Units per carton - packaging configuration for AWD shipping and inventory
+  management. Default value is 20 units per carton.
+  """
+  unitPerCarton: Long
 }
