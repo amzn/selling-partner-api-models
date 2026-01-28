@@ -115,6 +115,18 @@ type ByAsinSales {
   selected time period. Note: This field is only populated when the seller is a B2B seller.
   """
   orderedProductSalesB2B: Amount @resultRetention(duration : "P30D")
+  """
+  The percentage conversion metric indicating how many orders were refunded,
+  calculated by dividing unitsRefunded by unitsOrdered for the selected time period.
+  """
+  refundRate: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage conversion metric indicating how many orders were refunded by
+  Amazon Business customers, calculated by dividing unitsRefundedB2B by
+  unitsOrderedB2B for the selected time period. Note: This field is only
+  populated when the seller is a B2B seller.
+  """
+  refundRateB2B: Float @resultRetention(duration : "P30D")
   "The number of items that were ordered for the selected time period."
   totalOrderItems: Long! @resultRetention(duration : "P30D")
   """
@@ -129,6 +141,13 @@ type ByAsinSales {
   only populated when the seller is a B2B seller.
   """
   unitsOrderedB2B: Long @resultRetention(duration : "P30D")
+  "The number of units refunded for the selected time period."
+  unitsRefunded: Long! @resultRetention(duration : "P30D")
+  """
+  The number of units refunded by Amazon Business customers for the selected
+  time period. Note: This field is only populated when the seller is a B2B seller.
+  """
+  unitsRefundedB2B: Long @resultRetention(duration : "P30D")
 }
 
 "The traffic data for the seller's account aggregated by ASIN."
@@ -321,8 +340,8 @@ type ByDateSales {
   """
   averageSalesPerOrderItemB2B: Amount @resultRetention(duration : "P30D")
   """
-  The average price of the units sold in the selected time period, calculated by
-  dividing the orderedProductSales by unitsOrdered for the selected time period.
+  The average price of the units sold for the selected time period, calculated
+  by dividing the orderedProductSales by unitsOrdered for the selected time period.
   """
   averageSellingPrice: Amount! @resultRetention(duration : "P30D")
   """
@@ -341,8 +360,18 @@ type ByDateSales {
   averageUnitsPerOrderItemB2B: Float @resultRetention(duration : "P30D")
   "Monetary amount of filed A-to-z guarantee claims."
   claimsAmount: Amount! @resultRetention(duration : "P30D")
+  """
+  Monetary amount of filed A-to-z guarantee claims for Amazon Business
+  customers. Note: This field is only populated when the seller is a B2B seller.
+  """
+  claimsAmountB2B: Amount @resultRetention(duration : "P30D")
   "The number of A-to-z guarantee claims granted."
   claimsGranted: Long! @resultRetention(duration : "P30D")
+  """
+  The number of A-to-z guarantee claims granted for Amazon Business customers.
+  Note: This field is only populated when the seller is a B2B seller.
+  """
+  claimsGrantedB2B: Long @resultRetention(duration : "P30D")
   """
   The amount of ordered product sales, calculated by multiplying the price of
   products and the number of units sold for the selected time period.
@@ -351,17 +380,24 @@ type ByDateSales {
   """
   The amount of ordered product sales to Amazon Business customers, calculated
   by multiplying the price of products and the number of units sold for the
-  selected time period.
+  selected time period. Note: This field is only populated when the seller is a B2B seller.
   """
   orderedProductSalesB2B: Amount @resultRetention(duration : "P30D")
-  "The number of orders shipped in the selected time period."
+  "The number of orders shipped for the selected time period."
   ordersShipped: Long! @resultRetention(duration : "P30D")
   """
   The percentage conversion metric indicating how many orders were refunded by
-  the seller, calculated by dividing unitsOrdered by unitsRefunded in the
+  the seller, calculated by dividing unitsRefunded by unitsOrdered for the
   selected time period.
   """
   refundRate: Float! @resultRetention(duration : "P30D")
+  """
+  The percentage conversion metric indicating how many orders were refunded by
+  Amazon Business customers, calculated by dividing unitsRefundedB2B by
+  unitsOrderedB2B for the selected time period. Note: This field is only
+  populated when the seller is a B2B seller.
+  """
+  refundRateB2B: Float @resultRetention(duration : "P30D")
   "The amount of ordered product sales shipped for the selected time period."
   shippedProductSales: Amount! @resultRetention(duration : "P30D")
   """
@@ -375,7 +411,8 @@ type ByDateSales {
   The number of items that were ordered by Amazon Business customers for the
   selected time period. Example: For an order containing 2 copies of book A and
   3 copies of book B, the number of orders is 1, the number of order items is 2
-  (book A and book B), and the number of units is 5 (2 + 3).
+  (book A and book B), and the number of units is 5 (2 + 3). Note: This field is
+  only populated when the seller is a B2B seller.
   """
   totalOrderItemsB2B: Long @resultRetention(duration : "P30D")
   """
@@ -389,24 +426,30 @@ type ByDateSales {
   The number of units ordered by Amazon Business customers for the selected time
   period. Example: For an order containing 2 copies of book A and 3 copies of
   book B, the number of orders is 1, the number of order items is 2 (book A and
-  book B), and the number of units is 5 (2 + 3).
+  book B), and the number of units is 5 (2 + 3). Note: This field is only
+  populated when the seller is a B2B seller.
   """
   unitsOrderedB2B: Long @resultRetention(duration : "P30D")
-  "The number of units refunded in the selected time period."
+  "The number of units refunded for the selected time period."
   unitsRefunded: Long! @resultRetention(duration : "P30D")
-  "The number of units shipped in the selected time period."
+  """
+  The number of units refunded by Amazon Business customers for the selected
+  time period. Note: This field is only populated when the seller is a B2B seller.
+  """
+  unitsRefundedB2B: Long @resultRetention(duration : "P30D")
+  "The number of units shipped for the selected time period."
   unitsShipped: Long! @resultRetention(duration : "P30D")
 }
 
 "The traffic data for the seller's account aggregated by date."
 type ByDateTraffic {
   """
-  The average number of offers listed for sale in the selected time period. It
-  is calculated from the total number of offers and the total number of days in
+  The average number of offers listed for sale for the selected time period. It
+  is calculated from the total number of offers and the total number of days for
   the selected time period.
   """
   averageOfferCount: Long! @resultRetention(duration : "P30D")
-  "The average number of parent items listed for sale in the selected time period."
+  "The average number of parent items listed for sale for the selected time period."
   averageParentItems: Long! @resultRetention(duration : "P30D")
   "Browser page views are the number of times a user visited your Amazon.com browser pages for the selected time period."
   browserPageViews: Long! @resultRetention(duration : "P30D")
@@ -442,8 +485,13 @@ type ByDateTraffic {
   product to their cart. Note: This field is only populated when the seller is a B2B seller.
   """
   buyBoxPercentageB2B: Float @resultRetention(duration : "P30D")
-  "The number of times customers left feedback in the selected time period."
+  "The number of times customers left feedback for the selected time period."
   feedbackReceived: Long! @resultRetention(duration : "P30D")
+  """
+  The number of times Amazon Business customers left feedback for the selected
+  time period. Note: This field is only populated when the seller is a B2B seller.
+  """
+  feedbackReceivedB2B: Long @resultRetention(duration : "P30D")
   """
   Mobile app page views are the number of times a user visited your Amazon.com
   mobile app pages for the selected time period.
@@ -470,8 +518,13 @@ type ByDateTraffic {
   a single session. Note: This field is only populated when the seller is a B2B seller.
   """
   mobileAppSessionsB2B: Long @resultRetention(duration : "P30D")
-  "The number of times customers left negative feedback in the selected time period."
+  "The number of times customers left negative feedback for the selected time period."
   negativeFeedbackReceived: Long! @resultRetention(duration : "P30D")
+  """
+  The number of times Amazon Business customers left negative feedback for the
+  selected time period. Note: This field is only populated when the seller is a B2B seller.
+  """
+  negativeFeedbackReceivedB2B: Long @resultRetention(duration : "P30D")
   """
   The percentage conversion metric indicating how many order items were
   generated relative to the number of people who viewed the products.
@@ -498,9 +551,16 @@ type ByDateTraffic {
   pageViewsB2B: Long @resultRetention(duration : "P30D")
   """
   The negative feedback rate is the number of orders that have received negative
-  feedback divided by the number of orders in the selected time period.
+  feedback divided by the number of orders for the selected time period.
   """
   receivedNegativeFeedbackRate: Float! @resultRetention(duration : "P30D")
+  """
+  The negative feedback rate for Amazon Business customers is the number of
+  orders that have received negative feedback divided by the number of orders
+  for the selected time period. Note: This field is only populated when the
+  seller is a B2B seller.
+  """
+  receivedNegativeFeedbackRateB2B: Float @resultRetention(duration : "P30D")
   """
   Sessions are visits to your Amazon.com browser or mobile app pages by a user.
   All browser and mobile app activity within a 24-hour period is considered a
