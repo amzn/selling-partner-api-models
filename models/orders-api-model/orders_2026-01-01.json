@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "The Selling Partner Orders API helps you retrieve and return orders information. This API supports FBM (Fulfilled by Merchant), FBA (Fulfilled by Amazon - read only), and Amazon Fresh orders. To find out which APIs are most relevant for your solution, visit our use case guides to learn more about the different workflows. Note that we only support recent orders and do not display orders data that are more than two years old in all marketplaces. The only exceptions are the JP, AU, and SG marketplaces, for which we display orders data from 2016.",
+    "description": "The Selling Partner API for Orders returns orders information. This API supports the following types of orders:\n\n- FBM (Fulfilled by Merchant)\n- FBA (Fulfilled by Amazon) - read only\n- Amazon Fresh\n\nThis API does not display order data that is more than two years old, except in the JP, AU, and SG marketplaces, for which data from 2016 and after is available.",
     "version": "2026-01-01",
     "title": "The Selling Partner API for Orders",
     "contact": {
@@ -29,13 +29,13 @@
         "tags": [
           "searchOrders"
         ],
-        "description": "Returns orders that are created or updated during the specified time period. If you want to return specific types of orders, you can apply filters to your request. `paginationToken` doesn't affect any filters that you include in your request; it only impacts the pagination for the filtered orders response. \n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0056 | 20 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that are applied to the requested operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may receive higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api) in the Selling Partner API documentation.",
+        "description": "Returns orders that are created or updated during the time period that you specify. You can filter the response for specific types of orders.",
         "operationId": "searchOrders",
         "parameters": [
           {
             "name": "createdAfter",
             "in": "query",
-            "description": "A date used for selecting orders created after (or at) a specified time. Only orders placed after the specified time are returned. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.\n\n**Note**: One and only one of `createdAfter` or `lastUpdatedAfter` must be provided. If `createdAfter` is provided, neither `lastUpdatedAfter` or `lastUpdatedBefore` may be provided.",
+            "description": "The response includes orders created at or after this time. The date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.\n\n**Note**: You must provide exactly one of `createdAfter` and `lastUpdatedAfter` in your request. If `createdAfter` is provided, neither `lastUpdatedAfter` nor `lastUpdatedBefore` may be provided.",
             "required": false,
             "type": "string",
             "format": "date-time",
@@ -44,7 +44,7 @@
           {
             "name": "createdBefore",
             "in": "query",
-            "description": "A date used for selecting orders created before (or at) a specified time. Only orders placed before the specified time are returned. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.\n\n**Note**: `createdBefore` is optional when `createdAfter` is set. But if specified, `createdBefore` should be equal to or after the `createdAfter` date and at least 2 minutes before current time. If `createdBefore` is provided, neither `lastUpdatedAfter` or `lastUpdatedBefore` may be provided.",
+            "description": "The response includes orders created at or before this time. The date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.\n\n**Note**: If you include `createdAfter` in the request, `createdBefore` is optional, and if provided must be equal to or after the `createdAfter` date and at least two minutes before the time of the request. If `createdBefore` is provided, neither `lastUpdatedAfter` nor `lastUpdatedBefore` may be provided.",
             "required": false,
             "type": "string",
             "format": "date-time",
@@ -53,7 +53,7 @@
           {
             "name": "lastUpdatedAfter",
             "in": "query",
-            "description": "A date used for selecting orders that were last updated after (or at) a specified time. An update is defined as any change made by Amazon and by the seller, including the update in order status. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.\n\n**Note**:  One and only one of `createdAfter` or `lastUpdatedAfter` must be provided. If `lastUpdatedAfter` is provided, neither `createdAfter` or `createdBefore` may be provided.",
+            "description": "The response includes orders updated at or after this time. An update is defined as any change made by Amazon or by the seller, including an update to the order status. The date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.\n\n**Note**: You must provide exactly one of `createdAfter` and `lastUpdatedAfter`. If `lastUpdatedAfter` is provided, neither `createdAfter` nor `createdBefore` may be provided.",
             "required": false,
             "type": "string",
             "format": "date-time",
@@ -62,7 +62,7 @@
           {
             "name": "lastUpdatedBefore",
             "in": "query",
-            "description": "A date used for selecting orders that were last updated before (or at) a specified time. An update is defined as any change made by Amazon and by the seller, including the update in order status. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.\n\n**Note**: `lastUpdatedBefore` is optional when `lastUpdatedAfter` is set. But if specified, `lastUpdatedBefore` should be equal to or after the `lastUpdatedAfter` date and at least 2 minutes before current time. If `lastUpdatedBefore` is provided, neither `createdAfter` or `createdBefore` may be provided.",
+            "description": "The response includes orders updated at or before this time. An update is defined as any change made by Amazon or by the seller, including an update to the order status. The date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.\n\n**Note**: If you include `lastUpdatedAfter` in the request, `lastUpdatedBefore` is optional, and if provided must be equal to or after the `lastUpdatedAfter` date and at least two minutes before the time of the request. If `lastUpdatedBefore` is provided, neither `createdAfter` nor `createdBefore` may be provided.",
             "required": false,
             "type": "string",
             "format": "date-time",
@@ -71,7 +71,7 @@
           {
             "name": "fulfillmentStatuses",
             "in": "query",
-            "description": "A list of `FulfillmentStatus` values used to filter the results.",
+            "description": "A list of `FulfillmentStatus` values you can use to filter the results.",
             "required": false,
             "type": "array",
             "items": {
@@ -92,15 +92,15 @@
                 },
                 {
                   "value": "PENDING",
-                  "description": "The order has been placed but is not ready for shipment. Note that for standard orders, the initial order status is Pending. For pre-orders, the initial order status is PendingAvailability, and the order passes into the Pending status when the payment authorization process begins."
+                  "description": "The order has been placed but is not ready for shipment. For standard orders, the initial order status is `PENDING`. For pre-orders, the initial order status is `PENDING_AVAILABILITY`, and the order passes into the `PENDING` status when payment authorization begins."
                 },
                 {
                   "value": "UNSHIPPED",
-                  "description": "Order is ready for shipment, but no items in the order have been shipped."
+                  "description": "The order is ready for shipment, but no items in the order have been shipped."
                 },
                 {
                   "value": "PARTIALLY_SHIPPED",
-                  "description": "One or more (but not all) items in the order have been shipped."
+                  "description": "At least one, but not all, items in the order have been shipped."
                 },
                 {
                   "value": "SHIPPED",
@@ -108,11 +108,11 @@
                 },
                 {
                   "value": "CANCELLED",
-                  "description": "Order has been cancelled and will not be fulfilled."
+                  "description": "The order has been canceled and will not be fulfilled."
                 },
                 {
                   "value": "UNFULFILLABLE",
-                  "description": "The order cannot be fulfilled. This state applies only to Amazon-fulfilled orders that were not placed on Amazon's retail web site."
+                  "description": "The order cannot be fulfilled. This state only applies to Amazon-fulfilled orders that were not placed on Amazon's retail web site."
                 }
               ]
             },
@@ -124,7 +124,7 @@
           {
             "name": "marketplaceIds",
             "in": "query",
-            "description": "A list of MarketplaceId values. Used to select orders that were placed in the specified marketplaces.\n\nRefer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids) for a complete list of marketplaceId values.",
+            "description": "The response includes orders that were placed in marketplaces you include in this list.\n\nRefer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids) for a complete list of `marketplaceId` values.",
             "required": false,
             "type": "array",
             "items": {
@@ -139,7 +139,7 @@
           {
             "name": "fulfilledBy",
             "in": "query",
-            "description": "A list that indicates which party is responsible for fulfilling the order.",
+            "description": "The response includes orders that are fulfilled by the parties that you include in this list.",
             "required": false,
             "type": "array",
             "items": {
@@ -151,11 +151,11 @@
               "x-docgen-enum-table-extension": [
                 {
                   "value": "MERCHANT",
-                  "description": "Fulfilled by the merchant."
+                  "description": "Fulfilled by the merchant"
                 },
                 {
                   "value": "AMAZON",
-                  "description": "Fulfilled by Amazon."
+                  "description": "Fulfilled by Amazon"
                 }
               ]
             },
@@ -167,7 +167,7 @@
           {
             "name": "maxResultsPerPage",
             "in": "query",
-            "description": "A number that indicates the maximum number of orders that can be returned per page. Value must be 1 - 100. Default 100.",
+            "description": "The maximum number of orders that can be returned per page. The value must be between 1 and 100. **Default:** 100.",
             "required": false,
             "type": "integer",
             "x-example": 50
@@ -175,7 +175,7 @@
           {
             "name": "paginationToken",
             "in": "query",
-            "description": "A string token returned in the response of your previous request.",
+            "description": "Pagination occurs when a request produces a response that exceeds the `maxResultsPerPage`. This means that the response is divided into individual pages. To retrieve the next page, you must pass the `nextToken` value as the `paginationToken` query parameter in the next request. You will not receive a `nextToken` value on the last page.",
             "required": false,
             "type": "string",
             "x-example": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4"
@@ -183,7 +183,7 @@
           {
             "name": "includedData",
             "in": "query",
-            "description": "A list of data sets to include in the response.",
+            "description": "A list of datasets to include in the response.",
             "required": false,
             "type": "array",
             "items": {
@@ -201,35 +201,35 @@
               "x-docgen-enum-table-extension": [
                 {
                   "value": "BUYER",
-                  "description": "The information of the buyer who purchased the order."
+                  "description": "Information about the buyer who purchased the order."
                 },
                 {
                   "value": "RECIPIENT",
-                  "description": "The information of the recipient to whom the order is delivered."
+                  "description": "Information about the recipient to whom the order is delivered."
                 },
                 {
                   "value": "PROCEEDS",
-                  "description": "The Revenue and financial breakdown for the order and order items."
+                  "description": "The revenue and financial breakdown for the order and order items."
                 },
                 {
                   "value": "EXPENSE",
-                  "description": "The Cost information applied to the order and order items."
+                  "description": "The cost information about the order and order items."
                 },
                 {
                   "value": "PROMOTION",
-                  "description": "The Discount and promotional offer details applied to the order and order items."
+                  "description": "The discount and promotional offer details applied to the order and order items."
                 },
                 {
                   "value": "CANCELLATION",
-                  "description": "The Cancellation information applied to the order and order items."
+                  "description": "Cancellation information applied to the order and order items."
                 },
                 {
                   "value": "FULFILLMENT",
-                  "description": "The information about how this order is being processed and shipped applied to the order and order items."
+                  "description": "Information about how the order and order items are processed and shipped."
                 },
                 {
                   "value": "PACKAGES",
-                  "description": "Shipping packages and tracking information."
+                  "description": "Information about shipping packages and tracking."
                 }
               ]
             },
@@ -813,7 +813,6 @@
                           }
                         ]
                       }
-
                     ],
                     "pagination": {
                       "nextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4"
@@ -914,7 +913,7 @@
                             "quantityOrdered": 1,
                             "measurement": {
                               "unit": "COUNT",
-                              "value": 1.0
+                              "value": 1
                             },
                             "product": {
                               "asin": "B08C1W5N87",
@@ -961,7 +960,7 @@
                                       "title": "Amazon Echo Dot (4th Generation) | Smart speaker with Alexa | Glacier White",
                                       "measurement": {
                                         "unit": "COUNT",
-                                        "value": 1.0
+                                        "value": 1
                                       }
                                     },
                                     {
@@ -971,7 +970,7 @@
                                       "title": "Amazon Echo Dot (4th Generation) | Smart speaker with Alexa | Twilight Blue",
                                       "measurement": {
                                         "unit": "COUNT",
-                                        "value": 1.0
+                                        "value": 1
                                       }
                                     }
                                   ]
@@ -1016,7 +1015,6 @@
                           }
                         ]
                       }
-
                     ],
                     "createdBefore": "2024-12-24T15:00:00Z"
                   }
@@ -1158,7 +1156,7 @@
         "tags": [
           "getOrder"
         ],
-        "description": "Returns the order that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may receive higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns the order that you specify.",
         "operationId": "getOrder",
         "parameters": [
           {
@@ -1171,7 +1169,7 @@
           {
             "name": "includedData",
             "in": "query",
-            "description": "A list of data sets to include in the response.",
+            "description": "A list of datasets to include in the response.",
             "required": false,
             "type": "array",
             "items": {
@@ -1189,31 +1187,31 @@
               "x-docgen-enum-table-extension": [
                 {
                   "value": "BUYER",
-                  "description": "The information of the buyer who purchased the order."
+                  "description": "Information about the buyer who purchased the order."
                 },
                 {
                   "value": "RECIPIENT",
-                  "description": "The information of the recipient to whom the order is delivered."
+                  "description": "Information about the recipient to whom the order is delivered."
                 },
                 {
                   "value": "PROCEEDS",
-                  "description": "The Revenue and financial breakdown for the order and order items."
+                  "description": "The revenue and financial breakdown for the order and order items."
                 },
                 {
                   "value": "EXPENSE",
-                  "description": "The Cost information applied to the order and order items."
+                  "description": "The cost information applied to the order and order items."
                 },
                 {
                   "value": "PROMOTION",
-                  "description": "The Discount and promotional offer details applied to the order and order items."
+                  "description": "The discount and promotional offer details applied to the order and order items."
                 },
                 {
                   "value": "CANCELLATION",
-                  "description": "The Cancellation information applied to the order and order items."
+                  "description": "Cancellation information applied to the order and order items."
                 },
                 {
                   "value": "FULFILLMENT",
-                  "description": "The information about how this order is being processed and shipped applied to the order and order items."
+                  "description": "Information about how this order and order items are processed and shipped."
                 },
                 {
                   "value": "PACKAGES",
@@ -1725,217 +1723,11 @@
           }
         }
       }
-    },
-    "/orders/2026-01-01/orders/{orderId}/cancellation": {
-      "put": {
-        "tags": [
-          "cancelOrder"
-        ],
-        "description": "Cancels a specified order. We only support full order cancellations, partial cancellations are not supported across our interfaces at this time.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may see higher rate and burst values than those shown here. For more information, see [Usage Plans and Rate Limits in the Selling Partner API](doc:usage-plans-and-rate-limits-in-the-sp-api).",
-        "operationId": "cancelOrder",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "description": "An Amazon-defined order identifier.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Request body of cancelOrder.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CancelOrderRequest"
-            }
-          }
-        ],
-        "responses": {
-          "202": {
-            "description": "Success.",
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            },
-            "examples": {
-              "application/json": {}
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "orderId": {
-                        "value": "902-1106328-1059050"
-                      },
-                      "body": {
-                        "value": {
-                          "cancelReasonCode": "NO_INVENTORY"
-                        }
-                      }
-                    }
-                  },
-                  "response": {}
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "orderId": {
-                        "value": "TEST_CASE_400"
-                      },
-                      "body": {
-                        "value": {
-                          "cancelReasonCode": "NO_INVENTORY"
-                        }
-                      }
-                    }
-                  },
-                  "response": {
-                    "errors": [
-                      {
-                        "code": "InvalidInput",
-                        "message": "OrderId: TEST_CASE_400 is invalid, should be in 3-7-7 format."
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          },
-          "401": {
-            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "403": {
-            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "404": {
-            "description": "The resource specified does not exist.",
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "413": {
-            "description": "The request size exceeded the maximum accepted size.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            }
-          },
-          "415": {
-            "description": "The request payload is in an unsupported format.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            }
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "headers": {
-              "x-amzn-RequestId": {
-                "type": "string",
-                "description": "Unique request reference identifier."
-              }
-            }
-          }
-        }
-      }
     }
   },
   "definitions": {
     "SearchOrdersResponse": {
-      "description": "Contains the results of a searchOrders operation for orders.",
+      "description": "A list of orders.",
       "type": "object",
       "required": [
         "orders"
@@ -1950,7 +1742,7 @@
         },
         "pagination": {
           "$ref": "#/definitions/Pagination",
-          "description": "When a request has results that are not included in this response, pagination occurs. This means the results are divided into individual pages. To retrieve a different page, you must pass the token value in Pagination as the `paginationToken` query parameter in the subsequent request. All other parameters must be provided with the same values that were provided with the request that generated this token, with the exception of `maxResultsPerPage` and `includedData` which can be modified between calls. The token will expire after 24 hours. When there are no other pages to fetch, the `pagination` field will be absent from the response."
+          "description": "When a request has results that are not included in the response, pagination occurs. This means the results are divided into individual pages. To retrieve a different page, you must pass the token value as the `paginationToken` query parameter in the subsequent request. All other parameters must be provided with the same values that were provided with the request that generated this token, with the exception of `maxResultsPerPage` and `includedData`, which can be modified between calls. The token will expire after 24 hours. When there are no other pages to fetch, the `pagination` field will be absent from the response."
         },
         "lastUpdatedBefore": {
           "type": "string",
@@ -1966,7 +1758,7 @@
     },
     "Pagination": {
       "type": "object",
-      "description": "When a request has results that are not included in this response, pagination occurs. This means the results are divided into individual pages. To retrieve a different page, you must pass the token value in Pagination as the `paginationToken` query parameter in the subsequent request. All other parameters must be provided with the same values that were provided with the request that generated this token, with the exception of maxResultsPerPage which can be modified between calls. When there are no other pages to fetch, the `pagination` field will be absent from the response",
+      "description": "When a request has results that are not included in the response, pagination occurs. This means the results are divided into individual pages. To retrieve a different page, you must pass the token value as the `paginationToken` query parameter in the subsequent request. All other parameters must be provided with the same values that were provided with the request that generated this token, with the exception of `maxResultsPerPage` and `includedData`, which can be modified between calls. The token will expire after 24 hours. When there are no other pages to fetch, the `pagination` field will be absent from the response.",
       "properties": {
         "nextToken": {
           "description": "A token that can be used to fetch the next page of results.",
@@ -1975,66 +1767,17 @@
       }
     },
     "GetOrderResponse": {
-      "description": "Contains the detailed information for a single order retrieved by its order ID.",
+      "description": "Order details.",
       "type": "object",
       "required": [
         "order"
       ],
       "properties": {
         "order": {
-          "description": "The complete order object containing all available information for the requested order.",
+          "description": "All available information about the requested order.",
           "$ref": "#/definitions/Order"
         }
       }
-    },
-    "CancelOrderRequest": {
-      "type": "object",
-      "required": [
-        "cancelReasonCode"
-      ],
-      "properties": {
-        "cancelReasonCode": {
-          "description": "The specific reason code explaining why the order is being cancelled.",
-          "$ref": "#/definitions/CancelReasonCode"
-        }
-      },
-      "description": "Contains the information required to cancel an order.",
-      "example": {
-        "cancelReasonCode": "NO_INVENTORY"
-      }
-    },
-    "CancelReasonCode": {
-      "description": "Predefined codes that specify the reason why an order is being cancelled, used for tracking and reporting purposes.",
-      "type": "string",
-      "enum": [
-        "NO_INVENTORY",
-        "BUYER_CANCELLED",
-        "SHIPPING_ADDRESS_UNDELIVERABLE",
-        "CUSTOMER_EXCHANGE",
-        "PRICING_ERROR"
-      ],
-      "x-docgen-enum-table-extension": [
-        {
-          "value": "NO_INVENTORY",
-          "description": "Cancellation due to insufficient stock availability."
-        },
-        {
-          "value": "BUYER_CANCELLED",
-          "description": "Cancellation requested by the customer."
-        },
-        {
-          "value": "SHIPPING_ADDRESS_UNDELIVERABLE",
-          "description": "Cancellation due to invalid or inaccessible delivery address."
-        },
-        {
-          "value": "CUSTOMER_EXCHANGE",
-          "description": "Cancellation for product exchange purposes."
-        },
-        {
-          "value": "PRICING_ERROR",
-          "description": "Cancellation due to incorrect product pricing."
-        }
-      ]
     },
     "Order": {
       "description": "Comprehensive information about a customer order.",
@@ -2061,12 +1804,12 @@
         "createdTime": {
           "type": "string",
           "format": "date-time",
-          "description": "The exact time when the customer placed this order. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format."
+          "description": "The time when the customer placed the order. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format."
         },
         "lastUpdatedTime": {
           "type": "string",
           "format": "date-time",
-          "description": "The most recent time when any aspect of this order was modified by Amazon or the seller. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format."
+          "description": "The most recent time when any aspect of this order was modified by Amazon or the seller. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format."
         },
         "programs": {
           "type": "array",
@@ -2095,7 +1838,7 @@
           "$ref": "#/definitions/Recipient"
         },
         "proceeds": {
-          "description": "Financial information of this order.",
+          "description": "Financial information about this order.",
           "$ref": "#/definitions/OrderProceeds"
         },
         "fulfillment": {
@@ -2110,7 +1853,7 @@
           }
         },
         "packages": {
-          "description": "Shipping packages created for this order, including tracking information. Note: Only available for merchant-fulfilled (FBM) orders.",
+          "description": "Shipping packages created for this order, including tracking information. **Note:** Only available for merchant-fulfilled (FBM) orders.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/OrderPackage"
@@ -2127,17 +1870,17 @@
       ],
       "properties": {
         "aliasId": {
-          "description": "The actual alternative identifier value that can be used to reference this order.",
+          "description": "The alternative identifier value that can be used to reference this order.",
           "type": "string"
         },
         "aliasType": {
-          "description": "Specifies what kind of alternative identifier this represents. \n\n**Possible values**: `SELLER_ORDER_ID`",
+          "description": "The kind of alternative identifier this represents.\n\n**Possible values**: `SELLER_ORDER_ID`",
           "type": "string"
         }
       }
     },
     "AssociatedOrder": {
-      "description": "Represents another order that has a direct business relationship with the current order, such as replacements or exchanges.",
+      "description": "Another order that has a direct business relationship with the current order, such as replacements or exchanges.",
       "type": "object",
       "properties": {
         "orderId": {
@@ -2145,7 +1888,7 @@
           "type": "string"
         },
         "associationType": {
-          "description": "Defines the nature of the relationship between the current order and the associated order. \n\n**Possible values**: `REPLACEMENT_ORIGINAL_ID`, `EXCHANGE_ORIGINAL_ID`",
+          "description": "The relationship between the current order and the associated order.\n\n**Possible values**: `REPLACEMENT_ORIGINAL_ID`, `EXCHANGE_ORIGINAL_ID`",
           "type": "string"
         }
       }
@@ -2158,7 +1901,7 @@
       ],
       "properties": {
         "channelName": {
-          "description": "The name of the sales platform or channel where the customer placed this order. \n\n**Possible values**: `AMAZON`, `NON_AMAZON`",
+          "description": "The name of the sales platform or channel where the customer placed this order.\n\n**Possible values**: `AMAZON`, `NON_AMAZON`",
           "type": "string"
         },
         "marketplaceId": {
@@ -2180,11 +1923,11 @@
           "type": "string"
         },
         "buyerEmail": {
-          "description": "The customer's email address, which may be anonymized for privacy protection.",
+          "description": "The anonymized email address of the buyer. **Note:** Only available for merchant-fulfilled (FBM) orders.",
           "type": "string"
         },
         "buyerCompanyName": {
-          "description": "The name of the company or organization for business order.",
+          "description": "The name of the company or organization for a business order.",
           "type": "string"
         },
         "buyerPurchaseOrderNumber": {
@@ -2198,11 +1941,11 @@
       "type": "object",
       "properties": {
         "deliveryAddress": {
-          "description": "The complete address where the order should be delivered to the customer.",
+          "description": "The address where the order should be delivered to the customer.",
           "$ref": "#/definitions/CustomerAddress"
         },
         "deliveryPreference": {
-          "description": "Special instructions and preferences specified by the customer for how the order should be delivered.",
+          "description": "Special instructions and preferences that the customer specifies for how the order should be delivered.",
           "$ref": "#/definitions/DeliveryPreference"
         }
       }
@@ -2212,7 +1955,7 @@
       "type": "object",
       "properties": {
         "grandTotal": {
-          "description": "The complete total amount that the seller receives from the sale of the order.",
+          "description": "The total amount that the seller receives from the sale of the order.",
           "$ref": "#/definitions/Money"
         }
       }
@@ -2229,11 +1972,11 @@
           "$ref": "#/definitions/FulfillmentStatus"
         },
         "fulfilledBy": {
-          "description": "Specifies whether Amazon or the merchant is responsible for fulfilling this order. \n\n**Possible values**: `AMAZON` (Fulfilled by Amazon), `MERCHANT` (Fulfilled by Merchant).",
+          "description": "Specifies whether Amazon or the merchant is responsible for fulfilling this order.\n\n**Possible values**: `AMAZON`, `MERCHANT`.",
           "type": "string"
         },
         "fulfillmentServiceLevel": {
-          "description": "The category of the shipping speed option selected by the customer at checkout. \n\n**Possible values**: `EXPEDITED`, `FREE_ECONOMY`, `NEXT_DAY`, `PRIORITY`, `SAME_DAY`, `SECOND_DAY`, `SCHEDULED`, and `STANDARD`.",
+          "description": "The category of the shipping speed option selected by the customer at checkout.\n\n**Possible values**: `EXPEDITED`, `FREE_ECONOMY`, `NEXT_DAY`, `PRIORITY`, `SAME_DAY`, `SECOND_DAY`, `SCHEDULED`, `STANDARD`.",
           "type": "string"
         },
         "shipByWindow": {
@@ -2247,7 +1990,7 @@
       }
     },
     "OrderItem": {
-      "description": "Detailed information about a single product within an order.",
+      "description": "Information about a single product within an order.",
       "type": "object",
       "required": [
         "orderItemId",
@@ -2256,7 +1999,7 @@
       ],
       "properties": {
         "orderItemId": {
-          "description": "Unique identifier to distinguish this specific item within the order.",
+          "description": "A unique identifier for this specific item within the order.",
           "type": "string"
         },
         "quantityOrdered": {
@@ -2301,23 +2044,23 @@
       }
     },
     "OrderPackage": {
-      "description": "Information about a physical shipping package, including tracking details. Note: Only available for merchant-fulfilled (FBM) orders.",
+      "description": "Information about a physical shipping package, including tracking details. **Note:** Only available for merchant-fulfilled (FBM) orders.",
       "type": "object",
       "required": [
         "packageReferenceId"
       ],
       "properties": {
         "packageReferenceId": {
-          "description": "Unique identifier for this package within the context of the order.",
+          "description": "A unique identifier for this package within the context of the order.",
           "type": "string"
         },
         "createdTime": {
-          "description": "The exact time when this shipping package was created and prepared for shipment. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format.",
+          "description": "The exact time when this shipping package was created and prepared for shipment. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.",
           "type": "string",
           "format": "date-time"
         },
         "packageStatus": {
-          "description": "Current status of this package.",
+          "description": "The current status of this package.",
           "$ref": "#/definitions/PackageStatus"
         },
         "carrier": {
@@ -2325,7 +2068,7 @@
           "type": "string"
         },
         "shipTime": {
-          "description": "The exact time when this package was handed over to the carrier and began its journey to the customer. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format.",
+          "description": "The exact time when this package was handed over to the carrier and began its journey to the customer. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.",
           "type": "string",
           "format": "date-time"
         },
@@ -2351,16 +2094,16 @@
       }
     },
     "DeliveryPreference": {
-      "description": "Contains all of the delivery instructions provided by the customer for the shipping address.",
+      "description": "Contains all delivery instructions that the customer provides for the shipping address.",
       "type": "object",
       "properties": {
         "dropOffLocation": {
           "type": "string",
-          "description": "Drop-off location selected by the customer."
+          "description": "The drop-off location selected by the customer."
         },
         "addressInstruction": {
           "type": "string",
-          "description": "Building instruction, nearby landmark or navigation instructions."
+          "description": "Building instructions, nearby landmark, or navigation instructions."
         },
         "deliveryTime": {
           "$ref": "#/definitions/PreferredDeliveryTime",
@@ -2396,49 +2139,49 @@
           "type": "string"
         },
         "addressLine3": {
-          "description": "Extra address information.",
+          "description": "Additional address information.",
           "type": "string"
         },
         "city": {
-          "description": "The city where the address is located.",
+          "description": "The city of the address.",
           "type": "string"
         },
         "districtOrCounty": {
-          "description": "The district or county containing the address.",
+          "description": "The district or county of the address.",
           "type": "string"
         },
         "stateOrRegion": {
-          "description": "The state, province, or region where the address is located.",
+          "description": "The state, province, or region of the address.",
           "type": "string"
         },
         "municipality": {
           "type": "string",
-          "description": "The municipality for the address."
+          "description": "The municipality of the address."
         },
         "postalCode": {
-          "description": "The postal code, ZIP code, or equivalent mailing code for the address.",
+          "description": "The postal code, ZIP code, or equivalent mailing code of the address.",
           "type": "string"
         },
         "countryCode": {
-          "description": "The two-letter country code identifying the country of the address, as defined in ISO 3166-1.",
+          "description": "The two-letter country code identifying the country of the address, in ISO 3166-1 format.",
           "type": "string"
         },
         "phone": {
-          "description": "The contact phone number for delivery coordination and customer communication.\n\n**Note**: \n1. The buyer Phone number will be suppressed in some cases, including but not limited to \na. Phone will be suppressed for all FBA(Fulfillment by Amazon) orders.\nb. Phone will be suppressed for the shipped FBM(Fulfilled by the merchant) order when current date is past Latest Delivery Date.",
+          "description": "The contact phone number for delivery coordination and customer communication.\n\n**Note**: The buyer phone number will be suppressed in some cases, including but not limited to:\n\n- All FBA (Fulfillment by Amazon) orders.\n- Shipped FBM (Fulfilled by the merchant) orders when current date is past the latest delivery date.",
           "type": "string"
         },
         "extendedFields": {
-          "description": "Additional address components specific to certain countries that provide more detailed location information. \n\n**Note**: This attribute is only available with Brazil shipping addresses as of now.",
+          "description": "Additional address components specific to certain countries that provide more detailed location information.\n\n**Note**: Only available with Brazil shipping addresses.",
           "$ref": "#/definitions/AddressExtendedFields"
         },
         "addressType": {
-          "description": "Categorizes the type of location.\n\n**Possible values**\n- `RESIDENTIAL` (The shipping address is a residential address.)\n- `COMMERCIAL` (The shipping address is a commercial address.)\n- `PICKUP_POINT` (The shipping address is a pickup point.)",
+          "description": "The type of location.\n\n**Possible values**: `RESIDENTIAL`, `COMMERCIAL`, `PICKUP_POINT`",
           "type": "string"
         }
       }
     },
     "AddressExtendedFields": {
-      "description": "Additional address components that provide more detailed location information, helping with precise delivery routing. \n\n**Note**: This attribute is only available with Brazil shipping addresses as of now.",
+      "description": "Additional address components that provide more detailed location information, helping with precise delivery routing. \n\n**Note**: Only available with Brazil shipping addresses.",
       "type": "object",
       "properties": {
         "streetName": {
@@ -2451,7 +2194,7 @@
         },
         "complement": {
           "type": "string",
-          "description": "The floor number/unit number in the building/private house number."
+          "description": "The floor number / unit number."
         },
         "neighborhood": {
           "type": "string",
@@ -2460,7 +2203,7 @@
       }
     },
     "MerchantAddress": {
-      "description": "The physical address of the merchant's location.",
+      "description": "The physical address of the merchant.",
       "type": "object",
       "properties": {
         "name": {
@@ -2476,31 +2219,31 @@
           "type": "string"
         },
         "addressLine3": {
-          "description": "Extra address information.",
+          "description": "Additional address information.",
           "type": "string"
         },
         "city": {
-          "description": "The city where the merchant's address is located.",
+          "description": "The city of the address.",
           "type": "string"
         },
         "districtOrCounty": {
-          "description": "The district or county containing the merchant's address.",
+          "description": "The district or county of the address.",
           "type": "string"
         },
         "stateOrRegion": {
-          "description": "The state, province, or region where the merchant's address is located.",
+          "description": "The state, province, or region of the address.",
           "type": "string"
         },
         "municipality": {
           "type": "string",
-          "description": "The municipality for the merchant's address."
+          "description": "The municipality of the address."
         },
         "postalCode": {
-          "description": "The postal code or ZIP code for the merchant's address.",
+          "description": "The postal code or ZIP code of the address.",
           "type": "string"
         },
         "countryCode": {
-          "description": "The two-letter country code for the merchant's location, as defined in ISO 3166-1.",
+          "description": "The two-letter country code for the address, in ISO 3166-1 format.",
           "type": "string"
         }
       }
@@ -2524,11 +2267,11 @@
         },
         {
           "value": "PENDING",
-          "description": "The order has been placed but is not ready for shipment. Note that for standard orders, the initial order status is Pending. For pre-orders, the initial order status is PendingAvailability, and the order passes into the Pending status when the payment authorization process begins."
+          "description": "The order has been placed but is not ready for shipment. Note that for standard orders, the initial order status is `PENDING`. For pre-orders, the initial order status is `PENDING_AVAILABILITY`, and the order passes into the `PENDING` status when payment authorization begins."
         },
         {
           "value": "UNSHIPPED",
-          "description": "Order is ready for shipment, but no items in the order have been shipped."
+          "description": "The order is ready for shipment, but no items in the order have been shipped."
         },
         {
           "value": "PARTIALLY_SHIPPED",
@@ -2540,7 +2283,7 @@
         },
         {
           "value": "CANCELLED",
-          "description": "Order has been cancelled and will not be fulfilled."
+          "description": "The order has been canceled and will not be fulfilled."
         },
         {
           "value": "UNFULFILLABLE",
@@ -2628,7 +2371,7 @@
             },
             {
               "value": "SQUARE_METERS",
-              "description": "Metric area unit representing one meter squared."
+              "description": "The item is measured in square meters."
             },
             {
               "value": "SQUARE_CENTIMETERS",
@@ -2691,7 +2434,7 @@
       }
     },
     "ItemProduct": {
-      "description": "The product information for an order item.",
+      "description": "Product information for an order item.",
       "type": "object",
       "properties": {
         "asin": {
@@ -2842,31 +2585,31 @@
           "x-docgen-enum-table-extension": [
             {
               "value": "SUN",
-              "description": "The first day of the week."
+              "description": "Sunday"
             },
             {
               "value": "MON",
-              "description": "The second day of the week."
+              "description": "Monday"
             },
             {
               "value": "TUE",
-              "description": "The third day of the week."
+              "description": "Tuesday"
             },
             {
               "value": "WED",
-              "description": "The fourth day of the week."
+              "description": "Wednesday"
             },
             {
               "value": "THU",
-              "description": "The fifth day of the week."
+              "description": "Thursday"
             },
             {
               "value": "FRI",
-              "description": "The sixth day of the week."
+              "description": "Friday"
             },
             {
               "value": "SAT",
-              "description": "The seventh day of the week."
+              "description": "Saturday"
             }
           ]
         },
@@ -2884,7 +2627,7 @@
       "description": "Special dates when normal business hours are modified or suspended, requiring different delivery scheduling.",
       "properties": {
         "exceptionDate": {
-          "description": "Specific calendar date when normal operating hours do not apply. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format at day granularity.",
+          "description": "Specific calendar date when normal operating hours do not apply. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format at day granularity.",
           "type": "string",
           "format": "date"
         },
@@ -2921,11 +2664,11 @@
       "properties": {
         "startTime": {
           "$ref": "#/definitions/HourMinute",
-          "description": "Beginning time of the time window."
+          "description": "The beginning of the time window."
         },
         "endTime": {
           "$ref": "#/definitions/HourMinute",
-          "description": "Ending time of the time window."
+          "description": "The end of the time window."
         }
       }
     },
@@ -2944,7 +2687,7 @@
       }
     },
     "PreferredDeliveryCapability": {
-      "description": "Special delivery features and capabilities available at the shipping address that may affect delivery options and methods. \n\n**Possible values**\n- `HAS_ACCESS_POINT` (Delivery location includes designated pickup or drop-off access points.)\n- `PALLET_ENABLED` (Address is equipped to receive large pallet deliveries.)\n- `PALLET_DISABLED` (Address cannot accommodate pallet delivery methods.)",
+      "description": "Special delivery capabilities available at the shipping address that may affect delivery options and methods. \n\n**Possible values:**\n- `HAS_ACCESS_POINT` (Delivery location includes designated pickup or drop-off access points)\n- `PALLET_ENABLED` (Address is equipped to receive large pallet deliveries)\n- `PALLET_DISABLED` (Address cannot accommodate pallet delivery methods)",
       "type": "string"
     },
     "ItemCondition": {
@@ -2952,11 +2695,11 @@
       "type": "object",
       "properties": {
         "conditionType": {
-          "description": "The primary condition category that broadly describes the item's state.\n\n**Possible values**: `NEW`, `USED`, `COLLECTIBLE`, `REFURBISHED`, `PREORDER`, and `CLUB`.",
+          "description": "The primary condition category that broadly describes the item's state.\n\n**Possible values**: `NEW`, `USED`, `COLLECTIBLE`, `REFURBISHED`, `PREORDER`, `CLUB`.",
           "type": "string"
         },
         "conditionSubtype": {
-          "description": "A more specific condition classification that provides additional detail about the item's quality within the main condition type.\n\n**Possible values**: `NEW`, `MINT`, `VERY_GOOD`, `GOOD`, `ACCEPTABLE`, `POOR`, `CLUB`, `OEM`, `WARRANTY`, `REFURBISHED_WARRANTY`, `REFURBISHED`, `OPEN_BOX`, `ANY`, and `OTHER`.",
+          "description": "A more specific condition classification that provides additional detail about the item's quality within the main condition type.\n\n**Possible values**: `NEW`, `MINT`, `VERY_GOOD`, `GOOD`, `ACCEPTABLE`, `POOR`, `CLUB`, `OEM`, `WARRANTY`, `REFURBISHED_WARRANTY`, `REFURBISHED`, `OPEN_BOX`, `ANY`, `OTHER`.",
           "type": "string"
         },
         "conditionNote": {
@@ -2974,7 +2717,7 @@
           "$ref": "#/definitions/Money"
         },
         "priceDesignation": {
-          "description": "Indicates that the selling price is a special price that is only available for Amazon Business orders. For more information about the Amazon Business Seller Program, refer to the Amazon Business website.\n\n**Possible values**:\n- `BUSINESS_PRICE` (A special price that is available only for Amazon Business orders.)",
+          "description": "Indicates that the selling price is a special price that is only available for Amazon Business orders. For more information about the Amazon Business Seller Program, refer to the [Amazon Business website](https://www.amazon.com/b2b/info/amazon-business).\n\n**Possible value**: `BUSINESS_PRICE`",
           "type": "string"
         }
       }
@@ -3142,15 +2885,15 @@
           "x-docgen-enum-table-extension": [
             {
               "value": "CUSTOMER_PREFERENCE",
-              "description": "Substitution preferences defined by the customer."
+              "description": "Substitution preferences defined by the customer"
             },
             {
               "value": "AMAZON_RECOMMENDED",
-              "description": "Substitution options suggested by Amazon's system."
+              "description": "Substitution options suggested by Amazon's system"
             },
             {
               "value": "DO_NOT_SUBSTITUTE",
-              "description": "Prohibition against any item substitutions."
+              "description": "Prohibition against any item substitutions"
             }
           ]
         },
@@ -3194,23 +2937,23 @@
       "type": "object",
       "properties": {
         "palletDelivery": {
-          "description": "Indicates if the line item needs to be delivered by pallet.",
+          "description": "The line item must be delivered by pallet.",
           "$ref": "#/definitions/ConstraintType"
         },
         "cashOnDelivery": {
-          "description": "Indicates whether payment should be collected from the customer at the time of delivery.",
+          "description": "Payment must be collected from the customer at the time of delivery.",
           "$ref": "#/definitions/ConstraintType"
         },
         "signatureConfirmation": {
-          "description": "Indicates that the recipient of the line item must sign to confirm its delivery.",
+          "description": "The recipient of the line item must sign to confirm its delivery.",
           "$ref": "#/definitions/ConstraintType"
         },
         "recipientIdentityVerification": {
-          "description": "Indicates that the person receiving the line item must be the same as the intended recipient of the order.",
+          "description": "The person receiving the line item must be the same as the intended recipient of the order.",
           "$ref": "#/definitions/ConstraintType"
         },
         "recipientAgeVerification": {
-          "description": "Indicates that the carrier must confirm the recipient is of the legal age to receive the line item upon delivery.",
+          "description": "The carrier must confirm that the recipient is of the legal age to receive the line item upon delivery.",
           "$ref": "#/definitions/ConstraintType"
         }
       }
@@ -3259,32 +3002,32 @@
           "x-docgen-enum-table-extension": [
             {
               "value": "PENDING",
-              "description": "Package preparation stage before carrier handoff."
+              "description": "Package preparation stage before carrier handoff"
             },
             {
               "value": "IN_TRANSIT",
-              "description": "Package movement phase within carrier network."
+              "description": "Package movement phase within carrier network"
             },
             {
               "value": "SHIPPED",
-              "description": "Package dispatch confirmation to customer."
+              "description": "Package dispatch confirmation to customer"
             },
             {
               "value": "DELIVERED",
-              "description": "Package completion at final destination."
+              "description": "Package completion at final destination"
             },
             {
               "value": "CANCELLED",
-              "description": "Package shipment termination before delivery."
+              "description": "Package shipment termination before delivery"
             },
             {
               "value": "UNDELIVERABLE",
-              "description": "Package delivery failure."
+              "description": "Package delivery failure"
             }
           ]
         },
         "detailedStatus": {
-          "description": "Granular status information providing specific details about the package's current location and handling stage. \n\n**Possible values:**\n- `PENDING_SCHEDULE` (Package awaiting pickup scheduling.)\n- `PENDING_PICK_UP` (Package ready for carrier collection from seller.)\n- `PENDING_DROP_OFF` (Package awaiting seller delivery to carrier.)\n- `LABEL_CANCELLED` (Shipping label cancelled by seller.)\n- `PICKED_UP` (Package collected by carrier from seller location.)\n- `DROPPED_OFF` (Package delivered to carrier by seller.)\n- `AT_ORIGIN_FC` (Package at originating fulfillment center.)\n- `AT_DESTINATION_FC` (Package at destination fulfillment center.)\n- `DELIVERED` (Package successfully delivered to recipient.)\n- `REJECTED_BY_BUYER` (Package refused by intended recipient.)\n- `UNDELIVERABLE` (Package cannot be delivered due to address or access issues.)\n- `RETURNING_TO_SELLER` (Package in transit back to seller.)\n- `RETURNED_TO_SELLER` (Package successfully returned to seller.)\n- `LOST` (Package location unknown or confirmed lost.)\n- `OUT_FOR_DELIVERY` (Package on delivery vehicle for final delivery.)\n- `DAMAGED` (Package damaged during transit.)\n",
+          "description": "Granular status information providing specific details about the package's current location and handling stage. \n\n**Possible values:**\n- `PENDING_SCHEDULE` (Package awaiting pickup scheduling)\n- `PENDING_PICK_UP` (Package ready for carrier collection from seller)\n- `PENDING_DROP_OFF` (Package awaiting seller delivery to carrier)\n- `LABEL_CANCELLED` (Shipping label canceled by seller)\n- `PICKED_UP` (Package collected by carrier from seller location)\n- `DROPPED_OFF` (Package delivered to carrier by seller)\n- `AT_ORIGIN_FC` (Package at originating fulfillment center)\n- `AT_DESTINATION_FC` (Package at destination fulfillment center)\n- `DELIVERED` (Package successfully delivered to recipient)\n- `REJECTED_BY_BUYER` (Package refused by intended recipient)\n- `UNDELIVERABLE` (Package cannot be delivered due to address or access issues)\n- `RETURNING_TO_SELLER` (Package in transit back to seller)\n- `RETURNED_TO_SELLER` (Package successfully returned to seller)\n- `LOST` (Package location unknown or confirmed lost)\n- `OUT_FOR_DELIVERY` (Package on delivery vehicle for final delivery)\n- `DAMAGED` (Package damaged during transit)\n",
           "type": "string"
         }
       }
@@ -3315,7 +3058,7 @@
       }
     },
     "Asin": {
-      "description": "The Amazon Standard Identification Number (ASIN) which uniquely identifies a product (catalog item).",
+      "description": "The Amazon Standard Identification Number (ASIN), which uniquely identifies a product (catalog item).",
       "type": "string"
     },
     "SKU": {
@@ -3340,20 +3083,20 @@
       "type": "object"
     },
     "Decimal": {
-      "description": "A decimal number with no loss of precision. This is useful when precision loss is unacceptable, such as with currencies. Follows RFC 7159 for number representation.",
+      "description": "A decimal number with no loss of precision. Follows RFC 7159 for number representation.",
       "type": "string"
     },
     "DateTimeRange": {
-      "description": "Defines a time period with start and end boundaries.",
+      "description": "A time period with start and end boundaries.",
       "type": "object",
       "properties": {
         "earliestDateTime": {
-          "description": "The beginning of the time period, representing the earliest possible date and time for the event. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format.",
+          "description": "The beginning of the time period, in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.",
           "type": "string",
           "format": "date-time"
         },
         "latestDateTime": {
-          "description": "The end of the time period, representing the latest possible date and time for the event. In <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> date time format.",
+          "description": "The end of the time period, in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.",
           "type": "string",
           "format": "date-time"
         }
