@@ -215,6 +215,151 @@
     "/fba/outbound/2020-07-01/deliveryOfferings": {
       "x-amzn-api-sandbox": {
         "dynamic": {}
+      },
+      "post": {
+        "tags": [
+          "fbaOutbound"
+        ],
+        "description": "Returns fast delivery estimates for Product Detail and Collection pages, based on criteria that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "deliveryOfferings",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetDeliveryOfferingsRequest"
+            },
+            "description": "GetDeliveryOfferingsRequest parameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetDeliveryOfferingsResponse"
+            },
+            "examples": {
+              "payload": {
+                "deliveryOfferings": [{
+                  "expiresAt": "2023-10-11T18:00:00Z",
+                  "dateRange": {
+                    "earliest": "2023-10-13T10:00:00Z",
+                    "latest": "2023-10-14T16:00:00Z"
+                  },
+                  "policy": {
+                    "messaging": {
+                      "text": "Get it soon!",
+                      "locale": "en_US"
+                    }
+                  }
+                }]
+              }
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetDeliveryOfferingsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/GetDeliveryOfferingsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetDeliveryOfferingsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The specified resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetDeliveryOfferingsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetDeliveryOfferingsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetDeliveryOfferingsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetDeliveryOfferingsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
       }
     },
     "/fba/outbound/2020-07-01/deliveryOffers": {
@@ -246,21 +391,19 @@
             },
             "examples": {
               "payload": {
-                "deliveryOffers": [
-                  {
-                    "expiresAt": "2023-10-11T18:00:00Z",
-                    "dateRange": {
-                      "earliest": "2023-10-13T10:00:00Z",
-                      "latest": "2023-10-14T16:00:00Z"
-                    },
-                    "policy": {
-                      "messaging": {
-                        "text": "Get it as soon as Wed, Aug 23",
-                        "locale": "en_US"
-                      }
+                "deliveryOffers": [{
+                  "expiresAt": "2023-10-11T18:00:00Z",
+                  "dateRange": {
+                    "earliest": "2023-10-13T10:00:00Z",
+                    "latest": "2023-10-14T16:00:00Z"
+                  },
+                  "policy": {
+                    "messaging": {
+                      "text": "Get it as soon as Wed, Aug 23",
+                      "locale": "en_US"
                     }
                   }
-                ]
+                }]
               }
             },
             "headers": {
@@ -1358,10 +1501,7 @@
                         "quantity": 3,
                         "packageNumber": 0,
                         "serialNumber": "",
-                        "manufacturerLotCodes": [
-                          "LOT0822-1234",
-                          "LOT1030-5678"
-                        ]
+                        "manufacturerLotCodes": ["LOT0822-1234", "LOT1030-5678"]
                       }
                     ]
                   }
@@ -2030,7 +2170,7 @@
         "tags": [
           "fbaOutbound"
         ],
-        "description": "Returns a list of inventory items that are eligible for the fulfillment feature you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api)..",
+        "description": "Returns a list of inventory items that are eligible for the fulfillment feature you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 2 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getFeatureInventory",
         "parameters": [
           {
@@ -2251,12 +2391,10 @@
                 "featureName": "BLANK_BOX",
                 "isEligible": true,
                 "ineligibleReasons": [],
-                "skuInfo": {
-                  "sellerSku": "TEST_SKU",
-                  "fnSku": "TEST_fnSku",
-                  "asin": "TEST_asin",
-                  "skuCount": 33
-                }
+                "sellerSku": "TEST_SKU",
+                "fnSku": "TEST_fnSku",
+                "asin": "TEST_asin",
+                "skuCount": 33
               }
             },
             "headers": {
@@ -2805,11 +2943,11 @@
       ],
       "properties": {
         "startDate": {
-          "description": "The date and time of the start of the Scheduled Delivery window. Must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
+          "description": "The date and time of the start of the Scheduled Delivery window, in ISO 8601 date time format.",
           "$ref": "#/definitions/Timestamp"
         },
         "endDate": {
-          "description": "The date and time of the end of the Scheduled Delivery window. Must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
+          "description": "The date and time of the end of the Scheduled Delivery window, in ISO 8601 date time format.",
           "$ref": "#/definitions/Timestamp"
         }
       },
@@ -2827,7 +2965,7 @@
       "properties": {
         "deliveryInstructions": {
           "type": "string",
-          "description": "Additional delivery instructions. For example, this could be instructions on how to enter a building, nearby landmark or navigation instructions, 'Beware of dogs', etc.",
+          "description": "Additional delivery instructions. For example, this could be instructions on how to enter a building, nearby landmark or navigation instructions, or `Beware of dogs`.",
           "maxLength": 250
         },
         "dropOffLocation": {
@@ -2839,77 +2977,47 @@
     },
     "DropOffLocation": {
       "type": "object",
-      "required": [
-        "type"
-      ],
+      "required": ["type"],
       "properties": {
         "type": {
           "type": "string",
-          "description": "Specifies the preferred location to leave the package at the destination address.",
-          "enum": [
-            "FRONT_DOOR",
-            "DELIVERY_BOX",
-            "GAS_METER_BOX",
-            "BICYCLE_BASKET",
-            "GARAGE",
-            "RECEPTIONIST",
-            "FALLBACK_NEIGHBOR_DELIVERY",
-            "DO_NOT_LEAVE_UNATTENDED",
-            "MAIL_ROOM_CLERK",
-            "AS_INSTRUCTED"
-          ],
-          "x-docgen-enum-table-extension": [
-            {
-              "value": "FRONT_DOOR",
-              "description": "Indicates delivery preferred to front door."
-            },
-            {
-              "value": "DELIVERY_BOX",
-              "description": "Indicates delivery preferred to a delivery box."
-            },
-            {
-              "value": "GAS_METER_BOX",
-              "description": "Indicates delivery preferred to a gas meter box."
-            },
-            {
-              "value": "BICYCLE_BASKET",
-              "description": "Indicates delivery preferred to a bicycle basket."
-            },
-            {
-              "value": "GARAGE",
-              "description": "Indicates delivery preferred to a garage."
-            },
-            {
-              "value": "RECEPTIONIST",
-              "description": "Indicates delivery preferred with a receptionist."
-            },
-            {
-              "value": "FALLBACK_NEIGHBOR_DELIVERY",
-              "description": "Indicates delivery preferred with a designated neighbor if the recipient is not available at the destination address."
-            },
-            {
-              "value": "DO_NOT_LEAVE_UNATTENDED",
-              "description": "Indicates delivery preferred as attended."
-            },
-            {
-              "value": "MAIL_ROOM_CLERK",
-              "description": "Package was delivered to mail room clerk."
-            },
-            {
-              "value": "AS_INSTRUCTED",
-              "description": "Package was delivered to recipient as instructed."
-            }
-          ]
+          "description": "The drop-off location type at the destination address.",
+          "enum": ["FRONT_DOOR", "DELIVERY_BOX", "GAS_METER_BOX", "BICYCLE_BASKET", "GARAGE", "RECEPTIONIST", "FALLBACK_NEIGHBOR_DELIVERY", "DO_NOT_LEAVE_UNATTENDED"],
+          "x-docgen-enum-table-extension": [{
+            "value": "FRONT_DOOR",
+            "description": "Front door location."
+          }, {
+            "value": "DELIVERY_BOX",
+            "description": "Delivery box location."
+          }, {
+            "value": "GAS_METER_BOX",
+            "description": "Gas meter box location."
+          }, {
+            "value": "BICYCLE_BASKET",
+            "description": "Bicycle basket location."
+          }, {
+            "value": "GARAGE",
+            "description": "Garage location."
+          }, {
+            "value": "RECEPTIONIST",
+            "description": "Delivery to or via receptionist."
+          }, {
+            "value": "FALLBACK_NEIGHBOR_DELIVERY",
+            "description": "Delivery to a designated neighbor when the recipient is not available at the destination address."
+          }, {
+            "value": "DO_NOT_LEAVE_UNATTENDED",
+            "description": "Attended delivery (package not left unattended)."
+          }]
         },
         "attributes": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
           },
-          "description": "Additional information about the drop-off location that can vary depending on the type of drop-off location specified in the `type` field.\nIf the `type` is set to `FALLBACK_NEIGHBOR_DELIVERY`, the `attributes` object should include the exact keys `neighborName` and `houseNumber` to provide the name and house number of the designated neighbor. \nFor `RECEPTIONIST`, `MAIL_ROOM_CLERK`, and `AS_INSTRUCTED` types, the `attributes` object will include a `recipientName` field containing the name of the person who received the package."
+          "description": "Additional information about the drop-off location. This information can vary depending on the type of drop-off location specified in the `type` field.\n\nIf the `type` is set to `FALLBACK_NEIGHBOR_DELIVERY`, the `attributes` object must include the keys `neighborName` and `houseNumber` to provide the name and house number of the designated neighbor.\n\nFor `RECEPTIONIST` type, the `attributes` object may include a `recipientName` field that contains the name of the person who received or will receive the package."
         }
       },
-      "description": "The preferred location to leave packages at the destination address."
+      "description": "The drop-off location at the destination address."
     },
     "Fee": {
       "type": "object",
@@ -3040,7 +3148,7 @@
           "$ref": "#/definitions/FulfillmentOrderStatus"
         },
         "statusUpdatedDate": {
-          "description": "The date and time that the status of the fulfillment order last changed. Must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
+          "description": "The date and time that the status of the fulfillment order last changed, in ISO 8601 date time format.",
           "$ref": "#/definitions/Timestamp"
         },
         "notificationEmails": {
@@ -3252,11 +3360,11 @@
       ],
       "properties": {
         "earliestShipDate": {
-          "description": "The earliest date that the shipment is expected to be sent from the fulfillment center. Must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
+          "description": "The earliest date that the shipment is expected to be sent from the fulfillment center, in ISO 8601 date time format.",
           "$ref": "#/definitions/Timestamp"
         },
         "latestShipDate": {
-          "description": "The latest date that the shipment is expected to be sent from the fulfillment center. Must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
+          "description": "The latest date that the shipment is expected to be sent from the fulfillment center, in ISO 8601 date time format.",
           "$ref": "#/definitions/Timestamp"
         },
         "earliestArrivalDate": {
@@ -3264,7 +3372,7 @@
           "$ref": "#/definitions/Timestamp"
         },
         "latestArrivalDate": {
-          "description": "The latest date that the shipment is expected to arrive at its destination. Must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
+          "description": "The latest date that the shipment is expected to arrive at its destination, in ISO 8601 date time format.",
           "$ref": "#/definitions/Timestamp"
         },
         "shippingNotes": {
@@ -3347,7 +3455,7 @@
             },
             {
               "value": "CANCELLED_BY_SELLER",
-              "description": "The shipment was cancelled using the `CancelFulfillmentOrder` request."
+              "description": "The shipment was cancelled using the CancelFulfillmentOrder request."
             }
           ]
         },
@@ -3449,7 +3557,7 @@
           "description": "The Amazon fulfillment tracking number, if provided, can be used to obtain tracking and delivery information."
         },
         "estimatedArrivalDate": {
-          "description": "The estimated arrival date and time of the package. Must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
+          "description": "The estimated arrival date and time of the package, in ISO 8601 date time format.",
           "$ref": "#/definitions/Timestamp"
         },
         "lockerDetails": {
@@ -3457,7 +3565,7 @@
           "$ref": "#/definitions/LockerDetails"
         },
         "deliveryInformation": {
-          "description": "The delivery information for the package. This information is available after the package is delivered.",
+          "description": "The delivery information of the package, this information is only available post package delivery to its intended destination.",
           "$ref": "#/definitions/DeliveryInformation"
         }
       },
@@ -3719,10 +3827,10 @@
         },
         "value": {
           "$ref": "#/definitions/Decimal",
-          "description": "The amount of a product in the associated unit of measure."
+          "description": "The amount of a product in the associated unit of measurement."
         }
       },
-      "description": "A quantity based on unit of measure."
+      "description": "A quantity based on the specified unit of measurement."
     },
     "GetDeliveryOffersTerms": {
       "type": "object",
@@ -3745,7 +3853,7 @@
     "IpAddress": {
       "type": "string",
       "format": "ip",
-      "description": "An IP Address."
+      "description": "An IP address."
     },
     "Destination": {
       "type": "object",
@@ -3783,11 +3891,65 @@
       "properties": {
         "countryCode": {
           "type": "string",
-          "description": "The two digit country code the items should ship from. In ISO 3166-1 alpha-2 format.",
+          "description": "The two-digit country code (in ISO 3166-1 alpha-2 format) for the country where the items will ship from.",
           "minLength": 2,
           "maxLength": 2
         }
       }
+    },
+    "GetDeliveryOfferingsRequest": {
+      "type": "object",
+      "required": [
+        "destinationAddress",
+        "shipFromCountryCode",
+        "sellerSku"
+      ],
+      "properties": {
+        "destinationAddress": {
+          "$ref": "#/definitions/VariablePrecisionAddress",
+          "description": "The address for the delivery offering."
+        },
+        "shipFromCountryCode": {
+          "type": "string",
+          "description": "The two-digit country code (in ISO 3166-1 alpha-2 format) for the country where the items will ship from.",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "sellerSku": {
+          "type": "string",
+          "description": "The seller SKU of the item.",
+          "maxLength": 50
+        },
+        "quantity": {
+          "$ref": "#/definitions/DeliveryQuantity",
+          "description": "The quantity of the request SKU."
+        }
+      },
+      "description": "The request body schema for the `getDeliveryOfferings` operation."
+    },
+    "GetDeliveryOfferingsResult": {
+      "type": "object",
+      "properties": {
+        "deliveryOfferings": {
+          "$ref": "#/definitions/DeliveryOfferingsList",
+          "description": "An array of delivery offerings."
+        }
+      },
+      "description": "A list of delivery offerings, including offering expiration, earliest and latest date and time range, and the delivery offering policy."
+    },
+    "GetDeliveryOfferingsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/GetDeliveryOfferingsResult",
+          "description": "The response payload for the `getDeliveryOfferings` operation."
+        },
+        "errors": {
+          "$ref": "#/definitions/ErrorList",
+          "description": "One or more unexpected errors occurred during the `getDeliveryOfferings` operation."
+        }
+      },
+      "description": "The response schema for the `getDeliveryOfferings` operation."
     },
     "VariablePrecisionAddress": {
       "type": "object",
@@ -3832,6 +3994,58 @@
         }
       },
       "description": "A physical address with varying degrees of precision. A more precise address can provide more accurate results than country code and postal code alone."
+    },
+    "DeliveryQuantity": {
+      "type": "object",
+      "required": [
+        "unitOfMeasure",
+        "amount"
+      ],
+      "properties": {
+        "unitOfMeasure": {
+          "type": "string",
+          "description": "The unit of measure for the amount.",
+          "enum": [
+            "Each"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "Each",
+              "description": "Specifies an integer count of units."
+            }
+          ]
+        },
+        "amount": {
+          "$ref": "#/definitions/Decimal",
+          "description": "The amount of a product in the associated unit of measure."
+        }
+      },
+      "description": "A quantity based on unit of measure."
+    },
+    "DeliveryOfferingsList": {
+      "type": "array",
+      "description": "An array of delivery offering information.",
+      "items": {
+        "$ref": "#/definitions/DeliveryOffering"
+      }
+    },
+    "DeliveryOffering": {
+      "type": "object",
+      "properties": {
+        "expiresAt": {
+          "$ref": "#/definitions/Timestamp",
+          "description": "The timestamp at which a delivery offering expires."
+        },
+        "dateRange": {
+          "$ref": "#/definitions/DateRange",
+          "description": "The range between which delivery is expected."
+        },
+        "policy": {
+          "$ref": "#/definitions/DeliveryPolicy",
+          "description": "The policy for a delivery offering, including localized messaging."
+        }
+      },
+      "description": "An available offering for delivery of a product."
     },
     "DateRange": {
       "type": "object",
@@ -4029,7 +4243,7 @@
           "$ref": "#/definitions/DropOffLocation"
         }
       },
-      "description": "The delivery information for the package. This information is available after the package is delivered."
+      "description": "The delivery information of the package, this information is only available post package delivery to its intended destination."
     },
     "DeliveryDocumentList": {
       "type": "array",
@@ -4050,7 +4264,7 @@
         },
         "url": {
           "type": "string",
-          "description": "A URL that you can use to download the document. This URL has a `Content-Type` header. Note that the URL expires after one hour. To get a new URL, you must call the API again."
+          "description": "A URL that is valid for one hour to download the document. In case of URL expiry, call the API again to get a new url. The URL will have a Content-Type header."
         }
       },
       "description": "A delivery document for a package."
@@ -4822,7 +5036,7 @@
       ],
       "properties": {
         "eventDate": {
-          "description": "The date and time that the delivery event took place. Must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format.",
+          "description": "The date and time that the delivery event took place, in ISO 8601 date time format.",
           "$ref": "#/definitions/Timestamp"
         },
         "eventAddress": {
@@ -5108,7 +5322,7 @@
           "$ref": "#/definitions/GetFeatureInventoryResult"
         },
         "errors": {
-          "description": "One or more unexpected errors occurred during the `getFeatureInventory` operation.",
+          "description": "One or more unexpected errors occurred during the getFeatureInventory operation.",
           "$ref": "#/definitions/ErrorList"
         }
       },
@@ -5148,7 +5362,7 @@
       "properties": {
         "sellerSku": {
           "type": "string",
-          "description": "Used to identify an item in the given marketplace. `SellerSKU` is qualified by the seller's SellerId, which is included with every operation that you submit."
+          "description": "Used to identify an item in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit."
         },
         "fnSku": {
           "type": "string",
@@ -5264,9 +5478,21 @@
             "type": "string"
           }
         },
-        "skuInfo": {
-          "description": "Information about the SKU, including the count available, identifiers, and a list of overlapping SKUs that share the same inventory pool.",
-          "$ref": "#/definitions/FeatureSku"
+        "sellerSku": {
+          "type": "string",
+          "description": "Used to identify an item in the given marketplace. SellerSKU is qualified by the seller's SellerId, which is included with every operation that you submit."
+        },
+        "fnSku": {
+          "type": "string",
+          "description": "The unique SKU used by Amazon's fulfillment network."
+        },
+        "asin": {
+          "type": "string",
+          "description": "The Amazon Standard Identification Number (ASIN) of the item."
+        },
+        "skuCount": {
+          "type": "number",
+          "description": "The number of SKUs available for this service."
         }
       },
       "description": "The payload for the `getFeatureSKU` operation."
@@ -5276,7 +5502,7 @@
       "properties": {
         "featureName": {
           "type": "string",
-          "description": "The name of the feature. Valid feature names are:\n\n- `BLOCK_AMZL`: Blocks orders from being shipped using Amazon Logistics (AMZL).\n  - Note: Using this feature will incur additional fee surcharges on MCF orders and may increase the risk of unfulfilled or delayed deliveries if alternative carriers are unavailable. Using `BLOCK_AMZL` in an order request will take precedence over your Seller Central account setting.\n- `BLANK_BOX`: Ships orders in non-Amazon branded packaging (blank boxes).\n- `SIGNATURE_CONFIRMATION`: Requires a signature from the recipient upon delivery. \n  - Note: Using signature confirmation features will incur additional fees on MCF orders and are currently supported only in the US marketplace."
+          "description": "The name of the feature. Valid feature names are:\n\n- `BLOCK_AMZL`: Blocks orders from being shipped using Amazon Logistics (AMZL).\n  - Note: Using this feature will incur additional fee surcharges on MCF orders and may increase the risk of unfulfilled or delayed deliveries if alternative carriers are unavailable. Using `BLOCK_AMZL` in an order request will take precedence over your Seller Central account setting.\n- `BLANK_BOX`: Ships orders in non-Amazon branded packaging (blank boxes).\n- `OVERBOX`: Requires items to be shipped in an overbox rather than in their original product packaging.\n- `PACKING_SLIP`: Requires a packing slip to be included with the order.\n- `SIGNATURE_CONFIRMATION`: Requires a signature from the recipient upon delivery. \n  - Note: Using signature confirmation features will incur additional fees on MCF orders and are currently supported only in the US marketplace."
         },
         "featureFulfillmentPolicy": {
           "type": "string",
@@ -5297,11 +5523,11 @@
           ]
         }
       },
-      "description": "Feature settings allows you to apply fulfillment features to an order. To block an order from being shipped using Amazon Logistics (AMZL) and an AMZL tracking number, set `featureName` to `BLOCK_AMZL` and `featureFulfillmentPolicy` to `Required`. Blocking AMZL will incur an additional fee surcharge on your MCF orders and increase the risk of some of your orders being unfulfilled or delivered late if there are no alternative carriers available. Using `BLOCK_AMZL` in an order request will take precedence over your Seller Central account setting. To ship in non-Amazon branded packaging (blank boxes), set `featureName` to `BLANK_BOX`. To require a signature from the recipient upon delivery, set `featureName` to `SIGNATURE_CONFIRMATION`. Note that using signature confirmation features will incur additional fees on MCF orders and are currently supported only in the US marketplace. To ensure all items in an order are delivered together, set `featureName` to `DELIVER_TOGETHER`."
+      "description": "Feature settings allows you to apply fulfillment features to an order. To block an order from being shipped using Amazon Logistics (AMZL) and an AMZL tracking number, set `featureName` to `BLOCK_AMZL` and `featureFulfillmentPolicy` to `Required`. Blocking AMZL will incur an additional fee surcharge on your MCF orders and increase the risk of some of your orders being unfulfilled or delivered late if there are no alternative carriers available. Using `BLOCK_AMZL` in an order request will take precedence over your Seller Central account setting. To ship in non-Amazon branded packaging (blank boxes), set `featureName` to `BLANK_BOX`. To require items to be shipped in an overbox rather than in their original product packaging, set `featureName` to `OVERBOX`. To require a packing slip to be included with the order, set `featureName` to `PACKING_SLIP`. To require a signature from the recipient upon delivery, set `featureName` to `SIGNATURE_CONFIRMATION`. Note that using signature confirmation features will incur additional fees on MCF orders and are currently supported only in the US marketplace. To ensure all items in an order are delivered together, set `featureName` to `DELIVER_TOGETHER`."
     },
     "SubmitFulfillmentOrderStatusUpdateRequest": {
       "type": "object",
-      "description": "The request body schema for the `submitFulfillmentOrderStatusUpdate` operation.",
+      "description":"The request body schema for the `submitFulfillmentOrderStatusUpdate` operation.",
       "properties": {
         "fulfillmentOrderStatus": {
           "$ref": "#/definitions/FulfillmentOrderStatus"
