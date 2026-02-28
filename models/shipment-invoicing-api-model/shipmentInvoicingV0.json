@@ -13,7 +13,7 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0"
     }
   },
-  "basePath": "/",
+  "host": "sellingpartnerapi-na.amazon.com",
   "schemes": [
     "https"
   ],
@@ -85,6 +85,18 @@
                     },
                     "PaymentMethodDetails": [
                       "GiftCertificate"
+                    ],
+                    "Payments": [
+                      {
+                        "PaymentMethod": "CreditCard",
+                        "AcquirerId": "XX.XXX.XXX/0001-ZZ",
+                        "CardBrand": "Visa",
+                        "PaymentValue": {
+                          "CurrencyCode": "BRL",
+                          "Amount": "100"
+                        },
+                        "AuthorizationCode": "123456"
+                      }
                     ],
                     "MarketplaceId": "ATV943520DER",
                     "SellerId": "TEST34509GOGM",
@@ -762,6 +774,9 @@
         "PaymentMethodDetails": {
           "$ref": "#/definitions/PaymentMethodDetailItemList"
         },
+        "Payments": {
+          "$ref": "#/definitions/PaymentInformationList"
+        },
         "MarketplaceId": {
           "description": "The identifier for the marketplace where the order was placed.",
           "type": "string"
@@ -870,6 +885,77 @@
       "items": {
         "type": "string"
       }
+    },
+    "PaymentInformationList": {
+      "description": "List of payment transactions",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PaymentInformation"
+      }
+    },
+    "PaymentInformation": {
+      "description": "Payment transaction information",
+      "type": "object",
+      "properties": {
+        "PaymentMethod": {
+          "description": "Payment method name",
+          "$ref": "#/definitions/PaymentMethodEnum"
+        },
+        "AcquirerId": {
+          "description": "Government ID of acquirer",
+          "type": "string"
+        },
+        "CardBrand": {
+          "description": "Credit card brand (if payment method is CreditCard)",
+          "type": "string"
+        },
+        "PaymentValue": {
+          "description": "Amount paid in this payment",
+          "$ref": "#/definitions/Money"
+        },
+        "AuthorizationCode": {
+          "description": "Authorization code for this payment",
+          "type": "string"
+        }
+      }
+    },
+    "PaymentMethodEnum": {
+      "description": "Payment methods",
+      "type": "string",
+      "enum": [
+        "CreditCard",
+        "DebitCard",
+        "Pix",
+        "BankSlip",
+        "GiftCard",
+        "Other"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "CreditCard",
+          "description": "Credit Card was used for payment."
+        },
+        {
+          "value": "DebitCard",
+          "description": "Debit Card was used for payment."
+        },
+        {
+          "value": "Pix",
+          "description": "Pix was used for payment."
+        },
+        {
+          "value": "BankSlip",
+          "description": "Bank Slip was used for payment."
+        },
+        {
+          "value": "GiftCard",
+          "description": "Gift Card was used for payment."
+        },
+        {
+          "value": "Other",
+          "description": "For invoicing purposes, payment was done using another method."
+        }
+      ]
     },
     "BuyerTaxInfo": {
       "description": "Tax information about the buyer.",
