@@ -1155,12 +1155,8 @@ class RateLimitInterceptor implements Interceptor {
         if (rateLimitConfiguration.getTimeOut() == Long.MAX_VALUE) {
             rateLimiter.acquire();
         } else {
-            try {
-                if (!rateLimiter.tryAcquire(rateLimitConfiguration.getTimeOut(), TimeUnit.MILLISECONDS)) {
-                    throw new ApiException("Throttled as per the ratelimiter on client");
-                }
-            } catch (ApiException e) {
-                e.printStackTrace();
+            if (!rateLimiter.tryAcquire(rateLimitConfiguration.getTimeOut(), TimeUnit.MILLISECONDS)) {
+                throw new IOException("Throttled as per the ratelimiter on client");
             }
         }
         return chain.proceed(chain.request());
