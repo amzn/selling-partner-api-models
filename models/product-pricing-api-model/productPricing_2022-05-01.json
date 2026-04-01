@@ -847,6 +847,15 @@
                               "sellerId": "A3DH5AGPM3JVAB",
                               "fulfillmentType": "AFN"
                             }
+                          ],
+                          "similarItems": [
+                            {
+                              "items": [
+                                {"asin": "B00ZIA513F"},
+                                {"asin": "B009DA8GI1"},
+                                {"asin": "B00KF8SK3D"}
+                              ]
+                            }
                           ]
                         }
                       ]
@@ -869,7 +878,8 @@
                               "includedData": [
                                 "featuredBuyingOptions",
                                 "referencePrices",
-                                "lowestPricedOffers"
+                                "lowestPricedOffers",
+                                "similarItems"
                               ],
                               "lowestPricedOffersInputs": [
                                 {
@@ -1123,6 +1133,15 @@
                                   "sellerId": "A3DH5AGPM3JVAB",
                                   "fulfillmentType": "AFN"
                                 }
+                              ]
+                            }
+                          ],
+                          "similarItems": [
+                            {
+                              "items": [
+                                {"asin": "B00ZIA513F"},
+                                {"asin": "B009DA8GI1"},
+                                {"asin": "B00KF8SK3D"}
                               ]
                             }
                           ]
@@ -1429,7 +1448,8 @@
       "enum": [
         "featuredBuyingOptions",
         "referencePrices",
-        "lowestPricedOffers"
+        "lowestPricedOffers",
+        "similarItems"
       ],
       "x-docgen-enum-table-extension": [
         {
@@ -1443,6 +1463,10 @@
         {
           "value": "lowestPricedOffers",
           "description": "The lowest-priced standard offers that are available for the item in the Amazon store."
+        },
+        {
+          "value": "similarItems",
+          "description": "Provides a list of up to 20 ASINs which are similar to the item."
         }
       ]
     },
@@ -1552,6 +1576,13 @@
             "$ref": "#/definitions/ReferencePrice"
           }
         },
+        "similarItems": {
+          "description": "A list of similar items for the specified ASIN `marketplaceId` combination.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SimilarItems"
+          }
+        },
         "errors": {
           "description": "A list of errors",
           "$ref": "#/definitions/ErrorList"
@@ -1573,6 +1604,32 @@
         "price": {
           "description": "The reference price for the ASIN `marketplaceId` combination.",
           "$ref": "#/definitions/MoneyType"
+        }
+      }
+    },
+    "SimilarItems": {
+      "description": "The summary of similar items for the specified ASIN `marketplaceId` combination.",
+      "type":"object",
+      "properties": {
+        "items": {
+          "description": "A list of similar items for the specified ASIN `marketplaceId` combination.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Item"
+          }
+        }
+      }
+    },
+    "Item": {
+      "description": "A similar item for the specified ASIN `marketplaceId` combination.",
+      "type":"object",
+      "required": [
+        "asin"
+      ],
+      "properties": {
+        "asin": {
+          "description": "The Amazon identifier for the item.",
+          "$ref": "#/definitions/Asin"
         }
       }
     },
@@ -2183,7 +2240,7 @@
           "description": "The number of Amazon Points."
         },
         "pointsMonetaryValue": {
-          "description": "The monetary value of the Amazon Points.",
+          "description": "The monetary value of Amazon Points.",
           "$ref": "#/definitions/MoneyType"
         }
       },
