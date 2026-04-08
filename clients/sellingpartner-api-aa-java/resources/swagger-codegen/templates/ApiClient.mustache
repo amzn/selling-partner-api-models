@@ -458,12 +458,15 @@ public class ApiClient {
      public ApiClient setRateLimiter(RateLimitConfiguration rateLimitConfiguration) {
           if (rateLimitConfiguration != null) {
               rateLimiter = RateLimiter.create(rateLimitConfiguration.getRateLimitPermit());
-
-              //Add rateLimiter to httpclient interceptor for execute
-              RateLimitInterceptor rateLimiterInterceptor = new RateLimitInterceptor(rateLimiter, rateLimitConfiguration);
-              httpClient.interceptors().add(rateLimiterInterceptor);
+              httpClient.interceptors().add(new RateLimitInterceptor(rateLimiter, rateLimitConfiguration.getTimeOut()));
           }
-            return this;
+          return this;
+     }
+
+     public ApiClient setRateLimiter(RateLimiter sharedRateLimiter, long timeoutMs) {
+          rateLimiter = sharedRateLimiter;
+          httpClient.interceptors().add(new RateLimitInterceptor(rateLimiter, timeoutMs));
+          return this;
      }
      
      
@@ -1143,19 +1146,19 @@ public class ApiClient {
 
 class RateLimitInterceptor implements Interceptor {
     RateLimiter rateLimiter;
-    RateLimitConfiguration rateLimitConfiguration;
+    long timeoutMs;
 
-    public RateLimitInterceptor(RateLimiter rateLimiter, RateLimitConfiguration rateLimitConfiguration) {
+    public RateLimitInterceptor(RateLimiter rateLimiter, long timeoutMs) {
         this.rateLimiter = rateLimiter;
-        this.rateLimitConfiguration = rateLimitConfiguration;
+        this.timeoutMs = timeoutMs;
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        if (rateLimitConfiguration.getTimeOut() == Long.MAX_VALUE) {
+        if (timeoutMs == Long.MAX_VALUE) {
             rateLimiter.acquire();
         } else {
-            if (!rateLimiter.tryAcquire(rateLimitConfiguration.getTimeOut(), TimeUnit.MILLISECONDS)) {
+            if (!rateLimiter.tryAcquire(timeoutMs, TimeUnit.MILLISECONDS)) {
                 throw new IOException("Throttled as per the ratelimiter on client");
             }
         }
