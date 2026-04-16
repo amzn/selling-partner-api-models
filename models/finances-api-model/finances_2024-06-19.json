@@ -26,12 +26,17 @@
   "paths": {
     "/finances/2024-06-19/transactions": {
       "get": {
-        "description": "Returns transactions for the given parameters. Financial events might not include orders from the last 48 hours. **Note:** If you want to retrieve MFN orders in the US store, do not supply the `marketplaceId` parameter.\n\n**Usage plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits).",
+        "description": "Returns transactions for the given parameters. Financial events might not include orders from the last 48 hours.\n\n**Usage plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits).",
         "operationId": "listTransactions",
+        "tags": [
+          "finances"
+        ],
         "parameters": [
           {
             "name": "postedAfter",
             "in": "query",
+            "description": "The response includes financial events posted on or after this date. This date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format. The date-time must be more than two minutes before the time of the request.\n\nThis field is required if you do not specify a related identifier.",
+            "required": false,
             "description": "The response includes financial events posted on or after this date. This date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format. The date-time must be more than two minutes before the time of the request.\n\nThis field is required if you do not specify a related identifier.",
             "required": false,
             "type": "string",
@@ -50,7 +55,7 @@
           {
             "name": "marketplaceId",
             "in": "query",
-            "description": "The identifier of the marketplace from which you want to retrieve transactions. The marketplace ID is the globally unique identifier of a marketplace. To find the ID for a marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
+            "description": "The identifier of the marketplace from which you want to retrieve transactions. The marketplace ID is the globally unique identifier of a marketplace. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
             "required": false,
             "type": "string",
             "x-example": "ATIV93840DER"
@@ -66,7 +71,7 @@
           {
             "name": "relatedIdentifierName",
             "in": "query",
-            "description": "The name of the `relatedIdentifier`.\n\n**Possible values:**\n\n* `FINANCIAL_EVENT_GROUP_ID`: the financial event group ID associated with the transaction.\n\n* `ORDER_ID`: the order ID associated with the transaction.\n\n* `SETTLEMENT_ID`: the settlement group ID associated with the transaction.  \n\n**Note:**\n\n`FINANCIAL_EVENT_GROUP_ID`, `ORDER_ID`, and `SETTLEMENT_ID` are the only `relatedIdentifier` with filtering capabilities at the moment. While other `relatedIdentifier` values will be included in the response when available, they cannot be used for filtering purposes.",
+            "description": "The name of the `relatedIdentifier`.\n\n**Possible values:**\n\n* `FINANCIAL_EVENT_GROUP_ID`: the financial event group ID associated with the transaction.\n\n* `ORDER_ID`: the order ID associated with the transaction.  \n\n**Note:**\n\n FINANCIAL_EVENT_GROUP_ID and ORDER_ID are the only `relatedIdentifier` with filtering capabilities at the moment. While other `relatedIdentifier` values will be included in the response when available, they cannot be used for filtering purposes." ,
             "required": false,
             "type": "string",
             "x-example": "FINANCIAL_EVENT_GROUP_ID"
@@ -917,7 +922,7 @@
           "description": "The payload for the `listTransactions` operation."
         }
       },
-      "description": "The response to the `listTransactions` operation."
+      "description": "The response schema for the `listTransactions` operation."
     },
     "TransactionsPayload": {
       "type": "object",
@@ -1125,7 +1130,7 @@
         },
         "marketplaceId": {
           "type": "string",
-          "description": "The identifier of the marketplace where the transaction occurred. The marketplace ID is the globally unique identifier of a marketplace. To find the ID for a marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids)."
+          "description": "The identifier of the marketplace where the transaction occurred. The marketplace ID is the globally unique identifier of a marketplace. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids)."
         }
       },
       "description": "Metadata that describes the seller."
@@ -1215,7 +1220,7 @@
       "properties": {
         "marketplaceId": {
           "type": "string",
-          "description": "The identifier of the marketplace where the transaction occurred. The marketplace ID is the globally unique identifier of a marketplace. To find the ID for a marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids)."
+          "description": "The identifier of the marketplace where the transaction occurred. The marketplace ID is the globally unique identifier of a marketplace. To find the ID for your marketplace, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids)."
         },
         "marketplaceName": {
           "type": "string",
@@ -1326,16 +1331,14 @@
             "currencyAmount": 10,
             "currencyCode": "USD"
           },
-          "breakdowns": [
-            {
-              "breakdownType": "Product Charges",
-              "breakdownAmount": {
-                "currencyAmount": 10,
-                "currencyCode": "USD"
-              },
-              "breakdowns": []
-            }
-          ]
+          "breakdowns": [{
+            "breakdownType": "Product Charges",
+            "breakdownAmount": {
+              "currencyAmount": 10,
+              "currencyCode": "USD"
+            },
+            "breakdowns": []
+          }]
         }
       ]
     },
@@ -1382,24 +1385,12 @@
             }
           }
         },
-        {
-          "$ref": "#/definitions/AmazonPayContext"
-        },
-        {
-          "$ref": "#/definitions/ProductContext"
-        },
-        {
-          "$ref": "#/definitions/PaymentsContext"
-        },
-        {
-          "$ref": "#/definitions/DeferredContext"
-        },
-        {
-          "$ref": "#/definitions/BusinessContext"
-        },
-        {
-          "$ref": "#/definitions/TimeRangeContext"
-        }
+        {"$ref": "#/definitions/AmazonPayContext"},
+        {"$ref": "#/definitions/ProductContext"},
+        {"$ref": "#/definitions/PaymentsContext"},
+        {"$ref": "#/definitions/DeferredContext"},
+        {"$ref": "#/definitions/BusinessContext"},
+        {"$ref": "#/definitions/TimeRangeContext"}
       ],
       "x-example": [
         {
