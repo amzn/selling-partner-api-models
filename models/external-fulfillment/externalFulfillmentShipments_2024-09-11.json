@@ -6625,6 +6625,105 @@
       "description": "A decimal number with no loss of precision. Useful when precision loss is unacceptable, as with currencies.",
       "type": "string"
     },
+    "HandoverLocation": {
+      "description": "The drop-off location details for package handover.",
+      "type": "object",
+      "properties": {
+        "address": {
+          "description": "The address of the drop-off location.",
+          "$ref": "#/definitions/Address"
+        },
+        "distance": {
+          "description": "The distance from the seller's location to the drop-off point.",
+          "$ref": "#/definitions/Distance"
+        },
+        "mapUrl": {
+          "description": "URL to the map that shows the drop-off location.",
+          "type": "string"
+        }
+      },
+      "example": {
+        "address": {
+          "postalCode": "98101",
+          "addressLine1": "123 Main St",
+          "city": "Seattle",
+          "stateOrRegion": "WA",
+          "countryCode": "US",
+          "geocodes": {
+            "latitude": "47.6062",
+            "longitude": "-122.3321"
+          }
+        },
+        "distance": {
+          "value": "3.5",
+          "distanceUnit": "MI"
+        },
+        "mapUrl": "https://maps.example.com/location?lat=47.6062&lng=-122.3321"
+      }
+    },
+    "Distance": {
+      "description": "A distance measurement.",
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "The numerical value of the distance.",
+          "$ref": "#/definitions/Decimal"
+        },
+        "distanceUnit": {
+          "description": "The unit of measurement of the distance.",
+          "type": "string",
+          "enum": [
+            "MI",
+            "KM"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "MI",
+              "description": "Miles."
+            },
+            {
+              "value": "KM",
+              "description": "Kilometers."
+            }
+          ]
+        }
+      },
+      "example": {
+        "value": "3.5",
+        "distanceUnit": "MI"
+      },
+      "required": [
+        "value",
+        "distanceUnit"
+      ]
+    },
+    "Geocodes": {
+      "description": "Geographic coordinates.",
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "description": "The latitude coordinate.",
+          "$ref": "#/definitions/Decimal"
+        },
+        "longitude": {
+          "description": "The longitude coordinate.",
+          "$ref": "#/definitions/Decimal"
+        },
+        "elevation": {
+          "description": "The elevation in meters.",
+          "$ref": "#/definitions/Decimal"
+        }
+      },
+      "example": {
+        "latitude": "47.6062",
+        "longitude": "-122.3321",
+        "elevation": "56.0"
+      },
+      "required": [
+        "latitude",
+        "longitude"
+      ]
+    },
     "Amount": {
       "description": "An amount of money, including units in the form of currency.",
       "properties": {
@@ -6683,7 +6782,7 @@
           "type": "string"
         },
         "municipality" : {
-          "description": "The municiplaity where the person, business, or institution is located.",
+          "description": "The municipality where the person, business, or institution is located.",
           "type": "string"
         },
         "state": {
@@ -6733,6 +6832,10 @@
           "minLength": 1,
           "maxLength": 20,
           "type": "string"
+        },
+        "geocodes": {
+          "description": "The geographic coordinates of the address.",
+          "$ref": "#/definitions/Geocodes"
         }
       },
       "required": [
@@ -6753,7 +6856,8 @@
           "type": "string",
           "enum": [
             "CM",
-            "M"
+            "M",
+            "IN"
           ],
           "x-docgen-enum-table-extension": [
             {
@@ -6763,6 +6867,10 @@
             {
               "value": "M",
               "description": "Meters."
+            },
+            {
+              "value": "IN",
+              "description": "Inches."
             }
           ]
         }
@@ -6785,7 +6893,9 @@
           "type": "string",
           "enum": [
             "G",
-            "KG"
+            "KG",
+            "LB",
+            "OZ"
           ],
           "x-docgen-enum-table-extension": [
             {
@@ -6795,6 +6905,14 @@
             {
               "value": "KG",
               "description": "Kilograms."
+            },
+            {
+              "value": "LB",
+              "description": "Pounds."
+            },
+            {
+              "value": "OZ",
+              "description": "Ounces."
             }
           ]
         }
@@ -7741,6 +7859,25 @@
               "description": "The shipment is shipped using the SmartConnect platform."
             }
           ]
+        },
+        "paymentMethod": {
+          "description": "The payment method for the shipment.",
+          "type": "string",
+          "enum": [
+            "CASH_ON_DELIVERY",
+            "PREPAID"
+          ],
+          "example": "PREPAID",
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "CASH_ON_DELIVERY",
+              "description": "The buyer will pay for the shipment during delivery."
+            },
+            {
+              "value": "PREPAID",
+              "description": "The buyer has already paid for the shipment."
+            }
+          ]
         }
       },
       "required": [
@@ -8263,6 +8400,10 @@
         "timeSlot": {
           "description": "A time window during which to hand over the package to Amazon Logistics.",
           "$ref": "#/definitions/TimeWindow"
+        },
+        "handoverLocation": {
+          "description": "The drop-off location details. This value is populated when `handoverMethod` is `DROPOFF`.",
+          "$ref": "#/definitions/HandoverLocation"
         }
       },
       "example": {
@@ -8277,7 +8418,25 @@
         "timeSlot": {
           "startTime": 1612933142,
           "endTime": 1612494142,
-          "handoverMethod": "PICKUP"
+          "handoverMethod": "DROPOFF"
+        },
+        "handoverLocation": {
+          "address": {
+            "postalCode": "98101",
+            "addressLine1": "123 Main St",
+            "city": "Seattle",
+            "stateOrRegion": "WA",
+            "countryCode": "US",
+            "geocodes": {
+              "latitude": "47.6062",
+              "longitude": "-122.3321"
+            }
+          },
+          "distance": {
+            "value": "3.5",
+            "distanceUnit": "MI"
+          },
+          "mapUrl": "https://maps.example.com/location?lat=47.6062&lng=-122.3321"
         }
       },
       "required": [
@@ -8370,6 +8529,42 @@
         "timeSlot": {
           "description": "A time window to hand over the package to or from Amazon Logistics.",
           "$ref": "#/definitions/TimeWindow"
+        },
+        "handoverLocation": {
+          "description": "The drop-off location details. This value is populated when `handoverMethod` is `DROPOFF`.",
+          "$ref": "#/definitions/HandoverLocation"
+        }
+      },
+      "example": {
+        "shippingOptionId": "TEST_CASE_200_SHIPPING_OPTION_ID",
+        "carrierName": "ATSPL",
+        "shipBy": "MARKETPLACE",
+        "pickupWindow": {
+          "startTime": 1612933142,
+          "endTime": 1612494142
+        },
+        "timeSlot": {
+          "startTime": 1612933142,
+          "endTime": 1612494142,
+          "handoverMethod": "DROPOFF"
+        },
+        "handoverLocation": {
+          "address": {
+            "postalCode": "98101",
+            "addressLine1": "123 Main St",
+            "city": "Seattle",
+            "stateOrRegion": "WA",
+            "countryCode": "US",
+            "geocodes": {
+              "latitude": "47.6062",
+              "longitude": "-122.3321"
+            }
+          },
+          "distance": {
+            "value": "3.5",
+            "distanceUnit": "MI"
+          },
+          "mapUrl": "https://maps.example.com/location?lat=47.6062&lng=-122.3321"
         }
       },
       "required": [
@@ -8409,6 +8604,11 @@
             }
           ]
         }
+      },
+      "example": {
+        "startTime": 1612933142,
+        "endTime": 1612494142,
+        "handoverMethod": "DROPOFF"
       },
       "required": [
         "startTime",
