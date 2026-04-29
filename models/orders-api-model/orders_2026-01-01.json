@@ -29,7 +29,7 @@
         "tags": [
           "searchOrders"
         ],
-        "description": "Returns orders that are created or updated during the time period that you specify. You can filter the response for specific types of orders.",
+        "description": "Returns orders created or updated during the time period that you specify. You can filter the response for specific types of orders.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.0056 | 20 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that are applied to the requested operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may receive higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api) in the Selling Partner API documentation.",
         "operationId": "searchOrders",
         "parameters": [
           {
@@ -53,7 +53,7 @@
           {
             "name": "lastUpdatedAfter",
             "in": "query",
-            "description": "The response includes orders updated at or after this time. An update is defined as any change made by Amazon or by the seller, including an update to the order status. The date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.\n\n**Note**: You must provide exactly one of `createdAfter` and `lastUpdatedAfter`. If `lastUpdatedAfter` is provided, neither `createdAfter` nor `createdBefore` may be provided.",
+            "description": "The response includes orders updated at or after this time. An update is any change made by Amazon or the seller, including changes to order status. The date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.\n\n**Note**: You must provide exactly one of `createdAfter` and `lastUpdatedAfter`. If `lastUpdatedAfter` is provided, neither `createdAfter` nor `createdBefore` may be provided.",
             "required": false,
             "type": "string",
             "format": "date-time",
@@ -62,7 +62,7 @@
           {
             "name": "lastUpdatedBefore",
             "in": "query",
-            "description": "The response includes orders updated at or before this time. An update is defined as any change made by Amazon or by the seller, including an update to the order status. The date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.\n\n**Note**: If you include `lastUpdatedAfter` in the request, `lastUpdatedBefore` is optional, and if provided must be equal to or after the `lastUpdatedAfter` date and at least two minutes before the time of the request. If `lastUpdatedBefore` is provided, neither `createdAfter` nor `createdBefore` may be provided.",
+            "description": "The response includes orders updated at or before this time. An update is any change made by Amazon or the seller, including changes to order status. The date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format.\n\n**Note**: If you include `lastUpdatedAfter` in the request, `lastUpdatedBefore` is optional, and if provided must be equal to or after the `lastUpdatedAfter` date and at least two minutes before the time of the request. If `lastUpdatedBefore` is provided, neither `createdAfter` nor `createdBefore` may be provided.",
             "required": false,
             "type": "string",
             "format": "date-time",
@@ -112,7 +112,7 @@
                 },
                 {
                   "value": "UNFULFILLABLE",
-                  "description": "The order cannot be fulfilled. This state only applies to Amazon-fulfilled orders that were not placed on Amazon's retail web site."
+                  "description": "The order cannot be fulfilled. This state only applies to Amazon-fulfilled orders that were not placed on Amazon's retail website."
                 }
               ]
             },
@@ -196,7 +196,9 @@
                 "PROMOTION",
                 "CANCELLATION",
                 "FULFILLMENT",
-                "PACKAGES"
+                "PACKAGES",
+                "TAX",
+                "PAYMENT"
               ],
               "x-docgen-enum-table-extension": [
                 {
@@ -230,6 +232,14 @@
                 {
                   "value": "PACKAGES",
                   "description": "Information about shipping packages and tracking."
+                },
+                {
+                  "value": "TAX",
+                  "description": "The tax information associated with the order."
+                },
+                {
+                  "value": "PAYMENT",
+                  "description": "The payment information associated with the order."
                 }
               ]
             },
@@ -439,7 +449,7 @@
                         },
                         "proceeds": {
                           "proceedsTotal": {
-                            "amount": "99.98",
+                            "amount": "100.00",
                             "currencyCode": "USD"
                           },
                           "breakdowns": [
@@ -715,8 +725,7 @@
                                 }
                               },
                               "serialNumbers": [
-                                "ED4JP-2024-ABC123456789",
-                                "ED4JP-2024-DEF987654321"
+                                "ED4JP-2024-ABC123456789"
                               ]
                             },
                             "proceeds": {
@@ -913,7 +922,7 @@
                             "quantityOrdered": 1,
                             "measurement": {
                               "unit": "COUNT",
-                              "value": 1
+                              "value": 1.0
                             },
                             "product": {
                               "asin": "B08C1W5N87",
@@ -960,7 +969,7 @@
                                       "title": "Amazon Echo Dot (4th Generation) | Smart speaker with Alexa | Glacier White",
                                       "measurement": {
                                         "unit": "COUNT",
-                                        "value": 1
+                                        "value": 1.0
                                       }
                                     },
                                     {
@@ -970,7 +979,7 @@
                                       "title": "Amazon Echo Dot (4th Generation) | Smart speaker with Alexa | Twilight Blue",
                                       "measurement": {
                                         "unit": "COUNT",
-                                        "value": 1
+                                        "value": 1.0
                                       }
                                     }
                                   ]
@@ -1017,6 +1026,177 @@
                       }
                     ],
                     "createdBefore": "2024-12-24T15:00:00Z"
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "createdAfter": {
+                        "value": "2024-12-20T00:00:00Z"
+                      },
+                      "marketplaceIds": {
+                        "value": [
+                          "A2Q3Y263D00KWC"
+                        ]
+                      },
+                      "includedData": {
+                        "value": [
+                          "BUYER",
+                          "RECIPIENT",
+                          "PROCEEDS",
+                          "FULFILLMENT",
+                          "TAX",
+                          "PAYMENT"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "orders": [
+                      {
+                        "orderId": "171-2345678-9012345",
+                        "orderAliases": [
+                          {
+                            "aliasId": "BR-BIZ-ORDER-2024-001",
+                            "aliasType": "SELLER_ORDER_ID"
+                          }
+                        ],
+                        "createdTime": "2024-12-22T15:30:00Z",
+                        "lastUpdatedTime": "2024-12-23T10:00:00Z",
+                        "programs": [
+                          "AMAZON_BUSINESS",
+                          "DELIVERY_BY_AMAZON"
+                        ],
+                        "salesChannel": {
+                          "channelName": "AMAZON",
+                          "marketplaceId": "A2Q3Y263D00KWC",
+                          "marketplaceName": "Amazon.com.br"
+                        },
+                        "buyer": {
+                          "buyerName": "Carlos Oliveira",
+                          "buyerEmail": "buyer-email@marketplace.amazon.com.br",
+                          "buyerCompanyName": "Oliveira Tecnologia Ltda",
+                          "buyerPurchaseOrderNumber": "PO-BR-2024-5678"
+                        },
+                        "recipient": {
+                          "deliveryAddress": {
+                            "name": "Carlos Oliveira",
+                            "companyName": "Oliveira Tecnologia Ltda",
+                            "addressLine1": "Avenida Paulista, 1000",
+                            "addressLine2": "Sala 301",
+                            "city": "São Paulo",
+                            "stateOrRegion": "SP",
+                            "postalCode": "01310-100",
+                            "countryCode": "BR",
+                            "phone": "+55 11 91234-5678",
+                            "extendedFields": {
+                              "streetName": "Avenida Paulista",
+                              "streetNumber": "1000",
+                              "complement": "Sala 301",
+                              "neighborhood": "Bela Vista"
+                            },
+                            "addressType": "COMMERCIAL"
+                          }
+                        },
+                        "proceeds": {
+                          "grandTotal": {
+                            "amount": "1599.90",
+                            "currencyCode": "BRL"
+                          }
+                        },
+                        "tax": {
+                          "taxRegistrations": [
+                            {
+                              "entityType": "BUYER",
+                              "legalName": "Oliveira Tecnologia Ltda",
+                              "taxRegistrationType": "VAT",
+                              "taxRegistrationNumber": "1234567890"
+                            },
+                            {
+                              "entityType": "MARKETPLACE",
+                              "taxRegistrationType": "CNPJ",
+                              "taxRegistrationNumber": "15436940"
+                            },
+                            {
+                              "entityType": "MERCHANT",
+                              "legalName": "TechStore"
+                            }
+                          ],
+                          "taxInvoicing": {
+                            "invoiceStatus": "PROCESSING"
+                          }
+                        },
+                        "payment": {
+                          "paymentExecutions": [
+                            {
+                              "paymentMethod": "CreditCard",
+                              "paymentAmount": {
+                                "amount": "1599.90",
+                                "currencyCode": "BRL"
+                              },
+                              "acquirerId": "01.027.058/0001-91",
+                              "cardBrand": "Visa",
+                              "authorizationCode": "123456"
+                            }
+                          ]
+                        },
+                        "fulfillment": {
+                          "fulfillmentStatus": "UNSHIPPED",
+                          "fulfilledBy": "MERCHANT",
+                          "fulfillmentServiceLevel": "STANDARD",
+                          "shipByWindow": {
+                            "earliestDateTime": "2024-12-23T00:00:00Z",
+                            "latestDateTime": "2024-12-24T23:59:59Z"
+                          },
+                          "deliverByWindow": {
+                            "earliestDateTime": "2024-12-26T00:00:00Z",
+                            "latestDateTime": "2024-12-30T23:59:59Z"
+                          }
+                        },
+                        "orderItems": [
+                          {
+                            "orderItemId": "17123456789012",
+                            "quantityOrdered": 1,
+                            "product": {
+                              "asin": "B09B8V1LZ3",
+                              "title": "Notebook Dell Inspiron 15 3000",
+                              "sellerSku": "DELL-I15-BR-001",
+                              "condition": {
+                                "conditionType": "NEW",
+                                "conditionSubtype": "NEW"
+                              },
+                              "price": {
+                                "unitPrice": {
+                                  "amount": "1599.90",
+                                  "currencyCode": "BRL"
+                                },
+                                "priceDesignation": "BUSINESS_PRICE"
+                              }
+                            },
+                            "proceeds": {
+                              "proceedsTotal": {
+                                "amount": "1599.90",
+                                "currencyCode": "BRL"
+                              },
+                              "breakdowns": [
+                                {
+                                  "type": "ITEM",
+                                  "subtotal": {
+                                    "amount": "1599.90",
+                                    "currencyCode": "BRL"
+                                  }
+                                }
+                              ]
+                            },
+                            "fulfillment": {
+                              "quantityFulfilled": 0,
+                              "quantityUnfulfilled": 1
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "createdBefore": "2024-12-22T16:00:00Z"
                   }
                 }
               ]
@@ -1156,7 +1336,7 @@
         "tags": [
           "getOrder"
         ],
-        "description": "Returns the order that you specify.",
+        "description": "Returns the order that you specify.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 0.5 | 30 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that are applied to the requested operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may receive higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api) in the Selling Partner API documentation.",
         "operationId": "getOrder",
         "parameters": [
           {
@@ -1182,7 +1362,9 @@
                 "PROMOTION",
                 "CANCELLATION",
                 "FULFILLMENT",
-                "PACKAGES"
+                "PACKAGES",
+                "TAX",
+                "PAYMENT"
               ],
               "x-docgen-enum-table-extension": [
                 {
@@ -1199,7 +1381,7 @@
                 },
                 {
                   "value": "EXPENSE",
-                  "description": "The cost information applied to the order and order items."
+                  "description": "The cost information about the order and order items."
                 },
                 {
                   "value": "PROMOTION",
@@ -1211,11 +1393,19 @@
                 },
                 {
                   "value": "FULFILLMENT",
-                  "description": "Information about how this order and order items are processed and shipped."
+                  "description": "Information about how the order and order items are processed and shipped."
                 },
                 {
                   "value": "PACKAGES",
-                  "description": "Shipping packages and tracking information."
+                  "description": "Information about shipping packages and tracking."
+                },
+                {
+                  "value": "TAX",
+                  "description": "The tax information associated with the order."
+                },
+                {
+                  "value": "PAYMENT",
+                  "description": "The payment information associated with the order."
                 }
               ]
             },
@@ -1592,6 +1782,277 @@
                       ]
                     }
                   }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "orderId": {
+                        "value": "028-1234567-8901234"
+                      },
+                      "includedData": {
+                        "value": [
+                          "BUYER",
+                          "RECIPIENT",
+                          "PROCEEDS",
+                          "FULFILLMENT",
+                          "TAX"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "order": {
+                      "orderId": "028-1234567-8901234",
+                      "orderAliases": [
+                        {
+                          "aliasId": "TR-ORDER-2025-001",
+                          "aliasType": "SELLER_ORDER_ID"
+                        }
+                      ],
+                      "createdTime": "2025-03-15T10:30:00Z",
+                      "lastUpdatedTime": "2025-03-15T14:20:00Z",
+                      "salesChannel": {
+                        "channelName": "AMAZON",
+                        "marketplaceId": "A33AVAJ2PDY3EV",
+                        "marketplaceName": "Amazon.com.tr"
+                      },
+                      "buyer": {
+                        "buyerName": "Mehmet Yilmaz",
+                        "buyerEmail": "buyer-email@marketplace.amazon.com.tr"
+                      },
+                      "recipient": {
+                        "deliveryAddress": {
+                          "name": "Mehmet Yilmaz",
+                          "addressLine1": "Istiklal Caddesi No:42",
+                          "addressLine2": "Kat 3",
+                          "addressLine3": "",
+                          "city": "Istanbul",
+                          "districtOrCounty": "Beyoglu",
+                          "stateOrRegion": "Istanbul",
+                          "municipality": "",
+                          "postalCode": "34430",
+                          "countryCode": "TR",
+                          "addressType": "COMMERCIAL"
+                        }
+                      },
+                      "proceeds": {
+                        "grandTotal": {
+                          "amount": "125.00",
+                          "currencyCode": "TRY"
+                        }
+                      },
+                      "fulfillment": {
+                        "fulfillmentStatus": "SHIPPED",
+                        "fulfilledBy": "MERCHANT",
+                        "fulfillmentServiceLevel": "STANDARD",
+                        "shipByWindow": {
+                          "earliestDateTime": "2025-03-16T00:00:00Z",
+                          "latestDateTime": "2025-03-17T23:59:59Z"
+                        },
+                        "deliverByWindow": {
+                          "earliestDateTime": "2025-03-18T00:00:00Z",
+                          "latestDateTime": "2025-03-21T23:59:59Z"
+                        }
+                      },
+                      "tax": {
+                        "taxRegistrations": [
+                          {
+                            "entityType": "BUYER",
+                            "taxRegistrationType": "BUSINESS",
+                            "taxRegistrationNumber": "TR1234567890",
+                            "legalName": "Test company name",
+                            "taxRegistrationAddress": {
+                              "name": "Mehmet Yilmaz",
+                              "companyName": "Test company name",
+                              "addressLine1": "Istiklal Caddesi No:42",
+                              "addressLine2": "Kat 3",
+                              "city": "Istanbul",
+                              "stateOrRegion": "Istanbul",
+                              "postalCode": "34430",
+                              "countryCode": "TR"
+                            },
+                            "taxRegistrationAttributes": [
+                              {
+                                "key": "TAX_OFFICE",
+                                "value": "tax office"
+                              }
+                            ]
+                          }
+                        ],
+                        "taxInvoicing": {
+                          "buyerInvoicePreference": "BUSINESS"
+                        }
+                      },
+                      "orderItems": [
+                        {
+                          "orderItemId": "02812345678901",
+                          "quantityOrdered": 2,
+                          "product": {
+                            "asin": "B09V3KXJPB",
+                            "title": "Fire HD 10 tablet | 10.1 inch, 1080p Full HD",
+                            "sellerSku": "FIRE-HD10-TR-BLK",
+                            "condition": {
+                              "conditionType": "NEW",
+                              "conditionSubtype": "NEW",
+                              "conditionNote": ""
+                            },
+                            "price": {
+                              "unitPrice": {
+                                "amount": "62.50",
+                                "currencyCode": "TRY"
+                              }
+                            }
+                          },
+                          "proceeds": {
+                            "proceedsTotal": {
+                              "amount": "125.00",
+                              "currencyCode": "TRY"
+                            },
+                            "breakdowns": [
+                              {
+                                "type": "ITEM",
+                                "subtotal": {
+                                  "amount": "125.00",
+                                  "currencyCode": "TRY"
+                                }
+                              }
+                            ]
+                          },
+                          "fulfillment": {
+                            "quantityFulfilled": 2,
+                            "quantityUnfulfilled": 0
+                          },
+                          "tax": {
+                            "taxCalculationBreakdowns": [
+                              {
+                                "reportingScheme": "IOSS"
+                              }
+                            ],
+                            "taxCollections": [
+                              {
+                                "model": "MARKETPLACE_FACILITATOR",
+                                "responsibleParty": "Amazon Services Europe S.a.r.L."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "orderId": {
+                        "value": "114-9876543-1234567"
+                      },
+                      "includedData": {
+                        "value": [
+                          "RECIPIENT",
+                          "PROCEEDS",
+                          "FULFILLMENT"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "order": {
+                      "orderId": "114-9876543-1234567",
+                      "createdTime": "2025-03-10T14:00:00Z",
+                      "lastUpdatedTime": "2025-03-10T14:30:00Z",
+                      "programs": [
+                        "IN_STORE_PICK_UP"
+                      ],
+                      "salesChannel": {
+                        "channelName": "AMAZON",
+                        "marketplaceId": "ATVPDKIKX0DER",
+                        "marketplaceName": "Amazon.com"
+                      },
+                      "recipient": {
+                        "deliveryAddress": {
+                          "name": "Test Store #1234",
+                          "companyName": "Test Store",
+                          "addressLine1": "100 Main Street",
+                          "addressLine2": "Suite 200",
+                          "addressLine3": "",
+                          "city": "Seattle",
+                          "districtOrCounty": "",
+                          "stateOrRegion": "WA",
+                          "municipality": "",
+                          "postalCode": "98101",
+                          "countryCode": "US",
+                          "phone": "+1 206 555 0100",
+                          "addressType": "COMMERCIAL"
+                        }
+                      },
+                      "proceeds": {
+                        "grandTotal": {
+                          "amount": "49.99",
+                          "currencyCode": "USD"
+                        }
+                      },
+                      "fulfillment": {
+                        "fulfillmentStatus": "UNSHIPPED",
+                        "fulfilledBy": "MERCHANT",
+                        "fulfillmentServiceLevel": "STANDARD"
+                      },
+                      "orderItems": [
+                        {
+                          "orderItemId": "11498765431234",
+                          "quantityOrdered": 1,
+                          "product": {
+                            "asin": "B0BSHF7WHW",
+                            "title": "All-new Echo Pop | Full sound compact smart speaker with Alexa",
+                            "sellerSku": "ECHO-POP-US-BLK",
+                            "condition": {
+                              "conditionType": "NEW",
+                              "conditionSubtype": "NEW",
+                              "conditionNote": ""
+                            },
+                            "price": {
+                              "unitPrice": {
+                                "amount": "39.99",
+                                "currencyCode": "USD"
+                              }
+                            }
+                          },
+                          "proceeds": {
+                            "proceedsTotal": {
+                              "amount": "49.99",
+                              "currencyCode": "USD"
+                            },
+                            "breakdowns": [
+                              {
+                                "type": "ITEM",
+                                "subtotal": {
+                                  "amount": "39.99",
+                                  "currencyCode": "USD"
+                                }
+                              },
+                              {
+                                "type": "TAX",
+                                "subtotal": {
+                                  "amount": "10.00",
+                                  "currencyCode": "USD"
+                                }
+                              }
+                            ]
+                          },
+                          "fulfillment": {
+                            "quantityFulfilled": 0,
+                            "quantityUnfulfilled": 1
+                          },
+                          "associatedOrderItems": [
+                            {
+                              "orderId": "333-1234567-7654321",
+                              "orderItemId": "11498765435678",
+                              "associationType": "VALUE_ADD_SERVICE"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
                 }
               ]
             }
@@ -1723,6 +2184,212 @@
           }
         }
       }
+    },
+    "/orders/2026-01-01/orders/{orderId}/cancellation": {
+      "put": {
+        "tags": [
+          "cancelOrder"
+        ],
+        "description": "Cancels the order you specify. Partial cancellations are not supported.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that are applied to the requested operation, when available. The table above contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may receive higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api) in the Selling Partner API documentation.",
+        "operationId": "cancelOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "An Amazon-defined order identifier.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The request body of the `cancelOrder` operation, including the reason for the cancellation.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CancelOrderRequest"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {}
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "orderId": {
+                        "value": "902-1106328-1059050"
+                      },
+                      "body": {
+                        "value": {
+                          "cancelReasonCode": "NO_INVENTORY"
+                        }
+                      }
+                    }
+                  },
+                  "response": {}
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "orderId": {
+                        "value": "TEST_CASE_400"
+                      },
+                      "body": {
+                        "value": {
+                          "cancelReasonCode": "NO_INVENTORY"
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "OrderId: TEST_CASE_400 is invalid, should be in 3-7-7 format."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1742,23 +2409,23 @@
         },
         "pagination": {
           "$ref": "#/definitions/Pagination",
-          "description": "When a request has results that are not included in the response, pagination occurs. This means the results are divided into individual pages. To retrieve a different page, you must pass the token value as the `paginationToken` query parameter in the subsequent request. All other parameters must be provided with the same values that were provided with the request that generated this token, with the exception of `maxResultsPerPage` and `includedData`, which can be modified between calls. The token will expire after 24 hours. When there are no other pages to fetch, the `pagination` field will be absent from the response."
+          "description": "Pagination occurs when a request has results that exceed the response limit. This means the results are divided into individual pages. To retrieve a different page, you must pass the token value as the `paginationToken` query parameter in the subsequent request. All other parameters must be provided with the same values that were provided with the request that generated this token, with the exception of `maxResultsPerPage` and `includedData`, which can be modified between calls. The token will expire after 24 hours. When there are no other pages to fetch, the `pagination` field will be absent from the response."
         },
         "lastUpdatedBefore": {
           "type": "string",
           "format": "date-time",
-          "description": "Only orders updated before the specified time are returned. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format."
+          "description": "Only orders updated before the specified time are returned. The date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format."
         },
         "createdBefore": {
           "type": "string",
           "format": "date-time",
-          "description": "Only orders placed before the specified time are returned. The date must be in <a href='https://developer-docs.amazon.com/sp-api/docs/iso-8601'>ISO 8601</a> format."
+          "description": "Only orders placed before the specified time are returned. The date must be in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) format."
         }
       }
     },
     "Pagination": {
       "type": "object",
-      "description": "When a request has results that are not included in the response, pagination occurs. This means the results are divided into individual pages. To retrieve a different page, you must pass the token value as the `paginationToken` query parameter in the subsequent request. All other parameters must be provided with the same values that were provided with the request that generated this token, with the exception of `maxResultsPerPage` and `includedData`, which can be modified between calls. The token will expire after 24 hours. When there are no other pages to fetch, the `pagination` field will be absent from the response.",
+      "description": "Pagination occurs when a request has results that exceed the response limit. This means the results are divided into individual pages. To retrieve a different page, you must pass the token value as the `paginationToken` query parameter in the subsequent request. All other parameters must be provided with the same values that were provided with the request that generated this token, with the exception of `maxResultsPerPage` and `includedData`, which can be modified between calls. The token will expire after 24 hours. When there are no other pages to fetch, the `pagination` field will be absent from the response.",
       "properties": {
         "nextToken": {
           "description": "A token that can be used to fetch the next page of results.",
@@ -1778,6 +2445,55 @@
           "$ref": "#/definitions/Order"
         }
       }
+    },
+    "CancelOrderRequest": {
+      "type": "object",
+      "required": [
+        "cancelReasonCode"
+      ],
+      "properties": {
+        "cancelReasonCode": {
+          "description": "The specific reason code explaining why the order is being canceled.",
+          "$ref": "#/definitions/CancelReasonCode"
+        }
+      },
+      "description": "The request body of the `cancelOrder` operation, which includes the reason for the cancellation.",
+      "example": {
+        "cancelReasonCode": "NO_INVENTORY"
+      }
+    },
+    "CancelReasonCode": {
+      "description": "Predefined codes that specify the reason for why an order is canceled, used for tracking and reporting purposes.",
+      "type": "string",
+      "enum": [
+        "NO_INVENTORY",
+        "BUYER_CANCELLED",
+        "SHIPPING_ADDRESS_UNDELIVERABLE",
+        "CUSTOMER_EXCHANGE",
+        "PRICING_ERROR"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "NO_INVENTORY",
+          "description": "Cancellation due to insufficient stock."
+        },
+        {
+          "value": "BUYER_CANCELLED",
+          "description": "Cancellation requested by the customer."
+        },
+        {
+          "value": "SHIPPING_ADDRESS_UNDELIVERABLE",
+          "description": "Cancellation due to invalid or inaccessible delivery address."
+        },
+        {
+          "value": "CUSTOMER_EXCHANGE",
+          "description": "Cancellation for product exchange purposes."
+        },
+        {
+          "value": "PRICING_ERROR",
+          "description": "Cancellation due to incorrect product pricing."
+        }
+      ]
     },
     "Order": {
       "description": "Comprehensive information about a customer order.",
@@ -1813,7 +2529,7 @@
         },
         "programs": {
           "type": "array",
-          "description": "Special programs associated with this order that may affect fulfillment or customer experience. \n\n**Possible values**: `AMAZON_BAZAAR`, `AMAZON_BUSINESS`,  `AMAZON_EASY_SHIP`, `AMAZON_HAUL`, `DELIVERY_BY_AMAZON`, `FBM_SHIP_PLUS`, `IN_STORE_PICK_UP`, `PREMIUM`, `PREORDER`, `PRIME`",
+          "description": "Special programs associated with this order that may affect fulfillment or customer experience. \n\n**Possible values**: `AMAZON_BAZAAR`, `AMAZON_BUSINESS`, `AMAZON_EASY_SHIP`, `AMAZON_HAUL`, `DELIVERY_BY_AMAZON`, `FBM_SHIP_PLUS`, `INVOICE_BY_AMAZON`, `IN_STORE_PICK_UP`, `PREMIUM`, `PREORDER`, `PRIME`",
           "items": {
             "type": "string"
           }
@@ -1840,6 +2556,14 @@
         "proceeds": {
           "description": "Financial information about this order.",
           "$ref": "#/definitions/OrderProceeds"
+        },
+        "payment": {
+          "description": "Payment information for the order.",
+          "$ref": "#/definitions/OrderPayment"
+        },
+        "tax": {
+          "description": "Tax-related information for the order.",
+          "$ref": "#/definitions/OrderTax"
         },
         "fulfillment": {
           "description": "Information about how this order is being processed and shipped.",
@@ -2010,6 +2734,13 @@
           "description": "The unit of measure and value for items sold by weight, volume, or other measurements rather than simple count.",
           "$ref": "#/definitions/Measurement"
         },
+        "associatedOrderItems": {
+          "description": "A list of order items associated with this item. For example, a value-add service purchased with the product.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AssociatedOrderItem"
+          }
+        },
         "programs": {
           "type": "array",
           "description": "Special programs that apply specifically to this item within the order.\n\n**Possible values**: `TRANSPARENCY`, `SUBSCRIBE_AND_SAVE`",
@@ -2040,6 +2771,10 @@
         "fulfillment": {
           "description": "Information about how the order item should be processed, packed, and shipped to the customer.",
           "$ref": "#/definitions/ItemFulfillment"
+        },
+        "tax": {
+          "description": "Tax-related information for this order item.",
+          "$ref": "#/definitions/ItemTax"
         }
       }
     },
@@ -2267,7 +3002,7 @@
         },
         {
           "value": "PENDING",
-          "description": "The order has been placed but is not ready for shipment. Note that for standard orders, the initial order status is `PENDING`. For pre-orders, the initial order status is `PENDING_AVAILABILITY`, and the order passes into the `PENDING` status when payment authorization begins."
+          "description": "The order has been placed but is not ready for shipment. For standard orders, the initial order status is `PENDING`. For pre-orders, the initial order status is `PENDING_AVAILABILITY`, and the order passes into the `PENDING` status when payment authorization begins."
         },
         {
           "value": "UNSHIPPED",
@@ -2275,7 +3010,7 @@
         },
         {
           "value": "PARTIALLY_SHIPPED",
-          "description": "One or more (but not all) items in the order have been shipped."
+          "description": "At least one, but not all, items in the order have been shipped."
         },
         {
           "value": "SHIPPED",
@@ -2287,7 +3022,7 @@
         },
         {
           "value": "UNFULFILLABLE",
-          "description": "The order cannot be fulfilled. This state applies only to Amazon-fulfilled orders that were not placed on Amazon's retail web site."
+          "description": "The order cannot be fulfilled. This state only applies to Amazon-fulfilled orders that were not placed on Amazon's retail website."
         }
       ]
     },
@@ -2687,7 +3422,7 @@
       }
     },
     "PreferredDeliveryCapability": {
-      "description": "Special delivery capabilities available at the shipping address that may affect delivery options and methods. \n\n**Possible values:**\n- `HAS_ACCESS_POINT` (Delivery location includes designated pickup or drop-off access points)\n- `PALLET_ENABLED` (Address is equipped to receive large pallet deliveries)\n- `PALLET_DISABLED` (Address cannot accommodate pallet delivery methods)",
+      "description": "Special delivery capabilities available at the shipping address that may affect delivery options and methods. \n\n**Possible values**:\n- `HAS_ACCESS_POINT` (Delivery location includes designated pickup or drop-off access points)\n- `PALLET_ENABLED` (Address is equipped to receive large pallet deliveries)\n- `PALLET_DISABLED` (Address cannot accommodate pallet delivery methods)",
       "type": "string"
     },
     "ItemCondition": {
@@ -2754,7 +3489,7 @@
       }
     },
     "ItemProceedsDetailedBreakdown": {
-      "description": "Further granular breakdown of the subtotal of the proceeds breakdown, only available for TAX and DISCOUNT proceeds type.",
+      "description": "Further granular breakdown of the subtotal of the proceeds breakdown, only available for TAX and DISCOUNT proceeds types.",
       "type": "object",
       "properties": {
         "subtype": {
@@ -2820,7 +3555,7 @@
       "type": "object",
       "properties": {
         "substitutionPreference": {
-          "description": "Substitution preference for an order item when it becomes unavailable during fulfillment",
+          "description": "Substitution preference for an order item when it becomes unavailable during fulfillment.",
           "$ref": "#/definitions/ItemSubstitutionPreference"
         }
       }
@@ -2832,6 +3567,19 @@
         "giftOption": {
           "description": "Gift wrapping and messaging specified for this item.",
           "$ref": "#/definitions/GiftOption"
+        },
+        "serialNumberRequirement": {
+          "description": "Whether serial numbers must be provided for this line item.",
+          "$ref": "#/definitions/SerialNumberRequirement"
+        }
+      },
+      "example": {
+        "giftOption": {
+          "giftMessage": "Happy Holidays! Enjoy your new smart speakers.",
+          "giftWrapLevel": "PREMIUM"
+        },
+        "serialNumberRequirement": {
+          "requirementType": "REQUIRED"
         }
       }
     },
@@ -2863,6 +3611,16 @@
         },
         "giftWrapLevel": {
           "description": "Type or quality level of gift wrapping service selected by the customer.",
+          "type": "string"
+        }
+      }
+    },
+    "SerialNumberRequirement": {
+      "description": "Whether serial numbers must be provided for this line item.",
+      "type": "object",
+      "properties": {
+        "requirementType": {
+          "description": "The requirement type for this request. \n\n**Possible values**: `REQUIRED`",
           "type": "string"
         }
       }
@@ -3027,7 +3785,7 @@
           ]
         },
         "detailedStatus": {
-          "description": "Granular status information providing specific details about the package's current location and handling stage. \n\n**Possible values:**\n- `PENDING_SCHEDULE` (Package awaiting pickup scheduling)\n- `PENDING_PICK_UP` (Package ready for carrier collection from seller)\n- `PENDING_DROP_OFF` (Package awaiting seller delivery to carrier)\n- `LABEL_CANCELLED` (Shipping label canceled by seller)\n- `PICKED_UP` (Package collected by carrier from seller location)\n- `DROPPED_OFF` (Package delivered to carrier by seller)\n- `AT_ORIGIN_FC` (Package at originating fulfillment center)\n- `AT_DESTINATION_FC` (Package at destination fulfillment center)\n- `DELIVERED` (Package successfully delivered to recipient)\n- `REJECTED_BY_BUYER` (Package refused by intended recipient)\n- `UNDELIVERABLE` (Package cannot be delivered due to address or access issues)\n- `RETURNING_TO_SELLER` (Package in transit back to seller)\n- `RETURNED_TO_SELLER` (Package successfully returned to seller)\n- `LOST` (Package location unknown or confirmed lost)\n- `OUT_FOR_DELIVERY` (Package on delivery vehicle for final delivery)\n- `DAMAGED` (Package damaged during transit)\n",
+          "description": "Granular status information providing specific details about the package's current location and handling stage. \n\n**Possible values**:\n- `PENDING_SCHEDULE` (Package awaiting pickup scheduling)\n- `PENDING_PICK_UP` (Package ready for carrier collection from seller)\n- `PENDING_DROP_OFF` (Package awaiting seller delivery to carrier)\n- `LABEL_CANCELLED` (Shipping label canceled by seller)\n- `PICKED_UP` (Package collected by carrier from seller location)\n- `DROPPED_OFF` (Package delivered to carrier by seller)\n- `AT_ORIGIN_FC` (Package at originating fulfillment center)\n- `AT_DESTINATION_FC` (Package at destination fulfillment center)\n- `DELIVERED` (Package successfully delivered to recipient)\n- `REJECTED_BY_BUYER` (Package refused by intended recipient)\n- `UNDELIVERABLE` (Package cannot be delivered due to address or access issues)\n- `RETURNING_TO_SELLER` (Package in transit back to seller)\n- `RETURNED_TO_SELLER` (Package successfully returned to seller)\n- `LOST` (Package location unknown or confirmed lost)\n- `OUT_FOR_DELIVERY` (Package on delivery vehicle for final delivery)\n- `DAMAGED` (Package damaged during transit)\n",
           "type": "string"
         }
       }
@@ -3054,6 +3812,190 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "OrderPayment": {
+      "description": "Payment information about the order.",
+      "type": "object",
+      "properties": {
+        "paymentExecutions": {
+          "description": "A list of payment executions for the order.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PaymentExecution"
+          }
+        }
+      }
+    },
+    "PaymentExecution": {
+      "description": "Payment execution details for an order.",
+      "type": "object",
+      "properties": {
+        "paymentMethod": {
+          "description": "The payment method used for this payment execution (for example, CashOnDelivery, ConvenienceStore, CreditCard, Invoice, Pix, and so on).",
+          "type": "string"
+        },
+        "paymentAmount": {
+          "description": "The monetary value of the payment execution.",
+          "$ref": "#/definitions/Money"
+        },
+        "acquirerId": {
+          "description": "The unique identifier of the payment processor or acquiring bank that authorizes the payment. \n\n**Note**: This attribute is only available for orders in the Brazil (BR) marketplace when the `paymentMethod` is `CreditCard` or `Pix`.",
+          "type": "string"
+        },
+        "cardBrand": {
+          "description": "The card network or brand used in the payment transaction (for example, Visa or Mastercard).\n\n**Note**: This attribute is only available for orders in the Brazil (BR) marketplace when the `paymentMethod` is `CreditCard`.",
+          "type": "string"
+        },
+        "authorizationCode": {
+          "description": "The unique code that confirms the payment authorization.\n\n**Note**: This attribute is only available for orders in the Brazil (BR) marketplace when the `paymentMethod` is `CreditCard` or `Pix`.",
+          "type": "string"
+        }
+      }
+    },
+    "OrderTax": {
+      "description": "Tax information about the order.",
+      "type": "object",
+      "properties": {
+        "taxRegistrations": {
+          "description": "A list of tax registrations associated with the order.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderTaxRegistration"
+          }
+        },
+        "taxInvoicing": {
+          "description": "Tax invoicing information for the order.",
+          "$ref": "#/definitions/OrderTaxInvoicing"
+        }
+      }
+    },
+    "OrderTaxRegistration": {
+      "description": "Tax registration information for an entity associated with the order.",
+      "type": "object",
+      "properties": {
+        "entityType": {
+          "description": "The type of entity that the tax registration belongs to.\n\n**Possible values**:\n- `BUYER` (Indicates that this is the buyer's tax registration information)\n- `MERCHANT` (Indicates that this is the merchant's tax registration information)\n- `MARKETPLACE` (Indicates that this is the marketplace's tax registration information)",
+          "type": "string"
+        },
+        "legalName": {
+          "description": "The legal name associated with the tax registration.",
+          "type": "string"
+        },
+        "taxRegistrationType": {
+          "description": "The type of the tax registration number.\n\n**Possible values**: `BUSINESS`, `VAT`, `CST`, `CPF`, `CNPJ`",
+          "type": "string"
+        },
+        "taxRegistrationNumber": {
+          "description": "The tax registration number that identifies the entity for tax purposes.",
+          "type": "string"
+        },
+        "taxRegistrationAddress": {
+          "description": "The address associated with the tax registration.",
+          "$ref": "#/definitions/CustomerAddress"
+        },
+        "taxRegistrationAttributes": {
+          "description": "Additional attributes related to the tax registration.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaxRegistrationAttribute"
+          }
+        }
+      }
+    },
+    "TaxRegistrationAttribute": {
+      "description": "An additional attribute associated with a tax registration.",
+      "type": "object",
+      "properties": {
+        "key": {
+          "description": "The name of the tax registration attribute.\n\n**Possible values**: `TAX_OFFICE`",
+          "type": "string"
+        },
+        "value": {
+          "description": "The value of the tax registration attribute.",
+          "type": "string"
+        }
+      }
+    },
+    "OrderTaxInvoicing": {
+      "description": "Tax invoicing information for the order.",
+      "type": "object",
+      "properties": {
+        "buyerInvoicePreference": {
+          "description": "The buyer's invoicing preference, which indicates whether the seller should issue an individual or a business invoice to the buyer. \n\n **Note**: This attribute is only available in the Turkey marketplace. \n\n**Possible values**:\n- `INDIVIDUAL` (Issues an individual invoice to the buyer)\n- `BUSINESS` (Issues a business invoice to the buyer)",
+          "type": "string"
+        },
+        "invoiceStatus": {
+          "description": "The status of the invoice. Only available for Easy Ship orders and orders in the Brazil marketplace.\n\n**Possible values**:\n- `NOT_REQUIRED` (The order does not require an electronic invoice to be uploaded)\n- `NOT_FOUND` (The order requires an electronic invoice but it is not uploaded)\n- `PROCESSING` (The required electronic invoice was uploaded and is processing)\n- `ERRORED` (The uploaded electronic invoice was not accepted)\n- `ACCEPTED` (The uploaded electronic invoice was accepted)",
+          "type": "string"
+        }
+      }
+    },
+    "AssociatedOrderItem": {
+      "description": "An associated order item that a customer has purchased with the product. For example, a tire installation service purchased with tires.",
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "description": "The order identifier of the associated order item.",
+          "type": "string"
+        },
+        "orderItemId": {
+          "description": "The order item identifier of the associated order item.",
+          "type": "string"
+        },
+        "associationType": {
+          "description": "The type of association between the order items.\n\n**Possible values**:\n- `VALUE_ADD_SERVICE` (The associated item is a service order)",
+          "type": "string"
+        }
+      },
+      "example": {
+        "orderId": "123-4567890-7654321",
+        "orderItemId": "12345678904321",
+        "associationType": "VALUE_ADD_SERVICE"
+      }
+    },
+    "ItemTax": {
+      "description": "Tax information for an order item.",
+      "type": "object",
+      "properties": {
+        "taxCalculationBreakdowns": {
+          "description": "A list of tax calculation breakdowns for the order item.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ItemTaxCalculationBreakdown"
+          }
+        },
+        "taxCollections": {
+          "description": "A list of tax collections for the order item.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ItemTaxCollection"
+          }
+        }
+      }
+    },
+    "ItemTaxCalculationBreakdown": {
+      "description": "Tax calculation breakdowns for an order item.",
+      "type": "object",
+      "properties": {
+        "reportingScheme": {
+          "description": "The tax reporting scheme applied to this order item.\n\n**Possible values**:\n- `UOSS` (Union one stop shop. The item being purchased is held in the EU for shipment)\n- `IOSS` (Import one stop shop. The item being purchased is not held in the EU for shipment)",
+          "type": "string"
+        }
+      }
+    },
+    "ItemTaxCollection": {
+      "description": "Tax collection information for an order item.",
+      "type": "object",
+      "properties": {
+        "model": {
+          "description": "The tax collection model applied to the item.\n\n**Possible values**:\n- `MARKETPLACE_FACILITATOR` (Tax is withheld and remitted to the taxing authority by Amazon on behalf of the seller)",
+          "type": "string"
+        },
+        "responsibleParty": {
+          "description": "The party responsible for withholding the taxes and remitting them to the taxing authority.",
+          "type": "string"
         }
       }
     },
