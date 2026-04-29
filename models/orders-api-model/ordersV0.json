@@ -103,9 +103,16 @@
             }
           },
           {
+            "name": "BuyerEmail",
+            "in": "query",
+            "description": "The email address of a buyer. Used to select orders that contain the specified email address.",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "SellerOrderId",
             "in": "query",
-            "description": "An order identifier that is specified by the seller. Used to select only the orders that match the order identifier. If `SellerOrderId` is specified, then `FulfillmentChannels`, `OrderStatuses`, `PaymentMethod`, `LastUpdatedAfter`, and `LastUpdatedBefore` cannot be specified.",
+            "description": "An order identifier that is specified by the seller. Used to select only the orders that match the order identifier. If `SellerOrderId` is specified, then `FulfillmentChannels`, `OrderStatuses`, `PaymentMethod`, `LastUpdatedAfter`, `LastUpdatedBefore`, and `BuyerEmail` cannot be specified.",
             "required": false,
             "type": "string"
           },
@@ -249,6 +256,7 @@
                         "CountryCode": "US"
                       },
                       "BuyerInfo": {
+                        "BuyerEmail": "user@example.com",
                         "BuyerName": "John Doe",
                         "BuyerTaxInfo": {
                           "CompanyLegalName": "A Company Name"
@@ -662,6 +670,7 @@
                     "CountryCode": "US"
                   },
                   "BuyerInfo": {
+                    "BuyerEmail": "user@example.com",
                     "BuyerName": "John Doe",
                     "BuyerTaxInfo": {
                       "CompanyLegalName": "A Company Name"
@@ -959,6 +968,7 @@
               "application/json": {
                 "payload": {
                   "AmazonOrderId": "902-3159896-1390916",
+                  "BuyerEmail": "user@example.com",
                   "BuyerName": "John Smith",
                   "BuyerTaxInfo": {
                     "CompanyLegalName": "Company Name"
@@ -990,6 +1000,7 @@
                   "response": {
                     "payload": {
                       "AmazonOrderId": "902-1845936-5435065",
+                      "BuyerEmail": "fzyrv6gwkhbb15c@example.com",
                       "BuyerName": "MFNIntegrationTestMerchant"
                     }
                   }
@@ -1134,7 +1145,15 @@
                     "City": "Canton",
                     "StateOrRegion": "MI",
                     "PostalCode": "48817",
-                    "CountryCode": "US"
+                    "CountryCode": "US",
+                    "ExtendedFields": {
+                      "StreetName": "Cross St",
+                      "StreetNumber": "1",
+                      "GeoCoordinates": {
+                        "Latitude": 37.42678611,
+                        "Longitude": -122.08060321
+                      }
+                    }
                   }
                 }
               }
@@ -3553,6 +3572,10 @@
           "type": "string",
           "description": "An Amazon-defined order identifier, in 3-7-7 format."
         },
+        "BuyerEmail": {
+          "type": "string",
+          "description": "The anonymized email address of the buyer."
+        },
         "BuyerName": {
           "type": "string",
           "description": "The buyer name or the recipient name."
@@ -3912,7 +3935,7 @@
           "description": "The phone number of the buyer.\n\n**Note**: \n1. This attribute is only available for shipping address.\n2. In some cases, the buyer phone number is suppressed: \na. Phone is suppressed for all `AFN` (fulfilled by Amazon) orders.\nb. Phone is suppressed for the shipped `MFN` (fulfilled by seller) order when the current date is past the Latest Delivery Date."
         },
         "ExtendedFields": {
-          "description": "The container for address extended fields. For example, street name or street number. \n\n**Note**: This attribute is currently only available with Brazil shipping addresses.",
+          "description": "Extended address fields for additional address components including the street name or number. \n\nNote: Available for grocery sellers and Brazil shipping addresses.",
           "$ref": "#/definitions/AddressExtendedFields"
         },
         "AddressType": {
@@ -3954,9 +3977,29 @@
         "Neighborhood": {
           "type": "string",
           "description": "The neighborhood. This value is only used in some countries (such as Brazil)."
+        },
+        "GeoCoordinates": {
+          "description": "Latitude and longitude coordinates for the shipping address using the WGS84 coordinate system. \n\nNote: Available for sellers that support geographic coordinates.",
+          "$ref": "#/definitions/GeoCoordinates"
         }
       },
-      "description": "The container for address extended fields (such as `street name` and `street number`). Currently only available with Brazil shipping addresses."
+      "description": "Extended address fields for additional address components including the street name or number. \n\nNote: Available for grocery sellers and Brazil shipping addresses."
+    },
+    "GeoCoordinates": {
+      "type": "object",
+      "properties": {
+        "Latitude": {
+          "type": "number",
+          "format": "double",
+          "description": "The latitude coordinate of the shipping address using the WGS84 coordinate system."
+        },
+        "Longitude": {
+          "type": "number",
+          "format": "double",
+          "description": "The longitude coordinate of the shipping address using the WGS84 coordinate system."
+        }
+      },
+      "description": "The latitude and longitude coordinates of the shipping address using the WGS84 coordinate system."
     },
     "DeliveryPreferences": {
       "type": "object",
@@ -4915,6 +4958,10 @@
     "BuyerInfo": {
       "type": "object",
       "properties": {
+        "BuyerEmail": {
+          "type": "string",
+          "description": "The anonymized email address of the buyer."
+        },
         "BuyerName": {
           "type": "string",
           "description": "The buyer name or the recipient name."
