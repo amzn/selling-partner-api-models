@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "The Selling Partner API for Listings Items (Listings Items API) provides programmatic access to selling partner listings on Amazon. Use this API in collaboration with the Selling Partner API for Product Type Definitions, which you use to retrieve the information about Amazon product types needed to use the Listings Items API.\n\nFor more information, see the [Listings Items API Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/listings-items-api-v2021-08-01-use-case-guide).",
+    "description": "The Selling Partner API for Listings Items (Listings Items API) provides programmatic access to selling partner listings on Amazon. Use this API in collaboration with the Selling Partner API for Product Type Definitions, which you can use to retrieve the information about Amazon product types needed to use the Listings Items API.\n\nFor more information, refer to the [Listings Items API Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/listings-items-api-v2021-08-01-use-case-guide).",
     "version": "2021-08-01",
     "title": "Selling Partner API for Listings Items",
     "contact": {
@@ -24,6 +24,358 @@
     "application/json"
   ],
   "paths": {
+    "/listings/2021-08-01/items/{sellerId}/{sku}/draft": {
+      "put": {
+        "tags": [
+          "listings"
+        ],
+        "description": "Creates or fully-updates a draft listings item for a selling partner. Draft listings allow sellers to prepare product information before publishing to the live catalog.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput can receive higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api) in the Selling Partner API documentation.",
+        "operationId": "putListingsItemDraft",
+        "x-amzn-api-internal": true,
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sellerId",
+            "description": "A selling partner identifier, such as a merchant account or vendor code.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sku",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "maxItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "ATVPDKIKX0DER"
+          },
+          {
+            "name": "issueLocale",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-example": "en_US"
+          },
+          {
+            "name": "body",
+            "description": "The request body schema for the `putListingsItemDraft` operation.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListingsItemDraftPutRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully understood the draft listings item request. Refer to the response to determine if the submission has been accepted.",
+            "schema": {
+              "$ref": "#/definitions/ListingsItemSubmissionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "sku":"GM-ZDPI-9B4E",
+                "status":"ACCEPTED",
+                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
+                "issues":[]
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "sku": "GM-ZDPI-9B4E",
+                    "status": "ACCEPTED",
+                    "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+                    "issues": []
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sku": {
+                        "value": "BadSKU"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "BAD_REQUEST",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
+    },
+    "/listings/2021-08-01/items/{sellerId}/{sku}/suggestionSources": {
+      "put": {
+        "tags": [
+          "listings"
+        ],
+        "description": "Creates AI-generated suggestions for attributes in a listings item.",
+        "operationId": "putListingsItemSuggestions",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sellerId",
+            "description": "A selling partner identifier. Must be an merchant account.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sku",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "description": "A comma-delimited list of Amazon marketplace identifiers for the request. Limited to 1 value for this use case. Valid values for the pilot are A2Q3Y263D00KWC (BR) and A33AVAJ2PDY3EV (TR).",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "maxItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv"
+          },
+          {
+            "name": "issueLocale",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": "The request body schema for the `putListingsItemSuggestions` operation.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListingsItemSuggestionRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully processed the suggestion request. Refer to the response to determine if the submission has been accepted.",
+            "schema": {
+              "$ref": "#/definitions/ListingsItemSubmissionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "sku":"GM-ZDPI-9B4E",
+                "status":"ACCEPTED",
+                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
+                "issues":[]
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                    }
+                  },
+                  "response": {
+                    "sku": "GM-ZDPI-9B4E",
+                    "status": "ACCEPTED",
+                    "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+                    "issues": []
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sku": {
+                        "value": "BadSKU"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "BAD_REQUEST",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
     "/listings/2021-08-01/items/{sellerId}/{sku}": {
       "delete": {
         "tags": [
@@ -47,7 +399,7 @@
           },
           {
             "name": "sku",
-            "description": "A selling partner provided identifier for an Amazon listing.",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -67,7 +419,7 @@
           },
           {
             "name": "issueLocale",
-            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when a localization is not available in the specified locale.",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -76,7 +428,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully understood the listings item delete request. See the response to determine whether the submission has been accepted.",
+            "description": "Successfully understood the listings item delete request. Refer to the response to determine whether the submission has been accepted.",
             "schema": {
               "$ref": "#/definitions/ListingsItemSubmissionResponse"
             },
@@ -249,7 +601,7 @@
           },
           {
             "name": "sku",
-            "description": "A selling partner provided identifier for an Amazon listing.",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -269,7 +621,7 @@
           },
           {
             "name": "issueLocale",
-            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when a localization is not available in the specified locale.",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -299,19 +651,19 @@
                 },
                 {
                   "value": "attributes",
-                  "description": "A JSON object containing structured listing item attribute data keyed by attribute name."
+                  "description": "JSON object containing structured listing item attribute data keyed by attribute name."
                 },
                 {
                   "value": "issues",
-                  "description": "The issues associated with the listing item."
+                  "description": "Issues associated with the listing item."
                 },
                 {
                   "value": "offers",
-                  "description": "The current offers for the listing item."
+                  "description": "Current offers for the listing item."
                 },
                 {
                   "value": "fulfillmentAvailability",
-                  "description": "The fulfillment availability details for the listing item."
+                  "description": "Fulfillment availability details for the listing item."
                 },
                 {
                   "value": "procurement",
@@ -418,7 +770,7 @@
                   },
                   {
                     "code": "99300",
-                    "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page)",
+                    "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page).",
                     "severity": "ERROR",
                     "categories": [],
                     "enforcements": {
@@ -746,7 +1098,7 @@
           },
           {
             "name": "sku",
-            "description": "A selling partner provided identifier for an Amazon listing.",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -757,7 +1109,6 @@
             "in": "query",
             "required": true,
             "type": "array",
-            "maxItems": 1,
             "items": {
               "type": "string"
             },
@@ -778,11 +1129,11 @@
               "x-docgen-enum-table-extension": [
                 {
                   "value": "identifiers",
-                  "description": "Identifiers associated with the item in the Amazon catalog, such as Amazon Standard Identification Number (ASIN). Can only be requested when `mode` is `VALIDATION_PREVIEW`."
+                  "description": "Identifiers associated with the item in the Amazon catalog, such as the Amazon Standard Identification Number (ASIN). Can only be requested when `mode` is `VALIDATION_PREVIEW`."
                 },
                 {
                   "value": "issues",
-                  "description": "The issues associated with the listing item."
+                  "description": "Issues associated with the listing item."
                 }
               ],
               "type": "string"
@@ -793,7 +1144,7 @@
           },
           {
             "name": "mode",
-            "description": "The mode of operation for the request.",
+            "description": "Describes the mode of operation for the request.",
             "in": "query",
             "enum": [
               "VALIDATION_PREVIEW"
@@ -801,7 +1152,7 @@
             "x-docgen-enum-table-extension": [
               {
                 "value": "VALIDATION_PREVIEW",
-                "description": "Indicates the submitted data should be validated using the values provided in the payload and validation errors the selling partner account may face. This will synchronously perform the same checks that are preformed on submissions after being accepted for processing, but without persisting to the selling partner's catalog."
+                "description": "Indicates the submitted data should be validated without persisting to the selling partner's catalog."
               }
             ],
             "required": false,
@@ -810,7 +1161,7 @@
           },
           {
             "name": "issueLocale",
-            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when a localization is not available in the specified locale.",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -828,7 +1179,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully understood the listings item patch request. See the response to determine if the submission was accepted.",
+            "description": "Successfully understood the listings item patch request. Refer to the response to determine if the submission was accepted.",
             "schema": {
               "$ref": "#/definitions/ListingsItemSubmissionResponse"
             },
@@ -1088,7 +1439,7 @@
           },
           {
             "name": "sku",
-            "description": "A selling partner provided identifier for an Amazon listing.",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1120,11 +1471,11 @@
               "x-docgen-enum-table-extension": [
                 {
                   "value": "identifiers",
-                  "description": "Identifiers associated with the item in the Amazon catalog, such as Amazon Standard Identification Number (ASIN). Can only be requested when `mode` is `VALIDATION_PREVIEW`."
+                  "description": "Identifiers associated with the item in the Amazon catalog, such as the Amazon Standard Identification Number (ASIN). Can only be requested when `mode` is `VALIDATION_PREVIEW`."
                 },
                 {
                   "value": "issues",
-                  "description": "The issues associated with the listing item."
+                  "description": "Issues associated with the listing item."
                 }
               ],
               "type": "string"
@@ -1135,7 +1486,7 @@
           },
           {
             "name": "mode",
-            "description": "The mode of operation for the request.",
+            "description": "Describes the mode of operation for the request.",
             "in": "query",
             "enum": [
               "VALIDATION_PREVIEW"
@@ -1143,7 +1494,7 @@
             "x-docgen-enum-table-extension": [
               {
                 "value": "VALIDATION_PREVIEW",
-                "description": "Indicates the submitted data should be validated using the values provided in the payload and validation errors the selling partner account may face. This will synchronously perform the same checks that are preformed on submissions after being accepted for processing, but without persisting to the selling partner's catalog."
+                "description": "Indicates the submitted data should be validated without persisting to the selling partner's catalog."
               }
             ],
             "required": false,
@@ -1152,7 +1503,7 @@
           },
           {
             "name": "issueLocale",
-            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when a localization is not available in the specified locale.",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1170,7 +1521,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully understood the request to create or fully-update a listings item. See the response to determine if the submission has been accepted.",
+            "description": "Successfully understood the request to create or fully-update a listings item. Refer to the response to determine if the submission has been accepted.",
             "schema": {
               "$ref": "#/definitions/ListingsItemSubmissionResponse"
             },
@@ -2784,6 +3135,7 @@
       "type": "object",
       "properties": {
         "errors": {
+          "description": "A list of error responses.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/Error"
@@ -2823,7 +3175,7 @@
       "description": "A listings item.",
       "properties": {
         "sku": {
-          "description": "A selling partner provided identifier for an Amazon listing.",
+          "description": "A selling partner-provided identifier for an Amazon listing.",
           "type": "string"
         },
         "summaries": {
@@ -2839,14 +3191,14 @@
           "$ref": "#/definitions/ItemOffers"
         },
         "fulfillmentAvailability": {
-          "description": "The fulfillment availability for the listings item.",
+          "description": "The listings item's fulfillment availability.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/FulfillmentAvailability"
           }
         },
         "procurement": {
-          "description": "The vendor procurement information for the listings item.",
+          "description": "The listings item's vendor procurement information.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/ItemProcurement"
@@ -2865,25 +3217,25 @@
       "type": "object"
     },
     "ItemSummaries": {
-      "description": "Summary details of a listings item.",
+      "description": "Summary details for a listings item.",
       "items": {
         "$ref": "#/definitions/ItemSummaryByMarketplace"
       },
       "type": "array"
     },
     "ItemSummaryByMarketplace": {
-      "description": "Summary details of a listings item for an Amazon marketplace.",
+      "description": "Summary details for a listings item for an Amazon marketplace.",
       "properties": {
         "marketplaceId": {
-          "description": "A marketplace identifier. Identifies the Amazon marketplace for the listings item.",
+          "description": "A marketplace identifier. Identifies the listings item's Amazon marketplace.",
           "type": "string"
         },
         "asin": {
-          "description": "Amazon Standard Identification Number (ASIN) of the listings item.",
+          "description": "The ASIN of the listings item.",
           "type": "string"
         },
         "productType": {
-          "description": "The Amazon product type of the listings item.",
+          "description": "The listings item's Amazon product type.",
           "type": "string"
         },
         "conditionType": {
@@ -2906,7 +3258,7 @@
           "x-docgen-enum-table-extension": [
             {
               "value": "new_new",
-              "description": "New."
+              "description": "New"
             },
             {
               "value": "new_open_box",
@@ -2918,7 +3270,7 @@
             },
             {
               "value": "refurbished_refurbished",
-              "description": "Refurbished."
+              "description": "Refurbished"
             },
             {
               "value": "used_like_new",
@@ -2954,7 +3306,7 @@
             },
             {
               "value": "club_club",
-              "description": "Club."
+              "description": "Club"
             }
           ],
           "type": "string"
@@ -2981,25 +3333,25 @@
           }
         },
         "fnSku": {
-          "description": "The fulfillment network stock keeping unit is an identifier used by Amazon fulfillment centers to identify each unique item.",
+          "description": "Fulfillment network stock keeping unit is an identifier used by Amazon fulfillment centers to identify each unique item.",
           "type": "string"
         },
         "itemName": {
-          "description": "The name or title associated with an Amazon catalog item.",
+          "description": "Name, or title, associated with an Amazon catalog item.",
           "type": "string"
         },
         "createdDate": {
-          "description": "The date the listings item was created in ISO 8601 format.",
+          "description": "Date the listings item was created, in ISO 8601 format.",
           "type": "string",
           "format": "date-time"
         },
         "lastUpdatedDate": {
-          "description": "The date the listings item was last updated in ISO 8601 format.",
+          "description": "Date the listings item was last updated, in ISO 8601 format.",
           "type": "string",
           "format": "date-time"
         },
         "mainImage": {
-          "description": "The main image for the listings item.",
+          "description": "The listings item's main image.",
           "$ref": "#/definitions/ItemImage"
         }
       },
@@ -3013,18 +3365,18 @@
       "type": "object"
     },
     "ItemImage": {
-      "description": "The image for the listings item.",
+      "description": "The listings item's image.",
       "properties": {
         "link": {
-          "description": "The link, or URL, to the image.",
+          "description": "The image's link or URL.",
           "type": "string"
         },
         "height": {
-          "description": "The height of the image in pixels.",
+          "description": "The image's height, in pixels.",
           "type": "integer"
         },
         "width": {
-          "description": "The width of the image in pixels.",
+          "description": "The image's Width, in pixels.",
           "type": "integer"
         }
       },
@@ -3036,12 +3388,12 @@
       "type": "object"
     },
     "ItemAttributes": {
-      "description": "A JSON object containing structured listings item attribute data keyed by attribute name.",
+      "description": "JSON object containing structured listings item attribute data keyed by attribute name.",
       "type": "object",
       "additionalProperties": true
     },
     "ItemIssues": {
-      "description": "The issues associated with the listings item.",
+      "description": "Issues associated with the listings item.",
       "items": {
         "$ref": "#/definitions/Issue"
       },
@@ -3082,7 +3434,7 @@
           "type": "string"
         },
         "attributeNames": {
-          "description": "The names of the attributes associated with the issue, if applicable.",
+          "description": "Names of the attributes that are associated with the issue, if applicable.",
           "type": "array",
           "items": {
             "type": "string"
@@ -3097,7 +3449,7 @@
           "example": ["INVALID_ATTRIBUTE"]
         },
         "enforcements": {
-          "description": "This field provides information about the enforcement actions taken by Amazon that affect the publishing or status of a listing. It also includes details about any associated exemptions.",
+          "description": "Provides information about the enforcement actions taken by Amazon that affect the publishing or status of a listing. It also includes details about any associated exemptions.",
           "$ref": "#/definitions/IssueEnforcements"
         }
       },
@@ -3110,7 +3462,7 @@
       "type": "object"
     },
     "IssueEnforcements": {
-      "description": "This field provides information about the enforcement actions taken by Amazon that affect the publishing or status of a listing. It also includes details about any associated exemptions.",
+      "description": "Provides information about the enforcement actions taken by Amazon that affect the publishing or status of a listing. It also includes details about any associated exemptions.",
       "type": "object",
       "properties": {
         "actions": {
@@ -3121,7 +3473,7 @@
           }
         },
         "exemption": {
-          "description": "The \"exemption\" field serves to convey the status of enforcement actions by Amazon.",
+          "description": "The `exemption` field serves to convey the status of enforcement actions by Amazon.",
           "$ref": "#/definitions/IssueExemption"
         }
       },
@@ -3149,7 +3501,7 @@
       "type": "object",
       "properties": {
         "status": {
-          "description": "This field indicates the current exemption status for the listed enforcement actions. It can take values such as `EXEMPT`, signifying permanent exemption, `EXEMPT_UNTIL_EXPIRY_DATE` indicating temporary exemption until a specified date, or `NOT_EXEMPT` signifying no exemptions, and enforcement actions were already applied.",
+          "description": "Indicates the current exemption status for the listed enforcement actions. It can take values such as `EXEMPT`, signifying permanent exemption, `EXEMPT_UNTIL_EXPIRY_DATE` indicating temporary exemption until a specified date, or `NOT_EXEMPT` signifying no exemptions, and enforcement actions were already applied.",
           "enum": [
             "EXEMPT",
             "EXEMPT_UNTIL_EXPIRY_DATE",
@@ -3183,21 +3535,21 @@
       ]
     },
     "ItemOffers": {
-      "description": "Offer details for the listings item.",
+      "description": "The listings item's offer details.",
       "items": {
         "$ref": "#/definitions/ItemOfferByMarketplace"
       },
       "type": "array"
     },
     "ItemOfferByMarketplace": {
-      "description": "Offer details of a listings item for an Amazon marketplace.",
+      "description": "Offer details for a listings item for the specified Amazon marketplace.",
       "properties": {
         "marketplaceId": {
-          "description": "The Amazon marketplace identifier.",
+          "description": "Amazon marketplace identifier.",
           "type": "string"
         },
         "offerType": {
-          "description": "Type of offer for the listings item.",
+          "description": "The listings item's offer type.",
           "enum": [
             "B2C",
             "B2B"
@@ -3215,7 +3567,7 @@
           "type": "string"
         },
         "price": {
-          "description": "The purchase price of the listings item",
+          "description": "Purchase price of the listings item",
           "$ref": "#/definitions/Money"
         },
         "points": {
@@ -3234,7 +3586,7 @@
       "type": "object"
     },
     "ItemProcurement": {
-      "description": "The vendor procurement information for the listings item.",
+      "description": "The listings item's vendor procurement information.",
       "properties": {
         "costPrice": {
           "description": "The price (numeric value) that you want Amazon to pay you for this product.",
@@ -3369,14 +3721,14 @@
       "type": "object"
     },
     "FulfillmentAvailability": {
-      "description": "The fulfillment availability details for the listings item.",
+      "description": "The listings item's fulfillment availability details.",
       "properties": {
         "fulfillmentChannelCode": {
           "description": "Designates which fulfillment network is used.",
           "type": "string"
         },
         "quantity": {
-          "description": "The quantity of the item you are making available for sale.",
+          "description": "The item quantity that you're making available for sale.",
           "type": "integer",
           "minimum": 0
         }
@@ -3387,11 +3739,11 @@
       "type": "object"
     },
     "Money": {
-      "description": "The currency type and amount.",
+      "description": "The currency type and the amount.",
       "properties": {
         "currencyCode": {
           "type": "string",
-          "description": "Three-digit currency code in ISO 4217 format."
+          "description": "Three-digit currency code. In ISO 4217 format."
         },
         "amount": {
           "description": "The currency amount.",
@@ -3406,13 +3758,14 @@
     },
     "Decimal": {
       "type": "string",
-      "description": "A decimal number with no loss of precision. Useful when precision loss is unnaceptable, as with currencies. Follows RFC7159 for number representation."
+      "description": "A decimal number with no loss of precision. Useful when precision loss is unacceptable, as with currencies. Follows RFC7159 for number representation."
     },
     "Points": {
       "description": "The number of Amazon Points offered with the purchase of an item, and their monetary value. Note that the `Points` element is only returned in Japan (JP).",
       "type": "object",
       "properties": {
         "pointsNumber": {
+          "description": "The number of Amazon Points offered with the purchase of an item, and their monetary value.",
           "type": "integer"
         }
       },
@@ -3461,7 +3814,7 @@
             },
             {
               "value": "delete",
-              "description": "The `delete` operation removes the target property. Not supported for vendors (vendors will receive an HTTP status code 400 response)."
+              "description": "The `delete` operation removes the target property."
             }
           ],
           "type": "string"
@@ -3511,7 +3864,7 @@
       "description": "The request body schema for the `putListingsItem` operation.",
       "properties": {
         "productType": {
-          "description": "The Amazon product type of the listings item.",
+          "description": "The listings item's Amazon product type.",
           "type": "string"
         },
         "requirements": {
@@ -3532,13 +3885,13 @@
             },
             {
               "value": "LISTING_OFFER_ONLY",
-              "description": "Indicates the submitted data contains sales terms only. Not supported for vendors (vendors will receive an HTTP status code 400 response)."
+              "description": "Indicates the submitted data contains sales terms only."
             }
           ],
           "type": "string"
         },
         "attributes": {
-          "description": "A JSON object containing structured listings item attribute data keyed by attribute name.",
+          "description": "JSON object containing structured listings item attribute data keyed by attribute name.",
           "type": "object",
           "additionalProperties": true
         }
@@ -3549,11 +3902,162 @@
       ],
       "type": "object"
     },
+    "ListingsItemDraftPutRequest": {
+      "description": "The request body schema for the `putListingsItemDraft` operation.",
+      "properties": {
+        "productType": {
+          "description": "The Amazon product type of the draft listings item.",
+          "type": "string"
+        },
+        "attributes": {
+          "description": "JSON object containing structured listings item attribute data keyed by attribute name.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "relationships": {
+          "description": "Variation relationships for the draft listings item.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListingsItemDraftRelationshipsByMarketplace"
+          }
+        }
+      },
+      "required": [
+        "productType",
+        "attributes"
+      ],
+      "type": "object"
+    },
+    "ListingsItemDraftRelationshipsByMarketplace": {
+      "description": "Variation relationships for a draft listings item, grouped by marketplace.",
+      "properties": {
+        "marketplaceId": {
+          "description": "Amazon marketplace identifier.",
+          "type": "string"
+        },
+        "relationships": {
+          "description": "Relationships for the draft listings item.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListingsItemDraftRelationship"
+          }
+        }
+      },
+      "required": [
+        "marketplaceId",
+        "relationships"
+      ],
+      "type": "object"
+    },
+    "ListingsItemDraftRelationship": {
+      "description": "Relationship details for a draft listings item.",
+      "properties": {
+        "type": {
+          "description": "The type of relationship.",
+          "enum": [
+            "VARIATION"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "VARIATION",
+              "description": "The draft listings item is a variation parent or variation child."
+            }
+          ],
+          "type": "string"
+        },
+        "children": {
+          "description": "Child items in the relationship.",
+          "type": "array",
+          "maxItems": 250,
+          "items": {
+            "$ref": "#/definitions/ListingsItemDraftRelatedItem"
+          }
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "ListingsItemDraftRelatedItem": {
+      "description": "A related item in a draft listings relationship.",
+      "properties": {
+        "sku": {
+          "description": "A selling partner-provided identifier for the related item.",
+          "type": "string"
+        },
+        "attributes": {
+          "description": "JSON object containing structured attribute data for the related item.",
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "sku"
+      ],
+      "type": "object"
+    },
+    "ListingsItemSuggestionRequest": {
+      "description": "The request body schema for generating attribute suggestions.",
+      "properties": {
+        "sources": {
+          "description": "List of input sources.",
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/definitions/SuggestionSource"
+          }
+        }
+      },
+      "required": [
+        "sources"
+      ],
+      "type": "object"
+    },
+    "SuggestionSource": {
+      "description": "Source information for generating suggestions.",
+      "properties": {
+        "attributes": {
+          "description": "List of key-value pairs representing suggestion input data.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SuggestionAttribute"
+          }
+        }
+      },
+      "required": [
+        "attributes"
+      ],
+      "type": "object"
+    },
+    "SuggestionAttribute": {
+      "description": "A key-value pair representing an attribute for suggestion generation.",
+      "properties": {
+        "key": {
+          "description": "The attribute name.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The attribute value.",
+          "type": "string"
+        },
+        "language_tag": {
+          "description": "The language code for the attribute value. Must be an IETF language tag with underscores.",
+          "type": "string",
+          "x-example": "en_US"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ],
+      "type": "object"
+    },
     "ListingsItemSubmissionResponse": {
       "description": "Response containing the results of a submission to the Selling Partner API for Listings Items.",
       "properties": {
         "sku": {
-          "description": "A selling partner provided identifier for an Amazon listing.",
+          "description": "A selling partner-provided identifier for an Amazon listing.",
           "type": "string"
         },
         "status": {
@@ -3613,11 +4117,11 @@
       "description": "Identity attributes associated with the item in the Amazon catalog for the indicated Amazon marketplace.",
       "properties": {
         "marketplaceId": {
-          "description": "A marketplace identifier. Identifies the Amazon marketplace for the listings item.",
+          "description": "A marketplace identifier. Identifies the listings item's Amazon marketplace.",
           "type": "string"
         },
         "asin": {
-          "description": "Amazon Standard Identification Number (ASIN) of the listings item.",
+          "description": "The ASIN of the listings item.",
           "type": "string"
         }
       },
