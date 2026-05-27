@@ -198,7 +198,8 @@
                 "FULFILLMENT",
                 "PACKAGES",
                 "TAX",
-                "PAYMENT"
+                "PAYMENT",
+                "FULFILLMENT_ORDERS"
               ],
               "x-docgen-enum-table-extension": [
                 {
@@ -240,6 +241,10 @@
                 {
                   "value": "PAYMENT",
                   "description": "The payment information associated with the order."
+                },
+                {
+                  "value": "FULFILLMENT_ORDERS",
+                  "description": "The fulfillment orders associated with this order."
                 }
               ]
             },
@@ -402,9 +407,33 @@
                     },
                     "proceeds": {
                       "grandTotal": {
-                        "amount": "149.99",
+                        "amount": "154.99",
                         "currencyCode": "USD"
-                      }
+                      },
+                      "breakdowns": [
+                        {
+                          "type": "ITEM",
+                          "subtotal": {
+                            "amount": "149.97",
+                            "currencyCode": "USD"
+                          }
+                        },
+                        {
+                          "type": "TAX",
+                          "subtotal": {
+                            "amount": "0.02",
+                            "currencyCode": "USD"
+                          }
+                        },
+                        {
+                          "type": "DELIVERY_TIP",
+                          "status": "FINALIZED",
+                          "subtotal": {
+                            "amount": "5.00",
+                            "currencyCode": "USD"
+                          }
+                        }
+                      ]
                     },
                     "fulfillment": {
                       "fulfillmentStatus": "SHIPPED",
@@ -604,6 +633,11 @@
                             ]
                           }
                         ]
+                      }
+                    ],
+                    "fulfillmentOrders": [
+                      {
+                        "fulfillmentOrderId": "LdDv2jxM4"
                       }
                     ]
                   }
@@ -922,7 +956,7 @@
                             "quantityOrdered": 1,
                             "measurement": {
                               "unit": "COUNT",
-                              "value": 1
+                              "value": 1.0
                             },
                             "product": {
                               "asin": "B08C1W5N87",
@@ -969,7 +1003,7 @@
                                       "title": "Amazon Echo Dot (4th Generation) | Smart speaker with Alexa | Glacier White",
                                       "measurement": {
                                         "unit": "COUNT",
-                                        "value": 1
+                                        "value": 1.0
                                       }
                                     },
                                     {
@@ -979,7 +1013,7 @@
                                       "title": "Amazon Echo Dot (4th Generation) | Smart speaker with Alexa | Twilight Blue",
                                       "measurement": {
                                         "unit": "COUNT",
-                                        "value": 1
+                                        "value": 1.0
                                       }
                                     }
                                   ]
@@ -1364,7 +1398,8 @@
                 "FULFILLMENT",
                 "PACKAGES",
                 "TAX",
-                "PAYMENT"
+                "PAYMENT",
+                "FULFILLMENT_ORDERS"
               ],
               "x-docgen-enum-table-extension": [
                 {
@@ -1406,6 +1441,10 @@
                 {
                   "value": "PAYMENT",
                   "description": "The payment information associated with the order."
+                },
+                {
+                  "value": "FULFILLMENT_ORDERS",
+                  "description": "The fulfillment orders associated with this order."
                 }
               ]
             },
@@ -1466,7 +1505,30 @@
                     "grandTotal": {
                       "amount": "103.97",
                       "currencyCode": "GBP"
-                    }
+                    },
+                    "breakdowns": [
+                      {
+                        "type": "ITEM",
+                        "subtotal": {
+                          "amount": "89.97",
+                          "currencyCode": "GBP"
+                        }
+                      },
+                      {
+                        "type": "SHIPPING",
+                        "subtotal": {
+                          "amount": "10.00",
+                          "currencyCode": "GBP"
+                        }
+                      },
+                      {
+                        "type": "TAX",
+                        "subtotal": {
+                          "amount": "4.00",
+                          "currencyCode": "GBP"
+                        }
+                      }
+                    ]
                   },
                   "fulfillment": {
                     "fulfillmentStatus": "SHIPPED",
@@ -1625,6 +1687,11 @@
                           ]
                         }
                       ]
+                    }
+                  ],
+                  "fulfillmentOrders": [
+                    {
+                      "fulfillmentOrderId": "LdDv2jxM4"
                     }
                   ]
                 }
@@ -2184,6 +2251,212 @@
           }
         }
       }
+    },
+    "/orders/2026-01-01/orders/{orderId}/cancellation": {
+      "put": {
+        "tags": [
+          "cancelOrder"
+        ],
+        "description": "Cancels the order you specify. Partial cancellations are not supported.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that are applied to the requested operation, when available. The table above contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may receive higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api) in the Selling Partner API documentation.",
+        "operationId": "cancelOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "An Amazon-defined order identifier.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The request body of the `cancelOrder` operation, including the reason for the cancellation.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CancelOrderRequest"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {}
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "orderId": {
+                        "value": "902-1106328-1059050"
+                      },
+                      "body": {
+                        "value": {
+                          "cancelReasonCode": "NO_INVENTORY"
+                        }
+                      }
+                    }
+                  },
+                  "response": {}
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "orderId": {
+                        "value": "TEST_CASE_400"
+                      },
+                      "body": {
+                        "value": {
+                          "cancelReasonCode": "NO_INVENTORY"
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "OrderId: TEST_CASE_400 is invalid, should be in 3-7-7 format."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -2239,6 +2512,55 @@
           "$ref": "#/definitions/Order"
         }
       }
+    },
+    "CancelOrderRequest": {
+      "type": "object",
+      "required": [
+        "cancelReasonCode"
+      ],
+      "properties": {
+        "cancelReasonCode": {
+          "description": "The specific reason code explaining why the order is being canceled.",
+          "$ref": "#/definitions/CancelReasonCode"
+        }
+      },
+      "description": "The request body of the `cancelOrder` operation, which includes the reason for the cancellation.",
+      "example": {
+        "cancelReasonCode": "NO_INVENTORY"
+      }
+    },
+    "CancelReasonCode": {
+      "description": "Predefined codes that specify the reason for why an order is canceled, used for tracking and reporting purposes.",
+      "type": "string",
+      "enum": [
+        "NO_INVENTORY",
+        "BUYER_CANCELLED",
+        "SHIPPING_ADDRESS_UNDELIVERABLE",
+        "CUSTOMER_EXCHANGE",
+        "PRICING_ERROR"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "NO_INVENTORY",
+          "description": "Cancellation due to insufficient stock."
+        },
+        {
+          "value": "BUYER_CANCELLED",
+          "description": "Cancellation requested by the customer."
+        },
+        {
+          "value": "SHIPPING_ADDRESS_UNDELIVERABLE",
+          "description": "Cancellation due to invalid or inaccessible delivery address."
+        },
+        {
+          "value": "CUSTOMER_EXCHANGE",
+          "description": "Cancellation for product exchange purposes."
+        },
+        {
+          "value": "PRICING_ERROR",
+          "description": "Cancellation due to incorrect product pricing."
+        }
+      ]
     },
     "Order": {
       "description": "Comprehensive information about a customer order.",
@@ -2326,6 +2648,13 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/OrderPackage"
+          }
+        },
+        "fulfillmentOrders": {
+          "description": "The list of fulfillment orders associated with this customer order. Each entry corresponds to one fulfillment unit created by Amazon for this order. **Note:** Only available for EasyShip orders at present.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FulfillmentOrder"
           }
         }
       }
@@ -2425,6 +2754,32 @@
       "properties": {
         "grandTotal": {
           "description": "The total amount that the seller receives from the sale of the order.",
+          "$ref": "#/definitions/Money"
+        },
+        "breakdowns": {
+          "description": "Categorized proceeds for the order. Proceed categories are either aggregated across all order items (such as `ITEM`, `SHIPPING`, and `TAX`) or applied at the order level (such as `DELIVERY_TIP`).",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderProceedsBreakdown"
+          }
+        }
+      }
+    },
+    "OrderProceedsBreakdown": {
+      "description": "An entry detailing proceeds information.",
+      "type": "object",
+      "required": ["type", "subtotal"],
+      "properties": {
+        "type": {
+          "description": "The proceeds category. \n\n**Possible values**: `ITEM`, `SHIPPING`, `GIFT_WRAP`, `COD_FEE`, `TAX`, `DISCOUNT`, `DELIVERY_TIP`, `OTHER`. **Note:** `DELIVERY_TIP` is charged separately and not attributed to a specific item. The remaining categories are aggregated across all order items.",
+          "type": "string"
+        },
+        "status": {
+          "description": "The processing status of the charge. Only present for categories processed separately after checkout, such as `DELIVERY_TIP`.\n\n**Possible values**: `PENDING`, `FINALIZED`.",
+          "type": "string"
+        },
+        "subtotal": {
+          "description": "The monetary amount for the proceeds category.",
           "$ref": "#/definitions/Money"
         }
       }
@@ -3215,6 +3570,7 @@
     "ItemProceedsBreakdown": {
       "description": "Detailed proceeds breakdown for a specific order item.",
       "type": "object",
+      "required": ["type", "subtotal"],
       "properties": {
         "type": {
           "description": "Category classification of the proceeds breakdown. \n\n**Possible values**: `ITEM`, `SHIPPING`, `GIFT_WRAP`, `COD_FEE`, `OTHER`, `TAX`, `DISCOUNT`",
@@ -3824,6 +4180,19 @@
           "items": {
             "$ref": "#/definitions/Error"
           }
+        }
+      }
+    },
+    "FulfillmentOrder": {
+      "description": "Information about a fulfillment order associated with a customer order. A fulfillment order represents a unit of fulfillment created by Amazon for the order. **Note:** Only available for EasyShip orders at present.",
+      "type": "object",
+      "required": [
+        "fulfillmentOrderId"
+      ],
+      "properties": {
+        "fulfillmentOrderId": {
+          "description": "The Fulfillment Order ID assigned by Amazon after fulfillment planning. This identifier is identical to the Shipment ID required by External Fulfillment APIs.",
+          "type": "string"
         }
       }
     }
