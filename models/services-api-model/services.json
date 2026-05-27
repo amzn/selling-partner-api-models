@@ -822,7 +822,34 @@
             "required": false,
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9\\-]+$"
+            },
+            "maxItems": 20,
+            "minItems": 1
+          },
+          {
+            "name": "productOrderIds",
+            "in": "query",
+            "description": "A list of up to 20 associated product order IDs. You can use these IDs to query service jobs.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9\\-]+$"
+            },
+            "maxItems": 20,
+            "minItems": 1
+          },
+          {
+            "name": "trackingIds",
+            "in": "query",
+            "description": "A list of up to 20 associated product tracking IDs. You can use these IDs to query service jobs.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9\\-]+$"
             },
             "maxItems": 20,
             "minItems": 1
@@ -7551,6 +7578,20 @@
           "description": "The Amazon-defined identifier for an order placed by the buyer in 3-7-7 format.",
           "$ref": "#/definitions/OrderId"
         },
+        "productOrderIds": {
+          "type": "array",
+          "description": "A list of associated product order IDs for the service job.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "trackingIds": {
+          "type": "array",
+          "description": "A list of associated product tracking IDs for the service job.",
+          "items": {
+            "type": "string"
+          }
+        },
         "marketplaceId": {
           "type": "string",
           "description": "The marketplace identifier.",
@@ -7906,6 +7947,13 @@
         "itemDelivery": {
           "description": "Delivery information for the item.",
           "$ref": "#/definitions/ItemDelivery"
+        },
+        "linkedAssets": {
+          "type": "array",
+          "description": "A list of customer-owned assets on which the service must be performed.",
+          "items": {
+            "$ref": "#/definitions/LinkedAsset"
+          }
         }
       },
       "description": "Information about an item associated with the service job."
@@ -7940,6 +7988,27 @@
         }
       },
       "description": "Promised delivery information for the item."
+    },
+    "LinkedAsset": {
+      "type": "object",
+      "properties": {
+        "assetType": {
+          "type": "string",
+          "description": "The type of the linked asset. For example: `VEHICLE`. "
+        },
+        "assetName": {
+          "type": "string",
+          "description": "The name of the linked asset. For example: `2024 Polaris Slingshot SLR AutoDrive`."
+        },
+        "additionalAttributes": {
+          "type": "object",
+          "description": "Additional attributes of the linked asset, such as vehicle make, model, year, and engine details.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Information about an asset linked to an associated item, such as vehicle information for Ship-to-Store orders."
     },
     "ServiceLocation": {
       "type": "object",
