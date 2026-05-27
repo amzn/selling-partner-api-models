@@ -2232,6 +2232,48 @@
                             "ValidVerificationStatuses": [
                               "Approved"
                             ]
+                          },
+                          {
+                            "VerificationDetailType": "approvedAlternativeDetails",
+                            "ValidVerificationStatuses": [
+                              "Rejected"
+                            ]
+                          },
+                          {
+                            "VerificationDetailType": "interimStatusDetail",
+                            "ValidVerificationStatuses": [
+                              "Pending"
+                            ]
+                          }
+                        ],
+                        "ValidInterimStatusCodes": [
+                          {
+                            "StatusCode": "awaiting_vet_response",
+                            "StatusDescription": "Vetsource is contacting your vet. Response usually takes 1-2 business days."
+                          },
+                          {
+                            "StatusCode": "vet_contacted_email",
+                            "StatusDescription": "Vetsource contacted your vet via email."
+                          },
+                          {
+                            "StatusCode": "vet_contacted_phone",
+                            "StatusDescription": "Vetsource contacted your vet via phone."
+                          },
+                          {
+                            "StatusCode": "vet_contacted_fax",
+                            "StatusDescription": "Vetsource contacted your vet via fax."
+                          },
+                          {
+                            "StatusCode": "communication_failure",
+                            "StatusDescription": "We're having trouble reaching your vet. We'll keep trying."
+                          },
+                          {
+                            "StatusCode": "no_vet_response",
+                            "StatusDescription": "Your vet didn't respond. Contact them to confirm they'll approve your next order."
+                          },
+                          {
+                            "StatusCode": "processing",
+                            "StatusDescription": "Your order has been approved and is being processed."
                           }
                         ]
                       }
@@ -2664,6 +2706,92 @@
                       {
                         "code": "InvalidInput",
                         "message": "Missing required parameter(s) from prescriptionDetail value: clinicId"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "orderId": {
+                        "value": "902-2592119-3531015"
+                      },
+                      "body": {
+                        "value": {
+                          "regulatedOrderVerificationStatus": {
+                            "status": "Rejected",
+                            "externalReviewerId": "vet_clinic_12345",
+                            "rejectionReasonId": "pets_rx_sc_incorrect_product",
+                            "verificationDetails": {
+                              "approvedAlternativeDetails": [
+                                {
+                                  "attributeName": "asin",
+                                  "originalValue": "B00DOGMEDICINE",
+                                  "approvedValue": "B00CATMEDICINE"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {}
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "orderId": {
+                        "value": "902-2592119-3531015"
+                      },
+                      "body": {
+                        "value": {
+                          "regulatedOrderVerificationStatus": {
+                            "status": "Pending",
+                            "externalReviewerId": "vetsource_system",
+                            "verificationDetails": {
+                              "interimStatusDetail": {
+                                "statusCode": "vet_contacted_email",
+                                "statusDateTime": "2026-02-26T10:00:00Z"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {}
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "orderId": {
+                        "value": "902-2592119-3531015"
+                      },
+                      "body": {
+                        "value": {
+                          "regulatedOrderVerificationStatus": {
+                            "status": "Approved",
+                            "externalReviewerId": "vet_clinic_12345",
+                            "verificationDetails": {
+                              "approvedAlternativeDetails": [
+                                {
+                                  "attributeName": "asin",
+                                  "originalValue": "B00DOGMEDICINE",
+                                  "approvedValue": "B00CATMEDICINE"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "Verification Detail `approvedAlternativeDetails` is not supported when order is in Approved status."
                       }
                     ]
                   }
@@ -3665,6 +3793,13 @@
           "items": {
             "$ref": "#/definitions/ValidVerificationDetail"
           }
+        },
+        "ValidInterimStatusCodes": {
+          "type": "array",
+          "description": "Valid interim status codes that may be used when populating `InterimStatusDetail`. Each element contains a `StatusCode` identifier and its customer-facing `StatusDescription`.",
+          "items": {
+            "$ref": "#/definitions/ValidInterimStatusCode"
+          }
         }
       }
     },
@@ -3733,6 +3868,73 @@
       },
       "description": "Information about the prescription that is used to verify a regulated product. This must be provided once per order and reflect the seller’s own records. Only approved orders can have prescriptions."
     },
+    "ApprovedAlternativeDetails": {
+      "type": "array",
+      "description": "Pre-approved alternative product attributes available for a rejected order. Each element contains an attribute name, its original value from the rejected order, and the corrected value that would result in approval (for example, a substituted `asin` or adjusted `petWeight`).",
+      "items": {
+        "$ref": "#/definitions/ApprovedAttribute"
+      }
+    },
+    "ApprovedAttribute": {
+      "type": "object",
+      "required": [
+        "attributeName",
+        "originalValue",
+        "approvedValue"
+      ],
+      "properties": {
+        "attributeName": {
+          "type": "string",
+          "description": "The name of the attribute requiring correction (for example, `asin`, `petWeight`)."
+        },
+        "originalValue": {
+          "type": "string",
+          "description": "The original value of the attribute in the rejected order."
+        },
+        "approvedValue": {
+          "type": "string",
+          "description": "The pre-approved value that would result in order approval."
+        }
+      },
+      "description": "An order attribute with its original value and the pre-approved alternative value suggested by the vet."
+    },
+    "InterimStatusDetail": {
+      "type": "object",
+      "required": [
+        "statusCode",
+        "statusDateTime"
+      ],
+      "properties": {
+        "statusCode": {
+          "type": "string",
+          "description": "The identifier for the interim status type. Must be one of the `ValidInterimStatusCodes` values returned by the `getOrderRegulatedInfo` operation."
+        },
+        "statusDateTime": {
+          "type": "string",
+          "description": "The date and time when this interim status was set, in [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date and time format.",
+          "format": "date-time"
+        }
+      },
+      "description": "Interim status information provided during the verification process to share granular progress updates while an order is pending verification (for example, vet contacted through email)."
+    },
+    "ValidInterimStatusCode": {
+      "type": "object",
+      "required": [
+        "StatusCode",
+        "StatusDescription"
+      ],
+      "properties": {
+        "StatusCode": {
+          "type": "string",
+          "description": "The identifier for the interim status type."
+        },
+        "StatusDescription": {
+          "type": "string",
+          "description": "A customer-facing description of the interim status."
+        }
+      },
+      "description": "A valid interim status code and its customer-facing description. Available with the `getOrderRegulatedInfo` operation to indicate which status codes can populate the `InterimStatusDetail` field."
+    },
     "ValidVerificationDetail": {
       "type": "object",
       "required": [
@@ -3742,7 +3944,7 @@
       "properties": {
         "VerificationDetailType": {
           "type": "string",
-          "description": "A supported type of verification detail. The type indicates which verification detail could be shared while updating the regulated order. Valid value: `prescriptionDetail`."
+          "description": "A supported type of verification detail. The type indicates which verification detail could be shared while updating the regulated order. Valid values: `prescriptionDetail`, `approvedAlternativeDetails`, `interimStatusDetail`."
         },
         "ValidVerificationStatuses": {
           "type": "array",
@@ -3760,6 +3962,14 @@
         "prescriptionDetail": {
           "$ref": "#/definitions/PrescriptionDetail",
           "description": "Information regarding the prescription tied to the order."
+        },
+        "approvedAlternativeDetails": {
+          "$ref": "#/definitions/ApprovedAlternativeDetails",
+          "description": "Pre-approved alternative product attributes provided when a vet rejects an order but suggests a correction. Only valid when the verification status is `Rejected`."
+        },
+        "interimStatusDetail": {
+          "$ref": "#/definitions/InterimStatusDetail",
+          "description": "Interim status information provided during the verification process. Only valid when the verification status is `Pending`."
         }
       },
       "description": "Additional information related to the verification of a regulated order."
