@@ -50,6 +50,10 @@
           "uniqueItems": true,
           "minItems": 1
         },
+        "filters": {
+          "description": "Use these parameters to filter results. Any result must match all provided parameters. For parameters that accept multiple values (arrays), the API returns results that match at least one value in the array.",
+          "$ref": "#/definitions/GetSellingPartnerMetricsRequestFilters"
+        },
         "timePeriodType": {
           "$ref": "#/definitions/TimePeriodType"
         },
@@ -80,7 +84,7 @@
           "$ref": "#/definitions/ListOfferMetricsRequestSort"
         },
         "filters": {
-          "description": "Use these parameters to filter results. Any result must match all provided parameters. For any parameter that is an array, the result must match at least one element in the provided array.",
+          "description": "Use these parameters to filter results. Any result must match all provided parameters. For parameters that accept multiple values (arrays), the API returns results that match at least one value in the array.",
           "$ref": "#/definitions/ListOfferMetricsRequestFilters"
         }
       }
@@ -98,7 +102,7 @@
           "$ref": "#/definitions/ListOffersRequestPagination"
         },
         "filters": {
-          "description": "Use these parameters to filter results. Any result must match all provided parameters. For any parameter that is an array, the result must match at least one element in the provided array.",
+          "description": "Use these parameters to filter results. Any result must match all provided parameters. For parameters that accept multiple values (arrays), the API returns results that match at least one value in the array.",
           "$ref": "#/definitions/ListOffersRequestFilters"
         },
         "sort": {
@@ -272,6 +276,66 @@
         }
       }
     },
+    "GetSellingPartnerMetricsRequestFilters": {
+      "type": "object",
+      "description": "Use these parameters to filter results. Any result must match all provided parameters. For parameters that accept multiple values (arrays), the API returns results that match at least one value in the array.",
+      "properties": {
+        "asins": {
+          "type": "array",
+          "description": "A list of Amazon Standard Identification Numbers (ASINs) to filter by. ASIN filter is supported for these metrics: SHIPPED_SUBSCRIPTION_UNITS, TOTAL_SUBSCRIPTIONS_REVENUE, ACTIVE_SUBSCRIPTIONS, NOT_DELIVERED_DUE_TO_OOS, LOST_REVENUE_DUE_TO_OOS, COUPONS_REVENUE_PENETRATION, SHARE_OF_COUPON_SUBSCRIPTIONS and REVENUE_PENETRATION.",
+          "items": {
+            "type": "string",
+            "description": "Amazon Standard Identification Number."
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "skus": {
+          "type": "array",
+          "description": "[Applicable only for Sellers] A list of SKUs to filter by. SKU filter is supported for these metrics: SHIPPED_SUBSCRIPTION_UNITS, TOTAL_SUBSCRIPTIONS_REVENUE, ACTIVE_SUBSCRIPTIONS, NOT_DELIVERED_DUE_TO_OOS, LOST_REVENUE_DUE_TO_OOS, COUPONS_REVENUE_PENETRATION, SHARE_OF_COUPON_SUBSCRIPTIONS and REVENUE_PENETRATION.",
+          "items": {
+            "type": "string",
+            "description": "Stock Keeping Unit."
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "fulfillmentChannelTypes": {
+          "type": "array",
+          "description": "[Applicable only for Sellers] The fulfillment channel types to filter by. Fulfillment channel type filter is supported for these metrics: SHIPPED_SUBSCRIPTION_UNITS, TOTAL_SUBSCRIPTIONS_REVENUE, ACTIVE_SUBSCRIPTIONS, NOT_DELIVERED_DUE_TO_OOS, LOST_REVENUE_DUE_TO_OOS, COUPONS_REVENUE_PENETRATION, SHARE_OF_COUPON_SUBSCRIPTIONS and REVENUE_PENETRATION.",
+          "items": {
+            "$ref": "#/definitions/FulfillmentChannelType"
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 2
+        },
+        "brandNames": {
+          "type": "array",
+          "description": "[Applicable only for US marketplace] A list of brand names to filter by. Brand name filter is supported for these metrics: SHIPPED_SUBSCRIPTION_UNITS, TOTAL_SUBSCRIPTIONS_REVENUE, ACTIVE_SUBSCRIPTIONS, NOT_DELIVERED_DUE_TO_OOS, LOST_REVENUE_DUE_TO_OOS, COUPONS_REVENUE_PENETRATION, SHARE_OF_COUPON_SUBSCRIPTIONS, REVENUE_PENETRATION, SUBSCRIBER_NON_SUBSCRIBER_AVERAGE_REVENUE, SUBSCRIBER_NON_SUBSCRIBER_AVERAGE_REORDERS, REVENUE_BY_DELIVERIES, SUBSCRIBER_RETENTION, REVENUE_PENETRATION_BY_SELLER_FUNDING, SUBSCRIBER_LIFETIME_VALUE_BY_CUSTOMER_SEGMENT and SIGNUP_CONVERSION_BY_SELLER_FUNDING.",
+          "items": {
+            "type": "string",
+            "description": "Brand name."
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "productGroups": {
+          "type": "array",
+          "description": "[Applicable only for Vendors] A list of product group names to filter by. Product group filter is supported for these metrics: SHIPPED_SUBSCRIPTION_UNITS, TOTAL_SUBSCRIPTIONS_REVENUE, ACTIVE_SUBSCRIPTIONS, NOT_DELIVERED_DUE_TO_OOS, LOST_REVENUE_DUE_TO_OOS, COUPONS_REVENUE_PENETRATION, SHARE_OF_COUPON_SUBSCRIPTIONS and REVENUE_PENETRATION.",
+          "items": {
+            "type": "string",
+            "description": "Product group name."
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        }
+      }
+    },
     "ListOfferMetricsRequestPagination": {
       "description": "Use these parameters to paginate through the response.",
       "type": "object",
@@ -356,7 +420,7 @@
     },
     "ListOfferMetricsRequestFilters": {
       "type": "object",
-      "description": "Use these parameters to filter results. Any result must match all provided parameters. For any parameter that is an array, the result must match at least one element in the provided array.",
+      "description": "Use these parameters to filter results. Any result must match all provided parameters. For parameters that accept multiple values (arrays), the API returns results that match at least one value in the array.",
       "required": [
         "timeInterval",
         "timePeriodType",
@@ -383,10 +447,53 @@
         },
         "asins": {
           "type": "array",
-          "description": "A list of Amazon Standard Identification Numbers (ASINs).",
+          "description": "A list of Amazon Standard Identification Numbers (ASINs) to filter by.",
           "items": {
             "type": "string",
             "description": "Amazon Standard Identification Number."
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "skus": {
+          "type": "array",
+          "description": "[Applicable only for Sellers] A list of SKUs to filter by.",
+          "items": {
+            "type": "string",
+            "description": "Stock Keeping Unit."
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "fulfillmentChannelTypes": {
+          "type": "array",
+          "description": "[Applicable only for Sellers] The fulfillment channel types to filter by.",
+          "items": {
+            "$ref": "#/definitions/FulfillmentChannelType"
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 2
+        },
+        "brandNames": {
+          "type": "array",
+          "description": "[Applicable only for US marketplace] A list of brand names to filter by.",
+          "items": {
+            "type": "string",
+            "description": "Brand name."
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "productGroups": {
+          "type": "array",
+          "description": "[Applicable only for Vendors] A list of product group names to filter by.",
+          "items": {
+            "type": "string",
+            "description": "Product group name."
           },
           "uniqueItems": true,
           "minItems": 1,
@@ -490,7 +597,7 @@
     },
     "ListOffersRequestFilters": {
       "type": "object",
-      "description": "Use these parameters to filter results. Any result must match all provided parameters. For any parameter that is an array, the result must match at least one element in the provided array.",
+      "description": "Use these parameters to filter results. Any result must match all provided parameters. For parameters that accept multiple values (arrays), the API returns results that match at least one value in the array.",
       "required": [
         "marketplaceId",
         "programTypes"
@@ -661,12 +768,17 @@
       "description": "The time period used to group data in the response. Note that this is only valid for the `PERFORMANCE` time period type.",
       "type": "string",
       "enum": [
+        "DAY",
         "WEEK",
         "MONTH",
         "QUARTER",
         "YEAR"
       ],
       "x-docgen-enum-table-extension": [
+        {
+          "value": "DAY",
+          "description": "ISO Calendar Day."
+        },
         {
           "value": "WEEK",
           "description": "ISO Calendar Week."
@@ -687,7 +799,7 @@
     },
     "TimeInterval": {
       "type": "object",
-      "description": "A date-time interval in ISO 8601 format which is used to compute metrics. Only the date is required, but you must pass the complete date and time value. For example, November 11, 2022 should be passed as \"2022-11-11T00:00:00Z\". Note that only data for the trailing 2 years is supported.\n\n **Note**: The `listOfferMetrics` operation only supports a time interval which covers a single unit of the aggregation frequency. For example, for a MONTH aggregation frequency, the duration of the interval between the startDate and endDate can not be more than 1 month.",
+      "description": "A date-time interval in ISO 8601 format used to compute metrics. Only the date is required, but you must pass the complete date and time value. For example, November 11, 2022 should be passed as \"2022-11-11T00:00:00Z\". Note that only data for the trailing 2 years is supported.\n\n**Note**:\n* The `listOfferMetrics` operation only supports a time interval which covers a single unit of the aggregation frequency. For example, for a MONTH aggregation frequency, the duration of the interval between the startDate and endDate can not be more than 1 month.\n* For the `getSellingPartnerMetrics` operation with DAY aggregation frequency, the time interval cannot exceed 31 days.",
       "required": [
         "startDate",
         "endDate"
@@ -696,12 +808,12 @@
         "startDate": {
           "type": "string",
           "format": "date-time",
-          "description": "When this object is used as a request parameter, the specified `startDate` is adjusted based on the aggregation frequency.\n\n* For `WEEK` the metric is computed from the first day of the week (Sunday, based on ISO 8601) that contains the `startDate`.\n* For `MONTH` the metric is computed from the first day of the month that contains the `startDate`.\n* For `QUARTER` the metric is computed from the first day of the quarter that contains the `startDate`.\n* For `YEAR` the metric is computed from the first day of the year that contains the `startDate`."
+          "description": "When this object is used as a request parameter, the specified `startDate` is adjusted based on the aggregation frequency.\n\n* For `DAY` the metric is computed from the specific day indicated by the `startDate`.\n* For `WEEK` the metric is computed from the first day of the week (Monday, based on ISO 8601) that contains the `startDate`.\n* For `MONTH` the metric is computed from the first day of the month that contains the `startDate`.\n* For `QUARTER` the metric is computed from the first day of the quarter that contains the `startDate`.\n* For `YEAR` the metric is computed from the first day of the year that contains the `startDate`."
         },
         "endDate": {
           "type": "string",
           "format": "date-time",
-          "description": "When this object is used as a request parameter, the specified `endDate` is adjusted based on the aggregation frequency.\n\n* For `WEEK` the metric is computed up to the last day of the week (Sunday, based on ISO 8601) that contains the `endDate`.\n* For `MONTH`, the metric is computed up to the last day that contains the `endDate`.\n* For `QUARTER` the metric is computed up to the last day of the quarter that contains the `endDate`.\n* For `YEAR` the metric is computed up to the last day of the year that contains the `endDate`.\n Note: The end date may be adjusted to a lower value based on the data available in our system."
+          "description": "When this object is used as a request parameter, the specified `endDate` is adjusted based on the aggregation frequency.\n\n* For `DAY` the metric is computed up to the specific day indicated by the `endDate`.\n* For `WEEK` the metric is computed up to the last day of the week (Sunday, based on ISO 8601) that contains the `endDate`.\n* For `MONTH`, the metric is computed up to the last day of the month that contains the `endDate`.\n* For `QUARTER` the metric is computed up to the last day of the quarter that contains the `endDate`.\n* For `YEAR` the metric is computed up to the last day of the year that contains the `endDate`.\n Note: The end date may be adjusted to a lower value based on the data available in our system."
         }
       }
     },
@@ -772,7 +884,7 @@
         },
         {
           "value": "SHARE_OF_COUPON_SUBSCRIPTIONS",
-          "description": "The percentage of new subscriptions acquired through coupons."
+          "description": "The percentage of new subscriptions from coupons."
         },
         {
           "value": "SUBSCRIBER_LIFETIME_VALUE_BY_CUSTOMER_SEGMENT",
@@ -964,7 +1076,7 @@
           "maximum": 100
         },
         "shareOfCouponSubscriptions": {
-          "description": "The percentage of new subscriptions acquired through coupons. Applicable to `PERFORMANCE` `timePeriodType`.",
+          "description": "The percentage of new subscriptions from coupons. Applicable to `PERFORMANCE` `timePeriodType`.",
           "type": "number",
           "format": "double",
           "minimum": 0,
@@ -1013,28 +1125,28 @@
           "minimum": 0
         },
         "signupConversionFor0PercentSellerFunding": {
-          "description": "Percentage of subscriptions created by offers with 0% seller-funded discount out of the total number of new orders placed over the past 12 months",
+          "description": "Percentage of subscriptions from offers with 0% seller-funded discount out of the total number of new orders placed over the past 12 months.",
           "type": "number",
           "format": "double",
           "minimum": 0,
           "maximum": 100
         },
         "signupConversionFor5PercentSellerFunding": {
-          "description": "[Applicable only for Sellers] Percentage of subscriptions created by offers with 5% seller-funded discount out of the total number of new orders placed over the past 12 months",
+          "description": "[Applicable only for Sellers] Percentage of subscriptions from offers with 5% seller-funded discount out of the total number of new orders placed over the past 12 months.",
           "type": "number",
           "format": "double",
           "minimum": 0,
           "maximum": 100
         },
         "signupConversionFor10PercentSellerFunding": {
-          "description": "[Applicable only for Sellers] Percentage of subscriptions created by offers with 10% seller-funded discount out of the total number of new orders placed over the past 12 months",
+          "description": "[Applicable only for Sellers] Percentage of subscriptions from offers with 10% seller-funded discount out of the total number of new orders placed over the past 12 months.",
           "type": "number",
           "format": "double",
           "minimum": 0,
           "maximum": 100
         },
         "signupConversionFor5PlusPercentSellerFunding": {
-          "description": "[Applicable only for Vendors] Percentage of subscriptions created by offers with 5% or above seller-funded discount out of the total number of new orders placed over the past 12 months",
+          "description": "[Applicable only for Vendors] Percentage of subscriptions from offers with 5% or above seller-funded discount out of the total number of new orders placed over the past 12 months.",
           "type": "number",
           "format": "double",
           "minimum": 0,
@@ -1272,6 +1384,14 @@
           "description": "The fulfillment channel type of an offer. This property is only supported for sellers and not for vendors.",
           "$ref": "#/definitions/FulfillmentChannelType"
         },
+        "brandName": {
+          "type": "string",
+          "description": "The brand name associated with the offer."
+        },
+        "productGroup": {
+          "type": "string",
+          "description": "The product group associated with the offer. This property is only supported for vendors and not for sellers."
+        },
         "notDeliveredDueToOOS": {
           "description": "The percentage of items that were not shipped out of the total shipped units over a period of time due to being out of stock. Applicable to `PERFORMANCE` `timePeriodType`.",
           "type": "number",
@@ -1318,7 +1438,7 @@
           "maximum": 100
         },
         "shareOfCouponSubscriptions": {
-          "description": "The percentage of new subscriptions acquired through coupons. Applicable to `PERFORMANCE` `timePeriodType`.",
+          "description": "The percentage of new subscriptions from coupons. Applicable to `PERFORMANCE` `timePeriodType`.",
           "type": "number",
           "format": "double",
           "minimum": 0,

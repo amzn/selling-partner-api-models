@@ -29,11 +29,15 @@
         "tags": [
           "notifications"
         ],
-        "description": "Returns information about subscription of the specified notification type and payload version. `payloadVersion` is an optional parameter. When `payloadVersion` is not provided, it will return latest payload version subscription's information. You can use this API to get subscription information when you do not have a subscription identifier.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may observe higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns information about subscription of the specified notification type and payload version. `payloadVersion` is an optional parameter. When you do not provide `payloadVersion`, the operation returns the latest payload version subscription's information. You can use this API to get subscription information when you do not have a subscription identifier.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getSubscription",
         "parameters": [
           {
-            "$ref": "#/parameters/NotificationType"
+            "name": "notificationType",
+            "in": "path",
+            "description": "The type of notification.\n\n For more information about notification types, refer to the [Notifications API v1 Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/notifications-api-v1-use-case-guide).",
+            "required": true,
+            "type": "string"
           },
           {
             "name": "payloadVersion",
@@ -147,10 +151,6 @@
               "$ref": "#/definitions/GetSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -163,10 +163,6 @@
               "$ref": "#/definitions/GetSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -179,10 +175,6 @@
               "$ref": "#/definitions/GetSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -195,10 +187,6 @@
               "$ref": "#/definitions/GetSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -211,10 +199,6 @@
               "$ref": "#/definitions/GetSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -227,7 +211,7 @@
         "tags": [
           "notifications"
         ],
-        "description": "Creates a subscription for the specified notification type to be delivered to the specified destination. Before you can subscribe, you must first create the destination by calling the `createDestination` operation. In cases where the specified notification type supports multiple payload versions, you can utilize this API to subscribe to a different payload version if you already have an existing subscription for a different payload version.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may observe higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Creates a subscription for the specified notification type to be delivered to the specified destination. Before you can subscribe, you must first create the destination by calling the `createDestination` operation. If the notification type that you specify supports multiple payload versions, you can use this operation to subscribe to a different payload version if you already have an existing subscription for a different payload version.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "createSubscription",
         "parameters": [
           {
@@ -236,10 +220,15 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/CreateSubscriptionRequest"
-            }
+            },
+            "description": "The request schema for the `createSubscription` operation."
           },
           {
-            "$ref": "#/parameters/NotificationType"
+            "name": "notificationType",
+            "in": "path",
+            "description": "The type of notification.\n\n For more information about notification types, refer to the [Notifications API v1 Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/notifications-api-v1-use-case-guide).",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
@@ -334,10 +323,6 @@
               "$ref": "#/definitions/CreateSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -350,10 +335,6 @@
               "$ref": "#/definitions/CreateSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -366,10 +347,6 @@
               "$ref": "#/definitions/CreateSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -382,10 +359,6 @@
               "$ref": "#/definitions/CreateSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -398,10 +371,6 @@
               "$ref": "#/definitions/CreateSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -414,10 +383,6 @@
               "$ref": "#/definitions/CreateSubscriptionResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -432,7 +397,7 @@
         "tags": [
           "notifications"
         ],
-        "description": "Returns information about a subscription for the specified notification type. The `getSubscriptionById` operation is grantless. For more information, refer to [Grantless operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations).\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may observe higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns information about a subscription for the specified notification type. The `getSubscriptionById` operation is grantless. For more information, refer to [Grantless Operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations) in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getSubscriptionById",
         "parameters": [
           {
@@ -443,7 +408,11 @@
             "type": "string"
           },
           {
-            "$ref": "#/parameters/NotificationType"
+            "name": "notificationType",
+            "in": "path",
+            "description": "The type of notification.\n\n For more information about notification types, refer to the [Notifications API v1 Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/notifications-api-v1-use-case-guide).",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
@@ -538,10 +507,6 @@
               "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -554,10 +519,6 @@
               "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -570,10 +531,6 @@
               "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -586,10 +543,6 @@
               "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -602,10 +555,6 @@
               "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -618,10 +567,6 @@
               "$ref": "#/definitions/GetSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -634,7 +579,7 @@
         "tags": [
           "notifications"
         ],
-        "description": "Deletes the subscription indicated by the subscription identifier and notification type that you specify. The subscription identifier can be for any subscription associated with your application. After you successfully call this operation, notifications will stop being sent for the associated subscription. The `deleteSubscriptionById` operation is grantless. For more information, refer to [Grantless operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations).\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may observe higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Deletes the subscription indicated by the subscription identifier and notification type that you specify. The subscription identifier can be for any subscription associated with your application. After you successfully call this operation, notifications will stop being sent for the associated subscription. The `deleteSubscriptionById` operation is grantless. For more information, refer to [Grantless Operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations) in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "deleteSubscriptionById",
         "parameters": [
           {
@@ -645,7 +590,11 @@
             "type": "string"
           },
           {
-            "$ref": "#/parameters/NotificationType"
+            "name": "notificationType",
+            "in": "path",
+            "description": "The type of notification.\n\n For more information about notification types, refer to the [Notifications API v1 Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/notifications-api-v1-use-case-guide).",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
@@ -728,10 +677,6 @@
               "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -744,10 +689,6 @@
               "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -760,10 +701,6 @@
               "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -776,10 +713,6 @@
               "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -792,10 +725,6 @@
               "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -808,10 +737,173 @@
               "$ref": "#/definitions/DeleteSubscriptionByIdResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
+              "x-amzn-RequestId": {
                 "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/v1/subscriptions/{notificationType}/testNotification": {
+      "x-amzn-api-sandbox-only": true,
+      "x-amzn-api-sandbox": {
+        "dynamic": {}
+      },
+      "post": {
+        "tags": [
+          "notifications"
+        ],
+        "description": "Sends a mock notification of the specified type to your SQS. The `sendTestNotification` API is grantless. For more information, see \"Grantless operations\" in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nFor more information, see \"Usage Plans and Rate Limits\" in the Selling Partner API documentation. This is a sandbox-only operation and must be directed to a sandbox endpoint. Refer to [Selling Partner API sandbox](https://developer-docs.amazon.com/sp-api/docs/the-selling-partner-api-sandbox) for more information.",
+        "operationId": "sendTestNotification",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationRequest"
+            },
+            "description": "The request schema for the `sendTestNotification` operation."
+          },
+          {
+            "name": "notificationType",
+            "in": "path",
+            "description": "The type of notification.\n\n For more information about notification types, refer to the [Notifications API v1 Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/notifications-api-v1-use-case-guide).",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationResponse"
+            },
+            "examples": {
+              "Successful Response": {}
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationResponse"
+            },
+            "examples": {
+              "Response": {
+                "errors": [
+                  {
+                    "code": "InvalidInput",
+                    "message": "InvalidInput",
+                    "details": "Invalid Input, recheck that the AppId and DestinationId are valid and DestinationId belongs to the application"
+                  }
+                ]
+              }
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "409": {
+            "description": "The resource specified conflicts with the current state.",
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/SendTestNotificationResponse"
+            },
+            "headers": {
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -826,7 +918,7 @@
         "tags": [
           "notifications"
         ],
-        "description": "Returns information about all destinations. The `getDestinations` operation is grantless. For more information, refer to [Grantless operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations).\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may observe higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns information about all destinations. The `getDestinations` operation is grantless. For more information, refer to [Grantless Operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations) in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getDestinations",
         "parameters": [],
         "responses": {
@@ -933,10 +1025,6 @@
               "$ref": "#/definitions/GetDestinationsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -949,10 +1037,6 @@
               "$ref": "#/definitions/GetDestinationsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -965,10 +1049,6 @@
               "$ref": "#/definitions/GetDestinationsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -981,10 +1061,6 @@
               "$ref": "#/definitions/GetDestinationsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -997,10 +1073,6 @@
               "$ref": "#/definitions/GetDestinationsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1013,10 +1085,6 @@
               "$ref": "#/definitions/GetDestinationsResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1029,7 +1097,7 @@
         "tags": [
           "notifications"
         ],
-        "description": "Creates a destination resource to receive notifications. The `createDestination` operation is grantless. For more information, refer to [Grantless operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations).\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may observe higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Creates a destination resource to receive notifications. The `createDestination` operation is grantless. For more information, refer to [Grantless Operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations) in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "createDestination",
         "parameters": [
           {
@@ -1038,7 +1106,8 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/CreateDestinationRequest"
-            }
+            },
+            "description": "The request schema for the `createDestination` operation."
           }
         ],
         "responses": {
@@ -1141,10 +1210,6 @@
               "$ref": "#/definitions/CreateDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1157,10 +1222,6 @@
               "$ref": "#/definitions/CreateDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1173,10 +1234,6 @@
               "$ref": "#/definitions/CreateDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1189,10 +1246,6 @@
               "$ref": "#/definitions/CreateDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1205,10 +1258,6 @@
               "$ref": "#/definitions/CreateDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1221,10 +1270,6 @@
               "$ref": "#/definitions/CreateDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1239,7 +1284,7 @@
         "tags": [
           "notifications"
         ],
-        "description": "Returns information about the destination that you specify. The `getDestination` operation is grantless. For more information, refer to [Grantless operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations).\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may observe higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Returns information about the destination that you specify. The `getDestination` operation is grantless. For more information, refer to [Grantless Operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations) in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "getDestination",
         "parameters": [
           {
@@ -1350,10 +1395,6 @@
               "$ref": "#/definitions/GetDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1366,10 +1407,6 @@
               "$ref": "#/definitions/GetDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1382,10 +1419,6 @@
               "$ref": "#/definitions/GetDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1398,10 +1431,6 @@
               "$ref": "#/definitions/GetDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1414,10 +1443,6 @@
               "$ref": "#/definitions/GetDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1430,10 +1455,6 @@
               "$ref": "#/definitions/GetDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1446,7 +1467,7 @@
         "tags": [
           "notifications"
         ],
-        "description": "Deletes the destination that you specify. The `deleteDestination` operation is grantless. For more information, refer to [Grantless operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations).\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The table above indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput may observe higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "description": "Deletes the destination that you specify. The `deleteDestination` operation is grantless. For more information, refer to [Grantless Operations](https://developer-docs.amazon.com/sp-api/docs/grantless-operations) in the Selling Partner API Developer Guide.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
         "operationId": "deleteDestination",
         "parameters": [
           {
@@ -1537,10 +1558,6 @@
               "$ref": "#/definitions/DeleteDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1553,10 +1570,6 @@
               "$ref": "#/definitions/DeleteDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1569,10 +1582,6 @@
               "$ref": "#/definitions/DeleteDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1585,10 +1594,6 @@
               "$ref": "#/definitions/DeleteDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1601,10 +1606,6 @@
               "$ref": "#/definitions/DeleteDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1617,10 +1618,6 @@
               "$ref": "#/definitions/DeleteDestinationResponse"
             },
             "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "type": "string",
-                "description": "Your rate limit (requests per second) for this operation.\n_Note:_ For this status code, the rate limit header is deprecated and no longer returned."
-              },
               "x-amzn-RequestId": {
                 "type": "string",
                 "description": "Unique request reference identifier."
@@ -1633,17 +1630,23 @@
   },
   "definitions": {
     "ProcessingDirective": {
-      "description": "Additional information passed to the subscription to control the processing of notifications. For example, you can use an `eventFilter` to customize your subscription to send notifications for only the specified `marketplaceId`s, or select the aggregation time period at which to send notifications (for example: limit to one notification every five minutes for high frequency notifications). The specific features available vary depending on the `notificationType`.\n\nThis feature is currently only supported by the `ANY_OFFER_CHANGED` and `ORDER_CHANGE` `notificationType`s.",
+      "description": "Additional information passed to the subscription to control the processing of notifications. For example, you can use an `eventFilter` to customize your subscription to send notifications for only the `marketplaceId`s that you specify, or select the aggregation time period at which to send notifications (for example, you can set a limit of one notification every five minutes for high frequency notifications). You can also use `filterExpression` to filter events based on notification payload. The specific features available can vary by the `notificationType`.",
       "type": "object",
       "properties": {
         "eventFilter": {
-          "description": "A `notificationType` specific filter.",
+          "description": "A `notificationType` filter. Note: eventFilter and filterExpression are mutually exclusive, meaning if eventFilter is provided, filterExpression field cannot be used.",
           "$ref": "#/definitions/EventFilter"
+        },
+        "filterExpression": {
+          "description": "An expression for filtering events before delivery to destination based on the notification payload (example: FulfillmentOrderStatusNotification.FulfillmentOrderStatus == `SHIPPED` ). The `filterExpression` is a string that follows the CEL expression syntax (https://github.com/google/cel-spec) excluding arithmetic operators (+, -, *, /, %) and list/map indexing ([]). Refer to Notification Type Values to determine if filter Expression is supported for a Notification Type. Refer to CEL Operators (https://developer-docs.amazon.com/sp-api/docs/filter-notification-subscriptions) to see if a CEL operator is supported. \n Note: eventFilter and filterExpression are mutually exclusive. You can use filterExpression to replace existing eventFilter configurations.",
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1
         }
       }
     },
     "EventFilter": {
-      "description": "A `notificationType` specific filter. This object contains all of the currently available filters and properties that you can use to define a `notificationType` specific filter.",
+      "description": "A `notificationType` filter. This object contains all of the available filters and properties that you can use to define a `notificationType` specific filter.",
       "allOf": [
         {
           "$ref": "#/definitions/AggregationFilter"
@@ -1663,7 +1666,7 @@
                 "ANY_OFFER_CHANGED",
                 "ORDER_CHANGE"
               ],
-              "description": "An `eventFilterType` value that is supported by the specific `notificationType`. This is used by the subscription service to determine the type of event filter. Refer to [Notification Type Values](https://developer-docs.amazon.com/sp-api/docs/notification-type-values) to determine if an `eventFilterType` is supported."
+              "description": "An `eventFilterType` value that the `notificationType` supports. The subscription service uses the `eventFilterType` to determine the type of event filter. To determine if a specific `notificationType` supports an `eventFilterType`, refer to [Notification Type Values]( https://developer-docs.amazon.com/sp-api/docs/notification-type-values)."
             }
           },
           "required": [
@@ -1673,7 +1676,7 @@
       ]
     },
     "MarketplaceFilter": {
-      "description": "An event filter to customize your subscription to send notifications for only the specified `marketplaceId`s.",
+      "description": "An event filter you can use to customize your subscription to send notifications for specific `marketplaceId`s.",
       "type": "object",
       "properties": {
         "marketplaceIds": {
@@ -1686,7 +1689,7 @@
       "items": {
         "type": "string"
       },
-      "description": "A list of marketplace identifiers to subscribe to (for example: ATVPDKIKX0DER). To receive notifications in every marketplace, do not provide this list."
+      "description": "A list of marketplace identifiers you can subscribe to (for example, `ATVPDKIKX0DER`). To receive notifications in every marketplace, do not provide this list."
     },
     "AggregationFilter": {
       "type": "object",
@@ -1695,7 +1698,7 @@
           "$ref": "#/definitions/AggregationSettings"
         }
       },
-      "description": "A filter used to select the aggregation time period at which to send notifications (for example: limit to one notification every five minutes for high frequency notifications)."
+      "description": "A filter you can use to select the aggregation time period at which to send notifications (for example, limit to one notification every five minutes for high frequency notifications)."
     },
     "AggregationSettings": {
       "type": "object",
@@ -1729,7 +1732,7 @@
       ]
     },
     "OrderChangeTypeFilter": {
-      "description": "An event filter to customize your subscription to send notifications for only the specified `orderChangeType`.",
+      "description": "An event filter you can use to customize your subscription to send notifications for a specific `orderChangeType`.",
       "type": "object",
       "properties": {
         "orderChangeTypes": {
@@ -1742,13 +1745,14 @@
       "items": {
         "$ref": "#/definitions/OrderChangeTypeEnum"
       },
-      "description": "A list of order change types to subscribe to (for example: `BuyerRequestedChange`). To receive notifications of all change types, do not provide this list."
+      "description": "A list of order change types you can subscribe to (for example, `BuyerRequestedChange`). To receive notifications of all change types, do not provide this list."
     },
     "OrderChangeTypeEnum": {
       "type": "string",
       "enum": [
-        "OrderStatusChange",
-        "BuyerRequestedChange"
+        "BuyerRequestedChange",
+        "DeliveryTipChange",
+        "OrderStatusChange"
       ],
       "description": "The supported order change type of ORDER_CHANGE notification."
     },
@@ -1851,6 +1855,32 @@
       },
       "description": "The response schema for the `deleteSubscriptionById` operation."
     },
+    "SendTestNotificationRequest": {
+      "type": "object",
+      "properties": {
+        "destinationId": {
+          "type": "string",
+          "description": "The identifier for the destination where notifications will be delivered."
+        },
+        "testNotification": {
+          "$ref": "#/definitions/TestNotification"
+        }
+      },
+      "description": "The request schema for the `sendTestNotification` operation."
+    },
+    "SendTestNotificationResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the `sendTestNotification` operation."
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the `sendTestNotification` operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the `sendTestNotification` operation."
+    },
     "DestinationList": {
       "type": "array",
       "description": "A list of destinations.",
@@ -1880,7 +1910,7 @@
           "$ref": "#/definitions/DestinationResource"
         }
       },
-      "description": "Information about the destination created when you call the `createDestination` operation."
+      "description": "Information about the destination you create when you call the `createDestination` operation."
     },
     "DestinationResource": {
       "type": "object",
@@ -1958,7 +1988,7 @@
         },
         "region": {
           "type": "string",
-          "description": "The AWS region in which you receive the notifications. For AWS regions that are supported in Amazon EventBridge, refer to [Amazon EventBridge endpoints and quotas](https://docs.aws.amazon.com/general/latest/gr/ev.html)."
+          "description": "The AWS region in which you receive the notifications. For AWS regions that Amazon EventBridge supports, refer to [Amazon EventBridge endpoints and quotas](https://docs.aws.amazon.com/general/latest/gr/ev.html)."
         },
         "accountId": {
           "type": "string",
@@ -2065,15 +2095,23 @@
         }
       },
       "description": "An error response returned when the request is unsuccessful."
-    }
-  },
-  "parameters": {
-    "NotificationType": {
-      "name": "notificationType",
-      "in": "path",
-      "description": "The type of notification.\n\n For more information about notification types, refer to [Notification Type Values](https://developer-docs.amazon.com/sp-api/docs/notification-type-values).",
-      "required": true,
-      "type": "string"
+    },
+    "TestNotification": {
+      "type": "object",
+      "properties": {
+        "payloadVersion": {
+          "type": "string",
+          "description": "The version of the payload object to be used in the notification."
+        },
+        "testScenario": {
+          "type": "string",
+          "description": "The scenario of the specified notification to be used in the notification payload. If testScenario is empty, a 400 response will be returned back to the developer. The scenarios supported for each notification type can be found in the Selling Partner API Developer Guide."
+        }
+      },
+      "required": [
+        "payloadVersion"
+      ],
+      "description": "The describer for the test notification that will be delivered."
     }
   }
 }
