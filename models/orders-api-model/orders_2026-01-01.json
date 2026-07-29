@@ -26,6 +26,7 @@
   "paths": {
     "/orders/2026-01-01/orders": {
       "get": {
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
         "tags": [
           "searchOrders"
         ],
@@ -518,6 +519,10 @@
                           "cancellationRequest": {
                             "requester": "BUYER",
                             "cancelReason": "Changed mind about purchase"
+                          },
+                          "cancellationExecution": {
+                            "cancelledBy": "MERCHANT",
+                            "cancelReason": "Buyer requested cancellation"
                           }
                         },
                         "fulfillment": {
@@ -1367,6 +1372,7 @@
     },
     "/orders/2026-01-01/orders/{orderId}": {
       "get": {
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
         "tags": [
           "getOrder"
         ],
@@ -1791,6 +1797,9 @@
                         "deliverByWindow": {
                           "earliestDateTime": "2024-12-28T00:00:00Z",
                           "latestDateTime": "2024-12-31T23:59:59Z"
+                        },
+                        "labelPrintingWindow": {
+                          "earliestDateTime": "2024-12-26T17:00:00Z"
                         }
                       },
                       "orderItems": [
@@ -2558,6 +2567,10 @@
         "deliverByWindow": {
           "description": "The promised time period within which the order should be delivered to the customer.",
           "$ref": "#/definitions/DateTimeRange"
+        },
+        "labelPrintingWindow": {
+          "description": "The earliest time available to print the shipping label for the order. Printing is available any time after the earliestDateTime. Response does not include a latestDateTime.\n\nNote: If blank, printing is available at any time.",
+          "$ref": "#/definitions/DateTimeRange"
         }
       }
     },
@@ -3100,6 +3113,10 @@
         "cancellationRequest": {
           "description": "Details of the cancellation request submitted for this order item.",
           "$ref": "#/definitions/ItemCancellationRequest"
+        },
+        "cancellationExecution": {
+          "description": "Details of how the cancellation was executed for this order item.",
+          "$ref": "#/definitions/ItemCancellationExecution"
         }
       }
     },
@@ -3398,6 +3415,20 @@
         },
         "cancelReason": {
           "description": "Explanation provided for why the cancellation was requested.",
+          "type": "string"
+        }
+      }
+    },
+    "ItemCancellationExecution": {
+      "description": "Details of how the cancellation was executed for a specific order item, including who performed the cancellation and the reason.",
+      "type": "object",
+      "properties": {
+        "cancelledBy": {
+          "description": "Entity that executed the cancellation for this item. \n\n**Possible values**: `BUYER`, `MERCHANT`, `AMAZON`",
+          "type": "string"
+        },
+        "cancelReason": {
+          "description": "Explanation provided for why the cancellation was executed.",
           "type": "string"
         }
       }
