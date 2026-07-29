@@ -1,0 +1,1934 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Selling Partner API for Invoices enables you to retrieve invoice data and streamline your bookkeeping processes.",
+    "version": "2026-06-25",
+    "title": "The Selling Partner API for Invoices",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/finances/invoices/2026-06-25/invoices": {
+      "get": {
+        "description": "Returns invoice headers for all invoices matching filters that you specify.",
+        "operationId": "getInvoiceHeaders",
+        "parameters": [
+          {
+            "name": "nextToken",
+            "in": "query",
+            "description": "The response includes `nextToken` when the number of invoices exceeds the default page size value (100). To get the next page of results, call the operation with this token and include the same arguments as the call that produced the token. To get a complete list, call this operation until `nextToken` is `null`. Note that this operation can return empty pages.",
+            "type": "string",
+            "x-example": "11"
+          },
+          {
+            "name": "marketplaceId",
+            "in": "query",
+            "description": "The marketplace ID of the marketplace from which you want to retrieve invoice headers. The marketplace ID is a globally unique identifier used to specify which Amazon marketplace a request is targeting. For more information, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
+            "type": "string",
+            "required": true,
+            "x-example": "ATVPDKIKX0XXX"
+          },
+          {
+            "name": "fromIssueDate",
+            "in": "query",
+            "description": "Retrieve invoice headers issued after this date. The range between `fromIssueDate` and `toIssueDate` must not exceed 90 days. Either provide both dates or leave both empty. If you do not provide these dates, `fromIssueDate` defaults to 90 days before the date of the request. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format.",
+            "type": "string",
+            "x-example": "2025-05-18T14:30:00Z",
+            "format": "date-time"
+          },
+          {
+            "name": "toIssueDate",
+            "in": "query",
+            "description": "Retrieve invoice headers issued before this date. The range between `fromIssueDate` and `toIssueDate` must not exceed 90 days. Either provide both dates or leave both empty. If you do not provide these dates, `toIssueDate` defaults to the date of the request. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format.",
+            "x-example": "2025-07-18T14:30:00Z",
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "invoicesModifiedAfter",
+            "in": "query",
+            "description": "Retrieve invoices that were modified after this date-time. In [ISO 8601](https://developer-docs.amazon.com/sp-api/docs/iso-8601) date-time format.",
+            "type": "string",
+            "x-example": "2025-09-01T00:00:00Z",
+            "format": "date-time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetInvoicesResponse"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "marketplaceId": {
+                        "value": "ATVPDKIKX0DER"
+                      }
+                    }
+                  },
+                  "response": {
+                    "invoices": [
+                      {
+                        "invoiceNumber": "INV-202505001",
+                        "invoiceIdentifier": "INV-202505001~ABCDEF",
+                        "invoiceStatus": "IN_PROGRESS",
+                        "invoiceType": "AP_INVENTORY",
+                        "billingPeriod": {
+                          "startDate": "2025-06-01T14:30:00Z",
+                          "endDate": "2025-06-30T14:30:00Z"
+                        },
+                        "payee": {
+                          "partnerId": "PAY123456",
+                          "partnerType": "VENDOR",
+                          "partnerName": "Example Vendor",
+                          "partnerEntities": [
+                            "ABCDEF",
+                            "GHIJKL"
+                          ]
+                        },
+                        "payer": {
+                          "partnerId": "AMAZON_US",
+                          "partnerType": "AMAZON",
+                          "partnerName": "Amazon",
+                          "partnerEntities": []
+                        },
+                        "issueDate": "2025-06-18T14:30:00Z",
+                        "dueDate": "2025-07-18T14:30:00Z",
+                        "paymentTerms": "NET30",
+                        "creationDate": "2025-06-18T14:30:00Z",
+                        "lastUpdatedDate": "2025-09-27T09:00:00Z",
+                        "invoiceAmount": {
+                          "currencyCode": "USD",
+                          "currencyAmount": 2500.0
+                        },
+                        "invoiceAmountBreakdowns": [
+                          {
+                            "breakdownType": "Total",
+                            "breakdownAmount": {
+                              "currencyCode": "USD",
+                              "currencyAmount": 2500.0
+                            },
+                            "breakdowns": []
+                          }
+                        ],
+                        "relatedIdentifiers": [
+                          {
+                            "relatedIdentifierName": "PURCHASE_ORDER_IDS",
+                            "relatedIdentifierValue": [
+                              "PO123456",
+                              "PO789012"
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "numOfRecords": 1,
+                    "nextToken": "1"
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInputCode",
+                        "message": "Invalid input message",
+                        "details": "Invalid input details"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/finances/invoices/2026-06-25/invoices/{invoiceIdentifier}": {
+      "get": {
+        "description": "Returns invoice details, including header and line items, for the specified invoice.",
+        "operationId": "getInvoice",
+        "parameters": [
+          {
+            "name": "marketplaceId",
+            "in": "query",
+            "description": "The marketplace ID of the marketplace of the invoice. The marketplace ID is a globally unique identifier used to specify an Amazon marketplace. For more information, refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids).",
+            "type": "string",
+            "required": true,
+            "x-example": "ATVPDKIKX0XXX"
+          },
+          {
+            "name": "invoiceIdentifier",
+            "in": "path",
+            "description": "The unique identifier for an invoice. This field is also returned as part of the `InvoiceHeader` element in the response. For AP-Inventory invoices the identifier is formatted as `InvoiceNumber~PayeeCode`.",
+            "type": "string",
+            "required": true,
+            "x-example": "INV-202505001~ABCDEF"
+          },
+          {
+            "name": "nextTokenForLineItems",
+            "in": "query",
+            "description": "The response includes `nextTokenForLineItems` when the number of line items exceeds the default page size (600). To get the next page of line items, call the operation with this token, including the same request parameters as the call that generated the token.",
+            "type": "string",
+            "x-example": "5"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetInvoiceResponse"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "marketplaceId": {
+                        "value": "ATVPDKIKX0DER"
+                      },
+                      "invoiceIdentifier": {
+                        "value": "INV-202505001~ABCDEF"
+                      }
+                    }
+                  },
+                  "response": {
+                    "invoiceHeader": {
+                        "invoiceNumber": "INV-202505001",
+                        "invoiceIdentifier": "INV-202505001~ABCDEF",
+                        "invoiceStatus": "IN_PROGRESS",
+                        "invoiceType": "AP_INVENTORY",
+                        "billingPeriod": {
+                          "startDate": "2025-06-01T14:30:00Z",
+                          "endDate": "2025-06-30T14:30:00Z"
+                        },
+                        "payee": {
+                          "partnerId": "PAY123456",
+                          "partnerType": "VENDOR",
+                          "partnerName": "Example Vendor",
+                          "partnerEntities": [
+                            "ABCDEF",
+                            "GHIJKL"
+                          ]
+                        },
+                        "payer": {
+                          "partnerId": "AMAZON_US",
+                          "partnerType": "AMAZON",
+                          "partnerName": "Amazon",
+                          "partnerEntities": []
+                        },
+                        "issueDate": "2025-06-18T14:30:00Z",
+                        "dueDate": "2025-07-18T14:30:00Z",
+                        "paymentTerms": "NET30",
+                        "invoiceAmount": {
+                          "currencyCode": "USD",
+                          "currencyAmount": 540.0
+                        },
+                        "invoiceAmountBreakdowns": [
+                          {
+                            "breakdownType": "Total",
+                            "breakdownAmount": {
+                              "currencyCode": "USD",
+                              "currencyAmount": 540.0
+                            },
+                            "breakdowns": [
+                              {
+                                "breakdownType": "InvoiceAmountWithoutTax",
+                                "breakdownAmount": {
+                                  "currencyCode": "USD",
+                                  "currencyAmount": 500.0
+                                },
+                                "breakdowns": []
+                              },
+                              {
+                                "breakdownType": "TaxAmount",
+                                "breakdownAmount": {
+                                  "currencyCode": "USD",
+                                  "currencyAmount": 40.0
+                                },
+                                "breakdowns": []
+                              }
+                            ]
+                          }
+                        ],
+                        "invoiceSettlementBreakdowns": [
+                          {
+                            "breakdownType": "AmountPaid",
+                            "breakdownAmount": {
+                              "currencyCode": "USD",
+                              "currencyAmount": 540.0
+                            },
+                            "breakdowns": []
+                          }
+                        ],
+                        "creationDate": "2025-06-18T14:30:00Z",
+                        "lastUpdatedDate": "2025-09-27T09:00:00Z"
+                      },
+                    "invoiceItems": [
+                        {
+                          "lineItemId": "LI-001",
+                          "unitCost": {
+                            "currencyCode": "USD",
+                            "currencyAmount": 50.0
+                          },
+                          "quantity": 10,
+                          "taxRateCodes": ["DE 19"],
+                          "totalAmount": {
+                            "currencyCode": "USD",
+                            "currencyAmount": 540.0
+                          },
+                          "totalAmountBreakdown": [
+                            {
+                              "breakdownType": "ItemCostWithoutTax",
+                              "breakdownAmount": {
+                                "currencyCode": "USD",
+                                "currencyAmount": 500.0
+                              },
+                              "breakdowns": []
+                            },
+                            {
+                              "breakdownType": "ItemTaxAmount",
+                              "breakdownAmount": {
+                                "currencyCode": "USD",
+                                "currencyAmount": 40.0
+                              },
+                              "breakdowns": []
+                            }
+                          ],
+                          "lineItemContext": {
+                            "lineItemType": "GOODS",
+                            "itemIdentifiers": [
+                              {
+                                "itemIdentifierName": "ASIN",
+                                "itemIdentifierValue": "B0EXAMPLE1"
+                              }
+                            ],
+                            "itemDescription": "Widget A"
+                          },
+                          "relatedItemIdentifiers": [
+                            {
+                              "relatedIdentifierName": "PURCHASE_ORDER_IDS",
+                              "relatedIdentifierValue": [
+                                "PO123456"
+                              ]
+                            }
+                          ]
+                        }
+                    ],
+                    "nextTokenForLineItems": "5"
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInputCode",
+                        "message": "Invalid input message",
+                        "details": "Invalid input details"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "BigDecimal": {
+      "type": "number",
+      "description": "A signed decimal number."
+    },
+    "Currency": {
+      "type": "object",
+      "description": "A monetary amount with a currency code.",
+      "required": [
+        "currencyCode",
+        "currencyAmount"
+      ],
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "description": "The three-digit currency code in ISO 4217 format."
+        },
+        "currencyAmount": {
+          "description": "The monetary value.",
+          "$ref": "#/definitions/BigDecimal"
+        }
+      },
+      "example": {
+        "currencyCode": "USD",
+        "currencyAmount": 100.0
+      }
+    },
+    "Breakdown": {
+      "type": "object",
+      "required": [
+        "breakdownType",
+        "breakdownAmount"
+      ],
+      "properties": {
+        "breakdownType": {
+          "type": "string",
+          "description": "The type of charge.\n\n**Possible values for `invoiceAmountBreakdowns`:**\n\n* `Total`: Total invoice amount.\n* `InvoiceAmountWithoutTax`: Invoice amount excluding tax.\n* `TaxAmount`: Tax amount on the invoice.\n* `MiscCharges`: Miscellaneous charges on the invoice.\n* `Other`: Other breakdown type.\n\n**Possible values for `invoiceSettlementBreakdowns`:**\n\n* `AmountPaid`: Amount that has been paid.\n* `QueuedForPayment`: Amount queued for payment.\n* `QuickPayDiscount`: Quick pay discount amount.\n* `QuantityVarianceAmount`: Quantity variance amount.\n* `PriceVariance`: Price variance amount.\n* `Other`: Other settlement breakdown type.\n\n**Possible values for `totalAmountBreakdown` (line item level):**\n\n* `ItemCostWithoutTax`: Line item cost excluding tax.\n* `ItemTaxAmount`: Tax amount on the line item.\n* `Other`: Other line item breakdown type."
+        },
+        "breakdownAmount": {
+          "description": "The monetary amount of the charge.",
+          "$ref": "#/definitions/Currency"
+        },
+        "breakdowns": {
+          "type": "array",
+          "description": "A list of breakdowns that detail how the total amount is calculated.",
+          "items": {
+            "$ref": "#/definitions/Breakdown"
+          }
+        }
+      },
+      "description": "Details about the movement of money. Breakdowns are further categorized into breakdown types, breakdown amounts, and sub-breakdowns.",
+      "example": {
+        "breakdownType": "Total",
+        "breakdownAmount": {
+          "currencyCode": "USD",
+          "currencyAmount": 2500.0
+        },
+        "breakdowns": []
+      }
+    },
+    "BillingPeriod": {
+      "type": "object",
+      "description": "The billing period for an invoice.",
+      "required": [
+        "startDate",
+        "endDate"
+      ],
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "description": "The start of the billing period of an invoice. In ISO 8601 format.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "The end of the billing period of an invoice. In ISO 8601 format.",
+          "format": "date-time"
+        }
+      },
+      "example": {
+        "startDate": "2025-06-01T14:30:00Z",
+        "endDate": "2025-06-30T14:30:00Z"
+      }
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "example": {
+        "code": "InvalidInputCode",
+        "message": "Request parameters are not valid.",
+        "details": "Field XYZ contains value which is not in correct format."
+      },
+      "description": "Error response returned when the request is unsuccessful."
+    },
+    "ErrorList": {
+      "type": "object",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "description": "Error response returned when the request is unsuccessful.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      },
+      "example": {
+        "errors": [
+          {
+            "code": "InvalidInputCode",
+            "message": "Request parameters are not valid.",
+            "details": "Field XYZ contains value which is not in correct format."
+          }
+        ]
+      }
+    },
+    "PartnerMetadata": {
+      "type": "object",
+      "description": "Metadata about a partner (payer or payee) associated with the invoice.",
+      "required": [
+        "partnerId",
+        "partnerType"
+      ],
+      "properties": {
+        "partnerId": {
+          "type": "string",
+          "description": "The unique identifier for the partner. If the partner is a vendor, then this value is the `vendorGroupID`."
+        },
+        "partnerType": {
+          "type": "string",
+          "description": "The type of partner.",
+          "enum": [
+            "SELLER",
+            "VENDOR",
+            "AMAZON"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "SELLER",
+              "description": "The partner is registered as a seller with Amazon."
+            },
+            {
+              "value": "VENDOR",
+              "description": "The partner is registered as a vendor with Amazon."
+            },
+            {
+              "value": "AMAZON",
+              "description": "The partner is Amazon. For example, for an accounts-payable invoice, the payer is Amazon."
+            }
+          ]
+        },
+        "partnerEntities": {
+          "type": "array",
+          "description": "The list of entities associated with a partner.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "partnerName": {
+          "type": "string",
+          "description": "The name of the partner."
+        },
+        "partnerAddress": {
+          "type": "string",
+          "description": "The address of the partner."
+        },
+        "taxRegistrationNumber": {
+          "type": "string",
+          "description": "The tax registration number of the partner."
+        }
+      },
+      "example": {
+        "partnerId": "PAY123456",
+        "partnerType": "VENDOR",
+        "partnerName": "Example Vendor",
+        "partnerEntities": ["ABCDEF"],
+        "partnerAddress": "123 Main St, Seattle, WA",
+        "taxRegistrationNumber": "TAX123456"
+      }
+    },
+    "RelatedIdentifier": {
+      "type": "object",
+      "required": [
+        "relatedIdentifierName",
+        "relatedIdentifierValue"
+      ],
+      "properties": {
+        "relatedIdentifierName": {
+          "type": "string",
+          "description": "The name of the related identifier.",
+          "enum": [
+            "PAYEE_CODE",
+            "PURCHASE_ORDER_IDS",
+            "SHORTAGE_INVOICE_IDS",
+            "ASN_IDS",
+            "RETURN_IDS",
+            "AGREEMENT_IDS",
+            "PRODUCT_LINE",
+            "VENDOR_CODE",
+            "UNIQUE_PAYMENT_IDS",
+            "WAREHOUSE_ID"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "PAYEE_CODE",
+              "description": "Payee codes associated with the invoice."
+            },
+            {
+              "value": "PURCHASE_ORDER_IDS",
+              "description": "Purchase order identifiers associated with the invoice."
+            },
+            {
+              "value": "SHORTAGE_INVOICE_IDS",
+              "description": "Shortage invoice identifiers associated with the invoice."
+            },
+            {
+              "value": "ASN_IDS",
+              "description": "Advanced Shipping Notice identifiers associated with the invoice."
+            },
+            {
+              "value": "RETURN_IDS",
+              "description": "Return identifiers associated with the invoice."
+            },
+            {
+              "value": "AGREEMENT_IDS",
+              "description": "Agreement numbers associated with the invoice."
+            },
+            {
+              "value": "PRODUCT_LINE",
+              "description": "Product line identifier associated with the invoice."
+            },
+            {
+              "value": "VENDOR_CODE",
+              "description": "Vendor code identifier associated with the invoice."
+            },
+            {
+              "value": "UNIQUE_PAYMENT_IDS",
+              "description": "Remittance numbers associated with the invoice."
+            },
+            {
+              "value": "WAREHOUSE_ID",
+              "description": "Identifier associated with warehouse related to purchase order."
+            }
+          ]
+        },
+        "relatedIdentifierValue": {
+          "type": "array",
+          "description": "The corresponding related identifier values.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Related business identifier of the transaction.",
+      "example": {
+        "relatedIdentifierName": "PURCHASE_ORDER_IDS",
+        "relatedIdentifierValue": ["PO123456", "PO789012"]
+      }
+    },
+    "InvoiceHeader": {
+      "type": "object",
+      "description": "Represents the header-level information for an invoice, including parties involved (payer/payee), financial amounts, status, dates, and related business identifiers.",
+      "required": [
+        "invoiceNumber",
+        "invoiceIdentifier",
+        "invoiceStatus",
+        "invoiceType",
+        "payer",
+        "payee",
+        "issueDate",
+        "invoiceAmount",
+        "creationDate",
+        "lastUpdatedDate"
+      ],
+      "properties": {
+        "invoiceNumber": {
+          "type": "string",
+          "description": "The invoice number provided when the invoice was created."
+        },
+        "invoiceStatus": {
+          "type": "string",
+          "description": "The current state of the invoice.",
+          "enum": [
+            "IN_PROGRESS",
+            "REJECTED",
+            "PARTIALLY_PAID",
+            "PARTIALLY_DEDUCTED",
+            "PAID",
+            "DEDUCTED"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "IN_PROGRESS",
+              "description": "The invoice is in progress and pending processing."
+            },
+            {
+              "value": "REJECTED",
+              "description": "The invoice is rejected."
+            },
+            {
+              "value": "PARTIALLY_PAID",
+              "description": "The invoice is partially paid."
+            },
+            {
+              "value": "PARTIALLY_DEDUCTED",
+              "description": "The invoice is partially deducted. Used in AR (Accounts Receivable) invoices."
+            },
+            {
+              "value": "PAID",
+              "description": "The invoice is paid."
+            },
+            {
+              "value": "DEDUCTED",
+              "description": "The invoice is deducted. Used in AR (Accounts Receivable) invoices."
+            }
+          ]
+        },
+        "invoiceType": {
+          "type": "string",
+          "description": "The type of invoice.",
+          "enum": [
+            "AP_INVENTORY",
+            "OTHER"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "AP_INVENTORY",
+              "description": "Accounts payable inventory invoice."
+            },
+            {
+              "value": "OTHER",
+              "description": "The invoice does not belong to predefined categories."
+            }
+          ]
+        },
+        "billingPeriod": {
+          "description": "The billing period for an invoice.",
+          "$ref": "#/definitions/BillingPeriod"
+        },
+        "payer": {
+          "description": "The payer-related information.",
+          "$ref": "#/definitions/PartnerMetadata"
+        },
+        "payee": {
+          "description": "The payee-related information.",
+          "$ref": "#/definitions/PartnerMetadata"
+        },
+        "invoiceIdentifier": {
+          "type": "string",
+          "description": "The unique identifier for an invoice. For AP-Inventory invoices, this is formatted as `InvoiceNumber~PayeeCode`. This field can be used as an input to the `getInvoice` operation to fetch invoice details."
+        },
+        "issueDate": {
+          "type": "string",
+          "description": "When the invoice was issued. In ISO 8601 format.",
+          "format": "date-time"
+        },
+        "dueDate": {
+          "type": "string",
+          "description": "The due date of the invoice. In ISO 8601 format.",
+          "format": "date-time"
+        },
+        "paymentTerms": {
+          "type": "string",
+          "description": "Payment terms associated with the invoice."
+        },
+        "invoiceAmount": {
+          "description": "The total monetary amount of the invoice.",
+          "$ref": "#/definitions/Currency"
+        },
+        "invoiceAmountBreakdowns": {
+          "type": "array",
+          "description": "The breakdown of the invoice amount into sub-components.\n\n**Possible `breakdownType` values:**\n\n* `Total`: Total invoice amount.\n* `InvoiceAmountWithoutTax`: Invoice amount excluding tax.\n* `TaxAmount`: Tax amount on the invoice.\n* `MiscCharges`: Miscellaneous charges on the invoice.\n* `Other`: Other breakdown type.",
+          "items": {
+            "$ref": "#/definitions/Breakdown"
+          }
+        },
+        "invoiceSettlementBreakdowns": {
+          "type": "array",
+          "description": "The breakdown of the invoice settlement amount into sub-components.\n\n**Possible `breakdownType` values:**\n\n* `AmountPaid`: Amount that has been paid.\n* `QueuedForPayment`: Amount queued for payment.\n* `QuickPayDiscount`: Quick pay discount amount.\n* `QuantityVarianceAmount`: Quantity variance amount.\n* `PriceVariance`: Price variance amount.\n* `Other`: Other settlement breakdown type.",
+          "items": {
+            "$ref": "#/definitions/Breakdown"
+          }
+        },
+        "relatedIdentifiers": {
+          "type": "array",
+          "description": "A list of related business identifiers associated with the invoice.",
+          "items": {
+            "$ref": "#/definitions/RelatedIdentifier"
+          }
+        },
+        "creationDate": {
+          "type": "string",
+          "description": "When the invoice was created. In ISO 8601 format.",
+          "format": "date-time"
+        },
+        "lastUpdatedDate": {
+          "type": "string",
+          "description": "When the invoice was last updated. In ISO 8601 format.",
+          "format": "date-time"
+        }
+      },
+      "example": {
+        "invoiceNumber": "INV-202505001",
+        "invoiceIdentifier": "INV-202505001~ABCDEF",
+        "invoiceStatus": "IN_PROGRESS",
+        "invoiceType": "AP_INVENTORY",
+        "billingPeriod": {
+          "startDate": "2025-06-01T14:30:00Z",
+          "endDate": "2025-06-30T14:30:00Z"
+        },
+        "payee": {
+          "partnerId": "PAY123456",
+          "partnerType": "VENDOR",
+          "partnerName": "Example Vendor"
+        },
+        "payer": {
+          "partnerId": "AMAZON_US",
+          "partnerType": "AMAZON",
+          "partnerName": "Amazon"
+        },
+        "issueDate": "2025-06-18T14:30:00Z",
+        "dueDate": "2025-07-18T14:30:00Z",
+        "paymentTerms": "NET30",
+        "invoiceAmount": {
+          "currencyCode": "USD",
+          "currencyAmount": 2500.0
+        },
+        "invoiceAmountBreakdowns": [
+          {
+            "breakdownType": "Total",
+            "breakdownAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 2500.0
+            },
+            "breakdowns": [
+              {
+                "breakdownType": "InvoiceAmountWithoutTax",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": 2100.84
+                },
+                "breakdowns": []
+              },
+              {
+                "breakdownType": "TaxAmount",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": 399.16
+                },
+                "breakdowns": []
+              }
+            ]
+          }
+        ],
+        "invoiceSettlementBreakdowns": [
+          {
+            "breakdownType": "AmountPaid",
+            "breakdownAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 2490.0
+            },
+            "breakdowns": []
+          },
+          {
+            "breakdownType": "QueuedForPayment",
+            "breakdownAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 150.0
+            },
+            "breakdowns": []
+          },
+          {
+            "breakdownType": "QuickPayDiscount",
+            "breakdownAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": -25.0
+            },
+            "breakdowns": []
+          },
+          {
+            "breakdownType": "QuantityVarianceAmount",
+            "breakdownAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": -100.0
+            },
+            "breakdowns": []
+          },
+          {
+            "breakdownType": "PriceVariance",
+            "breakdownAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": -15.0
+            },
+            "breakdowns": []
+          }
+        ],
+        "relatedIdentifiers": [
+          {
+            "relatedIdentifierName": "PURCHASE_ORDER_IDS",
+            "relatedIdentifierValue": ["PO123456", "PO789012"]
+          },
+          {
+            "relatedIdentifierName": "UNIQUE_PAYMENT_IDS",
+            "relatedIdentifierValue": ["PMT-98765"]
+          },
+          {
+            "relatedIdentifierName": "VENDOR_CODE",
+            "relatedIdentifierValue": ["VC-001"]
+          }
+        ],
+        "creationDate": "2025-06-18T14:30:00Z",
+        "lastUpdatedDate": "2025-09-27T09:00:00Z"
+      }
+    },
+    "ItemIdentifier": {
+      "type": "object",
+      "description": "Identifier for an item in the invoice line item.",
+      "required": [
+        "itemIdentifierName",
+        "itemIdentifierValue"
+      ],
+      "properties": {
+        "itemIdentifierName": {
+          "type": "string",
+          "description": "The type of item identifier.",
+          "enum": [
+            "ASIN",
+            "EXTERNAL_ID",
+            "SKU",
+            "UPC",
+            "EAN",
+            "ISBN"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "ASIN",
+              "description": "Amazon Standard Identification Number."
+            },
+            {
+              "value": "EXTERNAL_ID",
+              "description": "External identifier provided for the ASIN."
+            },
+            {
+              "value": "SKU",
+              "description": "Stock Keeping Unit."
+            },
+            {
+              "value": "UPC",
+              "description": "Universal Product Code."
+            },
+            {
+              "value": "EAN",
+              "description": "European Article Number."
+            },
+            {
+              "value": "ISBN",
+              "description": "International Standard Book Number."
+            }
+          ]
+        },
+        "itemIdentifierValue": {
+          "type": "string",
+          "description": "The value of the item identifier."
+        }
+      },
+      "example": {
+        "itemIdentifierName": "ASIN",
+        "itemIdentifierValue": "B0EXAMPLE1"
+      }
+    },
+    "ServiceChargePeriod": {
+      "type": "object",
+      "description": "The time period for a service charge.",
+      "required": [
+        "startDate",
+        "endDate"
+      ],
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "description": "When the service charge period starts. In ISO 8601 format.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "When the service charge period ends. In ISO 8601 format.",
+          "format": "date-time"
+        }
+      },
+      "example": {
+        "startDate": "2025-06-01T00:00:00Z",
+        "endDate": "2025-06-30T23:59:59Z"
+      }
+    },
+    "LineItemContext": {
+      "type": "object",
+      "description": "Contextual information about an invoice line item.",
+      "required": [
+        "lineItemType"
+      ],
+      "properties": {
+        "lineItemType": {
+          "type": "string",
+          "description": "The type of line item.",
+          "enum": [
+            "GOODS",
+            "SERVICES",
+            "OTHERS"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "GOODS",
+              "description": "Physical goods."
+            },
+            {
+              "value": "SERVICES",
+              "description": "Services."
+            },
+            {
+              "value": "OTHERS",
+              "description": "A line item that does not fall under predefined categories."
+            }
+          ]
+        },
+        "itemIdentifiers": {
+          "type": "array",
+          "description": "A list of identifiers for the item.",
+          "items": {
+            "$ref": "#/definitions/ItemIdentifier"
+          }
+        },
+        "itemDescription": {
+          "type": "string",
+          "description": "A description of the item."
+        },
+        "serviceChargeType": {
+          "type": "string",
+          "description": "The type of service charge.",
+          "enum": [
+            "DAMAGE_ALLOWANCE",
+            "PRICE_PROTECTION",
+            "FBA_INVENTORY_STORAGE_FEE",
+            "OTHER"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "DAMAGE_ALLOWANCE",
+              "description": "Charge for damage allowance."
+            },
+            {
+              "value": "PRICE_PROTECTION",
+              "description": "Charge for price protection."
+            },
+            {
+              "value": "FBA_INVENTORY_STORAGE_FEE",
+              "description": "FBA inventory storage fee."
+            },
+            {
+              "value": "OTHER",
+              "description": "Other service charge type."
+            }
+          ]
+        },
+        "serviceChargePeriod": {
+          "description": "The service charge period.",
+          "$ref": "#/definitions/ServiceChargePeriod"
+        },
+        "matchingContext": {
+          "description": "Information related to matching of invoiced quantity with Amazon systems.",
+          "$ref": "#/definitions/MatchingContext"
+        }
+      },
+      "example": {
+        "lineItemType": "GOODS",
+        "itemIdentifiers": [
+          {
+            "itemIdentifierName": "ASIN",
+            "itemIdentifierValue": "B0EXAMPLE1"
+          }
+        ],
+        "itemDescription": "Widget A",
+        "serviceChargeType": "DAMAGE_ALLOWANCE",
+        "serviceChargePeriod": {
+          "startDate": "2025-06-01T00:00:00Z",
+          "endDate": "2025-06-30T23:59:59Z"
+        },
+        "matchingContext": {
+          "matchedQuantity": 10,
+          "matchedAmount": {
+            "currencyCode": "USD",
+            "currencyAmount": 480.0
+          },
+          "paidQuantity": 10,
+          "paidAmount": {
+            "currencyCode": "USD",
+            "currencyAmount": 460.0
+          },
+          "quantityVariance": 0,
+          "priceVariance": {
+            "currencyCode": "USD",
+            "currencyAmount": 20.0
+          },
+          "varianceReasons": [
+            {
+              "varianceType": "PPV",
+              "defectTypes": ["PRODUCT_COST_NOT_ACTIVE"]
+            }
+          ]
+        }
+      }
+    },
+    "VarianceReason": {
+      "type": "object",
+      "description": "The type and underlying defect classifications explaining discrepancies between expected and actual invoice values.",
+      "required": [
+        "varianceType"
+      ],
+      "properties": {
+        "varianceType": {
+          "type": "string",
+          "description": "The type of variance.",
+          "enum": [
+            "PQV",
+            "PPV",
+            "OTHER"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "PQV",
+              "description": "Purchase quantity variance."
+            },
+            {
+              "value": "PPV",
+              "description": "Purchase price variance."
+            },
+            {
+              "value": "OTHER",
+              "description": "Other variance type."
+            }
+          ]
+        },
+        "defectTypes": {
+          "type": "array",
+          "description": "List of defect types associated with the variance. These represent root cause classifications for the variance.\n\n**Possible values for PPV (Purchase Price Variance):**\n\n* `DEALBUY`: Amazon raised discounted POs at vendor-accepted discount costs, but the vendor invoiced at regular costs.\n* `PRODUCT_COST_NOT_ACTIVE`: Vendor is using a cost that is not currently active; it may be pending approval or is a historical cost.\n* `PRODUCT_COST_NOT_REGISTERED`: Vendor is using a cost that is not registered in Amazon's system, often due to offline negotiations not yet updated.\n* `VENDOR_LOWERING_COST_AT_PO_CONFIRMATION`: Vendor confirmed the PO at a lower cost but invoiced at a different (higher) amount.\n* `CCOGS_PRICE_PROTECTION_AGREEMENT_PPA`: A Price Protection clause in the vendor's Terms and Conditions agreement applies to this ASIN.\n* `FALSE_CCOGS_PPA`: Invoiced cost exceeded the confirmed PO cost due to a cost price adjustment by Amazon, likely from a previous cost decrease within the same period.\n* `AMAZON_POC_LOWERING_COST_ON_PO`: Amazon's systems reduced the cost price for this ASIN post PO confirmation, most likely due to a previous cost price decrease or on request.\n* `REJECTED_PRICE_INCREASE_ON_PO`: Vendor submitted a cost price increase that was denied, but still invoiced at the increased cost.\n* `LIST_PRICE_DISCOUNT_ISSUES`: The List Price on the PO and invoice do not match, or the Discount code on the PO does not match the invoice.\n* `ROUNDING_ISSUES`: Price variance caused by foreign exchange currency conversion or decimal place rounding differences.\n* `OTHER`: Defect type not belonging to a predefined category.\n\n**Possible values for PQV (Purchase Quantity Variance):**\n\n* `UNRECOGNISED_ASIN`: The ASIN on the invoice is not recognized or does not match Amazon's records.\n* `OVERBILLING`: The invoiced quantity exceeds the quantity received or expected by Amazon.\n* `DUPLICATE_INVOICE_DEFECT`: The invoice is a duplicate of a previously submitted invoice.\n* `DELETED_APPOINTMENT`: The delivery appointment associated with this shipment was deleted.\n* `NO_APPOINTMENT`: No delivery appointment was found for this shipment.\n* `SHORTAGES_IN_TRANSIT`: Quantity shortages detected during transit — fewer units arrived than were shipped.\n* `ASIN_MISMATCH`: Amazon's systems received an ASIN with a different cost than the one ordered on the PO, possibly due to incorrect smart-matching or cross-matching.\n* `FEED_DEFECTS`: Vendor's price feed contains defects such as unrecognized UPC/EAN codes or incorrect supplier IDs for multi-supplier updates.\n* `REJECTED_LINE_ITEM_ON_PO`: Vendor confirmed this PO line item as Rejected or On-hold but still shipped the products.\n* `FAILED_PO_CONFIRMATION`: Vendor's latest PO confirmation message for this line item failed processing and was not translated correctly.\n* `OTHER`: Defect type not belonging to a predefined category.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "example": {
+        "varianceType": "PQV",
+        "defectTypes": ["SHORTAGES_IN_TRANSIT", "OVERBILLING"]
+      }
+    },
+    "MatchingContext": {
+      "type": "object",
+      "description": "How an invoice line item's quantity and price were matched against expected values, including any variances and their underlying reasons.",
+      "required": [
+        "matchedQuantity",
+        "matchedAmount"
+      ],
+      "properties": {
+        "matchedQuantity": {
+          "type": "integer",
+          "description": "The quantity that was matched.",
+          "format": "int32"
+        },
+        "matchedAmount": {
+          "description": "The monetary amount that was matched.",
+          "$ref": "#/definitions/Currency"
+        },
+        "quantityVariance": {
+          "type": "integer",
+          "description": "The difference between expected and actual quantity.",
+          "format": "int32"
+        },
+        "priceVariance": {
+          "description": "The difference between expected and actual price.",
+          "$ref": "#/definitions/Currency"
+        },
+        "paidQuantity": {
+          "type": "integer",
+          "description": "The quantity that has been paid for.",
+          "format": "int32"
+        },
+        "paidAmount": {
+          "description": "The monetary amount that has been paid.",
+          "$ref": "#/definitions/Currency"
+        },
+        "varianceReasons": {
+          "type": "array",
+          "description": "Reasons for the variance.",
+          "items": {
+            "$ref": "#/definitions/VarianceReason"
+          }
+        }
+      },
+      "example": {
+        "matchedQuantity": 10,
+        "matchedAmount": {
+          "currencyCode": "USD",
+          "currencyAmount": 500.0
+        },
+        "paidQuantity": 8,
+        "paidAmount": {
+          "currencyCode": "USD",
+          "currencyAmount": 400.0
+        },
+        "quantityVariance": 2,
+        "priceVariance": {
+          "currencyCode": "USD",
+          "currencyAmount": 10.0
+        },
+        "varianceReasons": [
+          {
+            "varianceType": "PQV",
+            "defectTypes": ["SHORTAGES_IN_TRANSIT"]
+          }
+        ]
+      }
+    },
+    "InvoiceItem": {
+      "type": "object",
+      "description": "A line item within an invoice, including unit costs, quantities, tax information, and contextual details about the goods or services being invoiced.",
+      "properties": {
+        "lineItemId": {
+          "type": "string",
+          "description": "The unique identifier for the line item."
+        },
+        "unitCost": {
+          "description": "The cost per unit of the line item.",
+          "$ref": "#/definitions/Currency"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "The number of units for the line item.",
+          "format": "int32"
+        },
+        "taxRateCodes": {
+          "type": "array",
+          "description": "A list of country code and tax rate combinations applied to the line item. Example: `DE 19`",
+          "items": {
+            "type": "string"
+          }
+        },
+        "totalAmount": {
+          "description": "The total monetary amount for the line item, including tax.",
+          "$ref": "#/definitions/Currency"
+        },
+        "totalAmountBreakdown": {
+          "type": "array",
+          "description": "The breakdown of the total amount into sub-components.\n\n**Possible `breakdownType` values:**\n\n* `ItemCostWithoutTax`: Line item cost excluding tax.\n* `ItemTaxAmount`: Tax amount on the line item.\n* `Other`: Other line item breakdown type.",
+          "items": {
+            "$ref": "#/definitions/Breakdown"
+          }
+        },
+        "lineItemContext": {
+          "description": "Contextual information about the line item.",
+          "$ref": "#/definitions/LineItemContext"
+        },
+        "relatedItemIdentifiers": {
+          "type": "array",
+          "description": "List of related item identifiers for the line item.",
+          "items": {
+            "$ref": "#/definitions/RelatedIdentifier"
+          }
+        }
+      },
+      "required": [
+        "lineItemId",
+        "totalAmount",
+        "lineItemContext"
+      ],
+      "example": {
+        "lineItemId": "LI-001",
+        "unitCost": {
+          "currencyCode": "USD",
+          "currencyAmount": 50.0
+        },
+        "quantity": 10,
+        "taxRateCodes": ["DE 19"],
+        "totalAmount": {
+          "currencyCode": "USD",
+          "currencyAmount": 540.0
+        },
+        "totalAmountBreakdown": [
+          {
+            "breakdownType": "ItemCostWithoutTax",
+            "breakdownAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 500.0
+            },
+            "breakdowns": []
+          },
+          {
+            "breakdownType": "ItemTaxAmount",
+            "breakdownAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 40.0
+            },
+            "breakdowns": []
+          }
+        ],
+        "lineItemContext": {
+          "lineItemType": "GOODS",
+          "itemIdentifiers": [
+            {
+              "itemIdentifierName": "ASIN",
+              "itemIdentifierValue": "B0EXAMPLE1"
+            },
+            {
+              "itemIdentifierName": "EXTERNAL_ID",
+              "itemIdentifierValue": "EXT-99887"
+            }
+          ],
+          "itemDescription": "Widget A",
+          "serviceChargeType": "DAMAGE_ALLOWANCE",
+          "serviceChargePeriod": {
+            "startDate": "2025-06-01T00:00:00Z",
+            "endDate": "2025-06-30T23:59:59Z"
+          },
+          "matchingContext": {
+            "matchedQuantity": 8,
+            "matchedAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 400.0
+            },
+            "paidQuantity": 8,
+            "paidAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 385.0
+            },
+            "quantityVariance": 2,
+            "priceVariance": {
+              "currencyCode": "USD",
+              "currencyAmount": 15.0
+            },
+            "varianceReasons": [
+              {
+                "varianceType": "PQV",
+                "defectTypes": ["SHORTAGES_IN_TRANSIT"]
+              },
+              {
+                "varianceType": "PPV",
+                "defectTypes": ["PRODUCT_COST_NOT_ACTIVE"]
+              }
+            ]
+          }
+        },
+        "relatedItemIdentifiers": [
+          {
+            "relatedIdentifierName": "PURCHASE_ORDER_IDS",
+            "relatedIdentifierValue": ["PO123456"]
+          },
+          {
+            "relatedIdentifierName": "ASN_IDS",
+            "relatedIdentifierValue": ["ASN-5678"]
+          }
+        ]
+      }
+    },
+    "GetInvoicesResponse": {
+      "type": "object",
+      "description": "The response to the `getInvoiceHeaders` operation.",
+      "properties": {
+        "invoices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/InvoiceHeader"
+          },
+          "description": "A list of invoices with header-level details."
+        },
+        "numOfRecords": {
+          "type": "integer",
+          "format": "int32",
+          "example": 10,
+          "description": "The number of records returned."
+        },
+        "nextToken": {
+          "type": "string",
+          "example": "11",
+          "description": "The response includes `nextToken` when the number of invoices exceeds the default page size value. To get the next page of results, call the operation with this token and include the same arguments as the call that produced the token. To get a complete list, call this operation until `nextToken` is `null`. Note that this operation can return empty pages."
+        }
+      },
+      "example": {
+        "invoices": [
+          {
+            "invoiceNumber": "INV-202505001",
+            "invoiceIdentifier": "INV-202505001~ABCDEF",
+            "invoiceStatus": "IN_PROGRESS",
+            "invoiceType": "AP_INVENTORY",
+            "billingPeriod": {
+              "startDate": "2025-06-01T14:30:00Z",
+              "endDate": "2025-06-30T14:30:00Z"
+            },
+            "payee": {
+              "partnerId": "PAY123456",
+              "partnerType": "VENDOR",
+              "partnerName": "Example Vendor"
+            },
+            "payer": {
+              "partnerId": "AMAZON_US",
+              "partnerType": "AMAZON",
+              "partnerName": "Amazon"
+            },
+            "issueDate": "2025-06-18T14:30:00Z",
+            "dueDate": "2025-07-18T14:30:00Z",
+            "paymentTerms": "NET30",
+            "invoiceAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 2500.0
+            },
+            "invoiceAmountBreakdowns": [
+              {
+                "breakdownType": "Total",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": 2500.0
+                },
+                "breakdowns": [
+                  {
+                    "breakdownType": "InvoiceAmountWithoutTax",
+                    "breakdownAmount": {
+                      "currencyCode": "USD",
+                      "currencyAmount": 2100.84
+                    },
+                    "breakdowns": []
+                  },
+                  {
+                    "breakdownType": "TaxAmount",
+                    "breakdownAmount": {
+                      "currencyCode": "USD",
+                      "currencyAmount": 399.16
+                    },
+                    "breakdowns": []
+                  }
+                ]
+              }
+            ],
+            "invoiceSettlementBreakdowns": [
+              {
+                "breakdownType": "AmountPaid",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": 2490.0
+                },
+                "breakdowns": []
+              },
+              {
+                "breakdownType": "QueuedForPayment",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": 150.0
+                },
+                "breakdowns": []
+              },
+              {
+                "breakdownType": "QuickPayDiscount",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": -25.0
+                },
+                "breakdowns": []
+              },
+              {
+                "breakdownType": "QuantityVarianceAmount",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": -100.0
+                },
+                "breakdowns": []
+              },
+              {
+                "breakdownType": "PriceVariance",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": -15.0
+                },
+                "breakdowns": []
+              }
+            ],
+            "relatedIdentifiers": [
+              {
+                "relatedIdentifierName": "PURCHASE_ORDER_IDS",
+                "relatedIdentifierValue": ["PO123456", "PO789012"]
+              },
+              {
+                "relatedIdentifierName": "UNIQUE_PAYMENT_IDS",
+                "relatedIdentifierValue": ["PMT-98765"]
+              },
+              {
+                "relatedIdentifierName": "VENDOR_CODE",
+                "relatedIdentifierValue": ["VC-001"]
+              }
+            ],
+            "creationDate": "2025-06-18T14:30:00Z",
+            "lastUpdatedDate": "2025-09-27T09:00:00Z"
+          }
+        ],
+        "numOfRecords": 1,
+        "nextToken": "11"
+      }
+    },
+    "GetInvoiceResponse": {
+      "type": "object",
+      "description": "The response to the `getInvoice` operation.",
+      "properties": {
+        "invoiceHeader": {
+          "$ref": "#/definitions/InvoiceHeader"
+        },
+        "invoiceItems": {
+          "type": "array",
+          "description": "A list of invoice line items.",
+          "items": {
+            "$ref": "#/definitions/InvoiceItem"
+          }
+        },
+        "nextTokenForLineItems": {
+          "type": "string",
+          "description": "A token you can use to retrieve the next page of line items."
+        }
+      },
+      "example": {
+        "invoiceHeader": {
+            "invoiceNumber": "INV-202505001",
+            "invoiceIdentifier": "INV-202505001~ABCDEF",
+            "invoiceStatus": "IN_PROGRESS",
+            "invoiceType": "AP_INVENTORY",
+            "billingPeriod": {
+              "startDate": "2025-06-01T14:30:00Z",
+              "endDate": "2025-06-30T14:30:00Z"
+            },
+            "payee": {
+              "partnerId": "PAY123456",
+              "partnerType": "VENDOR",
+              "partnerName": "Example Vendor"
+            },
+            "payer": {
+              "partnerId": "AMAZON_US",
+              "partnerType": "AMAZON",
+              "partnerName": "Amazon"
+            },
+            "issueDate": "2025-06-18T14:30:00Z",
+            "dueDate": "2025-07-18T14:30:00Z",
+            "paymentTerms": "NET30",
+            "invoiceAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 540.0
+            },
+            "invoiceAmountBreakdowns": [
+              {
+                "breakdownType": "Total",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": 540.0
+                },
+                "breakdowns": [
+                  {
+                    "breakdownType": "InvoiceAmountWithoutTax",
+                    "breakdownAmount": {
+                      "currencyCode": "USD",
+                      "currencyAmount": 500.0
+                    },
+                    "breakdowns": []
+                  },
+                  {
+                    "breakdownType": "TaxAmount",
+                    "breakdownAmount": {
+                      "currencyCode": "USD",
+                      "currencyAmount": 40.0
+                    },
+                    "breakdowns": []
+                  }
+                ]
+              }
+            ],
+            "invoiceSettlementBreakdowns": [
+              {
+                "breakdownType": "AmountPaid",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": 530.0
+                },
+                "breakdowns": []
+              },
+              {
+                "breakdownType": "QuickPayDiscount",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": -5.0
+                },
+                "breakdowns": []
+              },
+              {
+                "breakdownType": "PriceVariance",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": -10.0
+                },
+                "breakdowns": []
+              },
+              {
+                "breakdownType": "QueuedForPayment",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": 25.0
+                },
+                "breakdowns": []
+              }
+            ],
+            "relatedIdentifiers": [
+              {
+                "relatedIdentifierName": "PURCHASE_ORDER_IDS",
+                "relatedIdentifierValue": ["PO123456"]
+              },
+              {
+                "relatedIdentifierName": "UNIQUE_PAYMENT_IDS",
+                "relatedIdentifierValue": ["PMT-98765"]
+              },
+              {
+                "relatedIdentifierName": "VENDOR_CODE",
+                "relatedIdentifierValue": ["VC-001"]
+              }
+            ],
+            "creationDate": "2025-06-18T14:30:00Z",
+            "lastUpdatedDate": "2025-09-27T09:00:00Z"
+        },
+        "invoiceItems": [
+            {
+              "lineItemId": "LI-001",
+              "unitCost": {
+                "currencyCode": "USD",
+                "currencyAmount": 50.0
+              },
+              "quantity": 10,
+              "taxRateCodes": ["DE 19"],
+              "totalAmount": {
+                "currencyCode": "USD",
+                "currencyAmount": 540.0
+              },
+              "totalAmountBreakdown": [
+                {
+                  "breakdownType": "ItemCostWithoutTax",
+                  "breakdownAmount": {
+                    "currencyCode": "USD",
+                    "currencyAmount": 500.0
+                  },
+                  "breakdowns": []
+                },
+                {
+                  "breakdownType": "ItemTaxAmount",
+                  "breakdownAmount": {
+                    "currencyCode": "USD",
+                    "currencyAmount": 40.0
+                  },
+                  "breakdowns": []
+                }
+              ],
+              "lineItemContext": {
+                "lineItemType": "GOODS",
+                "itemIdentifiers": [
+                  {
+                    "itemIdentifierName": "ASIN",
+                    "itemIdentifierValue": "B0EXAMPLE1"
+                  },
+                  {
+                    "itemIdentifierName": "EXTERNAL_ID",
+                    "itemIdentifierValue": "EXT-99887"
+                  }
+                ],
+                "itemDescription": "Widget A",
+                "matchingContext": {
+                  "matchedQuantity": 8,
+                  "matchedAmount": {
+                    "currencyCode": "USD",
+                    "currencyAmount": 400.0
+                  },
+                  "paidQuantity": 8,
+                  "paidAmount": {
+                    "currencyCode": "USD",
+                    "currencyAmount": 385.0
+                  },
+                  "quantityVariance": 2,
+                  "priceVariance": {
+                    "currencyCode": "USD",
+                    "currencyAmount": 15.0
+                  },
+                  "varianceReasons": [
+                    {
+                      "varianceType": "PQV",
+                      "defectTypes": ["SHORTAGES_IN_TRANSIT"]
+                    },
+                    {
+                      "varianceType": "PPV",
+                      "defectTypes": ["PRODUCT_COST_NOT_ACTIVE"]
+                    }
+                  ]
+                }
+              },
+              "relatedItemIdentifiers": [
+                {
+                  "relatedIdentifierName": "PURCHASE_ORDER_IDS",
+                  "relatedIdentifierValue": ["PO123456"]
+                },
+                {
+                  "relatedIdentifierName": "ASN_IDS",
+                  "relatedIdentifierValue": ["ASN-5678"]
+                }
+              ]
+            }
+        ],
+        "nextTokenForLineItems": "5"
+      }
+    }
+  }
+}
