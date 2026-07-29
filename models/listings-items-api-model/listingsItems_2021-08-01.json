@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "The Selling Partner API for Listings Items (Listings Items API) provides programmatic access to selling partner listings on Amazon. Use this API in collaboration with the Selling Partner API for Product Type Definitions, which you use to retrieve the information about Amazon product types needed to use the Listings Items API.\n\nFor more information, see the [Listings Items API Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/listings-items-api-v2021-08-01-use-case-guide).",
+    "description": "The Selling Partner API for Listings Items (Listings Items API) provides programmatic access to selling partner listings on Amazon. Use this API in collaboration with the Selling Partner API for Product Type Definitions, which you can use to retrieve the information about Amazon product types needed to use the Listings Items API.\n\nFor more information, refer to the [Listings Items API Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/listings-items-api-v2021-08-01-use-case-guide).",
     "version": "2021-08-01",
     "title": "Selling Partner API for Listings Items",
     "contact": {
@@ -24,6 +24,358 @@
     "application/json"
   ],
   "paths": {
+    "/listings/2021-08-01/items/{sellerId}/{sku}/draft": {
+      "put": {
+        "tags": [
+          "listings"
+        ],
+        "description": "Creates or fully-updates a draft listings item for a selling partner. Draft listings allow sellers to prepare product information before publishing to the live catalog.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput can receive higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api) in the Selling Partner API documentation.",
+        "operationId": "putListingsItemDraft",
+        "x-amzn-api-internal": true,
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sellerId",
+            "description": "A selling partner identifier, such as a merchant account or vendor code.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sku",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "description": "A comma-delimited list of Amazon store identifiers for the request.",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "maxItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "x-example": "ATVPDKIKX0DER"
+          },
+          {
+            "name": "issueLocale",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first Amazon store is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "x-example": "en_US"
+          },
+          {
+            "name": "body",
+            "description": "The request body schema for the `putListingsItemDraft` operation.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListingsItemDraftPutRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully understood the draft listings item request. Refer to the response to determine if the submission has been accepted.",
+            "schema": {
+              "$ref": "#/definitions/ListingsItemSubmissionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "sku":"GM-ZDPI-9B4E",
+                "status":"ACCEPTED",
+                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
+                "issues":[]
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "sku": "GM-ZDPI-9B4E",
+                    "status": "ACCEPTED",
+                    "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+                    "issues": []
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sku": {
+                        "value": "BadSKU"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "BAD_REQUEST",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
+    },
+    "/listings/2021-08-01/items/{sellerId}/{sku}/suggestionSources": {
+      "put": {
+        "tags": [
+          "listings"
+        ],
+        "description": "Creates AI-generated suggestions for attributes in a listings item.",
+        "operationId": "putListingsItemSuggestions",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sellerId",
+            "description": "A selling partner identifier. Must be a merchant account or a vendor code.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sku",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "marketplaceIds",
+            "description": "A comma-delimited list of Amazon store identifiers for the request. Limited to 1 value for this use case. Valid values for the pilot are A2Q3Y263D00KWC (BR) and A33AVAJ2PDY3EV (TR).",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "maxItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv"
+          },
+          {
+            "name": "issueLocale",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first Amazon store is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": "The request body schema for the `putListingsItemSuggestions` operation.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListingsItemSuggestionRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully processed the suggestion request. Refer to the response to determine if the submission has been accepted.",
+            "schema": {
+              "$ref": "#/definitions/ListingsItemSubmissionResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "sku":"GM-ZDPI-9B4E",
+                "status":"ACCEPTED",
+                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
+                "issues":[]
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                    }
+                  },
+                  "response": {
+                    "sku": "GM-ZDPI-9B4E",
+                    "status": "ACCEPTED",
+                    "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+                    "issues": []
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "sku": {
+                        "value": "BadSKU"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "BAD_REQUEST",
+                        "message": "Invalid input",
+                        "details": "Invalid input"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
     "/listings/2021-08-01/items/{sellerId}/{sku}": {
       "delete": {
         "tags": [
@@ -47,14 +399,14 @@
           },
           {
             "name": "sku",
-            "description": "A selling partner provided identifier for an Amazon listing.",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "marketplaceIds",
-            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "description": "A comma-delimited list of Amazon store identifiers for the request.",
             "in": "query",
             "required": true,
             "type": "array",
@@ -67,7 +419,7 @@
           },
           {
             "name": "issueLocale",
-            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when a localization is not available in the specified locale.",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first Amazon store is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -76,7 +428,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully understood the listings item delete request. See the response to determine whether the submission has been accepted.",
+            "description": "Successfully understood the listings item delete request. Refer to the response to determine whether the submission has been accepted.",
             "schema": {
               "$ref": "#/definitions/ListingsItemSubmissionResponse"
             },
@@ -249,18 +601,17 @@
           },
           {
             "name": "sku",
-            "description": "A selling partner provided identifier for an Amazon listing.",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "marketplaceIds",
-            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "description": "A comma-delimited list of Amazon store identifiers for the request.",
             "in": "query",
             "required": true,
             "type": "array",
-            "maxItems": 1,
             "items": {
               "type": "string"
             },
@@ -269,7 +620,7 @@
           },
           {
             "name": "issueLocale",
-            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when a localization is not available in the specified locale.",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first Amazon store is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -299,23 +650,23 @@
                 },
                 {
                   "value": "attributes",
-                  "description": "A JSON object containing structured listing item attribute data keyed by attribute name."
+                  "description": "JSON object containing structured listing item attribute data keyed by attribute name."
                 },
                 {
                   "value": "issues",
-                  "description": "The issues associated with the listing item."
+                  "description": "Issues associated with the listing item."
                 },
                 {
                   "value": "offers",
-                  "description": "The current offers for the listing item."
+                  "description": "Current offers for the listing item."
                 },
                 {
                   "value": "fulfillmentAvailability",
-                  "description": "The fulfillment availability details for the listing item."
+                  "description": "Fulfillment availability details for the listing item."
                 },
                 {
                   "value": "procurement",
-                  "description": "Vendor procurement details for the listing item. "
+                  "description": "Vendor procurement details for the listing item."
                 },
                 {
                   "value": "relationships",
@@ -369,6 +720,21 @@
                       "height": 500,
                       "width": 500
                     }
+                  },
+                  {
+                    "marketplaceId": "A2EUQ1WTGCTBG2",
+                    "asin": "B071VG5N9D",
+                    "productType": "LUGGAGE",
+                    "conditionType": "new_new",
+                    "status": [],
+                    "itemName": "Hardside Carry-On Spinner Suitcase Luggage",
+                    "createdDate": "2021-02-02T01:00:00Z",
+                    "lastUpdatedDate": "2021-03-05T00:00:00Z",
+                    "mainImage": {
+                      "link": "https://www.example.com/luggage.png",
+                      "height": 500,
+                      "width": 500
+                    }
                   }
                 ],
                 "offers": [
@@ -378,6 +744,18 @@
                     "price": {
                       "currencyCode": "USD",
                       "amount": "100.00"
+                    },
+                    "audience": {
+                      "value": "ALL",
+                      "displayName": "Sell on Amazon"
+                    }
+                  },
+                  {
+                    "marketplaceId": "A2EUQ1WTGCTBG2",
+                    "offerType": "B2C",
+                    "price": {
+                      "currencyCode": "CAD",
+                      "amount": "130.00"
                     },
                     "audience": {
                       "value": "ALL",
@@ -397,7 +775,8 @@
                     "message": "'size' is required but not supplied.",
                     "severity": "ERROR",
                     "attributeNames": ["size"],
-                    "categories": ["MISSING_ATTRIBUTE"]
+                    "categories": ["MISSING_ATTRIBUTE"],
+                    "marketplaceIds": ["ATVPDKIKX0DER"]
                   },
                   {
                     "code": "18027",
@@ -414,11 +793,12 @@
                         "status": "EXEMPT_UNTIL_EXPIRY_DATE",
                         "expiryDate": "2025-05-28T00:36:48.914Z"
                       }
-                    }
+                    },
+                    "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
                   },
                   {
                     "code": "99300",
-                    "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page)",
+                    "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page).",
                     "severity": "ERROR",
                     "categories": [],
                     "enforcements": {
@@ -430,7 +810,8 @@
                       "exemption": {
                         "status": "EXEMPT"
                       }
-                    }
+                    },
+                    "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
                   },
                   {
                     "code": "18155",
@@ -446,7 +827,8 @@
                       "exemption": {
                         "status": "NOT_EXEMPT"
                       }
-                    }
+                    },
+                    "marketplaceIds": ["ATVPDKIKX0DER"]
                   },
                   {
                     "code": "18742",
@@ -462,7 +844,8 @@
                       "exemption": {
                         "status": "NOT_EXEMPT"
                       }
-                    }
+                    },
+                    "marketplaceIds": ["ATVPDKIKX0DER"]
                   }
                 ]
               }
@@ -495,6 +878,21 @@
                           "height": 500,
                           "width": 500
                         }
+                      },
+                      {
+                        "marketplaceId": "A2EUQ1WTGCTBG2",
+                        "asin": "B071VG5N9D",
+                        "productType": "LUGGAGE",
+                        "conditionType": "new_new",
+                        "status": [],
+                        "itemName": "Hardside Carry-On Spinner Suitcase Luggage",
+                        "createdDate": "2021-02-02T01:00:00Z",
+                        "lastUpdatedDate": "2021-03-05T00:00:00Z",
+                        "mainImage": {
+                          "link": "https://www.example.com/luggage.png",
+                          "height": 500,
+                          "width": 500
+                        }
                       }
                     ],
                     "offers": [
@@ -504,6 +902,18 @@
                         "price": {
                           "currencyCode": "USD",
                           "amount": "100.00"
+                        },
+                        "audience": {
+                          "value": "ALL",
+                          "displayName": "Sell on Amazon"
+                        }
+                      },
+                      {
+                        "marketplaceId": "A2EUQ1WTGCTBG2",
+                        "offerType": "B2C",
+                        "price": {
+                          "currencyCode": "CAD",
+                          "amount": "130.00"
                         },
                         "audience": {
                           "value": "ALL",
@@ -523,7 +933,8 @@
                         "message": "'size' is required but not supplied.",
                         "severity": "ERROR",
                         "attributeNames": ["size"],
-                        "categories": ["MISSING_ATTRIBUTE"]
+                        "categories": ["MISSING_ATTRIBUTE"],
+                        "marketplaceIds": ["ATVPDKIKX0DER"]
                       },
                       {
                         "code": "18027",
@@ -540,11 +951,12 @@
                             "status": "EXEMPT_UNTIL_EXPIRY_DATE",
                             "expiryDate": "2025-05-28T00:36:48.914Z"
                           }
-                        }
+                        },
+                        "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
                       },
                       {
                         "code": "99300",
-                        "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page)",
+                        "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page).",
                         "severity": "ERROR",
                         "categories": [],
                         "enforcements": {
@@ -556,7 +968,8 @@
                           "exemption": {
                             "status": "EXEMPT"
                           }
-                        }
+                        },
+                        "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
                       },
                       {
                         "code": "18155",
@@ -572,7 +985,8 @@
                           "exemption": {
                             "status": "NOT_EXEMPT"
                           }
-                        }
+                        },
+                        "marketplaceIds": ["ATVPDKIKX0DER"]
                       },
                       {
                         "code": "18742",
@@ -588,7 +1002,8 @@
                           "exemption": {
                             "status": "NOT_EXEMPT"
                           }
-                        }
+                        },
+                        "marketplaceIds": ["ATVPDKIKX0DER"]
                       }
                     ]
                   }
@@ -746,14 +1161,14 @@
           },
           {
             "name": "sku",
-            "description": "A selling partner provided identifier for an Amazon listing.",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "marketplaceIds",
-            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "description": "A comma-delimited list of Amazon store identifiers for the request.",
             "in": "query",
             "required": true,
             "type": "array",
@@ -777,11 +1192,11 @@
               "x-docgen-enum-table-extension": [
                 {
                   "value": "identifiers",
-                  "description": "Identifiers associated with the item in the Amazon catalog, such as Amazon Standard Identification Number (ASIN). Can only be requested when `mode` is `VALIDATION_PREVIEW`."
+                  "description": "Identifiers associated with the item in the Amazon catalog, such as the Amazon Standard Identification Number (ASIN). Can only be requested when `mode` is `VALIDATION_PREVIEW`."
                 },
                 {
                   "value": "issues",
-                  "description": "The issues associated with the listing item."
+                  "description": "Issues associated with the listing item."
                 }
               ],
               "type": "string"
@@ -792,7 +1207,7 @@
           },
           {
             "name": "mode",
-            "description": "The mode of operation for the request.",
+            "description": "Describes the mode of operation for the request.",
             "in": "query",
             "enum": [
               "VALIDATION_PREVIEW"
@@ -800,7 +1215,7 @@
             "x-docgen-enum-table-extension": [
               {
                 "value": "VALIDATION_PREVIEW",
-                "description": "Indicates the submitted data should be validated using the values provided in the payload and validation errors the selling partner account may face. This will synchronously perform the same checks that are preformed on submissions after being accepted for processing, but without persisting to the selling partner's catalog."
+                "description": "Indicates the submitted data should be validated without persisting to the selling partner's catalog."
               }
             ],
             "required": false,
@@ -809,7 +1224,7 @@
           },
           {
             "name": "issueLocale",
-            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when a localization is not available in the specified locale.",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first Amazon store is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -827,7 +1242,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully understood the listings item patch request. See the response to determine if the submission was accepted.",
+            "description": "Successfully understood the listings item patch request. Refer to the response to determine if the submission was accepted.",
             "schema": {
               "$ref": "#/definitions/ListingsItemSubmissionResponse"
             },
@@ -1087,18 +1502,17 @@
           },
           {
             "name": "sku",
-            "description": "A selling partner provided identifier for an Amazon listing.",
+            "description": "A selling partner-provided identifier for an Amazon listing.",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "marketplaceIds",
-            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "description": "A comma-delimited list of Amazon store identifiers for the request.",
             "in": "query",
             "required": true,
             "type": "array",
-            "maxItems": 1,
             "items": {
               "type": "string"
             },
@@ -1119,11 +1533,11 @@
               "x-docgen-enum-table-extension": [
                 {
                   "value": "identifiers",
-                  "description": "Identifiers associated with the item in the Amazon catalog, such as Amazon Standard Identification Number (ASIN). Can only be requested when `mode` is `VALIDATION_PREVIEW`."
+                  "description": "Identifiers associated with the item in the Amazon catalog, such as the Amazon Standard Identification Number (ASIN). Can only be requested when `mode` is `VALIDATION_PREVIEW`."
                 },
                 {
                   "value": "issues",
-                  "description": "The issues associated with the listing item."
+                  "description": "Issues associated with the listing item."
                 }
               ],
               "type": "string"
@@ -1134,7 +1548,7 @@
           },
           {
             "name": "mode",
-            "description": "The mode of operation for the request.",
+            "description": "Describes the mode of operation for the request.",
             "in": "query",
             "enum": [
               "VALIDATION_PREVIEW"
@@ -1142,7 +1556,7 @@
             "x-docgen-enum-table-extension": [
               {
                 "value": "VALIDATION_PREVIEW",
-                "description": "Indicates the submitted data should be validated using the values provided in the payload and validation errors the selling partner account may face. This will synchronously perform the same checks that are preformed on submissions after being accepted for processing, but without persisting to the selling partner's catalog."
+                "description": "Indicates the submitted data should be validated without persisting to the selling partner's catalog."
               }
             ],
             "required": false,
@@ -1151,7 +1565,7 @@
           },
           {
             "name": "issueLocale",
-            "description": "A locale for localization of issues. When not provided, the default language code of the first marketplace is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when a localization is not available in the specified locale.",
+            "description": "A locale for localization of issues. When not provided, the default language code of the first Amazon store is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1169,7 +1583,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully understood the request to create or fully-update a listings item. See the response to determine if the submission has been accepted.",
+            "description": "Successfully understood the request to create or fully-update a listings item. Refer to the response to determine if the submission has been accepted.",
             "schema": {
               "$ref": "#/definitions/ListingsItemSubmissionResponse"
             },
@@ -1440,11 +1854,10 @@
           },
           {
             "name": "marketplaceIds",
-            "description": "A comma-delimited list of Amazon marketplace identifiers for the request.",
+            "description": "A comma-delimited list of Amazon store identifiers for the request.",
             "in": "query",
             "required": true,
             "type": "array",
-            "maxItems": 1,
             "items": {
               "type": "string"
             },
@@ -1453,7 +1866,7 @@
           },
           {
             "name": "issueLocale",
-            "description": "A locale that is used to localize issues. When not provided, the default language code of the first marketplace is used. Examples: \"en_US\", \"fr_CA\", \"fr_FR\". When a localization is not available in the specified locale, localized messages default to \"en_US\".",
+            "description": "A locale that is used to localize issues. When not provided, the default language code of the first Amazon store is used. Examples: \"en_US\", \"fr_CA\", \"fr_FR\". When a localization is not available in the specified locale, localized messages default to \"en_US\".",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1461,7 +1874,7 @@
           },
           {
             "name": "includedData",
-            "description": "A comma-delimited list of datasets that you want to include in the response. Default: `summaries`.",
+            "description": "A comma-delimited list of data sets that you want to include in the response. Default: `summaries`.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1499,7 +1912,7 @@
                 },
                 {
                   "value": "procurement",
-                  "description": "Vendor procurement details for the listing item. "
+                  "description": "Vendor procurement details for the listing item."
                 },
                 {
                   "value": "relationships",
@@ -1829,6 +2242,21 @@
                           "height": 500,
                           "width": 500
                         }
+                      },
+                      {
+                        "marketplaceId": "A2EUQ1WTGCTBG2",
+                        "asin": "B071VG5N9D",
+                        "productType": "LUGGAGE",
+                        "conditionType": "new_new",
+                        "status": [],
+                        "itemName": "Hardside Carry-On Spinner Suitcase Luggage",
+                        "createdDate": "2021-02-02T01:00:00Z",
+                        "lastUpdatedDate": "2021-03-05T00:00:00Z",
+                        "mainImage": {
+                          "link": "https://www.example.com/luggage.png",
+                          "height": 500,
+                          "width": 500
+                        }
                       }
                     ],
                     "attributes": {
@@ -1836,6 +2264,10 @@
                         {
                           "value": 4,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": 4,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "resolution": [
@@ -1843,6 +2275,11 @@
                           "language_tag": "en_US",
                           "value": "4K",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "en_US",
+                          "value": "4K",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "item_weight": [
@@ -1850,12 +2287,21 @@
                           "unit": "pounds",
                           "value": 107.6,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "unit": "pounds",
+                          "value": 107.6,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "product_subcategory": [
                         {
                           "value": "50400120",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": "50400120",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "bullet_point": [
@@ -1885,9 +2331,9 @@
                           "marketplace_id": "ATVPDKIKX0DER"
                         },
                         {
-                          "language_tag": "en_US",
-                          "value": "SMART TV FEATURES: OneRemote to control all compatible devices, Bixby voice command, on-screen universal guide, SmartThings to control compatible home appliances and devices, smart speaker expandability with Alexa and Google Assistant compatibility, and more",
-                          "marketplace_id": "ATVPDKIKX0DER"
+                          "language_tag": "fr_CA",
+                          "value": "TÉLÉVISEUR INTELLIGENT AVEC GUIDE UNIVERSEL : Le guide à l'écran simple est un moyen facile de trouver du contenu en streaming et des émissions de télévision en direct",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "item_dimensions": [
@@ -1905,6 +2351,21 @@
                             "value": 41.4
                           },
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "width": {
+                            "unit": "inches",
+                            "value": 72.4
+                          },
+                          "length": {
+                            "unit": "inches",
+                            "value": 2.4
+                          },
+                          "height": {
+                            "unit": "inches",
+                            "value": 41.4
+                          },
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "brand": [
@@ -1912,6 +2373,11 @@
                           "language_tag": "en_US",
                           "value": "SAMSUNG",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "SAMSUNG",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "generic_keyword": [
@@ -1934,12 +2400,21 @@
                           "language_tag": "en_US",
                           "value": "smart tv 4k tv tv tv oled tv 65 inch smart tv 4k tv 65 inch smart tv shield tv 2018 tv 4k oled tv 65 4k tv 4k smart tv 4k hdr tv shield tv gaming tv 65 inch 4k tv tv 65 inch smart tv 4k 65 inch 4k tv 65 inch 4k tv 4k tv uhd tv uhd tv 4k",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "TV OLED de 65 pouces Téléviseur QLED 75 pouces téléviseur 4K 85 pouces Smart TV 4K 65 pouces TV QLED 82 pouces TV 8K TV OLED 65 pouces Télé téléviseur QLED 65 pouces téléviseur 80 pouces 4K TV 4K Shield TV 2018",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "control_method": [
                         {
                           "value": "voice",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": "voice",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "item_package_dimensions": [
@@ -1957,6 +2432,21 @@
                             "value": 203.2
                           },
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "length": {
+                            "unit": "centimeters",
+                            "value": 26.67
+                          },
+                          "width": {
+                            "unit": "centimeters",
+                            "value": 121.92
+                          },
+                          "height": {
+                            "unit": "centimeters",
+                            "value": 203.2
+                          },
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "image_aspect_ratio": [
@@ -1964,18 +2454,31 @@
                           "language_tag": "en_US",
                           "value": "16:9",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "16:9",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "part_number": [
                         {
                           "value": "QN82Q60RAFXZA",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": "QN82Q60RAFXZA",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "includes_remote": [
                         {
                           "value": true,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": true,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "style": [
@@ -1983,6 +2486,11 @@
                           "language_tag": "en_US",
                           "value": "TV only",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "TV seulement",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "item_type_name": [
@@ -1990,6 +2498,11 @@
                           "language_tag": "en_US",
                           "value": "TV",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "TV",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "battery": [
@@ -2000,6 +2513,14 @@
                             }
                           ],
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "cell_composition": [
+                            {
+                              "value": "alkaline"
+                            }
+                          ],
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "image_contrast_ratio": [
@@ -2007,6 +2528,11 @@
                           "language_tag": "en_US",
                           "value": "QLED 4K",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "QLED 4K",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "manufacturer": [
@@ -2014,12 +2540,21 @@
                           "language_tag": "en_US",
                           "value": "Samsung",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "Samsung",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "number_of_boxes": [
                         {
                           "value": 1,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": 1,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "total_usb_ports": [
@@ -2032,12 +2567,20 @@
                         {
                           "value": "QN82Q60RAFXZA",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": "QN82Q60RAFXZA",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "supplier_declared_dg_hz_regulation": [
                         {
                           "value": "not_applicable",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": "not_applicable",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "num_batteries": [
@@ -2045,6 +2588,11 @@
                           "quantity": 2,
                           "type": "aaa",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "quantity": 2,
+                          "type": "aaa",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "california_proposition_65": [
@@ -2082,6 +2630,28 @@
                             }
                           ],
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "resolution_maximum": [
+                            {
+                              "unit": "pixels",
+                              "language_tag": "fr_CA",
+                              "value": "3840 x 2160"
+                            }
+                          ],
+                          "size": [
+                            {
+                              "unit": "inches",
+                              "value": 82
+                            }
+                          ],
+                          "type": [
+                            {
+                              "language_tag": "fr_CA",
+                              "value": "QLED"
+                            }
+                          ],
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "item_name": [
@@ -2089,6 +2659,11 @@
                           "language_tag": "en_US",
                           "value": "Samsung QN82Q60RAFXZA Flat 82-Inch QLED 4K Q60 Series (2019) Ultra HD Smart TV with HDR and Alexa Compatibility",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "Samsung QN82Q60RAFXZA TV QLED 4K Ultra HD plate de 82 pouces – Série Q60 (2019) – Télé intelligent avec HDR et compatibilité Alexa",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "list_price": [
@@ -2096,18 +2671,31 @@
                           "currency": "USD",
                           "value": 3799.99,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "currency": "CAD",
+                          "value": 4001.99,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "batteries_required": [
                         {
                           "value": false,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": false,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "includes_rechargable_battery": [
                         {
                           "value": false,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": false,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "product_site_launch_date": [
@@ -2120,12 +2708,20 @@
                         {
                           "value": "50400100",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": "50400100",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "batteries_included": [
                         {
                           "value": false,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": false,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "connectivity_technology": [
@@ -2177,12 +2773,21 @@
                           "language_tag": "en_US",
                           "value": "",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "parental_control_technology": [
                         {
                           "value": "V-Chip",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": "V-Chip",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "power_consumption": [
@@ -2196,12 +2801,20 @@
                         {
                           "value": "no_warning_applicable",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": "no_warning_applicable",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "item_type_keyword": [
                         {
                           "value": "qled-televisions",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": "qled-televisions",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "number_of_items": [
@@ -2222,6 +2835,11 @@
                           "unit": "pixels",
                           "value": 8.3,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "unit": "pixels",
+                          "value": 8.3,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "color": [
@@ -2229,6 +2847,11 @@
                           "language_tag": "en_US",
                           "value": "Black",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "Noire",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "screen_surface_description": [
@@ -2243,6 +2866,11 @@
                           "unit": "kilograms",
                           "value": 62.142,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "unit": "kilograms",
+                          "value": 62.142,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "speaker_type": [
@@ -2316,6 +2944,10 @@
                         {
                           "value": 2019,
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "value": 2019,
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "power_source_type": [
@@ -2323,6 +2955,11 @@
                           "language_tag": "en_US",
                           "value": "Corded Electric",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "language_tag": "fr_CA",
+                          "value": "15\nÉlectrique câblé",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ],
                       "street_date": [
@@ -2349,6 +2986,12 @@
                           "language_tag": "en_US",
                           "value": "120",
                           "marketplace_id": "ATVPDKIKX0DER"
+                        },
+                        {
+                          "unit": "hertz",
+                          "language_tag": "en_US",
+                          "value": "120",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
                         }
                       ]
                     },
@@ -2359,6 +3002,14 @@
                         "price": {
                           "currencyCode": "USD",
                           "amount": "100.00"
+                        }
+                      },
+                      {
+                        "marketplaceId": "A2EUQ1WTGCTBG2",
+                        "offerType": "B2C",
+                        "price": {
+                          "currencyCode": "CAD",
+                          "amount": "130.00"
                         }
                       }
                     ],
@@ -2373,20 +3024,15 @@
                         "code": "90220",
                         "message": "'size' is required but not supplied.",
                         "severity": "ERROR",
-                        "attributeNames": [
-                          "size"
-                        ],
-                        "categories": [
-                          "MISSING_ATTRIBUTE"
-                        ]
+                        "attributeNames": ["size"],
+                        "categories": ["MISSING_ATTRIBUTE"],
+                        "marketplaceIds": ["ATVPDKIKX0DER"]
                       },
                       {
                         "code": "18027",
-                        "message": "We believe the main image has text, logo, graphic or watermark which is not permitted for this product type. Submit a compliant image to lift the suppression. Also refer to Product image requirements.",
+                        "message": "We believe the main image has text, logo, graphic, or watermark that is not permitted for this product type. Submit a compliant image to lift the suppression. Also refer to Product image requirements.",
                         "severity": "ERROR",
-                        "categories": [
-                          "INVALID_IMAGE"
-                        ],
+                        "categories": ["INVALID_IMAGE"],
                         "enforcements": {
                           "actions": [
                             {
@@ -2397,11 +3043,12 @@
                             "status": "EXEMPT_UNTIL_EXPIRY_DATE",
                             "expiryDate": "2025-05-28T00:36:48.914Z"
                           }
-                        }
+                        },
+                        "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
                       },
                       {
                         "code": "99300",
-                        "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page)",
+                        "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page).",
                         "severity": "ERROR",
                         "categories": [],
                         "enforcements": {
@@ -2413,15 +3060,14 @@
                           "exemption": {
                             "status": "EXEMPT"
                           }
-                        }
+                        },
+                        "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
                       },
                       {
                         "code": "18155",
                         "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Review and update your price and/or minimum price.",
                         "severity": "ERROR",
-                        "categories": [
-                          "INVALID_PRICE"
-                        ],
+                        "categories": ["INVALID_PRICE"],
                         "enforcements": {
                           "actions": [
                             {
@@ -2431,7 +3077,8 @@
                           "exemption": {
                             "status": "NOT_EXEMPT"
                           }
-                        }
+                        },
+                        "marketplaceIds": ["ATVPDKIKX0DER"]
                       },
                       {
                         "code": "18742",
@@ -2447,7 +3094,8 @@
                           "exemption": {
                             "status": "NOT_EXEMPT"
                           }
-                        }
+                        },
+                        "marketplaceIds": ["ATVPDKIKX0DER"]
                       }
                     ]
                   }
@@ -2471,7 +3119,7 @@
                       },
                       "marketplaceIds": {
                         "value": [
-                          "ATVPDKIKX0DER"
+                          "ATVPDKIKX0DER","A2EUQ1WTGCTBG2"
                         ]
                       },
                       "includedData": {
@@ -2513,6 +3161,21 @@
                               "height": 500,
                               "width": 500
                             }
+                          },
+                          {
+                            "marketplaceId": "A2EUQ1WTGCTBG2",
+                            "asin": "B071VG5N9D",
+                            "productType": "LUGGAGE",
+                            "conditionType": "new_new",
+                            "status": [],
+                            "itemName": "Hardside Carry-On Spinner Suitcase Luggage",
+                            "createdDate": "2021-02-02T01:00:00Z",
+                            "lastUpdatedDate": "2021-03-05T00:00:00Z",
+                            "mainImage": {
+                              "link": "https://www.example.com/luggage.png",
+                              "height": 500,
+                              "width": 500
+                            }
                           }
                         ],
                         "offers": [
@@ -2522,6 +3185,14 @@
                             "price": {
                               "currencyCode": "USD",
                               "amount": "100.00"
+                            }
+                          },
+                          {
+                            "marketplaceId": "A2EUQ1WTGCTBG2",
+                            "offerType": "B2C",
+                            "price": {
+                              "currencyCode": "CAD",
+                              "amount": "130.00"
                             }
                           }
                         ],
@@ -2536,20 +3207,15 @@
                             "code": "90220",
                             "message": "'size' is required but not supplied.",
                             "severity": "ERROR",
-                            "attributeNames": [
-                              "size"
-                            ],
-                            "categories": [
-                              "MISSING_ATTRIBUTE"
-                            ]
+                            "attributeNames": ["size"],
+                            "categories": ["MISSING_ATTRIBUTE"],
+                            "marketplaceIds": ["ATVPDKIKX0DER"]
                           },
                           {
                             "code": "18027",
-                            "message": "We believe the main image has text, logo, graphic or watermark which is not permitted for this product type. Submit a compliant image to lift the suppression. Also refer to Product image requirements.",
+                            "message": "We believe the main image has text, logo, graphic, or watermark that is not permitted for this product type. Submit a compliant image to lift the suppression. Also refer to Product image requirements.",
                             "severity": "ERROR",
-                            "categories": [
-                              "INVALID_IMAGE"
-                            ],
+                            "categories": ["INVALID_IMAGE"],
                             "enforcements": {
                               "actions": [
                                 {
@@ -2560,11 +3226,12 @@
                                 "status": "EXEMPT_UNTIL_EXPIRY_DATE",
                                 "expiryDate": "2025-05-28T00:36:48.914Z"
                               }
-                            }
+                            },
+                            "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
                           },
                           {
                             "code": "99300",
-                            "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page)",
+                            "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page).",
                             "severity": "ERROR",
                             "categories": [],
                             "enforcements": {
@@ -2576,15 +3243,14 @@
                               "exemption": {
                                 "status": "EXEMPT"
                               }
-                            }
+                            },
+                            "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
                           },
                           {
                             "code": "18155",
-                            "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Please review and update your price and/or minimum price.",
+                            "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Review and update your price and/or minimum price.",
                             "severity": "ERROR",
-                            "categories": [
-                              "INVALID_PRICE"
-                            ],
+                            "categories": ["INVALID_PRICE"],
                             "enforcements": {
                               "actions": [
                                 {
@@ -2594,7 +3260,8 @@
                               "exemption": {
                                 "status": "NOT_EXEMPT"
                               }
-                            }
+                            },
+                            "marketplaceIds": ["ATVPDKIKX0DER"]
                           },
                           {
                             "code": "18742",
@@ -2610,7 +3277,8 @@
                               "exemption": {
                                 "status": "NOT_EXEMPT"
                               }
-                            }
+                            },
+                            "marketplaceIds": ["ATVPDKIKX0DER"]
                           }
                         ]
                       }
@@ -2783,6 +3451,7 @@
       "type": "object",
       "properties": {
         "errors": {
+          "description": "A list of error responses.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/Error"
@@ -2822,7 +3491,7 @@
       "description": "A listings item.",
       "properties": {
         "sku": {
-          "description": "A selling partner provided identifier for an Amazon listing.",
+          "description": "A selling partner-provided identifier for an Amazon listing.",
           "type": "string"
         },
         "summaries": {
@@ -2838,14 +3507,14 @@
           "$ref": "#/definitions/ItemOffers"
         },
         "fulfillmentAvailability": {
-          "description": "The fulfillment availability for the listings item.",
+          "description": "The listings item's fulfillment availability.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/FulfillmentAvailability"
           }
         },
         "procurement": {
-          "description": "The vendor procurement information for the listings item.",
+          "description": "The listings item's vendor procurement information.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/ItemProcurement"
@@ -2864,25 +3533,25 @@
       "type": "object"
     },
     "ItemSummaries": {
-      "description": "Summary details of a listings item.",
+      "description": "Summary details for a listings item.",
       "items": {
         "$ref": "#/definitions/ItemSummaryByMarketplace"
       },
       "type": "array"
     },
     "ItemSummaryByMarketplace": {
-      "description": "Summary details of a listings item for an Amazon marketplace.",
+      "description": "Summary details for a listings item for an Amazon store.",
       "properties": {
         "marketplaceId": {
-          "description": "A marketplace identifier. Identifies the Amazon marketplace for the listings item.",
+          "description": "A marketplace identifier. Identifies the listings item's Amazon store.",
           "type": "string"
         },
         "asin": {
-          "description": "Amazon Standard Identification Number (ASIN) of the listings item.",
+          "description": "The ASIN of the listings item.",
           "type": "string"
         },
         "productType": {
-          "description": "The Amazon product type of the listings item.",
+          "description": "The listings item's Amazon product type.",
           "type": "string"
         },
         "conditionType": {
@@ -2905,7 +3574,7 @@
           "x-docgen-enum-table-extension": [
             {
               "value": "new_new",
-              "description": "New."
+              "description": "New"
             },
             {
               "value": "new_open_box",
@@ -2917,7 +3586,7 @@
             },
             {
               "value": "refurbished_refurbished",
-              "description": "Refurbished."
+              "description": "Refurbished"
             },
             {
               "value": "used_like_new",
@@ -2953,7 +3622,7 @@
             },
             {
               "value": "club_club",
-              "description": "Club."
+              "description": "Club"
             }
           ],
           "type": "string"
@@ -2980,25 +3649,25 @@
           }
         },
         "fnSku": {
-          "description": "The fulfillment network stock keeping unit is an identifier used by Amazon fulfillment centers to identify each unique item.",
+          "description": "Fulfillment network stock keeping unit is an identifier used by Amazon fulfillment centers to identify each unique item.",
           "type": "string"
         },
         "itemName": {
-          "description": "The name or title associated with an Amazon catalog item.",
+          "description": "Name, or title, associated with an Amazon catalog item.",
           "type": "string"
         },
         "createdDate": {
-          "description": "The date the listings item was created in ISO 8601 format.",
+          "description": "Date the listings item was created, in ISO 8601 format.",
           "type": "string",
           "format": "date-time"
         },
         "lastUpdatedDate": {
-          "description": "The date the listings item was last updated in ISO 8601 format.",
+          "description": "Date the listings item was last updated, in ISO 8601 format.",
           "type": "string",
           "format": "date-time"
         },
         "mainImage": {
-          "description": "The main image for the listings item.",
+          "description": "The listings item's main image.",
           "$ref": "#/definitions/ItemImage"
         }
       },
@@ -3012,18 +3681,18 @@
       "type": "object"
     },
     "ItemImage": {
-      "description": "The image for the listings item.",
+      "description": "The listings item's image.",
       "properties": {
         "link": {
-          "description": "The link, or URL, to the image.",
+          "description": "The image's link or URL.",
           "type": "string"
         },
         "height": {
-          "description": "The height of the image in pixels.",
+          "description": "The image's height, in pixels.",
           "type": "integer"
         },
         "width": {
-          "description": "The width of the image in pixels.",
+          "description": "The image's width, in pixels.",
           "type": "integer"
         }
       },
@@ -3035,12 +3704,12 @@
       "type": "object"
     },
     "ItemAttributes": {
-      "description": "A JSON object containing structured listings item attribute data keyed by attribute name.",
+      "description": "JSON object containing structured listings item attribute data keyed by attribute name.",
       "type": "object",
       "additionalProperties": true
     },
     "ItemIssues": {
-      "description": "The issues associated with the listings item.",
+      "description": "Issues associated with the listings item.",
       "items": {
         "$ref": "#/definitions/Issue"
       },
@@ -3081,7 +3750,7 @@
           "type": "string"
         },
         "attributeNames": {
-          "description": "The names of the attributes associated with the issue, if applicable.",
+          "description": "Names of the attributes that are associated with the issue, if applicable.",
           "type": "array",
           "items": {
             "type": "string"
@@ -3096,8 +3765,15 @@
           "example": ["INVALID_ATTRIBUTE"]
         },
         "enforcements": {
-          "description": "This field provides information about the enforcement actions taken by Amazon that affect the publishing or status of a listing. It also includes details about any associated exemptions.",
+          "description": "Provides information about the enforcement actions taken by Amazon that affect the publishing or status of a listing. It also includes details about any associated exemptions.",
           "$ref": "#/definitions/IssueEnforcements"
+        },
+        "marketplaceIds": {
+          "description": "List of Amazon store identifiers.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
@@ -3109,7 +3785,7 @@
       "type": "object"
     },
     "IssueEnforcements": {
-      "description": "This field provides information about the enforcement actions taken by Amazon that affect the publishing or status of a listing. It also includes details about any associated exemptions.",
+      "description": "Provides information about the enforcement actions taken by Amazon that affect the publishing or status of a listing. It also includes details about any associated exemptions.",
       "type": "object",
       "properties": {
         "actions": {
@@ -3120,7 +3796,7 @@
           }
         },
         "exemption": {
-          "description": "The \"exemption\" field serves to convey the status of enforcement actions by Amazon.",
+          "description": "The `exemption` field serves to convey the status of enforcement actions by Amazon.",
           "$ref": "#/definitions/IssueExemption"
         }
       },
@@ -3134,7 +3810,7 @@
       "type": "object",
       "properties": {
         "action":{
-          "description": "The enforcement action name. \n\nPossible values: \n\n* `LISTING_SUPPRESSED` - This enforcement takes down the current listing item's buyability. \n\n* `ATTRIBUTE_SUPPRESSED` - An attribute's value on the listing item is invalid, which causes it to be rejected by Amazon. \n\n* `CATALOG_ITEM_REMOVED` - This catalog item is inactive on Amazon, and all offers against it in the applicable marketplace are non-buyable. \n\n* `SEARCH_SUPPRESSED` - This value indicates that the catalog item is hidden from search results.",
+          "description": "The enforcement action name. \n\nPossible values: \n\n* `LISTING_SUPPRESSED` - This enforcement takes down the current listing item's buyability. \n\n* `ATTRIBUTE_SUPPRESSED` - An attribute's value on the listing item is invalid, which causes it to be rejected by Amazon. \n\n* `CATALOG_ITEM_REMOVED` - This catalog item is inactive on Amazon, and all offers against it in the applicable Amazon store are non-buyable. \n\n* `SEARCH_SUPPRESSED` - This value indicates that the catalog item is hidden from search results.",
           "type": "string",
           "example": "LISTING_SUPPRESSED"
         }
@@ -3148,7 +3824,7 @@
       "type": "object",
       "properties": {
         "status": {
-          "description": "This field indicates the current exemption status for the listed enforcement actions. It can take values such as `EXEMPT`, signifying permanent exemption, `EXEMPT_UNTIL_EXPIRY_DATE` indicating temporary exemption until a specified date, or `NOT_EXEMPT` signifying no exemptions, and enforcement actions were already applied.",
+          "description": "Indicates the current exemption status for the listed enforcement actions. It can take values such as `EXEMPT`, signifying permanent exemption, `EXEMPT_UNTIL_EXPIRY_DATE` indicating temporary exemption until a specified date, or `NOT_EXEMPT` signifying no exemptions, and enforcement actions were already applied.",
           "enum": [
             "EXEMPT",
             "EXEMPT_UNTIL_EXPIRY_DATE",
@@ -3182,21 +3858,21 @@
       ]
     },
     "ItemOffers": {
-      "description": "Offer details for the listings item.",
+      "description": "The listings item's offer details.",
       "items": {
         "$ref": "#/definitions/ItemOfferByMarketplace"
       },
       "type": "array"
     },
     "ItemOfferByMarketplace": {
-      "description": "Offer details of a listings item for an Amazon marketplace.",
+      "description": "Offer details for a listings item for the specified Amazon store.",
       "properties": {
         "marketplaceId": {
-          "description": "The Amazon marketplace identifier.",
+          "description": "Amazon store identifier.",
           "type": "string"
         },
         "offerType": {
-          "description": "Type of offer for the listings item.",
+          "description": "The listings item's offer type.",
           "enum": [
             "B2C",
             "B2B"
@@ -3214,7 +3890,7 @@
           "type": "string"
         },
         "price": {
-          "description": "The purchase price of the listings item",
+          "description": "Purchase price of the listings item",
           "$ref": "#/definitions/Money"
         },
         "points": {
@@ -3233,7 +3909,7 @@
       "type": "object"
     },
     "ItemProcurement": {
-      "description": "The vendor procurement information for the listings item.",
+      "description": "The listings item's vendor procurement information.",
       "properties": {
         "costPrice": {
           "description": "The price (numeric value) that you want Amazon to pay you for this product.",
@@ -3246,17 +3922,17 @@
       "type": "object"
     },
     "ItemRelationships": {
-      "description": "Relationships for a listing item, by marketplace (for example, variations).",
+      "description": "Relationships for a listing item, by Amazon store (for example, variations).",
       "items": {
         "$ref": "#/definitions/ItemRelationshipsByMarketplace"
       },
       "type": "array"
     },
     "ItemRelationshipsByMarketplace": {
-      "description": "Relationship details for the listing item in the specified marketplace.",
+      "description": "Relationship details for the listing item in the specified Amazon store.",
       "properties": {
         "marketplaceId": {
-          "description": "Amazon marketplace identifier.",
+          "description": "Amazon store identifier.",
           "type": "string"
         },
         "relationships": {
@@ -3342,17 +4018,17 @@
       "type": "object"
     },
     "ItemProductTypes": {
-      "description": "Product types for a listing item, by marketplace.",
+      "description": "Product types for a listing item, by Amazon store.",
       "items": {
         "$ref": "#/definitions/ItemProductTypeByMarketplace"
       },
       "type": "array"
     },
     "ItemProductTypeByMarketplace": {
-      "description": "Product types that are associated with the listing item for the specified marketplace.",
+      "description": "Product types that are associated with the listing item for the specified Amazon store.",
       "properties": {
         "marketplaceId": {
-          "description": "Amazon marketplace identifier.",
+          "description": "Amazon store identifier.",
           "type": "string"
         },
         "productType": {
@@ -3368,14 +4044,14 @@
       "type": "object"
     },
     "FulfillmentAvailability": {
-      "description": "The fulfillment availability details for the listings item.",
+      "description": "The listings item's fulfillment availability details.",
       "properties": {
         "fulfillmentChannelCode": {
           "description": "Designates which fulfillment network is used.",
           "type": "string"
         },
         "quantity": {
-          "description": "The quantity of the item you are making available for sale.",
+          "description": "The item quantity that you're making available for sale.",
           "type": "integer",
           "minimum": 0
         }
@@ -3386,11 +4062,11 @@
       "type": "object"
     },
     "Money": {
-      "description": "The currency type and amount.",
+      "description": "The currency type and the amount.",
       "properties": {
         "currencyCode": {
           "type": "string",
-          "description": "Three-digit currency code in ISO 4217 format."
+          "description": "Three-digit currency code. In ISO 4217 format."
         },
         "amount": {
           "description": "The currency amount.",
@@ -3405,13 +4081,14 @@
     },
     "Decimal": {
       "type": "string",
-      "description": "A decimal number with no loss of precision. Useful when precision loss is unnaceptable, as with currencies. Follows RFC7159 for number representation."
+      "description": "A decimal number with no loss of precision. Useful when precision loss is unacceptable, as with currencies. Follows RFC7159 for number representation."
     },
     "Points": {
       "description": "The number of Amazon Points offered with the purchase of an item, and their monetary value. Note that the `Points` element is only returned in Japan (JP).",
       "type": "object",
       "properties": {
         "pointsNumber": {
+          "description": "The number of Amazon Points offered with the purchase of an item, and their monetary value.",
           "type": "integer"
         }
       },
@@ -3460,7 +4137,7 @@
             },
             {
               "value": "delete",
-              "description": "The `delete` operation removes the target property. Not supported for vendors (vendors will receive an HTTP status code 400 response)."
+              "description": "The `delete` operation removes the target property."
             }
           ],
           "type": "string"
@@ -3510,7 +4187,7 @@
       "description": "The request body schema for the `putListingsItem` operation.",
       "properties": {
         "productType": {
-          "description": "The Amazon product type of the listings item.",
+          "description": "The listings item's Amazon product type.",
           "type": "string"
         },
         "requirements": {
@@ -3531,13 +4208,13 @@
             },
             {
               "value": "LISTING_OFFER_ONLY",
-              "description": "Indicates the submitted data contains sales terms only. Not supported for vendors (vendors will receive an HTTP status code 400 response)."
+              "description": "Indicates the submitted data contains sales terms only."
             }
           ],
           "type": "string"
         },
         "attributes": {
-          "description": "A JSON object containing structured listings item attribute data keyed by attribute name.",
+          "description": "JSON object containing structured listings item attribute data keyed by attribute name.",
           "type": "object",
           "additionalProperties": true
         }
@@ -3548,11 +4225,162 @@
       ],
       "type": "object"
     },
+    "ListingsItemDraftPutRequest": {
+      "description": "The request body schema for the `putListingsItemDraft` operation.",
+      "properties": {
+        "productType": {
+          "description": "The Amazon product type of the draft listings item.",
+          "type": "string"
+        },
+        "attributes": {
+          "description": "JSON object containing structured listings item attribute data keyed by attribute name.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "relationships": {
+          "description": "Variation relationships for the draft listings item.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListingsItemDraftRelationshipsByMarketplace"
+          }
+        }
+      },
+      "required": [
+        "productType",
+        "attributes"
+      ],
+      "type": "object"
+    },
+    "ListingsItemDraftRelationshipsByMarketplace": {
+      "description": "Variation relationships for a draft listings item, grouped by Amazon store.",
+      "properties": {
+        "marketplaceId": {
+          "description": "Amazon store identifier.",
+          "type": "string"
+        },
+        "relationships": {
+          "description": "Relationships for the draft listings item.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListingsItemDraftRelationship"
+          }
+        }
+      },
+      "required": [
+        "marketplaceId",
+        "relationships"
+      ],
+      "type": "object"
+    },
+    "ListingsItemDraftRelationship": {
+      "description": "Relationship details for a draft listings item.",
+      "properties": {
+        "type": {
+          "description": "The type of relationship.",
+          "enum": [
+            "VARIATION"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "VARIATION",
+              "description": "The draft listings item is a variation parent or variation child."
+            }
+          ],
+          "type": "string"
+        },
+        "children": {
+          "description": "Child items in the relationship.",
+          "type": "array",
+          "maxItems": 250,
+          "items": {
+            "$ref": "#/definitions/ListingsItemDraftRelatedItem"
+          }
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "ListingsItemDraftRelatedItem": {
+      "description": "A related item in a draft listings relationship.",
+      "properties": {
+        "sku": {
+          "description": "A selling partner-provided identifier for the related item.",
+          "type": "string"
+        },
+        "attributes": {
+          "description": "JSON object containing structured attribute data for the related item.",
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "sku"
+      ],
+      "type": "object"
+    },
+    "ListingsItemSuggestionRequest": {
+      "description": "The request body schema for generating attribute suggestions.",
+      "properties": {
+        "sources": {
+          "description": "List of input sources.",
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/definitions/SuggestionSource"
+          }
+        }
+      },
+      "required": [
+        "sources"
+      ],
+      "type": "object"
+    },
+    "SuggestionSource": {
+      "description": "Source information for generating suggestions.",
+      "properties": {
+        "attributes": {
+          "description": "List of key-value pairs representing suggestion input data.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SuggestionAttribute"
+          }
+        }
+      },
+      "required": [
+        "attributes"
+      ],
+      "type": "object"
+    },
+    "SuggestionAttribute": {
+      "description": "A key-value pair representing an attribute for suggestion generation.",
+      "properties": {
+        "key": {
+          "description": "The attribute name.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The attribute value.",
+          "type": "string"
+        },
+        "language_tag": {
+          "description": "The language code for the attribute value. Must be an IETF language tag with underscores.",
+          "type": "string",
+          "x-example": "en_US"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ],
+      "type": "object"
+    },
     "ListingsItemSubmissionResponse": {
       "description": "Response containing the results of a submission to the Selling Partner API for Listings Items.",
       "properties": {
         "sku": {
-          "description": "A selling partner provided identifier for an Amazon listing.",
+          "description": "A selling partner-provided identifier for an Amazon listing.",
           "type": "string"
         },
         "status": {
@@ -3609,14 +4437,14 @@
       "type": "array"
     },
     "ItemIdentifiersByMarketplace": {
-      "description": "Identity attributes associated with the item in the Amazon catalog for the indicated Amazon marketplace.",
+      "description": "Identity attributes associated with the item in the Amazon catalog for the indicated Amazon store.",
       "properties": {
         "marketplaceId": {
-          "description": "A marketplace identifier. Identifies the Amazon marketplace for the listings item.",
+          "description": "Amazon store identifier. Identifies the listings item's Amazon store.",
           "type": "string"
         },
         "asin": {
-          "description": "Amazon Standard Identification Number (ASIN) of the listings item.",
+          "description": "The ASIN of the listings item.",
           "type": "string"
         }
       },
