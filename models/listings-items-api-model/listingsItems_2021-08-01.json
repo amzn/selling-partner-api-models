@@ -24,358 +24,6 @@
     "application/json"
   ],
   "paths": {
-    "/listings/2021-08-01/items/{sellerId}/{sku}/draft": {
-      "put": {
-        "tags": [
-          "listings"
-        ],
-        "description": "Creates or fully-updates a draft listings item for a selling partner. Draft listings allow sellers to prepare product information before publishing to the live catalog.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 5 | 10 |\n\nThe `x-amzn-RateLimit-Limit` response header returns the usage plan rate limits that were applied to the requested operation, when available. The preceding table indicates the default rate and burst values for this operation. Selling partners whose business demands require higher throughput can receive higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api) in the Selling Partner API documentation.",
-        "operationId": "putListingsItemDraft",
-        "x-amzn-api-internal": true,
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "sellerId",
-            "description": "A selling partner identifier, such as a merchant account or vendor code.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "sku",
-            "description": "A selling partner-provided identifier for an Amazon listing.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "marketplaceIds",
-            "description": "A comma-delimited list of Amazon store identifiers for the request.",
-            "in": "query",
-            "required": true,
-            "type": "array",
-            "maxItems": 1,
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "csv",
-            "x-example": "ATVPDKIKX0DER"
-          },
-          {
-            "name": "issueLocale",
-            "description": "A locale for localization of issues. When not provided, the default language code of the first Amazon store is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "x-example": "en_US"
-          },
-          {
-            "name": "body",
-            "description": "The request body schema for the `putListingsItemDraft` operation.",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ListingsItemDraftPutRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully understood the draft listings item request. Refer to the response to determine if the submission has been accepted.",
-            "schema": {
-              "$ref": "#/definitions/ListingsItemSubmissionResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
-                "type": "string"
-              },
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "examples": {
-              "application/json": {
-                "sku":"GM-ZDPI-9B4E",
-                "status":"ACCEPTED",
-                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
-                "issues":[]
-              }
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {}
-                  },
-                  "response": {
-                    "sku": "GM-ZDPI-9B4E",
-                    "status": "ACCEPTED",
-                    "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
-                    "issues": []
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
-                "type": "string"
-              },
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "sku": {
-                        "value": "BadSKU"
-                      }
-                    }
-                  },
-                  "response": {
-                    "errors": [
-                      {
-                        "code": "BAD_REQUEST",
-                        "message": "Invalid input",
-                        "details": "Invalid input"
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          },
-          "403": {
-            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            }
-          },
-          "413": {
-            "description": "The request size exceeded the maximum accepted size.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            }
-          },
-          "415": {
-            "description": "The request payload is in an unsupported format.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            }
-          },
-          "429": {
-            "description": "The frequency of requests was greater than allowed.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            }
-          },
-          "500": {
-            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            }
-          },
-          "503": {
-            "description": "Temporary overloading or maintenance of the server.",
-            "headers": {
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            }
-          }
-        }
-      }
-    },
-    "/listings/2021-08-01/items/{sellerId}/{sku}/suggestionSources": {
-      "put": {
-        "tags": [
-          "listings"
-        ],
-        "description": "Creates AI-generated suggestions for attributes in a listings item.",
-        "operationId": "putListingsItemSuggestions",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "sellerId",
-            "description": "A selling partner identifier. Must be a merchant account or a vendor code.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "sku",
-            "description": "A selling partner-provided identifier for an Amazon listing.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "marketplaceIds",
-            "description": "A comma-delimited list of Amazon store identifiers for the request. Limited to 1 value for this use case. Valid values for the pilot are A2Q3Y263D00KWC (BR) and A33AVAJ2PDY3EV (TR).",
-            "in": "query",
-            "required": true,
-            "type": "array",
-            "maxItems": 1,
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "csv"
-          },
-          {
-            "name": "issueLocale",
-            "description": "A locale for localization of issues. When not provided, the default language code of the first Amazon store is used. Examples: `en_US`, `fr_CA`, `fr_FR`. Localized messages default to `en_US` when localization is not available for the specified locale.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "description": "The request body schema for the `putListingsItemSuggestions` operation.",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ListingsItemSuggestionRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully processed the suggestion request. Refer to the response to determine if the submission has been accepted.",
-            "schema": {
-              "$ref": "#/definitions/ListingsItemSubmissionResponse"
-            },
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
-                "type": "string"
-              },
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "examples": {
-              "application/json": {
-                "sku":"GM-ZDPI-9B4E",
-                "status":"ACCEPTED",
-                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
-                "issues":[]
-              }
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                    }
-                  },
-                  "response": {
-                    "sku": "GM-ZDPI-9B4E",
-                    "status": "ACCEPTED",
-                    "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
-                    "issues": []
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Request has missing or invalid parameters and cannot be parsed.",
-            "headers": {
-              "x-amzn-RateLimit-Limit": {
-                "description": "Your rate limit (requests per second) for this operation.",
-                "type": "string"
-              },
-              "x-amzn-RequestId": {
-                "description": "Unique request reference identifier.",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ErrorList"
-            },
-            "x-amzn-api-sandbox": {
-              "static": [
-                {
-                  "request": {
-                    "parameters": {
-                      "sku": {
-                        "value": "BadSKU"
-                      }
-                    }
-                  },
-                  "response": {
-                    "errors": [
-                      {
-                        "code": "BAD_REQUEST",
-                        "message": "Invalid input",
-                        "details": "Invalid input"
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
     "/listings/2021-08-01/items/{sellerId}/{sku}": {
       "delete": {
         "tags": [
@@ -444,18 +92,17 @@
             },
             "examples": {
               "application/json": {
-                "sku":"GM-ZDPI-9B4E",
-                "status":"ACCEPTED",
-                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
-                "issues":[]
+                "sku": "GM-ZDPI-9B4E",
+                "status": "ACCEPTED",
+                "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+                "issues": []
               }
             },
             "x-amzn-api-sandbox": {
               "static": [
                 {
                   "request": {
-                    "parameters": {
-                    }
+                    "parameters": {}
                   },
                   "response": {
                     "sku": "GM-ZDPI-9B4E",
@@ -681,7 +328,9 @@
             },
             "collectionFormat": "csv",
             "x-example": "summaries",
-            "default": ["summaries"]
+            "default": [
+              "summaries"
+            ]
           }
         ],
         "responses": {
@@ -774,15 +423,23 @@
                     "code": "90220",
                     "message": "'size' is required but not supplied.",
                     "severity": "ERROR",
-                    "attributeNames": ["size"],
-                    "categories": ["MISSING_ATTRIBUTE"],
-                    "marketplaceIds": ["ATVPDKIKX0DER"]
+                    "attributeNames": [
+                      "size"
+                    ],
+                    "categories": [
+                      "MISSING_ATTRIBUTE"
+                    ],
+                    "marketplaceIds": [
+                      "ATVPDKIKX0DER"
+                    ]
                   },
                   {
                     "code": "18027",
                     "message": "We believe the main image has text, logo, graphic, or watermark that is not permitted for this product type. Submit a compliant image to lift the suppression. Also refer to Product image requirements.",
                     "severity": "ERROR",
-                    "categories": ["INVALID_IMAGE"],
+                    "categories": [
+                      "INVALID_IMAGE"
+                    ],
                     "enforcements": {
                       "actions": [
                         {
@@ -794,7 +451,10 @@
                         "expiryDate": "2025-05-28T00:36:48.914Z"
                       }
                     },
-                    "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
+                    "marketplaceIds": [
+                      "ATVPDKIKX0DER",
+                      "A2EUQ1WTGCTBG2"
+                    ]
                   },
                   {
                     "code": "99300",
@@ -811,13 +471,18 @@
                         "status": "EXEMPT"
                       }
                     },
-                    "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
+                    "marketplaceIds": [
+                      "ATVPDKIKX0DER",
+                      "A2EUQ1WTGCTBG2"
+                    ]
                   },
                   {
                     "code": "18155",
                     "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Review and update your price and/or minimum price.",
                     "severity": "ERROR",
-                    "categories": ["INVALID_PRICE"],
+                    "categories": [
+                      "INVALID_PRICE"
+                    ],
                     "enforcements": {
                       "actions": [
                         {
@@ -828,7 +493,9 @@
                         "status": "NOT_EXEMPT"
                       }
                     },
-                    "marketplaceIds": ["ATVPDKIKX0DER"]
+                    "marketplaceIds": [
+                      "ATVPDKIKX0DER"
+                    ]
                   },
                   {
                     "code": "18742",
@@ -845,7 +512,9 @@
                         "status": "NOT_EXEMPT"
                       }
                     },
-                    "marketplaceIds": ["ATVPDKIKX0DER"]
+                    "marketplaceIds": [
+                      "ATVPDKIKX0DER"
+                    ]
                   }
                 ]
               }
@@ -855,8 +524,7 @@
                 {
                   "request": {
                     "parameters": {
-                      "body": {
-                      }
+                      "body": {}
                     }
                   },
                   "response": {
@@ -932,15 +600,23 @@
                         "code": "90220",
                         "message": "'size' is required but not supplied.",
                         "severity": "ERROR",
-                        "attributeNames": ["size"],
-                        "categories": ["MISSING_ATTRIBUTE"],
-                        "marketplaceIds": ["ATVPDKIKX0DER"]
+                        "attributeNames": [
+                          "size"
+                        ],
+                        "categories": [
+                          "MISSING_ATTRIBUTE"
+                        ],
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER"
+                        ]
                       },
                       {
                         "code": "18027",
                         "message": "We believe the main image has text, logo, graphic, or watermark that is not permitted for this product type. Submit a compliant image to lift the suppression. Also refer to Product image requirements.",
                         "severity": "ERROR",
-                        "categories": ["INVALID_IMAGE"],
+                        "categories": [
+                          "INVALID_IMAGE"
+                        ],
                         "enforcements": {
                           "actions": [
                             {
@@ -952,7 +628,10 @@
                             "expiryDate": "2025-05-28T00:36:48.914Z"
                           }
                         },
-                        "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A2EUQ1WTGCTBG2"
+                        ]
                       },
                       {
                         "code": "99300",
@@ -969,13 +648,18 @@
                             "status": "EXEMPT"
                           }
                         },
-                        "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A2EUQ1WTGCTBG2"
+                        ]
                       },
                       {
                         "code": "18155",
                         "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Review and update your price and/or minimum price.",
                         "severity": "ERROR",
-                        "categories": ["INVALID_PRICE"],
+                        "categories": [
+                          "INVALID_PRICE"
+                        ],
                         "enforcements": {
                           "actions": [
                             {
@@ -986,7 +670,9 @@
                             "status": "NOT_EXEMPT"
                           }
                         },
-                        "marketplaceIds": ["ATVPDKIKX0DER"]
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER"
+                        ]
                       },
                       {
                         "code": "18742",
@@ -1003,7 +689,9 @@
                             "status": "NOT_EXEMPT"
                           }
                         },
-                        "marketplaceIds": ["ATVPDKIKX0DER"]
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER"
+                        ]
                       }
                     ]
                   }
@@ -1203,7 +891,9 @@
             },
             "collectionFormat": "csv",
             "x-example": "issues",
-            "default": ["issues"]
+            "default": [
+              "issues"
+            ]
           },
           {
             "name": "mode",
@@ -1258,10 +948,10 @@
             },
             "examples": {
               "application/json": {
-                "sku":"GM-ZDPI-9B4E",
-                "status":"ACCEPTED",
-                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
-                "issues":[]
+                "sku": "GM-ZDPI-9B4E",
+                "status": "ACCEPTED",
+                "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+                "issues": []
               }
             },
             "x-amzn-api-sandbox": {
@@ -1269,8 +959,7 @@
                 {
                   "request": {
                     "parameters": {
-                      "body": {
-                      }
+                      "body": {}
                     }
                   },
                   "response": {
@@ -1344,13 +1033,15 @@
                     "identifiers": [],
                     "issues": [
                       {
-                        "code":"90000900",
-                        "message":"The attributes are invalid.",
-                        "severity":"ERROR",
+                        "code": "90000900",
+                        "message": "The attributes are invalid.",
+                        "severity": "ERROR",
                         "attributeNames": [
                           "fake_attribute"
                         ],
-                        "categories": ["INVALID_ATTRIBUTE"],
+                        "categories": [
+                          "INVALID_ATTRIBUTE"
+                        ],
                         "enforcements": {
                           "actions": [
                             {
@@ -1513,6 +1204,7 @@
             "in": "query",
             "required": true,
             "type": "array",
+            "maxItems": 1,
             "items": {
               "type": "string"
             },
@@ -1544,7 +1236,9 @@
             },
             "collectionFormat": "csv",
             "x-example": "issues",
-            "default": ["issues"]
+            "default": [
+              "issues"
+            ]
           },
           {
             "name": "mode",
@@ -1599,10 +1293,10 @@
             },
             "examples": {
               "application/json": {
-                "sku":"GM-ZDPI-9B4E",
-                "status":"ACCEPTED",
-                "submissionId":"f1dc2914-75dd-11ea-bc55-0242ac130003",
-                "issues":[]
+                "sku": "GM-ZDPI-9B4E",
+                "status": "ACCEPTED",
+                "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+                "issues": []
               }
             },
             "x-amzn-api-sandbox": {
@@ -1610,8 +1304,7 @@
                 {
                   "request": {
                     "parameters": {
-                      "body": {
-                      }
+                      "body": {}
                     }
                   },
                   "response": {
@@ -1685,13 +1378,15 @@
                     "identifiers": [],
                     "issues": [
                       {
-                        "code":"90220",
-                        "message":"'condition_type' is required but not supplied.",
-                        "severity":"ERROR",
+                        "code": "90220",
+                        "message": "'condition_type' is required but not supplied.",
+                        "severity": "ERROR",
                         "attributeNames": [
                           "condition_type"
                         ],
-                        "categories": ["MISSING_ATTRIBUTE"],
+                        "categories": [
+                          "MISSING_ATTRIBUTE"
+                        ],
                         "enforcements": {
                           "actions": [
                             {
@@ -1704,9 +1399,9 @@
                         }
                       },
                       {
-                        "code":"90000900",
-                        "message":"The attributes are invalid.",
-                        "severity":"ERROR",
+                        "code": "90000900",
+                        "message": "The attributes are invalid.",
+                        "severity": "ERROR",
                         "attributeNames": [
                           "fake_attribute"
                         ],
@@ -1927,7 +1622,9 @@
             },
             "collectionFormat": "csv",
             "x-example": "summaries",
-            "default": ["summaries"]
+            "default": [
+              "summaries"
+            ]
           },
           {
             "name": "identifiers",
@@ -3024,15 +2721,23 @@
                         "code": "90220",
                         "message": "'size' is required but not supplied.",
                         "severity": "ERROR",
-                        "attributeNames": ["size"],
-                        "categories": ["MISSING_ATTRIBUTE"],
-                        "marketplaceIds": ["ATVPDKIKX0DER"]
+                        "attributeNames": [
+                          "size"
+                        ],
+                        "categories": [
+                          "MISSING_ATTRIBUTE"
+                        ],
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER"
+                        ]
                       },
                       {
                         "code": "18027",
                         "message": "We believe the main image has text, logo, graphic, or watermark that is not permitted for this product type. Submit a compliant image to lift the suppression. Also refer to Product image requirements.",
                         "severity": "ERROR",
-                        "categories": ["INVALID_IMAGE"],
+                        "categories": [
+                          "INVALID_IMAGE"
+                        ],
                         "enforcements": {
                           "actions": [
                             {
@@ -3044,7 +2749,10 @@
                             "expiryDate": "2025-05-28T00:36:48.914Z"
                           }
                         },
-                        "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A2EUQ1WTGCTBG2"
+                        ]
                       },
                       {
                         "code": "99300",
@@ -3061,13 +2769,18 @@
                             "status": "EXEMPT"
                           }
                         },
-                        "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER",
+                          "A2EUQ1WTGCTBG2"
+                        ]
                       },
                       {
                         "code": "18155",
                         "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Review and update your price and/or minimum price.",
                         "severity": "ERROR",
-                        "categories": ["INVALID_PRICE"],
+                        "categories": [
+                          "INVALID_PRICE"
+                        ],
                         "enforcements": {
                           "actions": [
                             {
@@ -3078,7 +2791,9 @@
                             "status": "NOT_EXEMPT"
                           }
                         },
-                        "marketplaceIds": ["ATVPDKIKX0DER"]
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER"
+                        ]
                       },
                       {
                         "code": "18742",
@@ -3095,7 +2810,9 @@
                             "status": "NOT_EXEMPT"
                           }
                         },
-                        "marketplaceIds": ["ATVPDKIKX0DER"]
+                        "marketplaceIds": [
+                          "ATVPDKIKX0DER"
+                        ]
                       }
                     ]
                   }
@@ -3119,7 +2836,8 @@
                       },
                       "marketplaceIds": {
                         "value": [
-                          "ATVPDKIKX0DER","A2EUQ1WTGCTBG2"
+                          "ATVPDKIKX0DER",
+                          "A2EUQ1WTGCTBG2"
                         ]
                       },
                       "includedData": {
@@ -3207,15 +2925,23 @@
                             "code": "90220",
                             "message": "'size' is required but not supplied.",
                             "severity": "ERROR",
-                            "attributeNames": ["size"],
-                            "categories": ["MISSING_ATTRIBUTE"],
-                            "marketplaceIds": ["ATVPDKIKX0DER"]
+                            "attributeNames": [
+                              "size"
+                            ],
+                            "categories": [
+                              "MISSING_ATTRIBUTE"
+                            ],
+                            "marketplaceIds": [
+                              "ATVPDKIKX0DER"
+                            ]
                           },
                           {
                             "code": "18027",
                             "message": "We believe the main image has text, logo, graphic, or watermark that is not permitted for this product type. Submit a compliant image to lift the suppression. Also refer to Product image requirements.",
                             "severity": "ERROR",
-                            "categories": ["INVALID_IMAGE"],
+                            "categories": [
+                              "INVALID_IMAGE"
+                            ],
                             "enforcements": {
                               "actions": [
                                 {
@@ -3227,7 +2953,10 @@
                                 "expiryDate": "2025-05-28T00:36:48.914Z"
                               }
                             },
-                            "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
+                            "marketplaceIds": [
+                              "ATVPDKIKX0DER",
+                              "A2EUQ1WTGCTBG2"
+                            ]
                           },
                           {
                             "code": "99300",
@@ -3244,13 +2973,18 @@
                                 "status": "EXEMPT"
                               }
                             },
-                            "marketplaceIds": ["ATVPDKIKX0DER","A2EUQ1WTGCTBG2"]
+                            "marketplaceIds": [
+                              "ATVPDKIKX0DER",
+                              "A2EUQ1WTGCTBG2"
+                            ]
                           },
                           {
                             "code": "18155",
                             "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Review and update your price and/or minimum price.",
                             "severity": "ERROR",
-                            "categories": ["INVALID_PRICE"],
+                            "categories": [
+                              "INVALID_PRICE"
+                            ],
                             "enforcements": {
                               "actions": [
                                 {
@@ -3261,7 +2995,9 @@
                                 "status": "NOT_EXEMPT"
                               }
                             },
-                            "marketplaceIds": ["ATVPDKIKX0DER"]
+                            "marketplaceIds": [
+                              "ATVPDKIKX0DER"
+                            ]
                           },
                           {
                             "code": "18742",
@@ -3278,7 +3014,9 @@
                                 "status": "NOT_EXEMPT"
                               }
                             },
-                            "marketplaceIds": ["ATVPDKIKX0DER"]
+                            "marketplaceIds": [
+                              "ATVPDKIKX0DER"
+                            ]
                           }
                         ]
                       }
@@ -3762,7 +3500,9 @@
           "items": {
             "type": "string"
           },
-          "example": ["INVALID_ATTRIBUTE"]
+          "example": [
+            "INVALID_ATTRIBUTE"
+          ]
         },
         "enforcements": {
           "description": "Provides information about the enforcement actions taken by Amazon that affect the publishing or status of a listing. It also includes details about any associated exemptions.",
@@ -3809,7 +3549,7 @@
       "description": "The enforcement action taken by Amazon that affect the publishing or status of a listing",
       "type": "object",
       "properties": {
-        "action":{
+        "action": {
           "description": "The enforcement action name. \n\nPossible values: \n\n* `LISTING_SUPPRESSED` - This enforcement takes down the current listing item's buyability. \n\n* `ATTRIBUTE_SUPPRESSED` - An attribute's value on the listing item is invalid, which causes it to be rejected by Amazon. \n\n* `CATALOG_ITEM_REMOVED` - This catalog item is inactive on Amazon, and all offers against it in the applicable Amazon store are non-buyable. \n\n* `SEARCH_SUPPRESSED` - This value indicates that the catalog item is hidden from search results.",
           "type": "string",
           "example": "LISTING_SUPPRESSED"
@@ -3840,7 +3580,7 @@
               "description": "This status indicates that a product listing has been granted a temporary exemption from the listed enforcement actions. The exemption remains in effect until a specified expiry date. After this date, Amazon enforces the listed actions. The `expiryDate` field provides the timestamp indicating when the temporary exemption ends, adhering to the ISO 8601 format"
             },
             {
-              "value":  "NOT_EXEMPT",
+              "value": "NOT_EXEMPT",
               "description": "This status is assigned to a product listing when it has no exemptions from the listed enforcement actions. When the status is `NOT_EXEMPT`, it signifies that Amazon has already taken the specified enforcement actions. There is no exemption in place, and the listed actions are actively enforced"
             }
           ],
@@ -4222,157 +3962,6 @@
       "required": [
         "productType",
         "attributes"
-      ],
-      "type": "object"
-    },
-    "ListingsItemDraftPutRequest": {
-      "description": "The request body schema for the `putListingsItemDraft` operation.",
-      "properties": {
-        "productType": {
-          "description": "The Amazon product type of the draft listings item.",
-          "type": "string"
-        },
-        "attributes": {
-          "description": "JSON object containing structured listings item attribute data keyed by attribute name.",
-          "type": "object",
-          "additionalProperties": true
-        },
-        "relationships": {
-          "description": "Variation relationships for the draft listings item.",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ListingsItemDraftRelationshipsByMarketplace"
-          }
-        }
-      },
-      "required": [
-        "productType",
-        "attributes"
-      ],
-      "type": "object"
-    },
-    "ListingsItemDraftRelationshipsByMarketplace": {
-      "description": "Variation relationships for a draft listings item, grouped by Amazon store.",
-      "properties": {
-        "marketplaceId": {
-          "description": "Amazon store identifier.",
-          "type": "string"
-        },
-        "relationships": {
-          "description": "Relationships for the draft listings item.",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ListingsItemDraftRelationship"
-          }
-        }
-      },
-      "required": [
-        "marketplaceId",
-        "relationships"
-      ],
-      "type": "object"
-    },
-    "ListingsItemDraftRelationship": {
-      "description": "Relationship details for a draft listings item.",
-      "properties": {
-        "type": {
-          "description": "The type of relationship.",
-          "enum": [
-            "VARIATION"
-          ],
-          "x-docgen-enum-table-extension": [
-            {
-              "value": "VARIATION",
-              "description": "The draft listings item is a variation parent or variation child."
-            }
-          ],
-          "type": "string"
-        },
-        "children": {
-          "description": "Child items in the relationship.",
-          "type": "array",
-          "maxItems": 250,
-          "items": {
-            "$ref": "#/definitions/ListingsItemDraftRelatedItem"
-          }
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "type": "object"
-    },
-    "ListingsItemDraftRelatedItem": {
-      "description": "A related item in a draft listings relationship.",
-      "properties": {
-        "sku": {
-          "description": "A selling partner-provided identifier for the related item.",
-          "type": "string"
-        },
-        "attributes": {
-          "description": "JSON object containing structured attribute data for the related item.",
-          "type": "object",
-          "additionalProperties": true
-        }
-      },
-      "required": [
-        "sku"
-      ],
-      "type": "object"
-    },
-    "ListingsItemSuggestionRequest": {
-      "description": "The request body schema for generating attribute suggestions.",
-      "properties": {
-        "sources": {
-          "description": "List of input sources.",
-          "type": "array",
-          "maxItems": 1,
-          "items": {
-            "$ref": "#/definitions/SuggestionSource"
-          }
-        }
-      },
-      "required": [
-        "sources"
-      ],
-      "type": "object"
-    },
-    "SuggestionSource": {
-      "description": "Source information for generating suggestions.",
-      "properties": {
-        "attributes": {
-          "description": "List of key-value pairs representing suggestion input data.",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/SuggestionAttribute"
-          }
-        }
-      },
-      "required": [
-        "attributes"
-      ],
-      "type": "object"
-    },
-    "SuggestionAttribute": {
-      "description": "A key-value pair representing an attribute for suggestion generation.",
-      "properties": {
-        "key": {
-          "description": "The attribute name.",
-          "type": "string"
-        },
-        "value": {
-          "description": "The attribute value.",
-          "type": "string"
-        },
-        "language_tag": {
-          "description": "The language code for the attribute value. Must be an IETF language tag with underscores.",
-          "type": "string",
-          "x-example": "en_US"
-        }
-      },
-      "required": [
-        "key",
-        "value"
       ],
       "type": "object"
     },
