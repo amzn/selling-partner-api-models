@@ -1,0 +1,1986 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "The Selling Partner API for tracking services provided by Amazon.",
+    "description": "The Tracking Selling Partner API allows users to track shipments to and from Amazon-owned storage warehouses, fulfillment centers, and external warehouses.",
+    "version": "2026-01-30",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/tracking/2026-01-30/shipments/track": {
+      "get": {
+        "tags": [
+          "Tracking"
+        ],
+        "summary": "Get tracking information for the shipment.",
+        "description": "Returns tracking information for a shipment.",
+        "operationId": "getShipmentTracking",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The unique tracking request identifier.",
+            "required": false,
+            "type": "string",
+            "x-example": "546e1ddb-dae0-4f76-84fd-ab4998ad00dd"
+          },
+          {
+            "name": "acsin",
+            "in": "query",
+            "description": "The Air Cargo Shipment Identification Number.",
+            "required": false,
+            "type": "string",
+            "x-example": "75726371365"
+          },
+          {
+            "name": "aftn",
+            "in": "query",
+            "description": "The Amazon Fulfillment Tracking Number.",
+            "required": false,
+            "type": "string",
+            "pattern": "^AFTN\\d+$",
+            "x-example": "AFTN987654321"
+          },
+          {
+            "name": "containerNumber",
+            "in": "query",
+            "description": "The container number provided by the Logistics Service Provider.",
+            "required": false,
+            "type": "string",
+            "x-example": "MSKU4538324"
+          },
+          {
+            "name": "houseBillOfLadingNumber",
+            "in": "query",
+            "description": "The House Bill of Lading (HBL) number.",
+            "required": false,
+            "type": "string",
+            "x-example": "AMZDCN203A900BD3"
+          },
+          {
+            "name": "carrierTracking.trackingNumber",
+            "in": "query",
+            "description": "The tracking number assigned by the carrier.",
+            "required": false,
+            "type": "string",
+            "x-example": "1Z999AA1234567890"
+          },
+          {
+            "name": "carrierTracking.carrierCode",
+            "in": "query",
+            "description": "The carrier code associated with the carrier tracking number.",
+            "required": false,
+            "type": "string",
+            "x-example": "UPS"
+          },
+          {
+            "in": "header",
+            "name": "Accept-Language",
+            "description": "The preferred natural language and locale of the client, in POSIX locale format. Currently supports `en-US` only.",
+            "required": false,
+            "type": "string",
+            "x-example": "en-US"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetShipmentTrackingResponse"
+            },
+            "examples": {
+              "application/json": {
+                "trackingDetail": {
+                  "identifier": {
+                    "aftn": "AFTN987654321"
+                  },
+                  "latestMilestone": {
+                    "status": {
+                      "code": "DELIVERED",
+                      "subCode": "PORCH",
+                      "description": "Shipment delivered to porch"
+                    },
+                    "location": {
+                      "address": {
+                        "city": "Austin",
+                        "region": "Texas",
+                        "countryCode": "US"
+                      }
+                    },
+                    "occurredAt": "2026-06-14T01:26:56Z"
+                  },
+                  "milestoneHistory": [
+                    {
+                      "status": {
+                        "code": "DELIVERED",
+                        "subCode": "PORCH",
+                        "description": "Shipment delivered to porch"
+                      },
+                      "location": {
+                        "address": {
+                          "city": "Austin",
+                          "region": "Texas",
+                          "countryCode": "US"
+                        }
+                      },
+                      "occurredAt": "2026-06-14T01:26:56Z"
+                    },
+                    {
+                      "status": {
+                        "code": "OUT_FOR_DELIVERY",
+                        "description": "Shipment is out for delivery"
+                      },
+                      "location": {
+                        "address": {
+                          "city": "Buda",
+                          "region": "Texas",
+                          "countryCode": "US"
+                        }
+                      },
+                      "occurredAt": "2026-06-13T16:20:51Z"
+                    },
+                    {
+                      "status": {
+                        "code": "SHIPPED",
+                        "description": "Shipment has departed origin"
+                      },
+                      "occurredAt": "2026-06-13T05:21:43Z"
+                    },
+                    {
+                      "status": {
+                        "code": "CARRIER_ASSIGNED",
+                        "description": "Carrier was assigned"
+                      },
+                      "occurredAt": "2026-06-13T04:41:37Z"
+                    },
+                    {
+                      "status": {
+                        "code": "ORDER_PREPARING",
+                        "description": "Order is preparing to ship"
+                      },
+                      "occurredAt": "2026-06-12T19:43:40Z"
+                    }
+                  ],
+                  "trackingEstimates": [
+                    {
+                      "type": "ESTIMATED_DELIVERY_DATE",
+                      "estimatedInterval": {
+                        "startTime": "2026-06-14T03:00:00Z",
+                        "endTime": "2026-06-14T03:00:00Z"
+                      },
+                      "lastUpdatedTime": "2026-06-13T05:21:43Z"
+                    }
+                  ],
+                  "trackingUrl": "https://www.swiship.com/track?id=AFTN987654321"
+                }
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "id": {
+                        "value": "546e1ddb-dae0-4f76-84fd-ab4998ad00dd"
+                      }
+                    }
+                  },
+                  "response": {
+                    "trackingDetail": {
+                      "identifier": {
+                        "id": "546e1ddb-dae0-4f76-84fd-ab4998ad00dd"
+                      },
+                      "trackingEstimates": [
+                        {
+                          "type": "ESTIMATED_DELIVERY_DATE",
+                          "estimatedInterval": {
+                            "startTime": "2025-04-27T00:00:00Z",
+                            "endTime": "2025-04-30T23:59:59Z"
+                          },
+                          "lastUpdatedTime": "2025-04-26T10:30:00Z"
+                        },
+                        {
+                          "type": "ESTIMATED_TIME_OF_DEPARTURE",
+                          "estimatedInterval": {
+                            "startTime": "2025-04-20T08:00:00Z",
+                            "endTime": "2025-04-20T12:00:00Z"
+                          },
+                          "lastUpdatedTime": "2025-04-19T15:45:00Z"
+                        }
+                      ],
+                      "latestMilestone": {
+                        "status": {
+                          "code": "DELIVERED",
+                          "description": "Shipment delivered."
+                        },
+                        "location": {
+                          "address": {
+                            "city": "Los Angeles",
+                            "region": "California",
+                            "countryCode": "US"
+                          }
+                        },
+                        "occurredAt": "2025-04-30T12:35:00Z"
+                      },
+                      "milestoneHistory": [
+                        {
+                          "status": {
+                            "code": "DELIVERED",
+                            "description": "Shipment delivered."
+                          },
+                          "location": {
+                            "address": {
+                              "city": "Los Angeles",
+                              "region": "California",
+                              "countryCode": "US"
+                            }
+                          },
+                          "occurredAt": "2025-04-30T12:35:00Z"
+                        },
+                        {
+                          "status": {
+                            "code": "CUSTOMS_CLEARED",
+                            "description": "Shipment completed the customs clearance process at origin."
+                          },
+                          "occurredAt": "2025-04-24T12:18:50Z",
+                          "location": {
+                            "address": {
+                              "city": "Shenzhen",
+                              "region": "Guangdong",
+                              "countryCode": "CN"
+                            }
+                          }
+                        },
+                        {
+                          "status": {
+                            "code": "BOOKING_CONFIRMED",
+                            "description": "Initial booking confirmed."
+                          },
+                          "occurredAt": "2025-04-20T06:30:50Z",
+                          "location": {
+                            "address": {
+                              "city": "Shenzhen",
+                              "region": "Guangdong",
+                              "countryCode": "CN"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "aftn": {
+                        "value": "AFTN1111111111"
+                      }
+                    }
+                  },
+                  "response": {
+                    "trackingDetail": {
+                      "identifier": {
+                        "aftn": "AFTN1111111111"
+                      },
+                      "latestMilestone": {
+                        "status": {
+                          "code": "ORDER_PREPARING",
+                          "description": "Order is preparing to ship"
+                        },
+                        "occurredAt": "2026-06-12T19:43:40Z"
+                      },
+                      "milestoneHistory": [
+                        {
+                          "status": {
+                            "code": "ORDER_PREPARING",
+                            "description": "Order is preparing to ship"
+                          },
+                          "occurredAt": "2026-06-12T19:43:40Z"
+                        }
+                      ],
+                      "trackingUrl": "https://www.swiship.com/track?id=AFTN1111111111"
+                    }
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "aftn": {
+                        "value": "AFTN2222222222"
+                      }
+                    }
+                  },
+                  "response": {
+                    "trackingDetail": {
+                      "identifier": {
+                        "aftn": "AFTN2222222222"
+                      },
+                      "latestMilestone": {
+                        "status": {
+                          "code": "CARRIER_ASSIGNED",
+                          "description": "Carrier was assigned"
+                        },
+                        "occurredAt": "2026-06-13T04:41:37Z"
+                      },
+                      "milestoneHistory": [
+                        {
+                          "status": {
+                            "code": "CARRIER_ASSIGNED",
+                            "description": "Carrier was assigned"
+                          },
+                          "occurredAt": "2026-06-13T04:41:37Z"
+                        },
+                        {
+                          "status": {
+                            "code": "ORDER_PREPARING",
+                            "description": "Order is preparing to ship"
+                          },
+                          "occurredAt": "2026-06-12T19:43:40Z"
+                        }
+                      ],
+                      "trackingUrl": "https://www.swiship.com/track?id=AFTN2222222222"
+                    }
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "aftn": {
+                        "value": "AFTN3333333333"
+                      }
+                    }
+                  },
+                  "response": {
+                    "trackingDetail": {
+                      "identifier": {
+                        "aftn": "AFTN3333333333"
+                      },
+                      "latestMilestone": {
+                        "status": {
+                          "code": "SHIPPED",
+                          "description": "Shipment has departed origin"
+                        },
+                        "occurredAt": "2026-06-13T05:21:43Z"
+                      },
+                      "milestoneHistory": [
+                        {
+                          "status": {
+                            "code": "SHIPPED",
+                            "description": "Shipment has departed origin"
+                          },
+                          "occurredAt": "2026-06-13T05:21:43Z"
+                        },
+                        {
+                          "status": {
+                            "code": "CARRIER_ASSIGNED",
+                            "description": "Carrier was assigned"
+                          },
+                          "occurredAt": "2026-06-13T04:41:37Z"
+                        },
+                        {
+                          "status": {
+                            "code": "ORDER_PREPARING",
+                            "description": "Order is preparing to ship"
+                          },
+                          "occurredAt": "2026-06-12T19:43:40Z"
+                        }
+                      ],
+                      "trackingEstimates": [
+                        {
+                          "type": "ESTIMATED_DELIVERY_DATE",
+                          "estimatedInterval": {
+                            "startTime": "2026-06-14T03:00:00Z",
+                            "endTime": "2026-06-14T03:00:00Z"
+                          },
+                          "lastUpdatedTime": "2026-06-13T05:21:43Z"
+                        }
+                      ],
+                      "trackingUrl": "https://www.swiship.com/track?id=AFTN3333333333"
+                    }
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "aftn": {
+                        "value": "AFTN4444444444"
+                      }
+                    }
+                  },
+                  "response": {
+                    "trackingDetail": {
+                      "identifier": {
+                        "aftn": "AFTN4444444444"
+                      },
+                      "latestMilestone": {
+                        "status": {
+                          "code": "OUT_FOR_DELIVERY",
+                          "description": "Shipment is out for delivery"
+                        },
+                        "location": {
+                          "address": {
+                            "city": "Buda",
+                            "region": "Texas",
+                            "countryCode": "US"
+                          }
+                        },
+                        "occurredAt": "2026-06-13T16:20:51Z"
+                      },
+                      "milestoneHistory": [
+                        {
+                          "status": {
+                            "code": "OUT_FOR_DELIVERY",
+                            "description": "Shipment is out for delivery"
+                          },
+                          "location": {
+                            "address": {
+                              "city": "Buda",
+                              "region": "Texas",
+                              "countryCode": "US"
+                            }
+                          },
+                          "occurredAt": "2026-06-13T16:20:51Z"
+                        },
+                        {
+                          "status": {
+                            "code": "SHIPPED",
+                            "description": "Shipment has departed origin"
+                          },
+                          "occurredAt": "2026-06-13T05:21:43Z"
+                        },
+                        {
+                          "status": {
+                            "code": "CARRIER_ASSIGNED",
+                            "description": "Carrier was assigned"
+                          },
+                          "occurredAt": "2026-06-13T04:41:37Z"
+                        },
+                        {
+                          "status": {
+                            "code": "ORDER_PREPARING",
+                            "description": "Order is preparing to ship"
+                          },
+                          "occurredAt": "2026-06-12T19:43:40Z"
+                        }
+                      ],
+                      "trackingEstimates": [
+                        {
+                          "type": "ESTIMATED_DELIVERY_DATE",
+                          "estimatedInterval": {
+                            "startTime": "2026-06-14T03:00:00Z",
+                            "endTime": "2026-06-14T03:00:00Z"
+                          },
+                          "lastUpdatedTime": "2026-06-13T05:21:43Z"
+                        }
+                      ],
+                      "trackingUrl": "https://www.swiship.com/track?id=AFTN4444444444"
+                    }
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "aftn": {
+                        "value": "AFTN5555555555"
+                      }
+                    }
+                  },
+                  "response": {
+                    "trackingDetail": {
+                      "identifier": {
+                        "aftn": "AFTN5555555555"
+                      },
+                      "latestMilestone": {
+                        "status": {
+                          "code": "DELIVERED",
+                          "subCode": "PORCH",
+                          "description": "Shipment delivered to porch"
+                        },
+                        "location": {
+                          "address": {
+                            "city": "Austin",
+                            "region": "Texas",
+                            "countryCode": "US"
+                          }
+                        },
+                        "occurredAt": "2026-06-14T01:26:56Z"
+                      },
+                      "milestoneHistory": [
+                        {
+                          "status": {
+                            "code": "DELIVERED",
+                            "subCode": "PORCH",
+                            "description": "Shipment delivered to porch"
+                          },
+                          "location": {
+                            "address": {
+                              "city": "Austin",
+                              "region": "Texas",
+                              "countryCode": "US"
+                            }
+                          },
+                          "occurredAt": "2026-06-14T01:26:56Z"
+                        },
+                        {
+                          "status": {
+                            "code": "OUT_FOR_DELIVERY",
+                            "description": "Shipment is out for delivery"
+                          },
+                          "location": {
+                            "address": {
+                              "city": "Buda",
+                              "region": "Texas",
+                              "countryCode": "US"
+                            }
+                          },
+                          "occurredAt": "2026-06-13T16:20:51Z"
+                        },
+                        {
+                          "status": {
+                            "code": "SHIPPED",
+                            "description": "Shipment has departed origin"
+                          },
+                          "occurredAt": "2026-06-13T05:21:43Z"
+                        },
+                        {
+                          "status": {
+                            "code": "CARRIER_ASSIGNED",
+                            "description": "Carrier was assigned"
+                          },
+                          "occurredAt": "2026-06-13T04:41:37Z"
+                        },
+                        {
+                          "status": {
+                            "code": "ORDER_PREPARING",
+                            "description": "Order is preparing to ship"
+                          },
+                          "occurredAt": "2026-06-12T19:43:40Z"
+                        }
+                      ],
+                      "trackingEstimates": [
+                        {
+                          "type": "ESTIMATED_DELIVERY_DATE",
+                          "estimatedInterval": {
+                            "startTime": "2026-06-14T03:00:00Z",
+                            "endTime": "2026-06-14T03:00:00Z"
+                          },
+                          "lastUpdatedTime": "2026-06-13T05:21:43Z"
+                        }
+                      ],
+                      "trackingUrl": "https://www.swiship.com/track?id=AFTN5555555555"
+                    }
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "aftn": {
+                        "value": "AFTN6666666666"
+                      }
+                    }
+                  },
+                  "response": {
+                    "trackingDetail": {
+                      "identifier": {
+                        "aftn": "AFTN6666666666"
+                      },
+                      "latestMilestone": {
+                        "status": {
+                          "code": "ORDER_CANCELLED",
+                          "subCode": "SELLER_REQUEST",
+                          "description": "Order was cancelled based on seller request"
+                        },
+                        "occurredAt": "2026-07-03T05:56:06Z"
+                      },
+                      "milestoneHistory": [
+                        {
+                          "status": {
+                            "code": "ORDER_CANCELLED",
+                            "description": "Order was cancelled based on seller request",
+                            "subCode": "SELLER_REQUEST"
+                          },
+                          "occurredAt": "2026-07-03T05:56:06Z"
+                        },
+                        {
+                          "status": {
+                            "code": "ORDER_PREPARING",
+                            "description": "Order is preparing to ship"
+                          },
+                          "occurredAt": "2026-07-03T05:44:48Z"
+                        }
+                      ],
+                      "trackingUrl": "https://www.swiship.com/track?id=AFTN6666666666"
+                    }
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "carrierTracking.trackingNumber": {
+                        "value": "1ZX111111111111111"
+                      }
+                    }
+                  },
+                  "response": {
+                    "trackingDetail": {
+                      "identifier": {
+                        "carrierTracking": {
+                          "trackingNumber": "1ZX111111111111111",
+                          "carrierCode": "UPS"
+                        }
+                      },
+                      "latestMilestone": {
+                        "status": {
+                          "code": "SHIPPED",
+                          "description": "Shipment has departed origin"
+                        },
+                        "occurredAt": "2026-06-13T05:21:43Z"
+                      },
+                      "milestoneHistory": [
+                        {
+                          "status": {
+                            "code": "SHIPPED",
+                            "description": "Shipment has departed origin"
+                          },
+                          "occurredAt": "2026-06-13T05:21:43Z"
+                        }
+                      ],
+                      "trackingUrl": "https://www.swiship.com/track?id=1ZX111111111111111",
+                      "trackingEstimates": [
+                        {
+                          "type": "ESTIMATED_DELIVERY_DATE",
+                          "estimatedInterval": {
+                            "startTime": "2026-06-14T03:00:00Z",
+                            "endTime": "2026-06-14T03:00:00Z"
+                          },
+                          "lastUpdatedTime": "2026-06-13T05:21:43Z"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "carrierTracking.trackingNumber": {
+                        "value": "1ZX222222222222222"
+                      }
+                    }
+                  },
+                  "response": {
+                    "trackingDetail": {
+                      "identifier": {
+                        "carrierTracking": {
+                          "trackingNumber": "1ZX222222222222222",
+                          "carrierCode": "UPS"
+                        }
+                      },
+                      "latestMilestone": {
+                        "status": {
+                          "code": "OUT_FOR_DELIVERY",
+                          "description": "Shipment is out for delivery"
+                        },
+                        "location": {
+                          "address": {
+                            "city": "Buda",
+                            "region": "Texas",
+                            "countryCode": "US"
+                          }
+                        },
+                        "occurredAt": "2026-06-13T16:20:51Z"
+                      },
+                      "milestoneHistory": [
+                        {
+                          "status": {
+                            "code": "OUT_FOR_DELIVERY",
+                            "description": "Shipment is out for delivery"
+                          },
+                          "location": {
+                            "address": {
+                              "city": "Buda",
+                              "region": "Texas",
+                              "countryCode": "US"
+                            }
+                          },
+                          "occurredAt": "2026-06-13T16:20:51Z"
+                        },
+                        {
+                          "status": {
+                            "code": "SHIPPED",
+                            "description": "Shipment has departed origin"
+                          },
+                          "occurredAt": "2026-06-13T05:21:43Z"
+                        }
+                      ],
+                      "trackingUrl": "https://www.swiship.com/track?id=1ZX222222222222222",
+                      "trackingEstimates": [
+                        {
+                          "type": "ESTIMATED_DELIVERY_DATE",
+                          "estimatedInterval": {
+                            "startTime": "2026-06-14T03:00:00Z",
+                            "endTime": "2026-06-14T03:00:00Z"
+                          },
+                          "lastUpdatedTime": "2026-06-13T05:21:43Z"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "carrierTracking.trackingNumber": {
+                        "value": "1ZX333333333333333"
+                      }
+                    }
+                  },
+                  "response": {
+                    "trackingDetail": {
+                      "identifier": {
+                        "carrierTracking": {
+                          "trackingNumber": "1ZX333333333333333",
+                          "carrierCode": "UPS"
+                        }
+                      },
+                      "latestMilestone": {
+                        "status": {
+                          "code": "DELIVERED",
+                          "subCode": "PORCH",
+                          "description": "Shipment delivered to porch"
+                        },
+                        "location": {
+                          "address": {
+                            "city": "Austin",
+                            "region": "Texas",
+                            "countryCode": "US"
+                          }
+                        },
+                        "occurredAt": "2026-06-14T01:26:56Z"
+                      },
+                      "milestoneHistory": [
+                        {
+                          "status": {
+                            "code": "DELIVERED",
+                            "subCode": "PORCH",
+                            "description": "Shipment delivered to porch"
+                          },
+                          "location": {
+                            "address": {
+                              "city": "Austin",
+                              "region": "Texas",
+                              "countryCode": "US"
+                            }
+                          },
+                          "occurredAt": "2026-06-14T01:26:56Z"
+                        },
+                        {
+                          "status": {
+                            "code": "OUT_FOR_DELIVERY",
+                            "description": "Shipment is out for delivery"
+                          },
+                          "location": {
+                            "address": {
+                              "city": "Buda",
+                              "region": "Texas",
+                              "countryCode": "US"
+                            }
+                          },
+                          "occurredAt": "2026-06-13T16:20:51Z"
+                        },
+                        {
+                          "status": {
+                            "code": "SHIPPED",
+                            "description": "Shipment has departed origin"
+                          },
+                          "occurredAt": "2026-06-13T05:21:43Z"
+                        }
+                      ],
+                      "trackingUrl": "https://www.swiship.com/track?id=1ZX333333333333333",
+                      "trackingEstimates": [
+                        {
+                          "type": "ESTIMATED_DELIVERY_DATE",
+                          "estimatedInterval": {
+                            "startTime": "2026-06-14T03:00:00Z",
+                            "endTime": "2026-06-14T03:00:00Z"
+                          },
+                          "lastUpdatedTime": "2026-06-13T05:21:43Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "BAD_REQUEST",
+                    "message": "The request parameters provided are invalid.",
+                    "details": "The request parameters provided are invalid. For valid parameter values and formats, see the API developer guide."
+                  },
+                  {
+                    "code": "MULTIPLE_TRACKING_IDS_NOT_ALLOWED",
+                    "message": "Only one tracking ID type is allowed per request.",
+                    "details": "Please provide a single ID per request."
+                  },
+                  {
+                    "code": "INVALID_AFTN_FORMAT",
+                    "message": "Amazon Fulfillment Tracking Number must start with 'AFTN'.",
+                    "details": "Please ensure the Amazon Fulfillment Tracking Number follows the correct format starting with 'AFTN'."
+                  }
+                ]
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "BAD_REQUEST",
+                        "message": "The request parameters provided are invalid.",
+                        "details": "The request parameters provided are invalid. For valid parameter values and formats, see the API developer guide."
+                      }
+                    ]
+                  }
+                },
+                {
+                  "request": {
+                    "parameters": {
+                      "aftn": {
+                        "value": "AFTN1111111111"
+                      },
+                      "carrierTracking.trackingNumber": {
+                        "value": "1ZX111111111111111"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "MULTIPLE_TRACKING_IDS_NOT_ALLOWED",
+                        "message": "Only one tracking ID type is allowed per request. Please provide a single ID per request."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "The request's Authorization header is not formatted correctly or does not contain a valid token. Possible reasons include missing, invalid, or expired authentication token.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "INVALID_AUTHENTICATION_TOKEN",
+                    "message": "Authentication token is missing or invalid.",
+                    "details": "Please provide the valid Authentication token and try again. If the issue persists, please verify your credentials and refer to the API developer guide for troubleshooting."
+                  }
+                ]
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "ACCESS_DENIED",
+                    "message": "You don't have access to the requested response or the credentials are invalid.",
+                    "details": "Please ensure that you have the required access on the developer portal and try again with valid credentials."
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              },
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "RESOURCE_NOT_FOUND",
+                    "message": "The requested resource does not exist.",
+                    "details": "Verify the API endpoint or resource path and try again."
+                  }
+                ]
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "REQUEST_SIZE_EXCEEDED",
+                    "message": "The request payload size is greater than maximum accepted size.",
+                    "details": "Please reduce the payload size and try again. If the request cannot be met with a smaller payload, please reach out to the API developer support team."
+                  }
+                ]
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "INVALID_REQUEST_FORMAT",
+                    "message": "The request payload format is not supported.",
+                    "details": "Please refer API developer guide for the request payload and try again with the valid payload in supported format."
+                  }
+                ]
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "TOO_MANY_REQUESTS",
+                    "message": "Request limit exceeded.",
+                    "details": "Please try again after sometime."
+                  }
+                ]
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "INTERNAL_SERVER_ERROR",
+                    "message": "An internal error occurred while processing your request.",
+                    "details": "Please try again after sometime. If the issue persists, please reach out to the API developer support team."
+                  }
+                ]
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "examples": {
+              "application/json": {
+                "errors": [
+                  {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "message": "Service temporarily unavailable or down for maintenance. Please try again after sometime. If the issue persists, please reach out to the API developer support team."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GetShipmentTrackingResponse": {
+      "type": "object",
+      "description": "Contains tracking details for a requested shipment.",
+      "properties": {
+        "trackingDetail": {
+          "description": "Current and historical tracking information for a shipment.",
+          "$ref": "#/definitions/TrackingDetail"
+        }
+      },
+      "required": [
+        "trackingDetail"
+      ]
+    },
+    "TrackingDetail": {
+      "type": "object",
+      "description": "Tracking information for the shipment identifier.",
+      "properties": {
+        "identifier": {
+          "description": "The tracking identifier used to look up this shipment (for example, `id`, `acsin`, or `containerNumber`).",
+          "$ref": "#/definitions/TrackingIdentifier"
+        },
+        "trackingUrl": {
+          "type": "string",
+          "pattern": "^https?://.+",
+          "description": "The URL to view the shipment's tracking information.",
+          "example": "https://www.swiship.com/track/AFTN987654321"
+        },
+        "trackingEstimates": {
+          "type": "array",
+          "description": "A list of time-based estimated intervals for the shipment, such as estimated delivery date.",
+          "items": {
+            "$ref": "#/definitions/TrackingEstimate"
+          }
+        },
+        "latestMilestone": {
+          "description": "The most recent milestone event for the shipment.",
+          "$ref": "#/definitions/TrackingMilestone"
+        },
+        "milestoneHistory": {
+          "type": "array",
+          "description": "A chronological list of all milestone events for the shipment, from most recent to oldest.",
+          "items": {
+            "$ref": "#/definitions/TrackingMilestone"
+          }
+        }
+      },
+      "required": [
+        "identifier",
+        "milestoneHistory"
+      ]
+    },
+    "TrackingIdentifier": {
+      "type": "object",
+      "description": "The identifier to track a shipment.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique identifier generated by Amazon for the shipment tracking request."
+        },
+        "carrierTracking": {
+          "description": "The carrier-assigned tracking information.",
+          "$ref": "#/definitions/CarrierTracking"
+        },
+        "acsin": {
+          "type": "string",
+          "description": "The Air Cargo Shipment Identification Number."
+        },
+        "aftn": {
+          "type": "string",
+          "description": "The Amazon Fulfillment Tracking Number."
+        },
+        "containerNumber": {
+          "type": "string",
+          "description": "The container number provided by the Logistics Service Provider."
+        },
+        "houseBillOfLadingNumber": {
+          "type": "string",
+          "description": "The House Bill of Lading (HBL) number."
+        }
+      }
+    },
+    "CarrierTracking": {
+      "type": "object",
+      "description": "The carrier information.",
+      "properties": {
+        "trackingNumber": {
+          "type": "string",
+          "description": "The tracking number assigned by the carrier."
+        },
+        "carrierCode": {
+          "type": "string",
+          "description": "The carrier code associated with the carrier tracking number."
+        }
+      },
+      "required": [
+        "trackingNumber"
+      ]
+    },
+    "TrackingEstimate": {
+      "type": "object",
+      "description": "A time-based estimate for the shipment, such as estimated delivery date.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of estimate. For example, `ESTIMATED_DELIVERY_DATE` or `ESTIMATED_TIME_OF_DEPARTURE`."
+        },
+        "estimatedInterval": {
+          "description": "The estimated time window for this event, represented as a start and end time in UTC RFC 3339 date-time format.",
+          "$ref": "#/definitions/BoundedInterval"
+        },
+        "lastUpdatedTime": {
+          "$ref": "#/definitions/Instant",
+          "description": "The timestamp when this estimate was last modified, in UTC RFC 3339 date-time format."
+        }
+      },
+      "required": [
+        "type",
+        "estimatedInterval",
+        "lastUpdatedTime"
+      ]
+    },
+    "BoundedInterval": {
+      "type": "object",
+      "description": "A time interval defined by a start time and end time.",
+      "properties": {
+        "startTime": {
+          "$ref": "#/definitions/Instant",
+          "description": "The inclusive start of the interval, in UTC RFC 3339 date-time format."
+        },
+        "endTime": {
+          "$ref": "#/definitions/Instant",
+          "description": "The inclusive end of the interval, in UTC RFC 3339 date-time format. Must not precede `startTime`."
+        }
+      },
+      "required": [
+        "startTime",
+        "endTime"
+      ]
+    },
+    "Instant": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?Z$",
+      "description": "A timestamp in UTC RFC 3339 date-time format."
+    },
+    "TrackingMilestone": {
+      "type": "object",
+      "description": "A single milestone event in a shipment's journey.",
+      "properties": {
+        "status": {
+          "description": "The milestone's status details.",
+          "$ref": "#/definitions/TrackingMilestoneStatus"
+        },
+        "location": {
+          "description": "The location where this milestone occurred, if available. Contains an address with city, region, and country code.",
+          "$ref": "#/definitions/TrackingMilestoneLocation"
+        },
+        "occurredAt": {
+          "$ref": "#/definitions/Instant",
+          "description": "The timestamp when this milestone occurred, in UTC RFC 3339 date-time format."
+        }
+      },
+      "required": [
+        "status",
+        "occurredAt"
+      ]
+    },
+    "TrackingMilestoneStatus": {
+      "type": "object",
+      "description": "The status codes and description of the milestone event.",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "A status code that identifies the milestone event (for example, `DELIVERED`, `CUSTOMS_CLEARED`, `DEPARTED`).",
+          "enum": [
+            "BOOKING_RECEIVED",
+            "BOOKING_ACCEPTED",
+            "ARRIVED_IN_DESTINATION_COUNTRY",
+            "CARRIER_RECEIVED_SHIPMENT",
+            "CARRIER_HOLD",
+            "CUSTOMER_CONTACTED",
+            "CUSTOMER_MOVED",
+            "RECIPIENT_REFUSED_DELIVERY",
+            "ORDER_PREPARING",
+            "CARRIER_ASSIGNED",
+            "CUSTOMS_DELAY",
+            "CONTAINERIZED",
+            "DAMAGED",
+            "DELAYED",
+            "DELIVERY_APPOINTMENT_CONFIRMED",
+            "DELIVERY_ATTEMPTED",
+            "INCORRECT_ADDRESS",
+            "IN_TRANSIT_TO_PICKUP",
+            "LOST",
+            "MANIFESTED_NOT_RECEIVED",
+            "MISSING_MANIFEST",
+            "MISSORTED",
+            "OUT_FOR_DELIVERY",
+            "RECEIVED_FROM_CARRIER",
+            "RETURNED",
+            "SHIPPED",
+            "UNDELIVERABLE",
+            "UNDELIVERABLE_DESTROY_IN_FIELD",
+            "BOOKING_CONFIRMED",
+            "BOOKING_CANCELLED",
+            "PICKED_UP",
+            "ARRIVED",
+            "DOCUMENTS_RECEIVED_EMBARK_PORT",
+            "DRAY_STOP_OFF",
+            "ARRIVED_AT_TERMINAL",
+            "CUSTOMS_IMPORT_SECURITY_FILED",
+            "CUSTOMS_IMPORT_SECURITY_FILING_ACCEPTED",
+            "CUSTOMS_DECLARATION_EMBARK_PORT",
+            "CUSTOMS_PROCESSING",
+            "CUSTOMS_HOLD",
+            "CUSTOMS_CLEARED",
+            "LOADED",
+            "DEPARTED",
+            "RECEIVED_AT_ORIGIN",
+            "UNLOADED",
+            "DOCUMENTS_RECEIVED_DISCHARGE_PORT",
+            "CUSTOMS_DECLARATION_DISCHARGE_PORT",
+            "CUSTOMS_HOLD_DISCHARGE_PORT",
+            "CUSTOMS_PAYMENT_REQUIRED",
+            "READY_FOR_CUSTOMER_PICKUP",
+            "DEPARTED_TERMINAL",
+            "LOADED_TRAIN",
+            "UNLOADED_TRAIN",
+            "ARRIVED_AT_DESTINATION_YARD",
+            "TRAILER_UNLOADING",
+            "DELIVERED",
+            "EMPTY_RETURN",
+            "ORDER_CANCELLED",
+            "ARRIVED_AT_RAIL_TERMINAL",
+            "CARRIER_TRANSFER",
+            "CUSTOMER_PICKUP_COMPLETED",
+            "CUSTOMS_EXCEPTION",
+            "DELIVERY_ADDRESS_UPDATED",
+            "DELIVERY_CHANGE_REQUESTED",
+            "DELIVERY_ESTIMATE_UPDATED",
+            "DEPARTED_RAIL_TERMINAL",
+            "PICKUP_FAILED",
+            "READY_FOR_DELIVERY",
+            "RETURN_DROPPED_OFF",
+            "RETURN_IN_TRANSIT",
+            "RETURN_PICKED_UP",
+            "RETURN_RECEIVED",
+            "SORTED",
+            "TRAILER_UNLOADED"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "BOOKING_RECEIVED",
+              "description": "Initial booking received."
+            },
+            {
+              "value": "ARRIVED_IN_DESTINATION_COUNTRY",
+              "description": "Shipment arrived in the destination country."
+            },
+            {
+              "value": "CARRIER_RECEIVED_SHIPMENT",
+              "description": "Carrier received the shipment."
+            },
+            {
+              "value": "CARRIER_HOLD",
+              "description": "Shipment is being held by the carrier. Customer action is required for delivery."
+            },
+            {
+              "value": "CUSTOMER_CONTACTED",
+              "description": "Carrier contacted the recipient to arrange delivery."
+            },
+            {
+              "value": "CUSTOMER_MOVED",
+              "description": "Recipient is no longer at address."
+            },
+            {
+              "value": "RECIPIENT_REFUSED_DELIVERY",
+              "description": "Recipient refused to accept the shipment."
+            },
+            {
+              "value": "ORDER_PREPARING",
+              "description": "Order is preparing to ship."
+            },
+            {
+              "value": "CARRIER_ASSIGNED",
+              "description": "A carrier has been assigned to the shipment."
+            },
+            {
+              "value": "CUSTOMS_DELAY",
+              "description": "The shipment is delayed in customs."
+            },
+            {
+              "value": "CONTAINERIZED",
+              "description": "The shipment has been loaded into a container."
+            },
+            {
+              "value": "DAMAGED",
+              "description": "The shipment is damaged."
+            },
+            {
+              "value": "DELAYED",
+              "description": "The shipment is delayed."
+            },
+            {
+              "value": "DELIVERY_APPOINTMENT_CONFIRMED",
+              "description": "Delivery appointment confirmed by the carrier."
+            },
+            {
+              "value": "DELIVERY_ATTEMPTED",
+              "description": "The carrier attempted delivery but was unable to complete it."
+            },
+            {
+              "value": "INCORRECT_ADDRESS",
+              "description": "The delivery attempt failed due to an address issue (for example, incorrect or incomplete address)."
+            },
+            {
+              "value": "IN_TRANSIT_TO_PICKUP",
+              "description": "The carrier is in transit to the pickup location."
+            },
+            {
+              "value": "LOST",
+              "description": "The carrier lost the shipment."
+            },
+            {
+              "value": "MANIFESTED_NOT_RECEIVED",
+              "description": "The shipment manifest was sent to the carrier but the carrier did not receive the shipment."
+            },
+            {
+              "value": "MISSING_MANIFEST",
+              "description": "The carrier received the shipment but did not receive the shipment manifest."
+            },
+            {
+              "value": "MISSORTED",
+              "description": "Carrier missorted the shipment."
+            },
+            {
+              "value": "OUT_FOR_DELIVERY",
+              "description": "Shipment is out for delivery."
+            },
+            {
+              "value": "RECEIVED_FROM_CARRIER",
+              "description": "A connecting carrier received the shipment for continued transit."
+            },
+            {
+              "value": "RETURNED",
+              "description": "The shipment was returned to the shipper."
+            },
+            {
+              "value": "SHIPPED",
+              "description": "The shipment has departed the origin facility."
+            },
+            {
+              "value": "UNDELIVERABLE",
+              "description": "The shipment is undeliverable and is returning to the shipper."
+            },
+            {
+              "value": "UNDELIVERABLE_DESTROY_IN_FIELD",
+              "description": "The shipment is undeliverable and will be destroyed."
+            },
+            {
+              "value": "BOOKING_ACCEPTED",
+              "description": "The initial booking for the shipment was accepted."
+            },
+            {
+              "value": "BOOKING_CONFIRMED",
+              "description": "The shipment booking was confirmed."
+            },
+            {
+              "value": "BOOKING_CANCELLED",
+              "description": "The shipment booking was cancelled."
+            },
+            {
+              "value": "PICKED_UP",
+              "description": "The cargo was picked up from the origin location."
+            },
+            {
+              "value": "ARRIVED",
+              "description": "The ocean vessel or aircraft arrived at the destination port or airport."
+            },
+            {
+              "value": "DOCUMENTS_RECEIVED_EMBARK_PORT",
+              "description": "All required documents were received at the port of loading or origin airport."
+            },
+            {
+              "value": "DRAY_STOP_OFF",
+              "description": "Shipment stopped at an intermediate drayage location."
+            },
+            {
+              "value": "ARRIVED_AT_TERMINAL",
+              "description": "The shipment arrived at a carrier facility."
+            },
+            {
+              "value": "CUSTOMS_IMPORT_SECURITY_FILED",
+              "description": "The Importer Security Filing (ISF) was submitted to customs."
+            },
+            {
+              "value": "CUSTOMS_IMPORT_SECURITY_FILING_ACCEPTED",
+              "description": "The Importer Security Filing (ISF) was accepted by customs."
+            },
+            {
+              "value": "CUSTOMS_DECLARATION_EMBARK_PORT",
+              "description": "Customs declaration has been filed at the port of loading or origin airport."
+            },
+            {
+              "value": "CUSTOMS_PROCESSING",
+              "description": "The customs clearance process has started for the shipment."
+            },
+            {
+              "value": "CUSTOMS_HOLD",
+              "description": "Customs has detained the shipment for inspection at origin."
+            },
+            {
+              "value": "CUSTOMS_CLEARED",
+              "description": "The shipment has cleared the customs process."
+            },
+            {
+              "value": "LOADED",
+              "description": "The container was loaded onto the ocean vessel or aircraft."
+            },
+            {
+              "value": "DEPARTED",
+              "description": "The ocean vessel or aircraft departed from the port or airport."
+            },
+            {
+              "value": "RECEIVED_AT_ORIGIN",
+              "description": "The shipment was received at the carrier's facility or point of departure."
+            },
+            {
+              "value": "UNLOADED",
+              "description": "The container was unloaded from the ocean vessel or aircraft."
+            },
+            {
+              "value": "DOCUMENTS_RECEIVED_DISCHARGE_PORT",
+              "description": "The port of discharge or destination airport received all documents."
+            },
+            {
+              "value": "CUSTOMS_DECLARATION_DISCHARGE_PORT",
+              "description": "A customs declaration was filed at the port of discharge or destination airport."
+            },
+            {
+              "value": "CUSTOMS_HOLD_DISCHARGE_PORT",
+              "description": "The shipment was detained by customs for inspection at the destination."
+            },
+            {
+              "value": "CUSTOMS_PAYMENT_REQUIRED",
+              "description": "A customs exception occurred because duty or tax payment is required."
+            },
+            {
+              "value": "READY_FOR_CUSTOMER_PICKUP",
+              "description": "The shipment is available for customer pickup."
+            },
+            {
+              "value": "DEPARTED_TERMINAL",
+              "description": "The shipment departed from a carrier terminal or facility."
+            },
+            {
+              "value": "LOADED_TRAIN",
+              "description": "The container was loaded onto a train."
+            },
+            {
+              "value": "UNLOADED_TRAIN",
+              "description": "The container was unloaded from a train."
+            },
+            {
+              "value": "ARRIVED_AT_DESTINATION_YARD",
+              "description": "The container arrived at the destination primary yard."
+            },
+            {
+              "value": "TRAILER_UNLOADING",
+              "description": "The container was opened and contents are being unloaded."
+            },
+            {
+              "value": "DELIVERED",
+              "description": "The shipment was delivered to the destination."
+            },
+            {
+              "value": "EMPTY_RETURN",
+              "description": "The empty container was returned to the terminal."
+            },
+            {
+              "value": "ORDER_CANCELLED",
+              "description": "The order was cancelled on request or due to a fulfillment issue."
+            },
+            {
+              "value": "ARRIVED_AT_RAIL_TERMINAL",
+              "description": "The shipment arrived at rail terminal."
+            },
+            {
+              "value": "CARRIER_TRANSFER",
+              "description": "The shipment was transferred to another carrier to continue delivery."
+            },
+            {
+              "value": "DELIVERY_ADDRESS_UPDATED",
+              "description": "The shipment is in transit after the delivery address was updated."
+            },
+            {
+              "value": "DELIVERY_CHANGE_REQUESTED",
+              "description": "The recipient has requested a special delivery arrangement."
+            },
+            {
+              "value": "DELIVERY_ESTIMATE_UPDATED",
+              "description": "The shipment estimated delivery date has changed."
+            },
+            {
+              "value": "DEPARTED_RAIL_TERMINAL",
+              "description": "The shipment departed from a rail terminal."
+            },
+            {
+              "value": "PICKUP_FAILED",
+              "description": "The carrier failed to pick up the shipment."
+            },
+            {
+              "value": "READY_FOR_DELIVERY",
+              "description": "The shipment is available for delivery."
+            },
+            {
+              "value": "RETURN_DROPPED_OFF",
+              "description": "The customer dropped off the shipment for a return."
+            },
+            {
+              "value": "RETURN_IN_TRANSIT",
+              "description": "The return is in transit from the carrier to a fulfillment center."
+            },
+            {
+              "value": "RETURN_PICKED_UP",
+              "description": "The carrier received the return shipment."
+            },
+            {
+              "value": "RETURN_RECEIVED",
+              "description": "The returns facility received the return shipment."
+            },
+            {
+              "value": "SORTED",
+              "description": "The shipment has been sorted at the carrier facility."
+            },
+            {
+              "value": "TRAILER_UNLOADED",
+              "description": "Container contents have been fully unloaded."
+            },
+            {
+              "value": "CUSTOMER_PICKUP_COMPLETED",
+              "description": "The customer picked up the shipment from a locker."
+            },
+            {
+              "value": "CUSTOMS_EXCEPTION",
+              "description": "Customs is holding the shipment due to an exception."
+            }
+          ],
+          "example": "DELIVERED"
+        },
+        "subCode": {
+          "type": "string",
+          "description": "Status subcode that provides additional details about the milestone status. Valid values vary by milestone (for example, a `DELIVERED` milestone might include a `subCode` for the delivery location).",
+          "enum": [
+            "ACCIDENT",
+            "ADDRESS_CHANGE",
+            "ADDRESS_ISSUE",
+            "ADDRESS_NON_SERVICED",
+            "ADULT_SIGNATURE_REQUIRED",
+            "AIRPLANE_LATE",
+            "AIR_HUB",
+            "ANIMAL_HAZARD",
+            "APARTMENT",
+            "APPOINTMENT",
+            "APPOINTMENT_REQUIRED",
+            "ARMED_FORCES_POST_OFFICE",
+            "BAG",
+            "BAG_ID_MISMATCH",
+            "BATCH",
+            "BEHIND_WHEELIE_BIN",
+            "BUILDING_LOCKER",
+            "BUSINESS_CLOSED",
+            "BUSINESS_CLOSED_HOLIDAY",
+            "BUYBACK",
+            "CARRIER_HUB",
+            "CARRIER_HUB_DELAY",
+            "CARRIER_NO_ACCESS",
+            "CARRIER_NO_CAPACITY",
+            "CARRIER_REFUSAL",
+            "CITY_TOWN_STATE",
+            "CN_BUYER_PAYER_RECIPIENT_MISMATCH",
+            "CN_CUSTOMS_ALIPAY_WECHAT_NAME_FAILED",
+            "CN_CUSTOMS_CAN_GATEWAY_ID_VERIFICATION",
+            "CN_CUSTOMS_CLEARANCE_DATA_ISSUE",
+            "CN_CUSTOMS_CONVERT_TO_PERSONAL_REVIEW",
+            "CN_CUSTOMS_DATA_TRANSMISSION_DELAY",
+            "CN_CUSTOMS_PACKAGE_INFO_MISMATCH",
+            "CN_CUSTOMS_PERSONAL_REVIEW_DELAY",
+            "CN_CUSTOMS_PERSONAL_REVIEW_QUOTA_EXCEEDED",
+            "CN_CUSTOMS_PROHIBITED_WORDING",
+            "CN_CUSTOMS_SYSTEM_UPGRADE",
+            "CONSERVATORY",
+            "CONTAINER_FREIGHT_STATION",
+            "CONTENT_SPILL_OUT",
+            "COUNTER",
+            "COVERAGE_AREA_ISSUE",
+            "CUSTOMER",
+            "CUSTOMER_CANCELLED",
+            "CUSTOMER_MOVED",
+            "CUSTOMER_PICK_UP_FAILURE",
+            "CUSTOMER_REFUSAL",
+            "CUSTOMER_REQUEST",
+            "CUSTOMS",
+            "CUSTOMS_FEES",
+            "CUSTOMS_HUB",
+            "CUSTOMS_ISSUE",
+            "DAMAGE",
+            "DATE_CHANGE",
+            "DELAY",
+            "DELIVERY_AGENT_ASSIGNED",
+            "DELIVERY_ATTEMPTED",
+            "DELIVERY_DATE_MISMATCH",
+            "DELIVERY_DEPOT",
+            "DELIVERY_DEPOT_DELAY",
+            "DELIVERY_NOT_ATTEMPTED",
+            "DESTINATION",
+            "DIRECTIONS_REQUIRED",
+            "DRIVER_EMERGENCY",
+            "DRIVER_HELD",
+            "DRIVER_LATE",
+            "DRONE",
+            "DRONE_REPLAN",
+            "DUPLICATE",
+            "DUTIES_TAX_PENDING",
+            "EMERGENCY",
+            "EXCEEDS_20000_RMB_CLEARANCE_QUOTA",
+            "EXCEEDS_PERSONAL_QUANTITIES_QUOTA",
+            "EXPORT_CARRIER",
+            "FACILITY_BREAKDOWN",
+            "FACILITY_CLOSURE",
+            "FAILED_ADULT_VERIFICATION",
+            "FAILED_MAX_ATTEMPTS",
+            "FINAL_ATTEMPT_FAILED",
+            "FORCE_MAJEURE",
+            "FRAUDULENT_ACTIVITY",
+            "FREIGHT_FORWARDER",
+            "FRONT_PORCH",
+            "FRONT_PORCH_OR_FRONT_DOOR",
+            "FULFILLMENT_FACILITY",
+            "FULFILLMENT_ISSUE",
+            "FULFILLMENT_PROVIDER_MISSORT",
+            "FULFILLMENT_PROVIDER_RETURN_REQUEST",
+            "GARAGE",
+            "GARDEN",
+            "GOVERNMENT_AGENCY_INSPECTION_REQUIRED",
+            "GREENHOUSE",
+            "HANDED_OVER_FOR_FINAL_DELIVERY",
+            "HAZMAT",
+            "HEAVY_BULKY_CARRIER",
+            "HELD_FOR_PAYMENT",
+            "HELD_IN_TRAILER",
+            "HOLD_FOR_PICK_UP",
+            "HS_CODE_ISSUES",
+            "IMPORT_BLOCKED",
+            "IMPORT_DOCUMENTATION_REQUIRED",
+            "IMPORT_ELIGIBILITY_ISSUE",
+            "INCORRECT_ITEM",
+            "INCOTERMS_ISSUE",
+            "INSIDE_BOX",
+            "INSIDE_HOME",
+            "INSIDE_VEHICLE",
+            "INSUFFICIENT_PAPERWORK",
+            "INTERNATIONAL_TRANSIT_DELAY",
+            "INVALID_ADDRESS",
+            "INVALID_CITY_TOWN_STATE_ADDRESS",
+            "INVALID_POSTAL_CODE",
+            "INVALID_RECIPIENT_NAME",
+            "INVALID_STREET_ADDRESS",
+            "LABEL_ISSUE",
+            "LARGE_ITEM",
+            "LATE_DELIVERY",
+            "LEAVE_TO_NEIGHBOR",
+            "LETTERBOX",
+            "LOCKER",
+            "LOOSE",
+            "MAIL_BOX_FULL",
+            "MAIL_ROOM",
+            "MANUAL_CLEARANCE",
+            "MANUAL_SCAN_UPLOAD",
+            "MISSING_APARTMENT_ADDRESS",
+            "MISSING_COMMERCIAL_DOCS",
+            "MISSING_OR_INCOMPLETE_NAME",
+            "MISSING_RECIPIENT_PERSONAL_DATA",
+            "MISSORT",
+            "NAME_AUTHENTICATION_FAILED",
+            "NEARBY_STORE",
+            "NEIGHBOR",
+            "NEIGHBOR_SIGNED",
+            "NON_PERSONAL_BELONGINGS",
+            "NON_POSTAL_CARRIER",
+            "NOT_ORDERED",
+            "NOT_WANTED",
+            "NO_ACCESS",
+            "NO_CONTACT_INFORMATION",
+            "NO_RESPONSE",
+            "NO_SECURITY_ACCESS",
+            "OFF_AMAZON_CUSTOMER",
+            "ON_HOLD",
+            "ORIGIN",
+            "OUTBUILDING",
+            "OVER_FORECAST",
+            "PACKAGE_OPEN",
+            "PACKAGE_OVERSIZED",
+            "PARCEL_HUB",
+            "PARTIAL",
+            "PAYMENT_REFUSED",
+            "PENDING_INSPECTION",
+            "PGA_HOLD",
+            "PICKUP_FAILURE",
+            "PICKUP_POINT",
+            "PICKUP_POINT_CLOSED",
+            "PKG_DIMENSION_EXCEEDS",
+            "POI_DELIVERY_ADDRESS_MISMATCH",
+            "POI_INVALID",
+            "POI_RECIPIENT_NAME_MISMATCH",
+            "PORCH",
+            "POSTAL_CARRIER",
+            "POST_OFFICE",
+            "POWER_OF_ATTORNEY_REQUIRED",
+            "PO_BOX",
+            "PO_BOX_QUERY",
+            "PREDICTED",
+            "PROCESSING_DELAY",
+            "PROCESSING_HUB",
+            "PRODUCT_DAMAGED",
+            "PRODUCT_DEFECTIVE",
+            "PRODUCT_MISSING",
+            "PRODUCT_NOT_FUNCTIONAL",
+            "PRODUCT_PRICE_EXCEEDS_2000_RMB",
+            "PROHIBITED_ITEM",
+            "READY_FOR_PICKUP",
+            "REAR_PORCH",
+            "REAR_PORCH_OR_REAR_DOOR",
+            "RECEPTION",
+            "RECIPIENT_CANCELLED",
+            "RECIPIENT_HOLIDAY",
+            "RECIPIENT_ID_IMAGE_QUALITY",
+            "RECIPIENT_ID_INVALID",
+            "RECIPIENT_ID_MISSING",
+            "RECIPIENT_ID_NOT_RECEIVED",
+            "RECIPIENT_ID_RECEIVED",
+            "RECIPIENT_PIN_NOT_AVAILABLE",
+            "RECIPIENT_UNIQUE_CODE_MISSING",
+            "RECIPIENT_UNKNOWN_ENTITY",
+            "REDIRECTED_SHIPMENT",
+            "REDIRECT_FAILED",
+            "REMOTE_AREA",
+            "REROUTED_TO_LOCKER",
+            "REROUTED_TO_STORE",
+            "RETURN_TO_SELLER",
+            "REVERTED",
+            "ROAD_ISSUE",
+            "SAFE_PLACE",
+            "SCHEDULE_ADJUSTMENT",
+            "SECURITY_ACCESS",
+            "SECURITY_CHECKS_REQUIRED",
+            "SECURITY_DESK",
+            "SELLER_ISSUE",
+            "SELLER_MOVED",
+            "SELLER_REJECTION",
+            "SELLER_REQUEST",
+            "SHED",
+            "SHIPMENT_DAMAGED",
+            "SHIPMENT_FEES",
+            "SHIPMENT_HIJACKED",
+            "SHIPMENT_MISSING",
+            "SHIPMENT_NOT_RECEIVED",
+            "SHIPMENT_OVERDUE_14_DAYS",
+            "SHIPPER_RELATED",
+            "SHIPPER_REQUEST",
+            "SIDE_PORCH",
+            "SIGNATURE_REQUIRED",
+            "SIGNATURE_WAIVED",
+            "SIGNED",
+            "STORE",
+            "STREET",
+            "TERRACE",
+            "THEFT",
+            "THIRD_PARTY_CARRIER_DELAY",
+            "TRAILER_LATE",
+            "TRAIN_LATE",
+            "TRANSPORTATION_CAPACITY_SHORTAGE",
+            "TRUCK",
+            "UNIT_LOAD_DEVICE",
+            "UNKNOWN_ENTITY",
+            "UNREADABLE_BARCODE",
+            "UNSUCCESSFUL_CUSTOMER_CONTACT",
+            "UNVERIFIED_ADDRESS",
+            "VAN",
+            "VAN_REPLAN",
+            "VEHICLE_BREAKDOWN",
+            "WEATHER",
+            "WRONG_DELIVERY_ROUTE",
+            "WRONG_PHONE_NUMBER",
+            "POSTAL_CODE"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "A human-readable explanation of the milestone event.",
+          "example": "Shipment delivered"
+        }
+      },
+      "required": [
+        "code",
+        "description"
+      ]
+    },
+    "TrackingMilestoneLocation": {
+      "type": "object",
+      "description": "The location where a tracking milestone occurred.",
+      "properties": {
+        "address": {
+          "description": "The physical address where the milestone occurred.",
+          "$ref": "#/definitions/TrackingMilestoneAddress"
+        }
+      }
+    },
+    "TrackingMilestoneAddress": {
+      "type": "object",
+      "description": "The physical address of the location.",
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "The city where the milestone occurred.",
+          "example": "Seattle"
+        },
+        "region": {
+          "type": "string",
+          "description": "The state or region where the milestone occurred.",
+          "example": "Washington"
+        },
+        "countryCode": {
+          "type": "string",
+          "description": "The two-character country code in ISO 3166-1 alpha-2 format (for example, `US`).",
+          "example": "US"
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "object",
+      "description": "A list of errors for an unsuccessful request.",
+      "properties": {
+        "errors": {
+          "type": "array",
+          "description": "An array of error details.",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      },
+      "required": [
+        "errors"
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "description": "Error response returned when the request is unsuccessful.",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ]
+    }
+  }
+}
