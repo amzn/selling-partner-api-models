@@ -24,8 +24,204 @@
     "application/json"
   ],
   "paths": {
+    "/notifications/v1/subscriptions": {
+      "get": {
+        "tags": [
+          "notifications"
+        ],
+        "description": "Returns information about subscriptions of the specified notification type. You can use this API to retrieve all subscriptions when multiple subscriptions exist for a notification type (for example, when using filter expressions).\n\nThe operation returns all subscriptions for the caller's party.\n\n`payloadVersion` is an optional parameter. When you do not provide `payloadVersion`, the operation returns subscriptions across all payload versions.\n\n**Usage Plan:**\n\n| Rate (requests per second) | Burst |\n| ---- | ---- |\n| 1 | 5 |\n\nThe `x-amzn-RateLimit-Limit` response header contains the usage plan rate limits for the operation, when available. The preceding table contains the default rate and burst values for this operation. Selling partners whose business demands require higher throughput might have higher rate and burst values than those shown here. For more information, refer to [Usage Plans and Rate Limits in the Selling Partner API](https://developer-docs.amazon.com/sp-api/docs/usage-plans-and-rate-limits-in-the-sp-api).",
+        "operationId": "getSubscriptions",
+        "parameters": [
+          {
+            "name": "notificationTypes",
+            "in": "query",
+            "description": "A list of notification types to retrieve subscriptions for. Currently limited to a single notification type per request.\n\n For more information about notification types, refer to the [Notifications API v1 Use Case Guide](https://developer-docs.amazon.com/sp-api/docs/notifications-api-v1-use-case-guide).",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1,
+            "minItems": 1
+          },
+          {
+            "name": "payloadVersion",
+            "in": "query",
+            "description": "The version of the payload object to be used in the notification.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "The maximum number of subscriptions to return per page. Minimum value is 30. Maximum value is 100. Default is 30.",
+            "required": false,
+            "type": "integer",
+            "minimum": 30,
+            "maximum": 100,
+            "default": 30
+          },
+          {
+            "name": "nextToken",
+            "in": "query",
+            "description": "A token to retrieve the next page of results. If this field is not empty in a response, pass its value in the next request to retrieve the next page.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              },
+              "x-amzn-RateLimit-Limit": {
+                "description": "Your rate limit (requests per second) for this operation.",
+                "type": "string"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "notificationTypes": {
+                        "value": [
+                          "ANY_OFFER_CHANGED"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "payload": {
+                      "subscriptions": [
+                        {
+                          "subscriptionId": "7fcacc7e-727b-11e9-8848-1681be663d3e",
+                          "payloadVersion": "1.0",
+                          "destinationId": "3acafc7e-121b-1329-8ae8-1571be663aa2"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/GetSubscriptionsResponse"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
     "/notifications/v1/subscriptions/{notificationType}": {
       "get": {
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
         "tags": [
           "notifications"
         ],
@@ -208,6 +404,7 @@
         }
       },
       "post": {
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
         "tags": [
           "notifications"
         ],
@@ -915,6 +1112,7 @@
     },
     "/notifications/v1/destinations": {
       "get": {
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
         "tags": [
           "notifications"
         ],
@@ -1094,6 +1292,7 @@
         }
       },
       "post": {
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
         "tags": [
           "notifications"
         ],
@@ -1281,6 +1480,7 @@
     },
     "/notifications/v1/destinations/{destinationId}": {
       "get": {
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
         "tags": [
           "notifications"
         ],
@@ -1464,6 +1664,7 @@
         }
       },
       "delete": {
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
         "tags": [
           "notifications"
         ],
@@ -1658,13 +1859,17 @@
           "$ref": "#/definitions/OrderChangeTypeFilter"
         },
         {
+          "$ref": "#/definitions/TrackingFilter"
+        },
+        {
           "type": "object",
           "properties": {
             "eventFilterType": {
               "type": "string",
               "enum": [
                 "ANY_OFFER_CHANGED",
-                "ORDER_CHANGE"
+                "ORDER_CHANGE",
+                "SHIPMENT_TRACKING_MILESTONE_CHANGED"
               ],
               "description": "An `eventFilterType` value that the `notificationType` supports. The subscription service uses the `eventFilterType` to determine the type of event filter. To determine if a specific `notificationType` supports an `eventFilterType`, refer to [Notification Type Values]( https://developer-docs.amazon.com/sp-api/docs/notification-type-values)."
             }
@@ -1674,6 +1879,58 @@
           ]
         }
       ]
+    },
+    "TrackingFilter": {
+      "description": "An event filter you can use to customize your subscription to receive shipment tracking milestone notifications for a specific tracking identifier.",
+      "type": "object",
+      "properties": {
+        "trackingIdentifier": {
+          "$ref": "#/definitions/TrackingIdentifier"
+        }
+      }
+    },
+    "TrackingIdentifier": {
+      "description": "Specifies the tracking identifier used to filter your subscription notifications. Provide exactly one identifier field. Providing multiple identifier fields in a single request is not supported.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Amazon unique tracking identifier."
+        },
+        "acsin": {
+          "type": "string",
+          "description": "Air Cargo Shipment Identification Number."
+        },
+        "aftn": {
+          "type": "string",
+          "description": "Amazon Fulfillment Tracking Number."
+        },
+        "containerNumber": {
+          "type": "string",
+          "description": "Container number provided by the Logistics Service Provider."
+        },
+        "houseBillOfLadingNumber": {
+          "type": "string",
+          "description": "House Bill of Lading number."
+        },
+        "carrierTracking": {
+          "type": "object",
+          "description": "Carrier-provided tracking identifier.",
+          "properties": {
+            "trackingNumber": {
+              "type": "string",
+              "description": "Carrier tracking number"
+            },
+            "carrierCode": {
+              "type": "string",
+              "description": "Carrier code"
+            }
+          },
+          "required": [
+            "trackingNumber"
+          ]
+        }
+      }
     },
     "MarketplaceFilter": {
       "description": "An event filter you can use to customize your subscription to send notifications for specific `marketplaceId`s.",
@@ -1844,6 +2101,41 @@
         }
       },
       "description": "The response schema for the `getSubscription` operation."
+    },
+    "GetSubscriptionsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The payload for the `getSubscriptions` operation.",
+          "$ref": "#/definitions/GetSubscriptionsPayload"
+        },
+        "errors": {
+          "description": "One or more unexpected errors occurred during the `getSubscriptions` operation.",
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "description": "The response schema for the `getSubscriptions` operation."
+    },
+    "GetSubscriptionsPayload": {
+      "type": "object",
+      "properties": {
+        "subscriptions": {
+          "description": "A list of subscriptions.",
+          "$ref": "#/definitions/Subscriptions"
+        },
+        "nextToken": {
+          "type": "string",
+          "description": "A token that you can use to retrieve the next page of results. When this field is not empty, pass its value in the `nextToken` query parameter of the next request."
+        }
+      },
+      "description": "The payload for the `getSubscriptions` operation."
+    },
+    "Subscriptions": {
+      "type": "array",
+      "description": "A list of subscriptions.",
+      "items": {
+        "$ref": "#/definitions/Subscription"
+      }
     },
     "DeleteSubscriptionByIdResponse": {
       "type": "object",
