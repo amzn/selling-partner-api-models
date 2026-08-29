@@ -435,18 +435,17 @@ namespace {{packageName}}.{{apiPackage}}
         public class Builder
         {
             private LWAAuthorizationCredentials lwaAuthorizationCredentials;
-            private RateLimitConfiguration rateLimitConfiguration;
+            private AWSAuthenticationCredentials awsAuthenticationCredentials;
 
             public Builder SetLWAAuthorizationCredentials(LWAAuthorizationCredentials lwaAuthorizationCredentials)
             {
                 this.lwaAuthorizationCredentials = lwaAuthorizationCredentials;
                 return this;
             }
-            
-            
-            public Builder SetRateLimitConfiguration(RateLimitConfiguration rateLimitConfiguration)
+
+            public Builder SetAWSAuthenticationCredentials(AWSAuthenticationCredentials awsAuthenticationCredentials)
             {
-                this.rateLimitConfiguration = rateLimitConfiguration;
+                this.awsAuthenticationCredentials = awsAuthenticationCredentials;
                 return this;
             }
 
@@ -457,11 +456,15 @@ namespace {{packageName}}.{{apiPackage}}
                     throw new NullReferenceException("LWAAuthoriztionCredentials not set");
                 }
 
+                if (awsAuthenticationCredentials == null)
+                {
+                    throw new NullReferenceException("AWSAuthenticationCredentials not set");
+                }
                 
                 {{packageName}}.Client.Configuration configuration = new {{packageName}}.Client.Configuration()
                 {
                     AuthorizationCredentials = lwaAuthorizationCredentials,
-                    RateLimitConfig = rateLimitConfiguration
+                    AuthenticationCredentials = awsAuthenticationCredentials
                 };
 
                 // default HTTP connection timeout (in milliseconds)
