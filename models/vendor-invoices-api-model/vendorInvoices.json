@@ -26,6 +26,7 @@
   "paths": {
     "/vendor/payments/v1/invoices": {
       "post": {
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
         "tags": [
           "vendorPayments"
         ],
@@ -607,6 +608,18 @@
           "description": "Name, address and tax details of the party to whom this invoice is issued.",
           "$ref": "#/definitions/PartyIdentification"
         },
+        "billFromParty": {
+          "description": "Name, address and tax details of the party that issues this invoice.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "vatGroupParty": {
+          "description": "Name, address and tax registration details of the VAT group representative member, when the supplier reports VAT as part of a VAT group. Conditionally mandatory for applicable EU e-invoice scenarios.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
+        "taxRepresentativeParty": {
+          "description": "Name, address and tax registration details of the supplier's fiscal or tax representative, where one is required. Conditionally mandatory for applicable EU e-invoice scenarios.",
+          "$ref": "#/definitions/PartyIdentification"
+        },
         "paymentTerms": {
           "description": "The payment terms for the invoice.",
           "$ref": "#/definitions/PaymentTerms"
@@ -614,6 +627,14 @@
         "invoiceTotal": {
           "description": "Total monetary amount charged in the invoice or full value of credit note to be paid including all relevant taxes. It is the total amount of invoice (including charges, less allowances) before terms discount (if discount is applicable).",
           "$ref": "#/definitions/Money"
+        },
+        "invoiceBaseAmount": {
+          "description": "Sum of all invoice line net amounts, excluding tax, charges and allowances. Provided for EU e-invoice interoperability.",
+          "$ref": "#/definitions/Money"
+        },
+        "taxPointDate": {
+          "description": "The date on which the tax becomes chargeable, if different from the invoice date. When absent, the invoice date applies.",
+          "$ref": "#/definitions/DateTime"
         },
         "taxDetails": {
           "type": "array",
@@ -674,8 +695,47 @@
           "items": {
             "$ref": "#/definitions/TaxRegistrationDetails"
           }
+        },
+        "additionalPartyIdentifications": {
+          "type": "array",
+          "description": "Additional corporate or fiscal registration identifiers for the party that are not VAT/GST registrations (e.g. FR SIREN, or DE W-IdNr.).",
+          "items": {
+            "$ref": "#/definitions/AdditionalPartyIdentification"
+          }
         }
       }
+    },
+    "AdditionalPartyIdentification": {
+      "type": "object",
+      "required": [
+        "identificationType",
+        "identificationNumber"
+      ],
+      "properties": {
+        "identificationType": {
+          "type": "string",
+          "description": "The type of the additional party identifier.",
+          "enum": [
+            "FR_SIREN",
+            "DE_WIDNR"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "FR_SIREN",
+              "description": "French company registration number (Système d'identification du répertoire des entreprises)."
+            },
+            {
+              "value": "DE_WIDNR",
+              "description": "German economic identification number (Wirtschafts-Identifikationsnummer)."
+            }
+          ]
+        },
+        "identificationNumber": {
+          "type": "string",
+          "description": "The value of the additional party identifier."
+        }
+      },
+      "description": "An additional corporate or fiscal registration identifier for a party."
     },
     "TaxRegistrationDetails": {
       "type": "object",
@@ -689,7 +749,8 @@
           "description": "The tax registration type for the entity.",
           "enum": [
             "VAT",
-            "GST"
+            "GST",
+            "LocalTaxNumber"
           ],
           "x-docgen-enum-table-extension": [
             {
@@ -699,6 +760,10 @@
             {
               "value": "GST",
               "description": "Goods and services tax."
+            },
+            {
+              "value": "LocalTaxNumber",
+              "description": "Local tax number issued by the tax office (for example, Germany's Steuernummer)."
             }
           ]
         },
@@ -804,6 +869,17 @@
         "hsnCode": {
           "type": "string",
           "description": "HSN Tax code. The HSN number cannot contain alphabets."
+        },
+        "itemDescription": {
+          "type": "string",
+          "description": "Product or service description for the invoiced line item."
+        },
+        "additionalDetails": {
+          "type": "array",
+          "description": "Line-level additional details provided by the selling party, e.g. tax exemption reason code and text.",
+          "items": {
+            "$ref": "#/definitions/AdditionalDetails"
+          }
         },
         "creditNoteDetails": {
           "description": "Details required in order to process a credit note. This information is required only if invoiceType is CreditNote.",
@@ -919,7 +995,7 @@
           ]
         },
         "taxRate": {
-          "description": "Tax percentage applied. Percentage must be expressed in decimal.",
+          "description": "Tax percentage applied. Expressed as a whole-percent integer string. For example, \"20\" for 20% VAT.",
           "$ref": "#/definitions/Decimal"
         },
         "taxAmount": {
@@ -959,7 +1035,10 @@
           "enum": [
             "SUR",
             "OCR",
-            "CartonCount"
+            "CartonCount",
+            "TaxExemptReason",
+            "LegalTerms",
+            "RegulatoryNote"
           ],
           "x-docgen-enum-table-extension": [
             {
@@ -973,6 +1052,18 @@
             {
               "value": "CartonCount",
               "description": "The total number of cartons invoiced."
+            },
+            {
+              "value": "TaxExemptReason",
+              "description": "VAT exemption reason code or free text."
+            },
+            {
+              "value": "LegalTerms",
+              "description": "Other legal terms applicable to the invoice."
+            },
+            {
+              "value": "RegulatoryNote",
+              "description": "Regulatory note applicable to the invoice."
             }
           ]
         },
@@ -1200,6 +1291,10 @@
         "referenceInvoiceNumber": {
           "type": "string",
           "description": "Original Invoice Number when sending a credit note relating to an existing invoice. One Invoice only to be processed per Credit Note. This is mandatory for AP Credit Notes."
+        },
+        "originalInvoiceDate": {
+          "description": "Date of the original invoice that this credit note references. Pairs with referenceInvoiceNumber.",
+          "$ref": "#/definitions/DateTime"
         },
         "debitNoteNumber": {
           "type": "string",

@@ -1190,6 +1190,15 @@
                           "deliverByWindow": {
                             "earliestDateTime": "2024-12-26T00:00:00Z",
                             "latestDateTime": "2024-12-30T23:59:59Z"
+                          },
+                          "promiseCalculationInputs": {
+                            "transitTime": {
+                              "details": {
+                                "carrier": "Correios",
+                                "shippingService": "SEDEX"
+                              },
+                              "dataSource": "THIRD_PARTY_INTEGRATOR"
+                            }
                           }
                         },
                         "orderItems": [
@@ -2405,7 +2414,7 @@
           }
         },
         "fulfillmentOrders": {
-          "description": "The list of fulfillment orders associated with this customer order. Each entry corresponds to one fulfillment unit created by Amazon for this order. **Note:** Only available for EasyShip orders at present.",
+          "description": "The list of fulfillment orders associated with this customer order. Each entry corresponds to one fulfillment unit created by Amazon for this order. **Note:** Only available for Easy Ship and Seller Flex.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/FulfillmentOrder"
@@ -2571,6 +2580,48 @@
         "labelPrintingWindow": {
           "description": "The earliest time available to print the shipping label for the order. Printing is available any time after the earliestDateTime. Response does not include a latestDateTime.\n\nNote: If blank, printing is available at any time.",
           "$ref": "#/definitions/DateTimeRange"
+        },
+        "promiseCalculationInputs": {
+          "description": "The inputs used to calculate a promise date for this order.",
+          "$ref": "#/definitions/PromiseCalculationInputs"
+        }
+      }
+    },
+    "PromiseCalculationInputs": {
+      "description": "The inputs used to calculate a promise date.",
+      "type": "object",
+      "properties": {
+        "transitTime": {
+          "description": "The transit time used to calculate the promise date.",
+          "$ref": "#/definitions/TransitTimeInput"
+        }
+      }
+    },
+    "TransitTimeInput": {
+      "description": "The carrier data that determined the transit time, and the source that supplied the data.",
+      "type": "object",
+      "properties": {
+        "details": {
+          "description": "The carrier and shipping service used to calculate the transit time.",
+          "$ref": "#/definitions/TransitTimeInputDetails"
+        },
+        "dataSource": {
+          "description": "The source of the transit time data.\n\n**Possible values**:\n- `AMAZON_AUTOMATED` (Amazon selected the shipping service using settings generated on the seller's behalf.)\n- `SELLER_SET` (The seller configured the transit time through a shipping template they maintain.)\n- `THIRD_PARTY_INTEGRATOR` (The transit time came from a live shipping quote that Amazon obtained from a third-party integrator for the seller's order.)",
+          "type": "string"
+        }
+      }
+    },
+    "TransitTimeInputDetails": {
+      "description": "Details about the carrier and shipping service used to calculate the transit time.",
+      "type": "object",
+      "properties": {
+        "carrier": {
+          "description": "The carrier name. For example, `Correios`.",
+          "type": "string"
+        },
+        "shippingService": {
+          "description": "The shipping service. For example, `SEDEX`.",
+          "type": "string"
         }
       }
     },
@@ -2596,11 +2647,28 @@
           "$ref": "#/definitions/Measurement"
         },
         "associatedOrderItems": {
-          "description": "A list of order items associated with this item. For example, a value-add service purchased with the product.",
+          "description": "A list of order items associated with this item. For example, a value-add service purchased with the product, or a product covered by a warranty protection plan.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/AssociatedOrderItem"
-          }
+          },
+          "example": [
+            {
+              "orderId": "123-4567890-7654321",
+              "orderItemId": "12345678904321",
+              "associationType": "VALUE_ADD_SERVICE"
+            },
+            {
+              "orderId": "903-4153187-3171039",
+              "orderItemId": "6248989267365",
+              "associationType": "WARRANTY",
+              "asin": "B0BC9Z7PJT",
+              "purchasePrice": {
+                "amount": "139.99",
+                "currencyCode": "USD"
+              }
+            }
+          ]
         },
         "programs": {
           "type": "array",
@@ -3115,7 +3183,7 @@
           "$ref": "#/definitions/ItemCancellationRequest"
         },
         "cancellationExecution": {
-          "description": "Details of how the cancellation was executed for this order item.",
+          "description": "Details about how the cancellation request was processed for this order item.",
           "$ref": "#/definitions/ItemCancellationExecution"
         }
       }
@@ -3420,15 +3488,15 @@
       }
     },
     "ItemCancellationExecution": {
-      "description": "Details of how the cancellation was executed for a specific order item, including who performed the cancellation and the reason.",
+      "description": "Detailed information about how the cancellation was processed for a specific order item.",
       "type": "object",
       "properties": {
         "cancelledBy": {
-          "description": "Entity that executed the cancellation for this item. \n\n**Possible values**: `BUYER`, `MERCHANT`, `AMAZON`",
+          "description": "The entity that executed the cancellation for this item. \n\n**Possible values**: `BUYER`, `MERCHANT`, `AMAZON`.",
           "type": "string"
         },
         "cancelReason": {
-          "description": "Explanation provided for why the cancellation was executed.",
+          "description": "The provided explanation for why the cancellation occurred.",
           "type": "string"
         }
       }
@@ -3816,7 +3884,7 @@
       }
     },
     "AssociatedOrderItem": {
-      "description": "An associated order item that a customer has purchased with the product. For example, a tire installation service purchased with tires.",
+      "description": "An associated order item that a customer has purchased with the product. For example, a tire installation service purchased with tires, or a warranty protection plan purchased with a product.",
       "type": "object",
       "properties": {
         "orderId": {
@@ -3828,8 +3896,16 @@
           "type": "string"
         },
         "associationType": {
-          "description": "The type of association between the order items.\n\n**Possible values**:\n- `VALUE_ADD_SERVICE` (The associated item is a service order)",
+          "description": "The type of association between the order items.\n\n**Possible values**:\n- `VALUE_ADD_SERVICE` (The associated item is a service order)\n- `WARRANTY` (The associated item is a product covered by a warranty or protection plan)",
           "type": "string"
+        },
+        "asin": {
+          "description": "The ASIN of the associated order item.",
+          "type": "string"
+        },
+        "purchasePrice": {
+          "description": "The purchase price of the associated order item (the amount the customer paid, excluding shipping, tax, gift wrap, and promotions).",
+          "$ref": "#/definitions/Money"
         }
       },
       "example": {
@@ -3966,7 +4042,7 @@
       }
     },
     "FulfillmentOrder": {
-      "description": "Information about a fulfillment order associated with a customer order. A fulfillment order represents a unit of fulfillment created by Amazon for the order. **Note:** Only available for EasyShip orders at present.",
+      "description": "Information about a fulfillment order associated with a customer order. A fulfillment order represents a unit of fulfillment created by Amazon for the order. **Note:** Only available for Easy Ship and Seller Flex.",
       "type": "object",
       "required": [
         "fulfillmentOrderId"
