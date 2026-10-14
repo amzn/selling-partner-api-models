@@ -1,0 +1,1024 @@
+schema { 
+  query: Query    
+}
+
+"""
+A directive which is used to specify which account types are supported for a
+given operation and must be applied at the operation level.
+"""
+directive @supportedAccountTypes(
+  """A list of Amazon account types to support."""
+  types: [AmazonAccountTypes!]
+) on FIELD_DEFINITION
+
+"""
+A directive which is used to specify which sdp instance type executes the
+operations associated with the schema it is configured for.
+"""
+directive @domainResolver(
+  """The sdp instance type that will execute the GraphQL resolvers."""
+  sdpInstanceType: String!
+) on OBJECT
+
+"""A directive which is used to enforce PAAM rights."""
+directive @paamRights(
+  """
+  A list of PAAM rights that Data Kiosk authorizes merchant account requests
+  against. Requesters must have at least one right from the list to be
+  authorized for the associated field/query.
+  """
+  require: [String!]!
+
+  """
+  An optional list of PAAM rights that Data Kiosk will not authorize against,
+  but should be included in the PAAM TA token. These rights are meant to be
+  evaluated by the dataset owners for business logic or data redaction.
+  """
+  interest: [String!]
+) on FIELD_DEFINITION
+
+"""
+A directive which is used to enforce PAAM rights on union member types. When
+querying a union type, these rights prevent callers from getting union member
+types they are not authorized to access.
+"""
+directive @paamUnionTypeRights(
+  """
+  A list of TypeRights objects, each containing a union member type and the PAAM rights necessary to access it.
+  """
+  memberTypes: [TypeRights!]!
+) on FIELD_DEFINITION
+
+"""A directive which is used to enforce supplemental rights."""
+directive @supplementalRights(
+  """
+  A list of supplemental rights that Data Kiosk authorizes non-merchant account
+  requests against. Requesters must have at least one right from the list to be
+  authorized for the associated field/query.
+  """
+  require: [String!]!
+) on FIELD_DEFINITION
+
+"""
+A directive which is used to enforce supplemental rights on union member types.
+When querying a union type, these rights prevent callers from getting union
+member types they are not authorized to access.
+"""
+directive @supplementalUnionTypeRights(
+  """
+  A list of TypeRights objects, each containing a union member type and the supplemental rights necessary to access it.
+  """
+  memberTypes: [TypeRights!]!
+) on FIELD_DEFINITION
+
+"""
+This directive specifies the retention duration of a query containing a
+particular field. When a query contains multiple fields with different
+retentions, the shortest (minimum) retention is applied to the query. The
+retention of a query's resulting documents always matches the retention of the query.
+"""
+directive @resultRetention(
+  """An ISO 8601 duration."""
+  duration: String!
+) on FIELD_DEFINITION
+
+"""
+Declares the converters that consumers are allowed to request for this
+operation, identified by SDP instance type. When a query requests a converter
+via `@convert(withSdpInstanceType: ...)`, Data Kiosk permits the request only if
+that SDP instance type is listed here; any converter not declared is rejected at
+request ingestion. Applies per operation (query field), not per domain — place
+it on the query operation field.
+"""
+directive @supportedConverters(
+  """
+  The SDP instance types (e.g. `amzn1.sdp.1.type.1.fbmsConverter`) of the
+  converters allowed for this operation. A converter transforms the JSONL output
+  of the operation's domain document processor into another format (for example,
+  CSV). Must list at least one type, with no duplicates.
+  """
+  sdpInstanceTypes: [String!]!
+) on FIELD_DEFINITION
+
+"""
+A directive which indicates that selecting this field will automatically group query results by its unique values.
+"""
+directive @domainGroupBy on FIELD_DEFINITION
+
+"""
+Account Health metric group. A null value for a given metric means that this metric is not yet available.
+"""
+type AccountHealth {
+  """
+  Total number of orders placed by customers within a specified time frame,
+  applies to both seller-fulfilled and amazon-fulfilled orders.
+  """
+  accountHealthOrderCount: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Total number of orders that received negative feedback within a specific time
+  period, applies to both seller-fulfilled and amazon-fulfilled orders.
+  """
+  accountHealthNegativeFeedbackOrderCount: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Total number of orders with an A-to-z Guarantee claim that was not denied, applies to seller-fulfilled orders only.
+  """
+  accountHealthAtozClaimOrderCount: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Total number of orders that resulted in a credit card chargeback, applies to
+  both seller-fulfilled and amazon-fulfilled orders.
+  """
+  accountHealthChargebackClaimOrderCount: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Number of seller-fulfilled orders where shipping confirmation was completed after the expected ship date.
+  """
+  accountHealthLateShipmentOrderCount: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """Number of seller-fulfilled orders cancelled by sellers."""
+  accountHealthPreFulfillmentCancelOrderCount: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Number of defective shipments due to missing valid tracking information, applies to seller-fulfilled orders only.
+  """
+  accountHealthValidTrackingDefectPackageCount: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Number of seller-fulfilled shipments within a specific time period."""
+  accountHealthPackageCount: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Number of units in seller-fulfilled shipments within a specific time period.
+  """
+  accountHealthPackageUnits: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Number of units in seller-fulfilled packages that were not delivered on time.
+  """
+  accountHealthOnTimeDeliveryDefectPackageUnits: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Number of seller-fulfilled packages that were not delivered on time."""
+  accountHealthOnTimeDeliveryDefectPackageCount: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Percentage of orders with defects (negative feedback, A-to-z claims not denied, or chargebacks).
+  """
+  accountHealthOrderDefectRate: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Ratio of orders receiving negative feedback to total orders."""
+  accountHealthNegativeFeedbackRate: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Ratio of orders with A-to-z Guarantee claims to total orders."""
+  accountHealthAtozGuaranteeClaimRate: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Ratio of orders with chargeback claims to total orders."""
+  accountHealthChargebackClaimRate: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Percentage of total orders with late ship confirmation."""
+  accountHealthLateShipmentRate: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Percentage of seller-cancelled orders during a given period."""
+  accountHealthPreFulfillmentCancelRate: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Percentage of packages with valid tracking over total packages shipped.
+  """
+  accountHealthValidTrackingRate: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Percentage of seller-fulfilled items delivered by the 'Deliver by' date.
+  """
+  accountHealthOnTimeDeliveryRate: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  0-1,000 point scale indicating account suspension risk based on compliance with Amazon's selling policies.
+  """
+  accountHealthRatingScore: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Total number of order defects identified by Account Health Dashboard (a tool in Seller Central
+  that tracks a seller's compliance with Amazon's selling policies and performance metrics) within a specified time period.
+  """
+  accountHealthTotalOrderDefects: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Number of regional product defect units that were resolved over the past 120 days.
+  This is snapshot data that reflects the current state at query time.
+  When querying with daily or weekly granularity, the same latest value is returned for each time period.
+  """
+  regionResolvedDefectsUnitT120Days: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Regional defect rate for products with incorrect labeling over the past 120
+  days (snapshot data, always returns latest value).
+  """
+  regionIncorrectLabelDefectRateT120Days: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Regional defect rate for products with missing labels over the past 120 days (snapshot data, always returns latest value).
+  """
+  regionLabelMissingDefectRateT120Days: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Regional defect rate for products with inaccurate product information over the
+  past 120 days (snapshot data, always returns latest value).
+  """
+  regionInaccurateProductDefectRateT120Days: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Regional defect rate for unexpected product issues over the past 120 days (snapshot data, always returns latest value).
+  """
+  regionUnexpectedProductDefectRateT120Days: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Regional defect rate for other product-related defects not covered by specific
+  categories over the past 120 days (snapshot data, always returns latest value).
+  """
+  regionOtherDefectsProductRelatedDefectRateT120Days: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Count of distinct defect types identified in the region over the past 120 days
+  (snapshot data, always returns latest value).
+  """
+  regionDistinctCountDefectTypeT120Days: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+}
+
+"""The supported account types available for DataKiosk."""
+enum AmazonAccountTypes {
+  """Maps to MerchantAccountId.class"""
+  MERCHANT
+
+  """Maps to PartnerAccountId.class"""
+  PARTNER_ACCOUNT
+
+  """Maps to VendorGroupId.class"""
+  VENDOR_GROUP
+}
+
+"""Monetary amount with the corresponding currency code."""
+type Amount {
+  """The amount."""
+  amount: Float!
+
+  """Currency code of the amount in ISO 4217 format."""
+  currencyCode: String!
+}
+
+"""
+Monetary amount with the corresponding currency code and time range benchmarking.
+"""
+type AmountWithBenchmarking {
+  """The monetary amount and its currency code, in ISO 4217 format."""
+  amount: Amount!
+
+  """Relevant benchmarking comparison."""
+  timeRangeBenchmarking: TimeRangeBenchmarking
+}
+
+"""Root type for Seller Analytics queries version 2025_03_31."""
+type Analytics_sellerAnalytics_2025_03_31 {
+  """
+  A query to retrieve cross-domain seller analytics data for the seller's account,
+  aggregated by provided GroupByAttributes.
+  """
+  sellerAnalyticsView(
+    """
+    The start date of the seller analytics data to retrieve. The start date must be no more than two years ago.
+    """
+    startDate: Date!
+
+    """The end date of the seller analytics data to retrieve."""
+    endDate: Date!
+
+    """
+    Determines how the data is aggregated. For example: daily, weekly, or monthly.
+    """
+    aggregateBy: DateGranularity!
+
+    """
+    Currency code for all monetary amounts in ISO 4217 format. If not provided, amounts are returned in USD.
+    """
+    currencyCode: String
+
+    """The marketplace identifiers to retrieve cross-domain seller analytics."""
+    marketplaceId: [String!]!
+  ): [SellerAnalyticsView] @supportedAccountTypes(types: [MERCHANT])
+}
+
+"""
+Delivery speed-related count metrics for search performance.
+Captures customer interactions (impressions, clicks, cart adds, purchases) filtered by shipping speed availability.
+"""
+type CountMetrics {
+  """
+  Number of clicks where the specified delivery speed option was available.
+  """
+  shippingClick: IntWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Number of cart additions where the specified delivery speed option was available.
+  """
+  shippingCartAdd: IntWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Number of purchases where the specified delivery speed option was available.
+  """
+  shippingPurchase: IntWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Number of impressions where the specified delivery speed option was available.
+  """
+  shippingImpression: IntWithBenchmarking @resultRetention(duration: "P30D")
+}
+
+"""RFC-3339 compliant Full Date Scalar. Example: "2023-11-15"."""
+scalar Date
+
+"""Date granularity used in aggregation."""
+enum DateGranularity {
+  """Metrics are aggregated by day."""
+  DAY
+
+  """Metrics are aggregated by week."""
+  WEEK
+
+  """Metrics are aggregated by month."""
+  MONTH
+}
+
+"""
+Defects metric group for return-defect analytics. A null value for a given
+metric means that this metric is not yet available.
+"""
+type Defects {
+  """
+  Return-defect metrics grouped by defect topic.
+  Returns an array of metrics per unique return-defect topic within the current grouping context.
+  """
+  topics: [ReturnDefectTopicMetrics]
+
+  """
+  Total frequency of return defects across all topics for the product (trailing six months). Not supported under totals.
+  """
+  totalDefectFrequency: IntWithBenchmarking @resultRetention(duration: "P30D")
+}
+
+"""
+A custom type which supports time range benchmarking for native Float types.
+"""
+type FloatWithBenchmarking {
+  value: Float!
+  timeRangeBenchmarking: TimeRangeBenchmarking
+}
+
+"""
+Group by attributes, essentially catalog attributes, some of which can be null, for example, group by brand.
+"""
+type GroupByAttributes {
+  """
+  Amazon Standard Identification Number, used to uniquely identify products in Amazon's catalog.
+  """
+  asin: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Product name."""
+  productTitle: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Merchant Level Stock Keeping Unit."""
+  msku: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Brand name."""
+  brand: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Amazon brand code for the owning brand."""
+  brandCode: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Products with variations (size, color, etc.) have a Parent ASIN and Child
+  ASINs. The Parent ASIN represents the generic overall product
+  (non-purchasable).
+  """
+  parentAsin: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  The fulfillment channel for the product, indicating whether it is fulfilled by Amazon (FBA) or by the seller (FBM).
+  """
+  fulfilmentChannel: String @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  The product group which describes the business group, as defined by the Amazon
+  catalog, for example, PC, Wireless, Major Appliances.
+  """
+  productGroup: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """The marketplace identifier for the associated metrics."""
+  marketplaceId: String @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Masked version of internal merchant identifier using encryption algorithm.
+  """
+  encryptedMerchantCustomerId: String @paamRights(require: ["analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+}
+
+"""
+A custom type which supports time range benchmarking for native Int types.
+"""
+type IntWithBenchmarking {
+  value: Int!
+  timeRangeBenchmarking: TimeRangeBenchmarking
+}
+
+"""
+Lending metric group. A null value for a given metric means that this metric is not yet available.
+"""
+type Lending {
+  """
+  Total monetary amount disbursed to the seller from Amazon for sales and other transactions.
+  """
+  disbursements: AmountWithBenchmarking @resultRetention(duration: "P30D")
+
+  """Total balance amount generated from standard order transactions."""
+  totalBalanceByStandardOrders: AmountWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Total number of orders that resulted in refunds within a specified time period.
+  """
+  refundsOrderCount: IntWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Total number of orders that received customer feedback within a specified time period.
+  """
+  feedbackOrderCount: IntWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Product category where seller achieved highest percentage of sales over past 12 months.
+  """
+  primaryProductCategory: String @resultRetention(duration: "P30D")
+
+  """
+  Total Gross Merchandise Sales generated in seller's main product category as of current day.
+  """
+  primaryProductCategoryNetGMS: AmountWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Total worth of seller's inventory stored in FBA warehouses based on 15-day average selling price.
+  """
+  totalFbaInventoryValue: AmountWithBenchmarking @resultRetention(duration: "P30D")
+}
+
+"""A Scalar for the primitive long type."""
+scalar Long
+
+"""
+Common price and count metrics shared by query and catalog search metrics.
+Groups impressions, clicks, cart adds, and purchases with their associated prices.
+"""
+type PriceAndCountMetrics {
+  """
+  Number of times the product appeared in search results, with price at time of impression.
+  """
+  impressionsWithPrice: UnitsWithValueAndBenchmarking
+
+  """Number of clicks from search results, with price at time of click."""
+  clicksWithPrice: UnitsWithValueAndBenchmarking
+
+  """
+  Number of times added to cart from search results, with price at time of add.
+  """
+  cartAddsWithPrice: UnitsWithValueAndBenchmarking
+
+  """
+  Number of purchases from search results, with price at time of purchase.
+  """
+  purchasesWithPrice: UnitsWithValueAndBenchmarking
+
+  """
+  Search performance metrics for products with same-day delivery option available.
+  """
+  sameDayMetrics: CountMetrics
+
+  """
+  Search performance metrics for products with one-day delivery option available.
+  """
+  oneDayMetrics: CountMetrics
+
+  """
+  Search performance metrics for products with two-day delivery option available.
+  """
+  twoDayMetrics: CountMetrics
+}
+
+type Promotion {
+  """
+  Promotion conversion rate refers to the percentage of units purchased (net of
+  cancellations) for a product with an active promotion.
+  It's calculated as the number of units sold, minus any cancelled orders,
+  divided by the number of details page views for that promotion.
+  """
+  promotionConversionRate: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  This attribute gives the total count of glance views of the Promotion applicable ASINS for that reporting period.
+  """
+  promotionGlanceViewCnt: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Promotion Ordered Units refers to the total number of units ordered for products that have an active promotion,
+  with adjustments made for order cancellations and coupon orders. It is calculated as the count of net ordered units
+  where promotion is active (number of units are set to zero if the order is canceled and to one for coupon orders).
+  
+  Promotion ordered revenue is the total money earned from selling products that were part of a promotional offer.
+  It includes the selling prices, shipping fees, taxes, and gift wrap charges,
+  and subtracts the cost of any returned or refunded items.
+  """
+  promotionOrderedUnitsWithRevenue: UnitsWithValueAndBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"])
+
+  """
+  Promotion price is the final selling price of an item after any promotions have been applied.
+  """
+  promotionOrderedPrice: AmountWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Promotion discount % refers to the percentage discount that's applied to a product's price as part of a promotional offer.
+  It's calculated as the promotion's discount amount divided by the current price.
+  """
+  promotionDiscountPct: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  The difference between the price without the promotion (the Amazon landed
+  price) and the price after the promotion is applied to an item.
+  """
+  promotionDiscountAmt: AmountWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Promotion start date refers to the date and time, in the local time zone for a store, when a promotion becomes active.
+  """
+  promotionStartDate: Date @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Promotion end date refers to the date and time, in the local time zone for a
+  store, when a promotion becomes inactive in that store.
+  """
+  promotionEndDate: Date @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Promotion ASIN state type refers to the current status or availability of a promoted product on Amazon.
+  """
+  promotionAsinStateType: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Identifies the type of the promotion for ASIN level data. Example values are
+  Best Deal, Deal of the Day, Lightning Deal, Sales Discount.
+  """
+  promotionType: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Promotion status indicates if a promotion is approved, pending or rejected.
+  """
+  promotionStatus: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Price before cart based promotions such as Lightning Deals, POS promotions and Coupons.
+  """
+  dealOurPrice: AmountWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """Deal identifier."""
+  dealId: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """The title of the promotion."""
+  dealTitle: String @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+}
+
+"""A root type for queries"""
+type Query @domainResolver(sdpInstanceType: "amzn1.sdp.1.type.1.DataKiosk.Domain.Analytics_SellerAnalytics_2025_03_31") {
+  """API is versioned."""
+  analytics_sellerAnalytics_2025_03_31: Analytics_sellerAnalytics_2025_03_31
+}
+
+"""Return-defect metrics at the individual defect-topic level."""
+type ReturnDefectTopicMetrics {
+  """
+  Return-defect topic categorizing customer-reported product defects.
+  This field automatically groups results when selected, showing metrics per
+  unique defect topic. Not supported under totals.
+  """
+  returnDefectTopic: String @resultRetention(duration: "P30D") @domainGroupBy
+
+  """
+  Number of return defects reported for this defect topic (trailing six months). Not supported under totals.
+  """
+  returnDefectFrequency: IntWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Fraction (between 0 and 1) of the product's total return defects attributed to
+  this defect topic. Not supported under totals.
+  """
+  returnDefectContribution: FloatWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Recommended actions to address the return defects associated with this topic. Not supported under totals.
+  """
+  returnDefectRecommendations: String @resultRetention(duration: "P30D")
+}
+
+"""
+Returns metric group. A null value for a given metric means that this metric is not yet available.
+"""
+type Returns {
+  """
+  Number of units returned by customers with a resolution (refund or
+  replacement), including returnless refunds, mapped to the day each unit was shipped.
+  Return data is computed with a delay of about 45 days, so the most recent ~45 days may be empty or incomplete.
+  """
+  returnedUnits: IntWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Total amount refunded to customers in the selected time period, including all
+  refunds, in the currency specified by the currencyCode argument (USD if not
+  provided). Refund data is computed with a delay of about 45 days, so the most
+  recent ~45 days may be empty or incomplete.
+  """
+  totalRefundAmount: AmountWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Rate of returned units relative to shipped units for the selected time period,
+  as a fraction between 0 and 1 (returned units / shipped units). Return data is
+  computed with a delay of about 45 days, so the rate may appear low for recent
+  dates. Not supported under totals.
+  """
+  returnedRate: FloatWithBenchmarking @resultRetention(duration: "P30D")
+}
+
+"""
+Reviews metric group. A null value for a given metric means that this metric is not yet available.
+"""
+type Reviews {
+  """
+  Number of low-rating customer reviews (critical reviews) received for the product in the selected time period.
+  """
+  lowRatingReviewCount: IntWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Total number of customer reviews received for the product in the selected time period.
+  """
+  totalReviewCount: IntWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Fraction (between 0 and 1) of customer reviews that are low-rating (critical),
+  calculated as lowRatingReviewCount divided by totalReviewCount. Not supported under totals.
+  """
+  criticalReviewRate: FloatWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Rounded star rating shown on the product detail page (1-5).
+  Reflects the overall rating state as of the requested date, not activity within the period.
+  Null when the product has no ratings yet. Not supported under totals.
+  """
+  displayRating: FloatWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Unrounded average star rating for the product (1-5).
+  Reflects the overall rating state as of the requested date, not activity within the period.
+  Null when the product has no ratings yet. Not supported under totals.
+  """
+  rawRating: FloatWithBenchmarking @resultRetention(duration: "P30D")
+
+  """
+  Total number of verified buyer reviews contributing to the product's star rating, as of
+  the requested date. Differs from totalReviewCount, which counts reviews received in the
+  selected time period. Not supported under totals.
+  """
+  totalRatingCount: IntWithBenchmarking @resultRetention(duration: "P30D")
+}
+
+"""
+Sales metric group. A null value for a given metric means that this metric is not yet available.
+"""
+type Sales {
+  """
+  The average price per unit in the selected time period, calculated by dividing
+  net orderedProductSales by net unitsOrdered (both adjusted for cancellations).
+  """
+  averageSellingPrice: AmountWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  The average price of the units sold to Amazon Business customers, calculated
+  by dividing the orderedProductSalesB2B by unitsOrderedB2B for the selected
+  time period. Note: This field is only populated if you are a B2B seller on Amazon.
+  """
+  averageSellingPriceB2B: AmountWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  The amount of ordered product sales, calculated by multiplying the price of
+  products and the number of units sold for the selected time period.
+  """
+  orderedProductSales: AmountWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  The amount of ordered product sales to Amazon Business customers, calculated
+  by multiplying the price of products and the number of units sold for the
+  selected time period. Note: This field is only populated if you are a B2B seller on Amazon.
+  """
+  orderedProductSalesB2B: AmountWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  The number of orders shipped in the selected time period as well as revenue generated.
+  """
+  ordersShippedWithRevenue: UnitsWithValueAndBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"])
+
+  """The number of units ordered."""
+  unitsOrdered: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """The number of units shipped in the selected time period."""
+  unitsShipped: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  The number of units ordered by Amazon Business customers.
+  Note: This field is only populated if you are a B2B seller on Amazon.
+  """
+  unitsShippedB2B: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Total monetary value of all orders after promotions and discounts, excluding canceled orders.
+  """
+  orderGMS: AmountWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+}
+
+"""Search metric group for search-related analytics."""
+type Search {
+  """
+  Query-level search metrics grouped by search keywords.
+  Returns an array of metrics per unique keyword within the current grouping context.
+  """
+  query: [SearchQueryMetrics]
+
+  """Catalog-level search metrics aggregated across all keywords."""
+  catalog: SearchCatalogMetrics
+}
+
+"""
+Search metrics at the catalog/ASIN level, aggregated across all keywords.
+"""
+type SearchCatalogMetrics {
+  """
+  Core search metrics including impressions, clicks, cart adds, and purchases with price data.
+  """
+  priceAndCountMetrics: PriceAndCountMetrics
+
+  """Percentage of impressions that resulted in a click."""
+  clickRate: FloatWithBenchmarking @resultRetention(duration: "P30D")
+
+  """Percentage of impressions that resulted in a purchase."""
+  conversionRate: FloatWithBenchmarking @resultRetention(duration: "P30D")
+
+  """Total revenue generated from purchases attributed to search traffic."""
+  trafficSales: AmountWithBenchmarking @resultRetention(duration: "P30D")
+}
+
+"""Search metrics at the query/keyword level."""
+type SearchQueryMetrics {
+  """
+  Search query keyword entered by customers.
+  This field automatically groups results when selected, showing metrics per unique keyword.
+  """
+  queryKeyword: String @resultRetention(duration: "P30D") @domainGroupBy
+
+  """
+  Core search metrics including impressions, clicks, cart adds, and purchases with price data.
+  """
+  priceAndCountMetrics: PriceAndCountMetrics
+}
+
+"""
+The SellerAnalyticsView retrieves aggregated cross-domain seller analytics data based
+on specified GroupByAttributes for the seller's account.
+"""
+type SellerAnalyticsView {
+  """Start date of the time period."""
+  startDate: Date! @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """End date of the time period."""
+  endDate: Date! @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Totals (aggregate across all of the seller catalog) for the given time period.
+  """
+  totals: SellerAnalyticsViewMetrics!
+
+  """Metrics for the given time period, grouped by, for example, ASIN/SKU."""
+  metrics: [SellerAnalyticsViewGroupedBy]!
+
+  """
+  Seller Attributes for the account. These are static attributes that don't change per metric or groupBy.
+  """
+  sellerAttributes: SellerAttributes @paamRights(require: ["analytics_sales_and_lending_view"])
+}
+
+"""
+SellerAnalytics view metrics grouped by the selected "group by" attributes, for example, brand, ASIN.
+"""
+type SellerAnalyticsViewGroupedBy {
+  """Group by attributes, for example, brand, ASIN."""
+  groupByKey: GroupByAttributes!
+
+  """
+  Metrics for the given time period, grouped by the attributes selected in the groupByKey.
+  """
+  metrics: SellerAnalyticsViewMetrics!
+}
+
+"""
+Metrics broken down by metric groups, for example, Sales, Traffic, Promotion, AccountHealth, Lending, Search.
+"""
+type SellerAnalyticsViewMetrics {
+  """Sales metric group."""
+  sales: Sales
+
+  """Traffic metric group."""
+  traffic: Traffic
+
+  """Promotion metric group."""
+  promotion: Promotion
+
+  """Account Health metric group."""
+  accountHealth: AccountHealth
+
+  """Lending metric group."""
+  lending: Lending @paamRights(require: ["analytics_sales_and_lending_view"])
+
+  """Search metric group."""
+  search: Search @paamRights(require: ["analytics_sales_and_traffic_view_pa"])
+
+  """Reviews metric group."""
+  reviews: Reviews @paamRights(require: ["analytics_sales_and_traffic_view_pa"])
+
+  """Defects metric group."""
+  defects: Defects @paamRights(require: ["analytics_sales_and_traffic_view_pa"])
+
+  """Returns metric group."""
+  returns: Returns @paamRights(require: ["analytics_sales_and_traffic_view_pa"])
+}
+
+"""
+Seller-level attributes for the account. These are static and do not vary by
+metric or groupBy. A null value means the attribute is not yet available.
+"""
+type SellerAttributes {
+  """
+  Web address of a merchant's online storefront on Amazon displaying all their listed ASINs.
+  """
+  sellerStoreURL: String @resultRetention(duration: "P30D")
+
+  """
+  Binary flag indicating whether seller is registered for Amazon's FBA program.
+  """
+  isFBARegistered: String @resultRetention(duration: "P30D")
+
+  """
+  Binary flag indicating whether the seller is registered as a brand owner in Amazon's Brand Registry.
+  """
+  isBrandOwner: String @resultRetention(duration: "P30D")
+
+  """Fraud status of a merchant with default value of NormalStatus."""
+  sellerFraudStatus: String @resultRetention(duration: "P30D")
+
+  """
+  Length of time a seller has been active on the Amazon marketplace, typically measured in days or months.
+  """
+  sellerTenure: IntWithBenchmarking @resultRetention(duration: "P30D")
+}
+
+"""
+Benchmarking values applicable to WEEKLY and MONTHLY dateGranularity selections.
+For example: WEEKLY supports two benchmarks (weekOverWeek and yearOverYear);
+MONTHLY supports two benchmarks (monthOverMonth and yearOverYear).
+"""
+type TimeRangeBenchmarking {
+  """
+  A metric that compares data from the current week to the previous week to measure performance changes.
+  """
+  weekOverWeek: Float
+
+  """
+  A metric that compares data from the current month to the previous month to measure performance changes.
+  """
+  monthOverMonth: Float
+
+  """
+  A metric that compares data from the current period to the same period last year to measure performance changes.
+  """
+  yearOverYear: Float
+}
+
+"""
+Traffic metric group. A null value for a given metric means that this metric is not yet available.
+"""
+type Traffic {
+  """
+  Browser page views are the number of times a user visited your Amazon.com browser pages for the selected time period.
+  """
+  browserPageViews: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Browser sessions are visits to your Amazon.com browser pages by a user. All
+  browser activity within a 24-hour period is considered a browser session. For
+  example, if a user visits your pages using a browser multiple times within a
+  24 hour period it is counted as a single browser session.
+  """
+  browserSessions: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  The conversion rate describes the successful transition of a customer from clicks to purchase.
+  This metric includes the percentage of purchases to clicks for ASINs originated from the search results page.
+  """
+  conversationRatePct: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D") @deprecated(reason: "No longer supported. Use conversionRatePct instead.")
+
+  """
+  The conversion rate describes the successful transition of a customer from clicks to purchase.
+  This metric includes the percentage of purchases to clicks for ASINs originated from the search results page.
+  """
+  conversionRatePct: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Featured Offer glance views is the count of glance views where your product
+  appeared as the Featured Offer on the search results page.
+  """
+  featureOfferGlanceViews: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Featured Offer percentage shows how often your offer is the Featured Offer when customers can add to their cart.
+  It's calculated by dividing the number of times your offer is the Featured Offer
+  by the number of times customers viewed it (that is, Glance Views).
+  """
+  featureOfferPct: FloatWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa", "analytics_sales_and_lending_view"]) @resultRetention(duration: "P30D")
+
+  """
+  Glance views is the number of times customers actively engage with your product detail page.
+  """
+  glanceViews: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Glance views B2B is the number of times customers actively engage with your product detail page.
+  Note: This field is only populated if you are a B2B seller on Amazon.
+  """
+  glanceViewsB2B: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Mobile app page views are the number of times a user visited your Amazon.com
+  mobile app pages for the selected time period.
+  """
+  mobileAppPageViews: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Mobile app sessions are visits to your Amazon.com mobile app pages by a user.
+  All mobile app activity within a 24-hour period is considered a mobile app
+  session. For example, if a user visits your pages using a mobile app multiple
+  times within a 24 hour period it is counted as a single mobile app session.
+  """
+  mobileAppSessions: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Page views are the number of times a user visited your Amazon.com browser or
+  mobile app pages for the selected time period. It is calculated as the sum of
+  browserPageViews and mobileAppPageViews.
+  """
+  pageViews: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+
+  """
+  Sessions are visits to your Amazon.com browser or mobile app pages by a user.
+  All browser and mobile app activity within a 24-hour period is considered a
+  session. It is calculated as the sum of browserSessions and mobileAppSessions.
+  """
+  sessions: IntWithBenchmarking @paamRights(require: ["analytics_sales_and_traffic_view_pa"]) @resultRetention(duration: "P30D")
+}
+
+input TypeRights {
+  """Union member type we are trying to access."""
+  type: String!
+
+  """Rights to access above type."""
+  require: [String!]!
+}
+
+"""Number of units with their corresponding monetary value."""
+type UnitsWithValue {
+  """Number of units."""
+  units: Long @resultRetention(duration: "P30D")
+
+  """Monetary value of the units."""
+  value: Amount @resultRetention(duration: "P30D")
+}
+
+"""
+Number of units with their corresponding monetary value and time range benchmarking.
+"""
+type UnitsWithValueAndBenchmarking {
+  """Number of units and monetary value of the units."""
+  unitsWithValue: UnitsWithValue!
+
+  """Relevant time range benchmarking comparison for units."""
+  unitsTimeRangeBenchmarking: TimeRangeBenchmarking @resultRetention(duration: "P30D")
+
+  """Relevant time range benchmarking of the monetary value of units."""
+  valueTimeRangeBenchmarking: TimeRangeBenchmarking @resultRetention(duration: "P30D")
+}

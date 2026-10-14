@@ -5,61 +5,91 @@
   "title": "The root schema",
   "description": "The root schema comprises the entire JSON document.",
   "default": {},
-  "examples": [
-    {
-      "NotificationVersion": "1.0",
-      "NotificationType": "FULFILLMENT_ORDER_STATUS",
-      "PayloadVersion": "1.0",
-      "EventTime": "2020-07-13T19:42:04.284Z",
-      "Payload": {
-        "FulfillmentOrderStatusNotification": {
-          "SellerId": "A3TH9S8BH6GOGM",
-          "EventType": "TYPE3945",
-          "StatusUpdatedDateTime": "2020-07-13T19:42:04.284Z",
-          "SellerFulfillmentOrderId": "SFOID2345",
-          "FulfillmentOrderStatus": "PROCESSED",
-          "FulfillmentShipment": {
-            "FulfillmentShipmentStatus": "PROCESSED",
-            "AmazonShipmentId": "ASID49535",
-            "EstimatedArrivalDateTime": "2020-07-13T19:42:04.284Z",
-            "info": {
-              "PackageNumber": 1,
-              "CarrierCode": "2-930434",
-              "TrackingNumber": "1Z84456456573405"
+  "examples": [{
+    "NotificationVersion": "1.0",
+    "NotificationType": "FULFILLMENT_ORDER_STATUS",
+    "PayloadVersion": "2026-07-04",
+    "EventTime": "2026-07-04T00:02:48.501Z",
+    "Payload": {
+      "merchantId": "A3TH9S8BH6GOGM",
+      "fulfillmentServiceId": "FS01-o8vlfw8b1tiu1",
+      "eventType": "ORDER_STATUS_CHANGED",
+      "order": {
+        "orderId": "ORD123XYZ",
+        "status": "COMPLETE",
+        "lineItems": [{
+          "lineItemId": "LI789012",
+          "product": {
+            "productIdentifier": {
+              "amazonSku": "SKU123"
             },
-            "FulfillmentShipmentPackages": [
-              {
-                "PackageNumber": 1,
-                "CarrierCode": "2-930434",
-                "TrackingNumber": "1Z84456456573405"
-              },
-              {
-                "PackageNumber": 2,
-                "CarrierCode": "1-930434",
-                "TrackingNumber": "1Z84456456573405"
-              },
-              {
-                "PackageNumber": 3,
-                "CarrierCode": "3-930434",
-                "TrackingNumber": "1Z885647654573405"
-              }
-            ]
+            "perUnitDeclaredValue": {
+              "currencyCode": "USD",
+              "amount": "14.99"
+            }
           },
-          "FulfillmentReturnItem": {
-            "ReceivedDateTime": "2020-07-13T19:42:04.284Z",
-            "ReturnedQuantity": 12,
-            "SellerSKU": "SELLERSKU9345"
+          "amount": {
+            "unit": "EACHES",
+            "value": "2.0"
+          },
+          "cancelledAmount": {
+            "unit": "EACHES",
+            "value": "0"
+          },
+          "unfulfillableAmount": {
+            "unit": "EACHES",
+            "value": "0"
           }
-        }
-      },
-      "NotificationMetadata": {
-        "ApplicationId": "app-id-d0e9e693-c3ad-4373-979f-ed4ec98dd746",
-        "SubscriptionId": "subscription-id-d0e9e693-c3ad-4373-979f-ed4ec98dd746",
-        "PublishTime": "2020-07-13T19:42:04.284Z",
-        "NotificationId": "d0e9e693-c3ad-4373-979f-ed4ec98dd746"
+        }],
+        "shipments": [{
+          "amazonShipmentId": "SHIP901234",
+          "amazonFacility": {
+            "facilityId": "FC456"
+          },
+          "status": "SHIPPED",
+          "items": [{
+            "lineItemId": "LI789012",
+            "productIdentifier": {
+              "amazonSku": "SKU123"
+            },
+            "amount": {
+              "value": "1.0",
+              "unit": "EACHES"
+            },
+            "packageId": "123",
+            "unitIdentifiers": {
+              "IMEI": [
+                "123456789"
+              ]
+            }
+          }],
+          "packages": [{
+            "packageId": "123",
+            "status": "DELIVERED",
+            "tracking": {
+              "carrier": {
+                "carrierCode": "FEDEX",
+                "trackingNumber": "123456789"
+              },
+              "amazon": {
+                "trackingNumber": "234567890"
+              }
+            },
+            "shipmentItemIds": [
+              "SI001"
+            ],
+            "deliveryTime": "2026-07-03T18:45:00.000Z"
+          }]
+        }]
       }
+    },
+    "NotificationMetadata": {
+      "ApplicationId": "app-id-d0e9e693-c3ad-4373-979f-ed4ec98dd746",
+      "SubscriptionId": "subscription-id-d0e9e693-c3ad-4373-979f-ed4ec98dd746",
+      "PublishTime": "2026-07-04T00:02:50.501Z",
+      "NotificationId": "2012e8e5-b365-4cb1-9fd8-be9dfc6d5eaf"
     }
-  ],
+  }],
   "required": [
     "NotificationVersion",
     "NotificationType",
@@ -68,12 +98,178 @@
     "Payload",
     "NotificationMetadata"
   ],
+  "definitions": {
+    "Amount": {
+      "type": "object",
+      "default": {},
+      "required": [
+        "unit",
+        "value"
+      ],
+      "properties": {
+        "unit": {
+          "type": "string",
+          "title": "The unit schema",
+          "description": "The unit of measure for the amount. Possible values: EACHES.",
+          "default": "",
+          "examples": [
+            "EACHES"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "title": "The value schema",
+          "description": "The amount of a product in the associated unit of measurement.",
+          "default": "",
+          "examples": [
+            "2.0"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "Decimal": {
+      "type": "string",
+      "title": "The Decimal schema",
+      "description": "A decimal number with no loss of precision. Useful when precision loss is unacceptable, as with currencies. Follows RFC7159 for number representation.",
+      "default": "",
+      "examples": [
+        "1.0",
+        "14.99"
+      ]
+    },
+    "Money": {
+      "type": "object",
+      "title": "The Money schema",
+      "description": "An amount of money, including units in the form of currency.",
+      "default": {},
+      "required": [
+        "currencyCode",
+        "amount"
+      ],
+      "properties": {
+        "currencyCode": {
+          "type": "string",
+          "title": "The currencyCode schema",
+          "description": "Three digit currency code in ISO 4217 format.",
+          "default": "",
+          "examples": [
+            "USD",
+            "EUR",
+            "GBP"
+          ]
+        },
+        "amount": {
+          "$ref": "#/definitions/Decimal"
+        }
+      },
+      "examples": [{
+        "currencyCode": "USD",
+        "amount": "14.99"
+      }],
+      "additionalProperties": true
+    },
+    "PackageId": {
+      "type": "string",
+      "title": "The PackageId schema",
+      "description": "Identifies a package in a shipment.",
+      "default": "",
+      "examples": [
+        "123",
+        "456",
+        "PKG001"
+      ]
+    },
+    "ProductIdentifier": {
+      "type": "object",
+      "title": "The ProductIdentifier schema",
+      "description": "Identifies a product.",
+      "default": {},
+      "required": [
+        "amazonSku"
+      ],
+      "properties": {
+        "amazonSku": {
+          "type": "string",
+          "title": "The amazonSku schema",
+          "description": "The merchant SKU of the item.",
+          "default": "",
+          "examples": [
+            "SKU123"
+          ]
+        }
+      },
+      "examples": [{
+        "amazonSku": "SKU123"
+      }],
+      "additionalProperties": true
+    },
+    "TrackingNumber": {
+      "type": "string",
+      "title": "The TrackingNumber schema",
+      "description": "The tracking number, if provided, can be used to obtain tracking and delivery information.",
+      "default": "",
+      "examples": [
+        "123456789",
+        "234567890"
+      ]
+    },
+    "Tracking": {
+      "type": "object",
+      "title": "The Tracking schema",
+      "description": "Tracking information for a package.",
+      "default": {},
+      "properties": {
+        "carrier": {
+          "type": "object",
+          "title": "The carrier schema",
+          "description": "Carrier tracking information for a package.",
+          "default": {},
+          "required": [
+            "carrierCode"
+          ],
+          "properties": {
+            "carrierCode": {
+              "type": "string",
+              "title": "The carrierCode schema",
+              "description": "Identifies the carrier who delivers the shipment to the recipient.",
+              "default": "",
+              "examples": [
+                "FEDEX"
+              ]
+            },
+            "trackingNumber": {
+              "title": "The trackingNumber schema",
+              "description": "The tracking number, if provided, can be used to obtain tracking and delivery information.",
+              "$ref": "#/definitions/TrackingNumber"
+            }
+          },
+          "additionalProperties": true
+        },
+        "amazon": {
+          "type": "object",
+          "title": "The amazon schema",
+          "description": "Amazon tracking information for a package.",
+          "default": {},
+          "properties": {
+            "trackingNumber": {
+              "title": "The trackingNumber schema",
+              "description": "The Amazon tracking number that can be used to obtain tracking and delivery information.",
+              "$ref": "#/definitions/TrackingNumber"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
   "properties": {
     "NotificationVersion": {
       "$id": "#/properties/NotificationVersion",
       "type": "string",
       "title": "The NotificationVersion schema",
-      "description": "An explanation about the purpose of this instance.",
+      "description": "The version of the notification.",
       "default": "",
       "examples": [
         "1.0"
@@ -83,7 +279,7 @@
       "$id": "#/properties/NotificationType",
       "type": "string",
       "title": "The NotificationType schema",
-      "description": "An explanation about the purpose of this instance.",
+      "description": "The type of notification being sent.",
       "default": "",
       "examples": [
         "FULFILLMENT_ORDER_STATUS"
@@ -93,442 +289,398 @@
       "$id": "#/properties/PayloadVersion",
       "type": "string",
       "title": "The PayloadVersion schema",
-      "description": "An explanation about the purpose of this instance.",
+      "description": "The version of the payload format.",
       "default": "",
       "examples": [
-        "1.0"
+        "2026-07-04"
       ]
     },
     "EventTime": {
       "$id": "#/properties/EventTime",
       "type": "string",
       "title": "The EventTime schema",
-      "description": "An explanation about the purpose of this instance.",
+      "description": "Timestamp of the event, formatted as ISO 8601 date-time.",
       "default": "",
       "examples": [
-        "2020-07-13T19:42:04.284Z"
+        "2026-07-04T00:02:48.501Z"
       ]
     },
     "Payload": {
       "$id": "#/properties/Payload",
       "type": "object",
       "title": "The Payload schema",
-      "description": "An explanation about the purpose of this instance.",
+      "description": "Contains the fulfillment order status notification data.",
       "default": {},
-      "examples": [
-        {
-          "FulfillmentOrderStatusNotification": {
-            "SellerId": "A3TH9S8BH6GOGM",
-            "EventType": "TYPE3945",
-            "StatusUpdatedDateTime": "2020-07-13T19:42:04.284Z",
-            "SellerFulfillmentOrderId": "SFOID2345",
-            "FulfillmentOrderStatus": "PROCESSED",
-            "FulfillmentShipment": {
-              "FulfillmentShipmentStatus": "PROCESSED",
-              "AmazonShipmentId": "ASID49535",
-              "EstimatedArrivalDateTime": "2020-07-13T19:42:04.284Z",
-              "info": {
-                "PackageNumber": 1,
-                "CarrierCode": "2-930434",
-                "TrackingNumber": "1Z84456456573405"
-              },
-              "FulfillmentShipmentPackages": [
-                {
-                  "PackageNumber": 1,
-                  "CarrierCode": "2-930434",
-                  "TrackingNumber": "1Z84456456573405"
-                },
-                {
-                  "PackageNumber": 2,
-                  "CarrierCode": "1-930434",
-                  "TrackingNumber": "1Z84456456573405"
-                },
-                {
-                  "PackageNumber": 3,
-                  "CarrierCode": "3-930434",
-                  "TrackingNumber": "1Z885647654573405"
-                }
-              ]
-            },
-            "FulfillmentReturnItem": {
-              "ReceivedDateTime": "2020-07-13T19:42:04.284Z",
-              "ReturnedQuantity": 12,
-              "SellerSKU": "SELLERSKU9345"
-            }
-          }
-        }
-      ],
       "required": [
-        "FulfillmentOrderStatusNotification"
+        "merchantId",
+        "eventType",
+        "order"
       ],
       "properties": {
-        "FulfillmentOrderStatusNotification": {
-          "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification",
-          "type": "object",
-          "title": "The FulfillmentOrderStatusNotification schema",
-          "description": "An explanation about the purpose of this instance.",
-          "default": {},
+        "merchantId": {
+          "$id": "#/properties/Payload/properties/merchantId",
+          "type": "string",
+          "title": "The merchantId schema",
+          "description": "The merchant identifier for the fulfillment order.",
+          "default": "",
           "examples": [
-            {
-              "SellerId": "A3TH9S8BH6GOGM",
-              "EventType": "TYPE3945",
-              "StatusUpdatedDateTime": "2020-07-13T19:42:04.284Z",
-              "SellerFulfillmentOrderId": "SFOID2345",
-              "FulfillmentOrderStatus": "PROCESSED",
-              "FulfillmentShipment": {
-                "FulfillmentShipmentStatus": "PROCESSED",
-                "AmazonShipmentId": "ASID49535",
-                "EstimatedArrivalDateTime": "2020-07-13T19:42:04.284Z",
-                "info": {
-                  "PackageNumber": 1,
-                  "CarrierCode": "2-930434",
-                  "TrackingNumber": "1Z84456456573405"
-                },
-                "FulfillmentShipmentPackages": [
-                  {
-                    "PackageNumber": 1,
-                    "CarrierCode": "2-930434",
-                    "TrackingNumber": "1Z84456456573405"
-                  },
-                  {
-                    "PackageNumber": 2,
-                    "CarrierCode": "1-930434",
-                    "TrackingNumber": "1Z84456456573405"
-                  },
-                  {
-                    "PackageNumber": 3,
-                    "CarrierCode": "3-930434",
-                    "TrackingNumber": "1Z885647654573405"
-                  }
-                ]
-              },
-              "FulfillmentReturnItem": {
-                "ReceivedDateTime": "2020-07-13T19:42:04.284Z",
-                "ReturnedQuantity": 12,
-                "SellerSKU": "SELLERSKU9345"
-              }
-            }
-          ],
+            "A3TH9S8BH6GOGM"
+          ]
+        },
+        "fulfillmentServiceId": {
+          "$id": "#/properties/Payload/properties/fulfillmentServiceId",
+          "type": "string",
+          "title": "The fulfillmentServiceId schema",
+          "description": "The identifier of the fulfillment service used for this operation.",
+          "default": "",
+          "examples": [
+            "FS01-o8vlfw8b1tiu1"
+          ]
+        },
+        "eventType": {
+          "$id": "#/properties/Payload/properties/eventType",
+          "type": "string",
+          "title": "The eventType schema",
+          "description": "The type of event that triggered this notification.",
+          "default": "",
+          "examples": [
+            "ORDER_STATUS_CHANGED",
+            "SHIPMENT_STATUS_CHANGED",
+            "SHIPMENT_PACKAGE_STATUS_CHANGED"
+          ]
+        },
+        "order": {
+          "$id": "#/properties/Payload/properties/order",
+          "type": "object",
+          "title": "The order schema",
+          "description": "Contains detailed information about the fulfillment order.",
+          "default": {},
           "required": [
-            "SellerId",
-            "EventType",
-            "StatusUpdatedDateTime",
-            "SellerFulfillmentOrderId",
-            "FulfillmentOrderStatus",
-            "FulfillmentShipment",
-            "FulfillmentReturnItem"
+            "orderId",
+            "status"
           ],
           "properties": {
-            "SellerId": {
-              "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/SellerId",
+            "orderId": {
+              "$id": "#/properties/Payload/properties/order/properties/orderId",
               "type": "string",
-              "title": "The SellerId schema",
-              "description": "An explanation about the purpose of this instance.",
+              "title": "The orderId schema",
+              "description": "The fulfillment order identifier submitted with the `createOrder` operation.",
               "default": "",
               "examples": [
-                "A3TH9S8BH6GOGM"
+                "ORD123XYZ"
               ]
             },
-            "EventType": {
-              "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/EventType",
+            "status": {
+              "$id": "#/properties/Payload/properties/order/properties/status",
               "type": "string",
-              "title": "The EventType schema",
-              "description": "An explanation about the purpose of this instance.",
+              "title": "The status schema",
+              "description": "The current status of the fulfillment order. Possible values are PROCESSING, COMPLETE, COMPLETE_PARTIAL, CANCELLED, UNFULFILLABLE, INVALID.",
               "default": "",
               "examples": [
-                "TYPE3945"
+                "PROCESSING",
+                "COMPLETE",
+                "COMPLETE_PARTIAL",
+                "CANCELLED",
+                "UNFULFILLABLE",
+                "INVALID"
               ]
             },
-            "StatusUpdatedDateTime": {
-              "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/StatusUpdatedDateTime",
-              "type": "string",
-              "title": "The StatusUpdatedDateTime schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": "",
-              "examples": [
-                "2020-07-13T19:42:04.284Z"
-              ]
-            },
-            "SellerFulfillmentOrderId": {
-              "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/SellerFulfillmentOrderId",
-              "type": "string",
-              "title": "The SellerFulfillmentOrderId schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": "",
-              "examples": [
-                "SFOID2345"
-              ]
-            },
-            "FulfillmentOrderStatus": {
-              "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentOrderStatus",
-              "type": "string",
-              "title": "The FulfillmentOrderStatus schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": "",
-              "examples": [
-                "PROCESSED"
-              ]
-            },
-            "FulfillmentShipment": {
-              "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment",
-              "type": "object",
-              "title": "The FulfillmentShipment schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": {},
-              "examples": [
-                {
-                  "FulfillmentShipmentStatus": "PROCESSED",
-                  "AmazonShipmentId": "ASID49535",
-                  "EstimatedArrivalDateTime": "2020-07-13T19:42:04.284Z",
-                  "info": {
-                    "PackageNumber": 1,
-                    "CarrierCode": "2-930434",
-                    "TrackingNumber": "1Z84456456573405"
-                  },
-                  "FulfillmentShipmentPackages": [
-                    {
-                      "PackageNumber": 1,
-                      "CarrierCode": "2-930434",
-                      "TrackingNumber": "1Z84456456573405"
-                    },
-                    {
-                      "PackageNumber": 2,
-                      "CarrierCode": "1-930434",
-                      "TrackingNumber": "1Z84456456573405"
-                    },
-                    {
-                      "PackageNumber": 3,
-                      "CarrierCode": "3-930434",
-                      "TrackingNumber": "1Z885647654573405"
-                    }
-                  ]
-                }
-              ],
-              "required": [
-                "FulfillmentShipmentStatus",
-                "AmazonShipmentId",
-                "EstimatedArrivalDateTime",
-                "info",
-                "FulfillmentShipmentPackages"
-              ],
-              "properties": {
-                "FulfillmentShipmentStatus": {
-                  "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/FulfillmentShipmentStatus",
-                  "type": "string",
-                  "title": "The FulfillmentShipmentStatus schema",
-                  "description": "An explanation about the purpose of this instance.",
-                  "default": "",
-                  "examples": [
-                    "PROCESSED"
-                  ]
-                },
-                "AmazonShipmentId": {
-                  "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/AmazonShipmentId",
-                  "type": "string",
-                  "title": "The AmazonShipmentId schema",
-                  "description": "An explanation about the purpose of this instance.",
-                  "default": "",
-                  "examples": [
-                    "ASID49535"
-                  ]
-                },
-                "EstimatedArrivalDateTime": {
-                  "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/EstimatedArrivalDateTime",
-                  "type": "string",
-                  "title": "The EstimatedArrivalDateTime schema",
-                  "description": "An explanation about the purpose of this instance.",
-                  "default": "",
-                  "examples": [
-                    "2020-07-13T19:42:04.284Z"
-                  ]
-                },
-                "FulfillmentShipmentPackages": {
-                  "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/FulfillmentShipmentPackages",
-                  "type": "array",
-                  "title": "The FulfillmentShipmentPackages schema",
-                  "description": "An explanation about the purpose of this instance.",
-                  "default": [],
-                  "examples": [
-                    [
-                      {
-                        "PackageNumber": 1,
-                        "CarrierCode": "2-930434",
-                        "TrackingNumber": "1Z84456456573405"
-                      },
-                      {
-                        "PackageNumber": 2,
-                        "CarrierCode": "1-930434",
-                        "TrackingNumber": "1Z84456456573405"
-                      }
+            "lineItems": {
+              "$id": "#/properties/Payload/properties/order/properties/lineItems",
+              "type": "array",
+              "title": "The lineItems schema",
+              "description": "A list of items to include in the fulfillment order, including quantity.",
+              "default": [],
+              "items": {
+                "$id": "#/properties/Payload/properties/order/properties/lineItems/items",
+                "type": "object",
+                "title": "The lineItem schema",
+                "description": "A line item in the fulfillment order.",
+                "default": {},
+                "required": [
+                  "lineItemId",
+                  "product",
+                  "amount"
+                ],
+                "properties": {
+                  "lineItemId": {
+                    "$id": "#/properties/Payload/properties/order/properties/lineItems/items/properties/lineItemId",
+                    "type": "string",
+                    "title": "The lineItemId schema",
+                    "description": "The line item identifier for the fulfillment order.",
+                    "default": "",
+                    "examples": [
+                      "LI789012"
                     ]
-                  ],
-                  "properties": {
-                    "FulfillmentShipmentPackageItem": {
-                      "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/FulfillmentShipmentPackages/properties/FulfillmentShipmentPackageItem",
+                  },
+                  "product": {
+                    "$id": "#/properties/Payload/properties/order/properties/lineItems/items/properties/product",
+                    "type": "object",
+                    "title": "The product schema",
+                    "description": "Product information for the line item.",
+                    "default": {},
+                    "required": [
+                      "productIdentifier"
+                    ],
+                    "properties": {
+                      "productIdentifier": {
+                        "$id": "#/properties/Payload/properties/order/properties/lineItems/items/properties/product/properties/productIdentifier",
+                        "title": "The productIdentifier schema",
+                        "description": "Product identifier input that locates a product for MCF.",
+                        "$ref": "#/definitions/ProductIdentifier"
+                      },
+                      "perUnitDeclaredValue": {
+                        "$id": "#/properties/Payload/properties/order/properties/lineItems/items/properties/product/properties/perUnitDeclaredValue",
+                        "title": "The perUnitDeclaredValue schema",
+                        "description": "The monetary value assigned by the merchant to each unit.",
+                        "$ref": "#/definitions/Money"
+                      }
+                    },
+                    "additionalProperties": true
+                  },
+                  "amount": {
+                    "$id": "#/properties/Payload/properties/order/properties/lineItems/items/properties/amount",
+                    "title": "The amount schema",
+                    "description": "A quantity based on the specified unit of measurement.",
+                    "$ref": "#/definitions/Amount"
+                  },
+                  "cancelledAmount": {
+                    "$id": "#/properties/Payload/properties/order/properties/lineItems/items/properties/cancelledAmount",
+                    "title": "The cancelledAmount schema",
+                    "description": "The cancelled quantity based on the specified unit of measurement.",
+                    "$ref": "#/definitions/Amount"
+                  },
+                  "unfulfillableAmount": {
+                    "$id": "#/properties/Payload/properties/order/properties/lineItems/items/properties/unfulfillableAmount",
+                    "title": "The unfulfillableAmount schema",
+                    "description": "The unfulfillable quantity based on the specified unit of measurement.",
+                    "$ref": "#/definitions/Amount"
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "shipments": {
+              "$id": "#/properties/Payload/properties/order/properties/shipments",
+              "type": "array",
+              "title": "The shipments schema",
+              "description": "An array of fulfillment shipment information.",
+              "default": [],
+              "items": {
+                "$id": "#/properties/Payload/properties/order/properties/shipments/items",
+                "type": "object",
+                "title": "The shipment schema",
+                "description": "Delivery and item information for a shipment in a fulfillment order.",
+                "default": {},
+                "required": [
+                  "amazonShipmentId",
+                  "status",
+                  "items"
+                ],
+                "properties": {
+                  "amazonShipmentId": {
+                    "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/amazonShipmentId",
+                    "type": "string",
+                    "title": "The amazonShipmentId schema",
+                    "description": "A shipment identifier assigned by Amazon.",
+                    "default": "",
+                    "examples": [
+                      "SHIP901234"
+                    ]
+                  },
+                  "amazonFacility": {
+                    "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/amazonFacility",
+                    "type": "object",
+                    "title": "The amazonFacility schema",
+                    "description": "The Amazon facility from which the shipment is sent.",
+                    "default": {},
+                    "required": [
+                      "facilityId"
+                    ],
+                    "properties": {
+                      "facilityId": {
+                        "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/amazonFacility/properties/facilityId",
+                        "type": "string",
+                        "title": "The facilityId schema",
+                        "description": "An identifier for the Amazon facility from which the shipment is sent.",
+                        "default": "",
+                        "examples": [
+                          "FC456"
+                        ]
+                      }
+                    },
+                    "additionalProperties": true
+                  },
+                  "status": {
+                    "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/status",
+                    "type": "string",
+                    "title": "The status schema",
+                    "description": "The current status of the shipment. Possible values are PROCESSING, SHIPPED, CANCELLED.",
+                    "default": "",
+                    "examples": [
+                      "PROCESSING",
+                      "SHIPPED",
+                      "CANCELLED"
+                    ]
+                  },
+                  "items": {
+                    "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/items",
+                    "type": "array",
+                    "title": "The items schema",
+                    "description": "An array of fulfillment shipment item information.",
+                    "default": [],
+                    "items": {
+                      "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/items/items",
                       "type": "object",
-                      "title": "The info schema",
-                      "description": "An explanation about the purpose of this instance.",
+                      "title": "The shipment item schema",
+                      "description": "Item information for a shipment in a fulfillment order.",
                       "default": {},
-                      "examples": [
-                        {
-                          "PackageNumber": 1,
-                          "CarrierCode": "2-930434",
-                          "TrackingNumber": "1Z84456456573405"
-                        }
-                      ],
                       "required": [
-                        "PackageNumber",
-                        "CarrierCode",
-                        "TrackingNumber"
+                        "lineItemId",
+                        "productIdentifier",
+                        "amount"
                       ],
                       "properties": {
-                        "PackageNumber": {
-                          "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/info/properties/PackageNumber",
-                          "type": "integer",
-                          "title": "The PackageNumber schema",
-                          "description": "An explanation about the purpose of this instance.",
-                          "default": 0,
-                          "examples": [
-                            1
-                          ]
-                        },
-                        "CarrierCode": {
-                          "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/info/properties/CarrierCode",
+                        "lineItemId": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/items/items/properties/lineItemId",
                           "type": "string",
-                          "title": "The CarrierCode schema",
-                          "description": "An explanation about the purpose of this instance.",
+                          "title": "The lineItemId schema",
+                          "description": "The fulfillment order item identifier that the seller created and submitted with a call to the `createOrder` operation.",
                           "default": "",
                           "examples": [
-                            "2-930434"
+                            "LI789012"
                           ]
                         },
-                        "TrackingNumber": {
-                          "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/info/properties/TrackingNumber",
+                        "productIdentifier": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/items/items/properties/productIdentifier",
+                          "title": "The productIdentifier schema",
+                          "description": "Product identifier for the shipment item.",
+                          "$ref": "#/definitions/ProductIdentifier"
+                        },
+                        "amount": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/items/items/properties/amount",
+                          "title": "The amount schema",
+                          "description": "The shipped quantity based on the specified unit of measurement.",
+                          "$ref": "#/definitions/Amount"
+                        },
+                        "packageId": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/items/items/properties/packageId",
+                          "title": "The packageId schema",
+                          "description": "An identifier for the package that contains the item quantity.",
+                          "$ref": "#/definitions/PackageId"
+                        },
+                        "shipmentItemId": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/items/items/properties/shipmentItemId",
                           "type": "string",
-                          "title": "The TrackingNumber schema",
-                          "description": "An explanation about the purpose of this instance.",
+                          "title": "The shipmentItemId schema",
+                          "description": "A unique identifier for the shipment item.",
                           "default": "",
                           "examples": [
-                            "1Z84456456573405"
+                            "SI001"
                           ]
+                        },
+                        "unitIdentifiers": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/items/items/properties/unitIdentifiers",
+                          "type": "object",
+                          "title": "The unitIdentifiers schema",
+                          "description": "A map of unit identifier types to lists of identifier values.",
+                          "default": {},
+                          "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "description": "The value of the unit identifiers."
+                            }
+                          },
+                          "examples": [{
+                            "IMEI": [
+                              "123456789"
+                            ]
+                          }]
                         }
                       },
                       "additionalProperties": true
                     }
                   },
-                  "additionalItems": true,
-                  "items": {
-                    "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/FulfillmentShipmentPackages/properties/FulfillmentShipmentPackageItem",
-                    "anyOf": [
-                      {
-                        "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/FulfillmentShipmentPackages/items/anyOf/0",
-                        "type": "object",
-                        "title": "The first anyOf schema",
-                        "description": "An explanation about the purpose of this instance.",
-                        "default": {},
-                        "examples": [
-                          {
-                            "PackageNumber": 1,
-                            "CarrierCode": "2-930434",
-                            "TrackingNumber": "1Z84456456573405"
-                          }
-                        ],
-                        "required": [
-                          "PackageNumber",
-                          "CarrierCode",
-                          "TrackingNumber"
-                        ],
-                        "properties": {
-                          "PackageNumber": {
-                            "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/FulfillmentShipmentPackages/items/anyOf/0/properties/PackageNumber",
-                            "type": "integer",
-                            "title": "The PackageNumber schema",
-                            "description": "An explanation about the purpose of this instance.",
-                            "default": 0,
-                            "examples": [
-                              1
-                            ]
-                          },
-                          "CarrierCode": {
-                            "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/FulfillmentShipmentPackages/items/anyOf/0/properties/CarrierCode",
+                  "packages": {
+                    "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/packages",
+                    "type": "array",
+                    "title": "The packages schema",
+                    "description": "An array of fulfillment shipment package information.",
+                    "default": [],
+                    "items": {
+                      "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/packages/items",
+                      "type": "object",
+                      "title": "The package schema",
+                      "description": "Package information for a shipment in a fulfillment order.",
+                      "default": {},
+                      "required": [
+                        "packageId",
+                        "status"
+                      ],
+                      "properties": {
+                        "packageId": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/packages/items/properties/packageId",
+                          "title": "The packageId schema",
+                          "description": "Identifies a package in a shipment.",
+                          "$ref": "#/definitions/PackageId"
+                        },
+                        "status": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/packages/items/properties/status",
+                          "type": "string",
+                          "title": "The status schema",
+                          "description": "The current status of this package. Possible values are PROCESSING, IN_TRANSIT, DELAYED, OUT_FOR_DELIVERY, DELIVERED, UNDELIVERABLE, EXPIRED.",
+                          "default": "",
+                          "examples": [
+                            "PROCESSING",
+                            "IN_TRANSIT",
+                            "DELAYED",
+                            "OUT_FOR_DELIVERY",
+                            "DELIVERED",
+                            "UNDELIVERABLE",
+                            "EXPIRED"
+                          ]
+                        },
+                        "tracking": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/packages/items/properties/tracking",
+                          "title": "The tracking schema",
+                          "description": "Tracking information for the package.",
+                          "$ref": "#/definitions/Tracking"
+                        },
+                        "shipmentItemIds": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/packages/items/properties/shipmentItemIds",
+                          "type": "array",
+                          "title": "The shipmentItemIds schema",
+                          "description": "The shipment item identifiers contained in this package.",
+                          "default": [],
+                          "items": {
+                            "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/packages/items/properties/shipmentItemIds/items",
                             "type": "string",
-                            "title": "The CarrierCode schema",
-                            "description": "An explanation about the purpose of this instance.",
+                            "title": "The shipmentItemId schema",
+                            "description": "A shipment item identifier contained in this package.",
                             "default": "",
                             "examples": [
-                              "2-930434"
-                            ]
-                          },
-                          "TrackingNumber": {
-                            "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentShipment/properties/FulfillmentShipmentPackages/items/anyOf/0/properties/TrackingNumber",
-                            "type": "string",
-                            "title": "The TrackingNumber schema",
-                            "description": "An explanation about the purpose of this instance.",
-                            "default": "",
-                            "examples": [
-                              "1Z84456456573405"
+                              "SI001"
                             ]
                           }
                         },
-                        "additionalProperties": true
-                      }
-                    ]
+                        "deliveryTime": {
+                          "$id": "#/properties/Payload/properties/order/properties/shipments/items/properties/packages/items/properties/deliveryTime",
+                          "type": "string",
+                          "title": "The deliveryTime schema",
+                          "description": "The estimated delivery date and time of the package, in ISO 8601 date time format.",
+                          "default": "",
+                          "examples": [
+                            "2026-07-03T18:45:00.000Z"
+                          ]
+                        }
+                      },
+                      "additionalProperties": true
+                    }
                   }
-                }
-              },
-              "additionalProperties": true
-            },
-            "FulfillmentReturnItem": {
-              "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentReturnItem",
-              "type": "object",
-              "title": "The FulfillmentReturnItem schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": {},
-              "examples": [
-                {
-                  "ReceivedDateTime": "2020-07-13T19:42:04.284Z",
-                  "ReturnedQuantity": 12,
-                  "SellerSKU": "SELLERSKU9345"
-                }
-              ],
-              "required": [
-                "ReceivedDateTime",
-                "ReturnedQuantity",
-                "SellerSKU"
-              ],
-              "properties": {
-                "ReceivedDateTime": {
-                  "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentReturnItem/properties/ReceivedDateTime",
-                  "type": "string",
-                  "title": "The ReceivedDateTime schema",
-                  "description": "An explanation about the purpose of this instance.",
-                  "default": "",
-                  "examples": [
-                    "2020-07-13T19:42:04.284Z"
-                  ]
                 },
-                "ReturnedQuantity": {
-                  "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentReturnItem/properties/ReturnedQuantity",
-                  "type": "integer",
-                  "title": "The ReturnedQuantity schema",
-                  "description": "An explanation about the purpose of this instance.",
-                  "default": 0,
-                  "examples": [
-                    12
-                  ]
-                },
-                "SellerSKU": {
-                  "$id": "#/properties/Payload/properties/FulfillmentOrderStatusNotification/properties/FulfillmentReturnItem/properties/SellerSKU",
-                  "type": "string",
-                  "title": "The SellerSKU schema",
-                  "description": "An explanation about the purpose of this instance.",
-                  "default": "",
-                  "examples": [
-                    "SELLERSKU9345"
-                  ]
-                }
-              },
-              "additionalProperties": true
+                "additionalProperties": true
+              }
             }
           },
           "additionalProperties": true
@@ -540,16 +692,14 @@
       "$id": "#/properties/NotificationMetadata",
       "type": "object",
       "title": "The NotificationMetadata schema",
-      "description": "An explanation about the purpose of this instance.",
+      "description": "Metadata about the notification.",
       "default": {},
-      "examples": [
-        {
-          "ApplicationId": "app-id-d0e9e693-c3ad-4373-979f-ed4ec98dd746",
-          "SubscriptionId": "subscription-id-d0e9e693-c3ad-4373-979f-ed4ec98dd746",
-          "PublishTime": "2020-07-13T19:42:04.284Z",
-          "NotificationId": "d0e9e693-c3ad-4373-979f-ed4ec98dd746"
-        }
-      ],
+      "examples": [{
+        "ApplicationId": "app-id-d0e9e693-c3ad-4373-979f-ed4ec98dd746",
+        "SubscriptionId": "subscription-id-d0e9e693-c3ad-4373-979f-ed4ec98dd746",
+        "PublishTime": "2026-07-04T00:02:50.501Z",
+        "NotificationId": "2012e8e5-b365-4cb1-9fd8-be9dfc6d5eaf"
+      }],
       "required": [
         "ApplicationId",
         "SubscriptionId",
@@ -561,7 +711,7 @@
           "$id": "#/properties/NotificationMetadata/properties/ApplicationId",
           "type": "string",
           "title": "The ApplicationId schema",
-          "description": "An explanation about the purpose of this instance.",
+          "description": "The application ID that subscribed to this notification.",
           "default": "",
           "examples": [
             "app-id-d0e9e693-c3ad-4373-979f-ed4ec98dd746"
@@ -571,7 +721,7 @@
           "$id": "#/properties/NotificationMetadata/properties/SubscriptionId",
           "type": "string",
           "title": "The SubscriptionId schema",
-          "description": "An explanation about the purpose of this instance.",
+          "description": "The subscription ID for this notification.",
           "default": "",
           "examples": [
             "subscription-id-d0e9e693-c3ad-4373-979f-ed4ec98dd746"
@@ -581,20 +731,20 @@
           "$id": "#/properties/NotificationMetadata/properties/PublishTime",
           "type": "string",
           "title": "The PublishTime schema",
-          "description": "An explanation about the purpose of this instance.",
+          "description": "Timestamp of when the notification was published, formatted as ISO 8601 date-time.",
           "default": "",
           "examples": [
-            "2020-07-13T19:42:04.284Z"
+            "2026-07-04T00:02:50.501Z"
           ]
         },
         "NotificationId": {
           "$id": "#/properties/NotificationMetadata/properties/NotificationId",
           "type": "string",
           "title": "The NotificationId schema",
-          "description": "An explanation about the purpose of this instance.",
+          "description": "The unique identifier for this notification.",
           "default": "",
           "examples": [
-            "d0e9e693-c3ad-4373-979f-ed4ec98dd746"
+            "2012e8e5-b365-4cb1-9fd8-be9dfc6d5eaf"
           ]
         }
       },

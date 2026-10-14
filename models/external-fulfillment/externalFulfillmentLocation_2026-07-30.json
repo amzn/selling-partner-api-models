@@ -1,0 +1,323 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "The Selling Partner API for Amazon External Fulfillment Location Management",
+    "description": "You can use the External Fulfillment Location API to manage locations in the sandbox environment for end-to-end testing. This API is available only in the sandbox environment.",
+    "version": "2026-07-30",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html",
+      "email": "marketplaceapitest@amazon.com"
+    },
+    "license": {
+      "name": "Amazon Software License",
+      "url": "https://aws.amazon.com/asl/"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/externalFulfillment/2026-07-30/location": {
+      "post": {
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
+        "tags": [
+          "sandboxLocation"
+        ],
+        "description": "Creates a sandbox location and merchant in the test environment. This operation is available only in the sandbox environment and is used for onboarding test locations. Idempotency is ensured on locationName.",
+        "operationId": "createSandboxLocation",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The request body for creating a sandbox location.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateSandboxLocationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully created a sandbox location.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateSandboxLocationResponse"
+            },
+            "examples": {
+              "application/json": {
+                "locationIds": {
+                  "FBA": "SANDBOX_LOC_FBA_001",
+                  "MFN": "SANDBOX_LOC_MFN_001"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "description": "Unique request reference identifier.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        },
+        "x-amzn-api-sandbox-only": true
+      },
+      "x-amzn-api-sandbox": {
+        "dynamic": {}
+      }
+    }
+  },
+  "definitions": {
+    "CreateSandboxLocationRequest": {
+      "type": "object",
+      "description": "The request object for creating a sandbox location.",
+      "required": [
+        "merchantIds",
+        "marketplaceId",
+        "locationName"
+      ],
+      "properties": {
+        "merchantIds": {
+          "type": "array",
+          "description": "The list of merchant identifiers to create the location for. This list will have more than one entry only in case of MSF (Multi-Seller Fulfillment) location creation. In other cases, only one merchant should be passed in.",
+          "minItems": 1,
+          "example": [
+            "MERCHANT_ID_1"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "marketplaceId": {
+          "$ref": "#/definitions/MarketplaceId"
+        },
+        "channels": {
+          "type": "array",
+          "description": "The list of channels to enable for the location. Defaults to [\"FBA\", \"MFN\"] if not specified.",
+          "minItems": 1,
+          "example": [
+            "FBA",
+            "MFN"
+          ],
+          "items": {
+            "type": "string",
+            "enum": [
+              "FBA",
+              "MFN"
+            ]
+          }
+        },
+        "locationName": {
+          "type": "string",
+          "description": "The name for the sandbox location. Idempotency is ensured on this field.",
+          "minLength": 1,
+          "maxLength": 60,
+          "example": "TestWarehouse1"
+        }
+      },
+      "example": {
+        "merchantIds": [
+          "MERCHANT_ID_1"
+        ],
+        "marketplaceId": "A21TJRUUN4KGV",
+        "channels": [
+          "FBA",
+          "MFN"
+        ],
+        "locationName": "TestWarehouse1"
+      }
+    },
+    "CreateSandboxLocationResponse": {
+      "type": "object",
+      "description": "The response object for creating a sandbox location.",
+      "properties": {
+        "locationIds": {
+          "$ref": "#/definitions/LocationIdMap"
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "object",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "description": "A list of error responses.",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      },
+      "example": {
+        "errors": [
+          {
+            "code": "InvalidInput",
+            "message": "Invalid request parameter.",
+            "details": "The specified parameter value is invalid."
+          }
+        ]
+      }
+    },
+    "Error": {
+      "type": "object",
+      "description": "An error response returned when the request is unsuccessful.",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred.",
+          "example": "InvalidInput"
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition.",
+          "example": "Invalid request parameter."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      },
+      "example": {
+        "code": "InvalidInput",
+        "message": "Invalid request parameter.",
+        "details": "The specified parameter value is invalid."
+      }
+    },
+    "LocationIdMap": {
+      "type": "object",
+      "description": "A map of channel to location identifier.",
+      "properties": {
+        "FBA": {
+          "type": "string",
+          "description": "The location identifier for the FBA channel.",
+          "example": "SANDBOX_LOC_FBA_001"
+        },
+        "MFN": {
+          "type": "string",
+          "description": "The location identifier for the MFN channel.",
+          "example": "SANDBOX_LOC_MFN_001"
+        }
+      },
+      "example": {
+        "FBA": "SANDBOX_LOC_FBA_001",
+        "MFN": "SANDBOX_LOC_MFN_001"
+      }
+    },
+    "MarketplaceId": {
+      "type": "string",
+      "description": "The identifier for the marketplace. Refer to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids) for the full list of supported marketplace IDs.",
+      "example": "A21TJRUUN4KGV"
+    }
+  }
+}
