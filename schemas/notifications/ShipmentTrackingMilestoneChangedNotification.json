@@ -104,5 +104,990 @@
       }
     }
   ],
-  "definitions": {}
+  "definitions": {
+    "Notification": {
+      "type": "object",
+      "description": "The shipment tracking milestone change notification, with metadata and payload.",
+      "properties": {
+        "notificationVersion": {
+          "type": "string",
+          "description": "The version of the notification format.",
+          "examples": [
+            "1.0"
+          ]
+        },
+        "notificationType": {
+          "type": "string",
+          "description": "The notification type. Always `SHIPMENT_TRACKING_MILESTONE_CHANGED` for this schema.",
+          "examples": [
+            "SHIPMENT_TRACKING_MILESTONE_CHANGED"
+          ]
+        },
+        "payloadVersion": {
+          "type": "string",
+          "description": "The version of the payload schema format.",
+          "examples": [
+            "2026-01-30"
+          ]
+        },
+        "eventTime": {
+          "$ref": "#/definitions/Instant",
+          "description": "Timestamp when the tracking milestone change event occurred in RFC 3339 date-time format with UTC Z suffix."
+        },
+        "notificationMetadata": {
+          "$ref": "#/definitions/NotificationMetadata",
+          "description": "Metadata containing application and subscription information."
+        },
+        "payload": {
+          "$ref": "#/definitions/Payload",
+          "description": "Contains the shipment tracking milestone change notification data."
+        }
+      },
+      "required": [
+        "notificationVersion",
+        "notificationType",
+        "payloadVersion",
+        "eventTime",
+        "payload",
+        "notificationMetadata"
+      ]
+    },
+    "NotificationMetadata": {
+      "type": "object",
+      "description": "Metadata containing application, subscription, and notification identifiers.",
+      "properties": {
+        "applicationId": {
+          "type": "string",
+          "description": "Unique identifier for the application receiving the notification.",
+          "examples": [
+            "amzn1.sellerapps.app.g2134566-aaec-55a6-b123-bcb752069ba4"
+          ]
+        },
+        "subscriptionId": {
+          "type": "string",
+          "description": "Unique identifier for the notification subscription.",
+          "examples": [
+            "7b28cc50-95c8-4641-add7-10af4b1fecd8"
+          ]
+        },
+        "publishTime": {
+          "$ref": "#/definitions/Instant",
+          "description": "Timestamp when the notification was published to the queue, in RFC 3339 date-time format with UTC Z suffix."
+        },
+        "notificationId": {
+          "type": "string",
+          "description": "Unique identifier for the notification.",
+          "examples": [
+            "6712e8e5-b365-4cb1-9fd8-be9dfc6d5bda"
+          ]
+        }
+      },
+      "required": [
+        "applicationId",
+        "subscriptionId",
+        "publishTime",
+        "notificationId"
+      ]
+    },
+    "Payload": {
+      "type": "object",
+      "description": "The shipment tracking event data for this notification.",
+      "properties": {
+        "shipmentTrackingMilestoneChangedNotification": {
+          "$ref": "#/definitions/ShipmentTrackingMilestoneChangedNotification",
+          "description": "The milestone change event data, including full tracking details for the shipment."
+        }
+      },
+      "required": [
+        "shipmentTrackingMilestoneChangedNotification"
+      ]
+    },
+    "ShipmentTrackingMilestoneChangedNotification": {
+      "type": "object",
+      "description": "The milestone change event data.",
+      "properties": {
+        "trackingDetail": {
+          "$ref": "#/definitions/TrackingDetail",
+          "description": "Current and historical tracking information for the shipment."
+        }
+      },
+      "required": [
+        "trackingDetail"
+      ]
+    },
+    "TrackingDetail": {
+      "type": "object",
+      "description": "The tracking information for the shipment.",
+      "properties": {
+        "identifier": {
+          "$ref": "#/definitions/TrackingIdentifier",
+          "description": "The tracking identifiers associated with this shipment. Multiple identifier types may be populated simultaneously."
+        },
+        "trackingUrl": {
+          "type": "string",
+          "pattern": "^https?://.+",
+          "description": "URL where the developer or end customer can view the shipment's tracking information.",
+          "examples": [
+            "https://www.swiship.com/track?id=AFTN987654321"
+          ]
+        },
+        "trackingEstimates": {
+          "type": "array",
+          "description": "List of time-based estimated intervals for the shipment, such as estimated delivery date and estimated time of departure.",
+          "items": {
+            "$ref": "#/definitions/TrackingEstimate"
+          }
+        },
+        "latestMilestone": {
+          "$ref": "#/definitions/TrackingMilestone",
+          "description": "The most recent milestone event data for the shipment."
+        },
+        "milestoneHistory": {
+          "type": "array",
+          "description": "A chronological list of all milestone events for the shipment, from most recent to oldest.",
+          "items": {
+            "$ref": "#/definitions/TrackingMilestone"
+          }
+        }
+      },
+      "required": [
+        "identifier",
+        "milestoneHistory"
+      ]
+    },
+    "TrackingIdentifier": {
+      "type": "object",
+      "description": "The identifier to track a shipment.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique identifier generated by Amazon for the shipment tracking request.",
+          "examples": [
+            "546e1ddb-dae0-4f76-84fd-ab4998ad00dd"
+          ]
+        },
+        "acsin": {
+          "type": "string",
+          "description": "The Air Cargo Shipment Identification Number.",
+          "examples": [
+            "75726371365"
+          ]
+        },
+        "aftn": {
+          "type": "string",
+          "description": "The Amazon Fulfillment Tracking Number.",
+          "examples": [
+            "AFTN987654321"
+          ]
+        },
+        "containerNumber": {
+          "type": "string",
+          "description": "The container number provided by the Logistics Service Provider.",
+          "examples": [
+            "MSKU4538324"
+          ]
+        },
+        "houseBillOfLadingNumber": {
+          "type": "string",
+          "description": "The House Bill of Lading (HBL) number assigned by the freight forwarder.",
+          "examples": [
+            "AMZDCN203A900BD3"
+          ]
+        },
+        "proNumber": {
+          "type": "string",
+          "description": "The PRO number assigned by the freight carrier",
+          "examples": [
+            "2972802458"
+          ]
+        },
+        "carrierTracking": {
+          "$ref": "#/definitions/CarrierTracking",
+          "description": "The carrier-assigned tracking information."
+        }
+      }
+    },
+    "CarrierTracking": {
+      "type": "object",
+      "description": "The carrier information, including the tracking number and carrier code.",
+      "properties": {
+        "trackingNumber": {
+          "type": "string",
+          "description": "The tracking number assigned by the carrier.",
+          "examples": [
+            "1Z999AA1234567890"
+          ]
+        },
+        "carrierCode": {
+          "type": "string",
+          "description": "The carrier code associated with the carrier tracking number.",
+          "examples": [
+            "UPS"
+          ]
+        }
+      },
+      "required": [
+        "trackingNumber"
+      ]
+    },
+    "TrackingEstimate": {
+      "type": "object",
+      "description": "A time-based estimate for the shipment, such as estimated delivery date or estimated time of departure.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of estimate. For example, `ESTIMATED_DELIVERY_DATE` or `ESTIMATED_TIME_OF_DEPARTURE`.",
+          "examples": [
+            "ESTIMATED_DELIVERY_DATE"
+          ]
+        },
+        "estimatedInterval": {
+          "$ref": "#/definitions/BoundedInterval",
+          "description": "The estimated time window for this event, represented as a start and end time in UTC RFC 3339 date-time format."
+        },
+        "lastUpdatedTime": {
+          "$ref": "#/definitions/Instant",
+          "description": "The timestamp when this estimate was last modified, in UTC RFC 3339 date-time format."
+        }
+      },
+      "required": [
+        "type",
+        "estimatedInterval",
+        "lastUpdatedTime"
+      ]
+    },
+    "BoundedInterval": {
+      "type": "object",
+      "description": "A time interval defined by a start time and end time.",
+      "properties": {
+        "startTime": {
+          "$ref": "#/definitions/Instant",
+          "description": "The inclusive start of the interval, in UTC RFC 3339 date-time format."
+        },
+        "endTime": {
+          "$ref": "#/definitions/Instant",
+          "description": "The inclusive end of the interval, in UTC RFC 3339 date-time format. Must not precede `startTime`."
+        }
+      },
+      "required": [
+        "startTime",
+        "endTime"
+      ]
+    },
+    "Instant": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?Z$",
+      "description": "A timestamp in UTC RFC 3339 date-time format.",
+      "examples": [
+        "2025-04-26T10:30:00Z"
+      ]
+    },
+    "TrackingMilestone": {
+      "type": "object",
+      "description": "A single milestone event in a shipment's journey.",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/TrackingMilestoneStatus",
+          "description": "The milestone's status details."
+        },
+        "location": {
+          "$ref": "#/definitions/TrackingMilestoneLocation",
+          "description": "The location where this milestone occurred, if available. Contains an address with city, region, and country code."
+        },
+        "occurredAt": {
+          "$ref": "#/definitions/Instant",
+          "description": "The timestamp when this milestone occurred, in UTC RFC 3339 date-time format."
+        }
+      },
+      "required": [
+        "status",
+        "occurredAt"
+      ]
+    },
+    "TrackingMilestoneStatus": {
+      "type": "object",
+      "description": "Status codes and a description of the milestone event.",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "A status code that identifies the milestone event (for example, `DELIVERED`, `CUSTOMS_CLEARED`, `DEPARTED`).",
+          "enum": [
+            "BOOKING_RECEIVED",
+            "BOOKING_ACCEPTED",
+            "ARRIVED_IN_DESTINATION_COUNTRY",
+            "CARRIER_RECEIVED_SHIPMENT",
+            "CARRIER_HOLD",
+            "CUSTOMER_CONTACTED",
+            "CUSTOMER_MOVED",
+            "RECIPIENT_REFUSED_DELIVERY",
+            "ORDER_PREPARING",
+            "CARRIER_ASSIGNED",
+            "CUSTOMS_DELAY",
+            "CONTAINERIZED",
+            "DAMAGED",
+            "DELAYED",
+            "DELIVERY_APPOINTMENT_CONFIRMED",
+            "DELIVERY_ATTEMPTED",
+            "INCORRECT_ADDRESS",
+            "IN_TRANSIT_TO_PICKUP",
+            "LOST",
+            "MANIFESTED_NOT_RECEIVED",
+            "MISSING_MANIFEST",
+            "MISSORTED",
+            "OUT_FOR_DELIVERY",
+            "RECEIVED_FROM_CARRIER",
+            "RETURNED",
+            "SHIPPED",
+            "UNDELIVERABLE",
+            "UNDELIVERABLE_DESTROY_IN_FIELD",
+            "BOOKING_CONFIRMED",
+            "BOOKING_CANCELLED",
+            "PICKED_UP",
+            "ARRIVED",
+            "DOCUMENTS_RECEIVED_EMBARK_PORT",
+            "DRAY_STOP_OFF",
+            "ARRIVED_AT_TERMINAL",
+            "CUSTOMS_IMPORT_SECURITY_FILED",
+            "CUSTOMS_IMPORT_SECURITY_FILING_ACCEPTED",
+            "CUSTOMS_DECLARATION_EMBARK_PORT",
+            "CUSTOMS_PROCESSING",
+            "CUSTOMS_HOLD",
+            "CUSTOMS_CLEARED",
+            "LOADED",
+            "DEPARTED",
+            "RECEIVED_AT_ORIGIN",
+            "UNLOADED",
+            "DOCUMENTS_RECEIVED_DISCHARGE_PORT",
+            "CUSTOMS_DECLARATION_DISCHARGE_PORT",
+            "CUSTOMS_HOLD_DISCHARGE_PORT",
+            "CUSTOMS_PAYMENT_REQUIRED",
+            "READY_FOR_CUSTOMER_PICKUP",
+            "DEPARTED_TERMINAL",
+            "LOADED_TRAIN",
+            "UNLOADED_TRAIN",
+            "ARRIVED_AT_DESTINATION_YARD",
+            "TRAILER_UNLOADING",
+            "DELIVERED",
+            "EMPTY_RETURN",
+            "ORDER_CANCELLED",
+            "ARRIVED_AT_RAIL_TERMINAL",
+            "CARRIER_TRANSFER",
+            "CUSTOMER_PICKUP_COMPLETED",
+            "CUSTOMS_EXCEPTION",
+            "DELIVERY_ADDRESS_UPDATED",
+            "DELIVERY_CHANGE_REQUESTED",
+            "DELIVERY_ESTIMATE_UPDATED",
+            "DEPARTED_RAIL_TERMINAL",
+            "PICKUP_FAILED",
+            "READY_FOR_DELIVERY",
+            "RETURN_DROPPED_OFF",
+            "RETURN_IN_TRANSIT",
+            "RETURN_PICKED_UP",
+            "RETURN_RECEIVED",
+            "SORTED",
+            "TRAILER_UNLOADED"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "BOOKING_RECEIVED",
+              "description": "Initial booking received."
+            },
+            {
+              "value": "BOOKING_ACCEPTED",
+              "description": "The initial booking for the shipment was accepted."
+            },
+            {
+              "value": "ARRIVED_IN_DESTINATION_COUNTRY",
+              "description": "Shipment arrived in the destination country."
+            },
+            {
+              "value": "CARRIER_RECEIVED_SHIPMENT",
+              "description": "Carrier received the shipment."
+            },
+            {
+              "value": "CARRIER_HOLD",
+              "description": "Shipment is being held by the carrier. Customer action is required for delivery."
+            },
+            {
+              "value": "CUSTOMER_CONTACTED",
+              "description": "Carrier contacted the recipient to arrange delivery."
+            },
+            {
+              "value": "CUSTOMER_MOVED",
+              "description": "Recipient is no longer at address."
+            },
+            {
+              "value": "RECIPIENT_REFUSED_DELIVERY",
+              "description": "Recipient refused to accept the shipment."
+            },
+            {
+              "value": "ORDER_PREPARING",
+              "description": "Order is preparing to ship."
+            },
+            {
+              "value": "CARRIER_ASSIGNED",
+              "description": "A carrier has been assigned to the shipment."
+            },
+            {
+              "value": "CUSTOMS_DELAY",
+              "description": "The shipment is delayed in customs."
+            },
+            {
+              "value": "CONTAINERIZED",
+              "description": "The shipment has been loaded into a container."
+            },
+            {
+              "value": "DAMAGED",
+              "description": "The shipment is damaged."
+            },
+            {
+              "value": "DELAYED",
+              "description": "The shipment is delayed."
+            },
+            {
+              "value": "DELIVERY_APPOINTMENT_CONFIRMED",
+              "description": "Delivery appointment confirmed by the carrier."
+            },
+            {
+              "value": "DELIVERY_ATTEMPTED",
+              "description": "The carrier attempted delivery but was unable to complete it."
+            },
+            {
+              "value": "INCORRECT_ADDRESS",
+              "description": "The delivery attempt failed due to an address issue (for example, incorrect or incomplete address)."
+            },
+            {
+              "value": "IN_TRANSIT_TO_PICKUP",
+              "description": "The carrier is in transit to the pickup location."
+            },
+            {
+              "value": "LOST",
+              "description": "The carrier lost the shipment."
+            },
+            {
+              "value": "MANIFESTED_NOT_RECEIVED",
+              "description": "The shipment manifest was sent to the carrier but the carrier did not receive the shipment."
+            },
+            {
+              "value": "MISSING_MANIFEST",
+              "description": "The carrier received the shipment but did not receive the shipment manifest."
+            },
+            {
+              "value": "MISSORTED",
+              "description": "Carrier missorted the shipment."
+            },
+            {
+              "value": "OUT_FOR_DELIVERY",
+              "description": "Shipment is out for delivery."
+            },
+            {
+              "value": "RECEIVED_FROM_CARRIER",
+              "description": "A connecting carrier received the shipment for continued transit."
+            },
+            {
+              "value": "RETURNED",
+              "description": "The shipment was returned to the shipper."
+            },
+            {
+              "value": "SHIPPED",
+              "description": "The shipment has departed the origin facility."
+            },
+            {
+              "value": "UNDELIVERABLE",
+              "description": "The shipment is undeliverable and is returning to the shipper."
+            },
+            {
+              "value": "UNDELIVERABLE_DESTROY_IN_FIELD",
+              "description": "The shipment is undeliverable and will be destroyed."
+            },
+            {
+              "value": "BOOKING_CONFIRMED",
+              "description": "The shipment booking was confirmed."
+            },
+            {
+              "value": "BOOKING_CANCELLED",
+              "description": "The shipment booking was cancelled."
+            },
+            {
+              "value": "PICKED_UP",
+              "description": "The cargo was picked up from the origin location."
+            },
+            {
+              "value": "ARRIVED",
+              "description": "The ocean vessel or aircraft arrived at the destination port or airport."
+            },
+            {
+              "value": "DOCUMENTS_RECEIVED_EMBARK_PORT",
+              "description": "All required documents were received at the port of loading or origin airport."
+            },
+            {
+              "value": "DRAY_STOP_OFF",
+              "description": "Shipment stopped at an intermediate drayage location."
+            },
+            {
+              "value": "ARRIVED_AT_TERMINAL",
+              "description": "The shipment arrived at a carrier facility."
+            },
+            {
+              "value": "CUSTOMS_IMPORT_SECURITY_FILED",
+              "description": "The Importer Security Filing (ISF) was submitted to customs."
+            },
+            {
+              "value": "CUSTOMS_IMPORT_SECURITY_FILING_ACCEPTED",
+              "description": "The Importer Security Filing (ISF) was accepted by customs."
+            },
+            {
+              "value": "CUSTOMS_DECLARATION_EMBARK_PORT",
+              "description": "Customs declaration has been filed at the port of loading or origin airport."
+            },
+            {
+              "value": "CUSTOMS_PROCESSING",
+              "description": "The customs clearance process has started for the shipment."
+            },
+            {
+              "value": "CUSTOMS_HOLD",
+              "description": "Customs has detained the shipment for inspection at origin."
+            },
+            {
+              "value": "CUSTOMS_CLEARED",
+              "description": "The shipment has cleared the customs process."
+            },
+            {
+              "value": "LOADED",
+              "description": "The container was loaded onto the ocean vessel or aircraft."
+            },
+            {
+              "value": "DEPARTED",
+              "description": "The ocean vessel or aircraft departed from the port or airport."
+            },
+            {
+              "value": "RECEIVED_AT_ORIGIN",
+              "description": "The shipment was received at the carrier's facility or point of departure."
+            },
+            {
+              "value": "UNLOADED",
+              "description": "The container was unloaded from the ocean vessel or aircraft."
+            },
+            {
+              "value": "DOCUMENTS_RECEIVED_DISCHARGE_PORT",
+              "description": "The port of discharge or destination airport received all documents."
+            },
+            {
+              "value": "CUSTOMS_DECLARATION_DISCHARGE_PORT",
+              "description": "A customs declaration was filed at the port of discharge or destination airport."
+            },
+            {
+              "value": "CUSTOMS_HOLD_DISCHARGE_PORT",
+              "description": "The shipment was detained by customs for inspection at the destination."
+            },
+            {
+              "value": "CUSTOMS_PAYMENT_REQUIRED",
+              "description": "A customs exception occurred because duty or tax payment is required."
+            },
+            {
+              "value": "READY_FOR_CUSTOMER_PICKUP",
+              "description": "The shipment is available for customer pickup."
+            },
+            {
+              "value": "DEPARTED_TERMINAL",
+              "description": "The shipment departed from a carrier terminal or facility."
+            },
+            {
+              "value": "LOADED_TRAIN",
+              "description": "The container was loaded onto a train."
+            },
+            {
+              "value": "UNLOADED_TRAIN",
+              "description": "The container was unloaded from a train."
+            },
+            {
+              "value": "ARRIVED_AT_DESTINATION_YARD",
+              "description": "The container arrived at the destination primary yard."
+            },
+            {
+              "value": "TRAILER_UNLOADING",
+              "description": "The container was opened and contents are being unloaded."
+            },
+            {
+              "value": "DELIVERED",
+              "description": "The shipment was delivered to the destination."
+            },
+            {
+              "value": "EMPTY_RETURN",
+              "description": "The empty container was returned to the terminal."
+            },
+            {
+              "value": "ORDER_CANCELLED",
+              "description": "The order was cancelled on request or due to a fulfillment issue."
+            },
+            {
+              "value": "ARRIVED_AT_RAIL_TERMINAL",
+              "description": "The shipment arrived at rail terminal."
+            },
+            {
+              "value": "CARRIER_TRANSFER",
+              "description": "The shipment was transferred to another carrier to continue delivery."
+            },
+            {
+              "value": "DELIVERY_ADDRESS_UPDATED",
+              "description": "The shipment is in transit after the delivery address was updated."
+            },
+            {
+              "value": "DELIVERY_CHANGE_REQUESTED",
+              "description": "The recipient has requested a special delivery arrangement."
+            },
+            {
+              "value": "DELIVERY_ESTIMATE_UPDATED",
+              "description": "The shipment estimated delivery date has changed."
+            },
+            {
+              "value": "DEPARTED_RAIL_TERMINAL",
+              "description": "The shipment departed from a rail terminal."
+            },
+            {
+              "value": "PICKUP_FAILED",
+              "description": "The carrier failed to pick up the shipment."
+            },
+            {
+              "value": "READY_FOR_DELIVERY",
+              "description": "The shipment is available for delivery."
+            },
+            {
+              "value": "RETURN_DROPPED_OFF",
+              "description": "The customer dropped off the shipment for a return."
+            },
+            {
+              "value": "RETURN_IN_TRANSIT",
+              "description": "The return is in transit from the carrier to a fulfillment center."
+            },
+            {
+              "value": "RETURN_PICKED_UP",
+              "description": "The carrier received the return shipment."
+            },
+            {
+              "value": "RETURN_RECEIVED",
+              "description": "The returns facility received the return shipment."
+            },
+            {
+              "value": "SORTED",
+              "description": "The shipment has been sorted at the carrier facility."
+            },
+            {
+              "value": "TRAILER_UNLOADED",
+              "description": "Container contents have been fully unloaded."
+            },
+            {
+              "value": "CUSTOMER_PICKUP_COMPLETED",
+              "description": "The customer picked up the shipment from a locker."
+            },
+            {
+              "value": "CUSTOMS_EXCEPTION",
+              "description": "Customs is holding the shipment due to an exception."
+            }
+          ],
+          "examples": [
+            "DELIVERED"
+          ]
+        },
+        "subCode": {
+          "type": "string",
+          "description": "Status subcode that provides additional details about the milestone status. Valid values vary by milestone (for example, a `DELIVERED` milestone might include a `subCode` for the delivery location).",
+          "enum": [
+            "ACCIDENT",
+            "ADDRESS_CHANGE",
+            "ADDRESS_ISSUE",
+            "ADDRESS_NON_SERVICED",
+            "ADULT_SIGNATURE_REQUIRED",
+            "AIRPLANE_LATE",
+            "AIR_HUB",
+            "ANIMAL_HAZARD",
+            "APARTMENT",
+            "APPOINTMENT",
+            "APPOINTMENT_REQUIRED",
+            "ARMED_FORCES_POST_OFFICE",
+            "BAG",
+            "BAG_ID_MISMATCH",
+            "BATCH",
+            "BEHIND_WHEELIE_BIN",
+            "BUILDING_LOCKER",
+            "BUSINESS_CLOSED",
+            "BUSINESS_CLOSED_HOLIDAY",
+            "BUYBACK",
+            "CARRIER_HUB",
+            "CARRIER_HUB_DELAY",
+            "CARRIER_NO_ACCESS",
+            "CARRIER_NO_CAPACITY",
+            "CARRIER_REFUSAL",
+            "CITY_TOWN_STATE",
+            "CN_BUYER_PAYER_RECIPIENT_MISMATCH",
+            "CN_CUSTOMS_ALIPAY_WECHAT_NAME_FAILED",
+            "CN_CUSTOMS_CAN_GATEWAY_ID_VERIFICATION",
+            "CN_CUSTOMS_CLEARANCE_DATA_ISSUE",
+            "CN_CUSTOMS_CONVERT_TO_PERSONAL_REVIEW",
+            "CN_CUSTOMS_DATA_TRANSMISSION_DELAY",
+            "CN_CUSTOMS_PACKAGE_INFO_MISMATCH",
+            "CN_CUSTOMS_PERSONAL_REVIEW_DELAY",
+            "CN_CUSTOMS_PERSONAL_REVIEW_QUOTA_EXCEEDED",
+            "CN_CUSTOMS_PROHIBITED_WORDING",
+            "CN_CUSTOMS_SYSTEM_UPGRADE",
+            "CONSERVATORY",
+            "CONTAINER_FREIGHT_STATION",
+            "CONTENT_SPILL_OUT",
+            "COUNTER",
+            "COVERAGE_AREA_ISSUE",
+            "CUSTOMER",
+            "CUSTOMER_CANCELLED",
+            "CUSTOMER_MOVED",
+            "CUSTOMER_PICK_UP_FAILURE",
+            "CUSTOMER_REFUSAL",
+            "CUSTOMER_REQUEST",
+            "CUSTOMS",
+            "CUSTOMS_FEES",
+            "CUSTOMS_HUB",
+            "CUSTOMS_ISSUE",
+            "DAMAGE",
+            "DATE_CHANGE",
+            "DELAY",
+            "DELIVERY_AGENT_ASSIGNED",
+            "DELIVERY_ATTEMPTED",
+            "DELIVERY_DATE_MISMATCH",
+            "DELIVERY_DEPOT",
+            "DELIVERY_DEPOT_DELAY",
+            "DELIVERY_NOT_ATTEMPTED",
+            "DESTINATION",
+            "DIRECTIONS_REQUIRED",
+            "DRIVER_EMERGENCY",
+            "DRIVER_HELD",
+            "DRIVER_LATE",
+            "DRONE",
+            "DRONE_REPLAN",
+            "DUPLICATE",
+            "DUTIES_TAX_PENDING",
+            "EMERGENCY",
+            "EXCEEDS_20000_RMB_CLEARANCE_QUOTA",
+            "EXCEEDS_PERSONAL_QUANTITIES_QUOTA",
+            "EXPORT_CARRIER",
+            "FACILITY_BREAKDOWN",
+            "FACILITY_CLOSURE",
+            "FAILED_ADULT_VERIFICATION",
+            "FAILED_MAX_ATTEMPTS",
+            "FINAL_ATTEMPT_FAILED",
+            "FORCE_MAJEURE",
+            "FRAUDULENT_ACTIVITY",
+            "FREIGHT_FORWARDER",
+            "FRONT_PORCH",
+            "FRONT_PORCH_OR_FRONT_DOOR",
+            "FULFILLMENT_FACILITY",
+            "FULFILLMENT_ISSUE",
+            "FULFILLMENT_PROVIDER_MISSORT",
+            "FULFILLMENT_PROVIDER_RETURN_REQUEST",
+            "GARAGE",
+            "GARDEN",
+            "GOVERNMENT_AGENCY_INSPECTION_REQUIRED",
+            "GREENHOUSE",
+            "HANDED_OVER_FOR_FINAL_DELIVERY",
+            "HAZMAT",
+            "HEAVY_BULKY_CARRIER",
+            "HELD_FOR_PAYMENT",
+            "HELD_IN_TRAILER",
+            "HOLD_FOR_PICK_UP",
+            "HS_CODE_ISSUES",
+            "IMPORT_BLOCKED",
+            "IMPORT_DOCUMENTATION_REQUIRED",
+            "IMPORT_ELIGIBILITY_ISSUE",
+            "INCORRECT_ITEM",
+            "INCOTERMS_ISSUE",
+            "INSIDE_BOX",
+            "INSIDE_HOME",
+            "INSIDE_VEHICLE",
+            "INSUFFICIENT_PAPERWORK",
+            "INTERNATIONAL_TRANSIT_DELAY",
+            "INVALID_ADDRESS",
+            "INVALID_CITY_TOWN_STATE_ADDRESS",
+            "INVALID_POSTAL_CODE",
+            "INVALID_RECIPIENT_NAME",
+            "INVALID_STREET_ADDRESS",
+            "LABEL_ISSUE",
+            "LARGE_ITEM",
+            "LATE_DELIVERY",
+            "LEAVE_TO_NEIGHBOR",
+            "LETTERBOX",
+            "LOCKER",
+            "LOOSE",
+            "MAIL_BOX_FULL",
+            "MAIL_ROOM",
+            "MANUAL_CLEARANCE",
+            "MANUAL_SCAN_UPLOAD",
+            "MISSING_APARTMENT_ADDRESS",
+            "MISSING_COMMERCIAL_DOCS",
+            "MISSING_OR_INCOMPLETE_NAME",
+            "MISSING_RECIPIENT_PERSONAL_DATA",
+            "MISSORT",
+            "NAME_AUTHENTICATION_FAILED",
+            "NEARBY_STORE",
+            "NEIGHBOR",
+            "NEIGHBOR_SIGNED",
+            "NON_PERSONAL_BELONGINGS",
+            "NON_POSTAL_CARRIER",
+            "NOT_ORDERED",
+            "NOT_WANTED",
+            "NO_ACCESS",
+            "NO_CONTACT_INFORMATION",
+            "NO_RESPONSE",
+            "NO_SECURITY_ACCESS",
+            "OFF_AMAZON_CUSTOMER",
+            "ON_HOLD",
+            "ORIGIN",
+            "OUTBUILDING",
+            "OVER_FORECAST",
+            "PACKAGE_OPEN",
+            "PACKAGE_OVERSIZED",
+            "PARCEL_HUB",
+            "PARTIAL",
+            "PAYMENT_REFUSED",
+            "PENDING_INSPECTION",
+            "PGA_HOLD",
+            "PICKUP_FAILURE",
+            "PICKUP_POINT",
+            "PICKUP_POINT_CLOSED",
+            "PKG_DIMENSION_EXCEEDS",
+            "POI_DELIVERY_ADDRESS_MISMATCH",
+            "POI_INVALID",
+            "POI_RECIPIENT_NAME_MISMATCH",
+            "PORCH",
+            "POSTAL_CARRIER",
+            "POSTAL_CODE",
+            "POST_OFFICE",
+            "POWER_OF_ATTORNEY_REQUIRED",
+            "PO_BOX",
+            "PO_BOX_QUERY",
+            "PREDICTED",
+            "PROCESSING_DELAY",
+            "PROCESSING_HUB",
+            "PRODUCT_DAMAGED",
+            "PRODUCT_DEFECTIVE",
+            "PRODUCT_MISSING",
+            "PRODUCT_NOT_FUNCTIONAL",
+            "PRODUCT_PRICE_EXCEEDS_2000_RMB",
+            "PROHIBITED_ITEM",
+            "READY_FOR_PICKUP",
+            "REAR_PORCH",
+            "REAR_PORCH_OR_REAR_DOOR",
+            "RECEPTION",
+            "RECIPIENT_CANCELLED",
+            "RECIPIENT_HOLIDAY",
+            "RECIPIENT_ID_IMAGE_QUALITY",
+            "RECIPIENT_ID_INVALID",
+            "RECIPIENT_ID_MISSING",
+            "RECIPIENT_ID_NOT_RECEIVED",
+            "RECIPIENT_ID_RECEIVED",
+            "RECIPIENT_PIN_NOT_AVAILABLE",
+            "RECIPIENT_UNIQUE_CODE_MISSING",
+            "RECIPIENT_UNKNOWN_ENTITY",
+            "REDIRECTED_SHIPMENT",
+            "REDIRECT_FAILED",
+            "REMOTE_AREA",
+            "REROUTED_TO_LOCKER",
+            "REROUTED_TO_STORE",
+            "RETURN_TO_SELLER",
+            "REVERTED",
+            "ROAD_ISSUE",
+            "SAFE_PLACE",
+            "SCHEDULE_ADJUSTMENT",
+            "SECURITY_ACCESS",
+            "SECURITY_CHECKS_REQUIRED",
+            "SECURITY_DESK",
+            "SELLER_ISSUE",
+            "SELLER_MOVED",
+            "SELLER_REJECTION",
+            "SELLER_REQUEST",
+            "SHED",
+            "SHIPMENT_DAMAGED",
+            "SHIPMENT_FEES",
+            "SHIPMENT_HIJACKED",
+            "SHIPMENT_MISSING",
+            "SHIPMENT_NOT_RECEIVED",
+            "SHIPMENT_OVERDUE_14_DAYS",
+            "SHIPPER_RELATED",
+            "SHIPPER_REQUEST",
+            "SIDE_PORCH",
+            "SIGNATURE_REQUIRED",
+            "SIGNATURE_WAIVED",
+            "SIGNED",
+            "STORE",
+            "STREET",
+            "TERRACE",
+            "THEFT",
+            "THIRD_PARTY_CARRIER_DELAY",
+            "TRAILER_LATE",
+            "TRAIN_LATE",
+            "TRANSPORTATION_CAPACITY_SHORTAGE",
+            "TRUCK",
+            "UNIT_LOAD_DEVICE",
+            "UNKNOWN_ENTITY",
+            "UNREADABLE_BARCODE",
+            "UNSUCCESSFUL_CUSTOMER_CONTACT",
+            "UNVERIFIED_ADDRESS",
+            "VAN",
+            "VAN_REPLAN",
+            "VEHICLE_BREAKDOWN",
+            "WEATHER",
+            "WRONG_DELIVERY_ROUTE",
+            "WRONG_PHONE_NUMBER"
+          ],
+          "examples": [
+            "PO_BOX"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "A human-readable explanation of the milestone event.",
+          "examples": [
+            "Shipment delivered"
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "description"
+      ]
+    },
+    "TrackingMilestoneLocation": {
+      "type": "object",
+      "description": "The location where a tracking milestone occurred.",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/TrackingMilestoneAddress",
+          "description": "The physical address where the milestone occurred."
+        }
+      }
+    },
+    "TrackingMilestoneAddress": {
+      "type": "object",
+      "description": "The physical address of the location.",
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "The city where the milestone occurred.",
+          "examples": [
+            "Shenzhen"
+          ]
+        },
+        "region": {
+          "type": "string",
+          "description": "The state or region where the milestone occurred.",
+          "examples": [
+            "Guangdong"
+          ]
+        },
+        "countryCode": {
+          "type": "string",
+          "description": "The two-character country code in ISO 3166-1 alpha-2 format (for example, US).",
+          "examples": [
+            "CN"
+          ]
+        }
+      }
+    }
+  }
 }
