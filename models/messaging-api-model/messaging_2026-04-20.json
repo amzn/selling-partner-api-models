@@ -1,0 +1,1690 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "The Selling Partner API for Messaging Automations",
+    "description": "The Selling Partner API for Messaging Automations allows sellers to programmatically manage automated buyer-seller messaging configurations. An automation configuration defines rules for automatically responding to buyer messages (for example, auto-responses to common questions about shipping, returns, or product details). A seller can create multiple automation configurations, and each configuration can apply to one or more Amazon stores. Each store-specific entry within a configuration contains the response content and the automation trigger conditions. The `marketplaceIds` query parameter is required on all operations for store-scoped authorization.",
+    "version": "2026-04-20",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/messaging/2026-04-20/automationConfigurations": {
+      "post": {
+        "operationId": "createAutomationConfiguration",
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
+        "description": "Creates a new automation configuration for automated buyer-seller messaging. The configuration is `ACTIVE` as soon as it is created. The response returns the full automation configuration resource, including the server-generated `automationId`.",
+        "tags": [
+          "automationConfigurations"
+        ],
+        "parameters": [
+          {
+            "name": "marketplaceIds",
+            "in": "query",
+            "description": "A comma-delimited list of [Amazon store identifiers](https://developer-docs.amazon/sp-api/docs/marketplace-ids) for the request. Required for store-scoped operations and authorization. Your application must have permission to operate in the specified stores before processing the request body.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-example": "ATVPDKIKX0DER",
+            "collectionFormat": "csv"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "The request body for creating an automation configuration.",
+            "schema": {
+              "$ref": "#/definitions/CreateAutomationConfigRequest"
+            },
+            "x-examples": {
+              "application/json": {
+                "automationDisplayName": "Holiday Auto Response",
+                "automationType": "AUTO_RESPONSE",
+                "automationSubType": "AUTO_RESPONSE",
+                "marketplaceAutomations": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "automationDetails": {
+                      "autoResponseText": "Thank you for reaching out. We typically respond within 24 hours."
+                    },
+                    "triggerConditions": {
+                      "asinList": [
+                        "B07F6271HL",
+                        "B07X3XLYS3"
+                      ],
+                      "buyerContactTopics": [
+                        "SHIPPING",
+                        "WHERES_MY_STUFF"
+                      ],
+                      "buyerContactType": "POST_ORDER"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created the automation configuration.",
+            "schema": {
+              "$ref": "#/definitions/AutomationConfiguration"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {
+                "automationId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                "automationType": "AUTO_RESPONSE",
+                "automationSubType": "AUTO_RESPONSE",
+                "automationStatus": "ACTIVE",
+                "automationDisplayName": "Holiday Auto Response",
+                "currentAutomationVersion": 1,
+                "latestAutomationVersion": 1,
+                "marketplaceAutomations": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "automationDetails": {
+                      "autoResponseText": "Thank you for reaching out. We typically respond within 24 hours."
+                    },
+                    "triggerConditions": {
+                      "asinList": [
+                        "B07F6271HL",
+                        "B07X3XLYS3"
+                      ],
+                      "buyerContactTopics": [
+                        "SHIPPING",
+                        "WHERES_MY_STUFF"
+                      ],
+                      "buyerContactType": "POST_ORDER"
+                    }
+                  }
+                ],
+                "createdDateTime": "2026-04-20T14:30:00Z",
+                "lastUpdatedDateTime": "2026-04-20T14:30:00Z"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "automationDisplayName": "Holiday Auto Response",
+                          "automationType": "AUTO_RESPONSE",
+                          "automationSubType": "AUTO_RESPONSE",
+                          "marketplaceAutomations": [
+                            {
+                              "marketplaceId": "ATVPDKIKX0DER",
+                              "automationDetails": {
+                                "autoResponseText": "Thank you for reaching out. We typically respond within 24 hours."
+                              },
+                              "triggerConditions": {
+                                "asinList": [
+                                  "B07F6271HL",
+                                  "B07X3XLYS3"
+                                ],
+                                "buyerContactTopics": [
+                                  "SHIPPING",
+                                  "WHERES_MY_STUFF"
+                                ],
+                                "buyerContactType": "POST_ORDER"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "automationId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                    "automationType": "AUTO_RESPONSE",
+                    "automationSubType": "AUTO_RESPONSE",
+                    "automationStatus": "ACTIVE",
+                    "automationDisplayName": "Holiday Auto Response",
+                    "currentAutomationVersion": 1,
+                    "latestAutomationVersion": 1,
+                    "marketplaceAutomations": [
+                      {
+                        "marketplaceId": "ATVPDKIKX0DER",
+                        "automationDetails": {
+                          "autoResponseText": "Thank you for reaching out. We typically respond within 24 hours."
+                        },
+                        "triggerConditions": {
+                          "asinList": [
+                            "B07F6271HL",
+                            "B07X3XLYS3"
+                          ],
+                          "buyerContactTopics": [
+                            "SHIPPING",
+                            "WHERES_MY_STUFF"
+                          ],
+                          "buyerContactType": "POST_ORDER"
+                        }
+                      }
+                    ],
+                    "createdDateTime": "2026-04-20T14:30:00Z",
+                    "lastUpdatedDateTime": "2026-04-20T14:30:00Z"
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "body": {
+                        "value": {
+                          "automationDisplayName": "INVALID-TEST-CONFIG",
+                          "automationType": "AUTO_RESPONSE",
+                          "automationSubType": "AUTO_RESPONSE",
+                          "marketplaceAutomations": [
+                            {
+                              "marketplaceId": "ATVPDKIKX0DER",
+                              "automationDetails": {
+                                "autoResponseText": "Thank you for reaching out. We typically respond within 24 hours."
+                              },
+                              "triggerConditions": {
+                                "asinList": [
+                                  "B07F6271HL",
+                                  "B07X3XLYS3"
+                                ],
+                                "buyerContactTopics": [
+                                  "SHIPPING",
+                                  "WHERES_MY_STUFF"
+                                ],
+                                "buyerContactType": "POST_ORDER"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "The request has missing or invalid parameters.",
+                        "details": "See the error details for more information."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with an existing automation configuration. Possible reasons include a duplicate `automationDisplayName` or trigger conditions that overlap with another active configuration in the same Amazon store.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "422": {
+            "description": "The auto-response text contains content that is not permitted.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listAutomationConfigurations",
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
+        "description": "Returns a list of automation configurations that include the specified Amazon store. Results may include configurations that also apply to other stores, since a single configuration can span multiple stores.",
+        "tags": [
+          "automationConfigurations"
+        ],
+        "parameters": [
+          {
+            "name": "marketplaceIds",
+            "in": "query",
+            "description": "A comma-delimited list of [Amazon store identifiers](https://developer-docs.amazon/sp-api/docs/marketplace-ids) for the request. Required for store-scoped operations and authorization. Your application must have permission to operate in the specified stores before processing the request body.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-example": "ATVPDKIKX0DER",
+            "collectionFormat": "csv"
+          },
+          {
+            "name": "automationType",
+            "in": "query",
+            "description": "Filters results by automation type.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "AUTO_RESPONSE"
+            ],
+            "x-example": "AUTO_RESPONSE",
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "AUTO_RESPONSE",
+                "description": "An automated response sent to buyers when they contact the seller."
+              }
+            ]
+          },
+          {
+            "name": "automationSubType",
+            "in": "query",
+            "description": "Filters results by automation sub-type.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "AUTO_RESPONSE"
+            ],
+            "x-example": "AUTO_RESPONSE",
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "AUTO_RESPONSE",
+                "description": "An automated response sent to buyers when they contact the seller."
+              }
+            ]
+          },
+          {
+            "name": "includeMarketplaceAutomations",
+            "in": "query",
+            "description": "When set to `true`, the response includes the full, store-level automation details for each configuration, including response text, attachment URL, and the trigger conditions that define when the automation activates for that store. When false or omitted, only the top-level configuration metadata (identifier, status, display name, timestamps) is returned.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "TRUE",
+              "FALSE"
+            ],
+            "default": "FALSE",
+            "x-example": "TRUE",
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "TRUE",
+                "description": "Include store-specific automation details in the response."
+              },
+              {
+                "value": "FALSE",
+                "description": "Exclude store-specific automation details from the response."
+              }
+            ]
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "The number of results to return per page. Minimum: 1. Maximum: 50. Default: 10.",
+            "required": false,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "x-example": 10
+          },
+          {
+            "name": "paginationToken",
+            "in": "query",
+            "description": "A token to fetch the next page of results. Use the `nextToken` value returned in the previous response's `pagination` object.",
+            "required": false,
+            "type": "string",
+            "x-example": "eyJsYXN0RXZhbHVhdGVkS2V5IjoiY2ZnLWExYjJjM2Q0In0="
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned the list of automation configurations.",
+            "schema": {
+              "$ref": "#/definitions/ListAutomationConfigsResponse"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {
+                "automationConfigurations": [
+                  {
+                    "automationId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                    "automationType": "AUTO_RESPONSE",
+                    "automationSubType": "AUTO_RESPONSE",
+                    "automationStatus": "ACTIVE",
+                    "automationDisplayName": "Holiday Auto Response",
+                    "currentAutomationVersion": 2,
+                    "latestAutomationVersion": 2,
+                    "createdDateTime": "2026-03-15T10:30:00Z",
+                    "lastUpdatedDateTime": "2026-04-20T14:45:00Z"
+                  },
+                  {
+                    "automationId": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                    "automationType": "AUTO_RESPONSE",
+                    "automationSubType": "AUTO_RESPONSE",
+                    "automationStatus": "ACTIVE",
+                    "automationDisplayName": "Weekend Out of Office Response",
+                    "currentAutomationVersion": 1,
+                    "latestAutomationVersion": 1,
+                    "createdDateTime": "2026-04-01T08:00:00Z",
+                    "lastUpdatedDateTime": "2026-04-01T08:00:00Z"
+                  }
+                ],
+                "pagination": {
+                  "nextToken": "eyJsYXN0RXZhbHVhdGVkS2V5IjoiY2ZnLWIyYzNkNGU1In0="
+                }
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {}
+                  },
+                  "response": {
+                    "automationConfigurations": [
+                      {
+                        "automationId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                        "automationType": "AUTO_RESPONSE",
+                        "automationSubType": "AUTO_RESPONSE",
+                        "automationStatus": "ACTIVE",
+                        "automationDisplayName": "Holiday Auto Response",
+                        "currentAutomationVersion": 2,
+                        "latestAutomationVersion": 2,
+                        "createdDateTime": "2026-03-15T10:30:00Z",
+                        "lastUpdatedDateTime": "2026-04-20T14:45:00Z"
+                      },
+                      {
+                        "automationId": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                        "automationType": "AUTO_RESPONSE",
+                        "automationSubType": "AUTO_RESPONSE",
+                        "automationStatus": "ACTIVE",
+                        "automationDisplayName": "Weekend Out of Office Response",
+                        "currentAutomationVersion": 1,
+                        "latestAutomationVersion": 1,
+                        "createdDateTime": "2026-04-01T08:00:00Z",
+                        "lastUpdatedDateTime": "2026-04-01T08:00:00Z"
+                      }
+                    ],
+                    "pagination": {
+                      "nextToken": "eyJsYXN0RXZhbHVhdGVkS2V5IjoiY2ZnLWIyYzNkNGU1In0="
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "marketplaceIds": {
+                        "value": [
+                          "INVALID"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "The request has missing or invalid parameters.",
+                        "details": "See the error details for more information."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/messaging/2026-04-20/automationConfigurations/{automationId}": {
+      "get": {
+        "operationId": "getAutomationConfiguration",
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
+        "description": "Returns the details of a specific automation configuration, including its store-specific automation entries with response content and trigger conditions.",
+        "tags": [
+          "automationConfigurations"
+        ],
+        "parameters": [
+          {
+            "name": "automationId",
+            "in": "path",
+            "description": "The unique identifier of the automation configuration.",
+            "required": true,
+            "type": "string",
+            "x-example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          {
+            "name": "marketplaceIds",
+            "in": "query",
+            "description": "A comma-delimited list of [Amazon store identifiers](https://developer-docs.amazon/sp-api/docs/marketplace-ids) for the request. Required for store-scoped operations and authorization. Your application must have permission to operate in the specified stores before processing the request body.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-example": "ATVPDKIKX0DER",
+            "collectionFormat": "csv"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned the automation configuration.",
+            "schema": {
+              "$ref": "#/definitions/AutomationConfiguration"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {
+                "automationId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                "automationType": "AUTO_RESPONSE",
+                "automationSubType": "AUTO_RESPONSE",
+                "automationStatus": "ACTIVE",
+                "automationDisplayName": "Holiday Auto Response",
+                "currentAutomationVersion": 2,
+                "latestAutomationVersion": 2,
+                "marketplaceAutomations": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "automationDetails": {
+                      "autoResponseText": "Thank you for reaching out. We typically respond within 24 hours. In the meantime, please check our storefront for common questions about shipping and returns."
+                    },
+                    "triggerConditions": {
+                      "asinList": [
+                        "B07F6271HL",
+                        "B07X3XLYS3"
+                      ],
+                      "buyerContactTopics": [
+                        "SHIPPING",
+                        "WHERES_MY_STUFF"
+                      ],
+                      "buyerContactType": "POST_ORDER"
+                    }
+                  }
+                ],
+                "createdDateTime": "2026-03-15T10:30:00Z",
+                "lastUpdatedDateTime": "2026-04-20T14:45:00Z"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "automationId": {
+                        "value": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                      }
+                    }
+                  },
+                  "response": {
+                    "automationId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                    "automationType": "AUTO_RESPONSE",
+                    "automationSubType": "AUTO_RESPONSE",
+                    "automationStatus": "ACTIVE",
+                    "automationDisplayName": "Holiday Auto Response",
+                    "currentAutomationVersion": 2,
+                    "latestAutomationVersion": 2,
+                    "marketplaceAutomations": [
+                      {
+                        "marketplaceId": "ATVPDKIKX0DER",
+                        "automationDetails": {
+                          "autoResponseText": "Thank you for reaching out. We typically respond within 24 hours. In the meantime, please check our storefront for common questions about shipping and returns."
+                        },
+                        "triggerConditions": {
+                          "asinList": [
+                            "B07F6271HL",
+                            "B07X3XLYS3"
+                          ],
+                          "buyerContactTopics": [
+                            "SHIPPING",
+                            "WHERES_MY_STUFF"
+                          ],
+                          "buyerContactType": "POST_ORDER"
+                        }
+                      }
+                    ],
+                    "createdDateTime": "2026-03-15T10:30:00Z",
+                    "lastUpdatedDateTime": "2026-04-20T14:45:00Z"
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "automationId": {
+                        "value": "invalid-id"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "The request has missing or invalid parameters.",
+                        "details": "See the error details for more information."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateAutomationConfiguration",
+        "x-amzn-api-internal": "INTERNAL_AND_EXTERNAL",
+        "description": "Updates an existing automation configuration. This is a full replacement operation using `PUT` semantics; you must provide the complete desired state, including `automationDisplayName`, `automationStatus`, and `marketplaceAutomations`. The `marketplaceAutomations` entries you provide replace all of the configuration's existing Amazon store entries; any store that you omit is removed from the configuration. To deactivate a configuration, send its complete current state with `automationStatus` set to `DEACTIVATED`.",
+        "tags": [
+          "automationConfigurations"
+        ],
+        "parameters": [
+          {
+            "name": "automationId",
+            "in": "path",
+            "description": "The unique identifier of the automation configuration to update.",
+            "required": true,
+            "type": "string",
+            "x-example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          {
+            "name": "marketplaceIds",
+            "in": "query",
+            "description": "A comma-delimited list of [Amazon store identifiers](https://developer-docs.amazon/sp-api/docs/marketplace-ids) for the request. Required for store-scoped operations and authorization. Your application must have permission to operate in the specified stores before processing the request body.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-example": "ATVPDKIKX0DER",
+            "collectionFormat": "csv"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "The request body for updating an automation configuration.",
+            "schema": {
+              "$ref": "#/definitions/UpdateAutomationConfigRequest"
+            },
+            "x-examples": {
+              "application/json": {
+                "automationDisplayName": "Updated Holiday Auto Response",
+                "marketplaceAutomations": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "automationDetails": {
+                      "autoResponseText": "Thank you for your message. Our team is currently on holiday break and will respond by January 2nd."
+                    },
+                    "triggerConditions": {
+                      "asinList": [
+                        "B07F6271HL",
+                        "B07X3XLYS3"
+                      ],
+                      "buyerContactTopics": [
+                        "SHIPPING",
+                        "WHERES_MY_STUFF",
+                        "RETURN_POLICY"
+                      ],
+                      "buyerContactType": "POST_ORDER"
+                    }
+                  }
+                ],
+                "automationStatus": "ACTIVE"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The automation configuration was updated successfully.",
+            "schema": {
+              "$ref": "#/definitions/AutomationConfiguration"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "examples": {
+              "application/json": {
+                "automationId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                "automationType": "AUTO_RESPONSE",
+                "automationSubType": "AUTO_RESPONSE",
+                "automationStatus": "ACTIVE",
+                "automationDisplayName": "Updated Holiday Auto Response",
+                "currentAutomationVersion": 3,
+                "latestAutomationVersion": 3,
+                "marketplaceAutomations": [
+                  {
+                    "marketplaceId": "ATVPDKIKX0DER",
+                    "automationDetails": {
+                      "autoResponseText": "Thank you for your message. Our team is currently on holiday break and will respond by January 2nd."
+                    },
+                    "triggerConditions": {
+                      "asinList": [
+                        "B07F6271HL",
+                        "B07X3XLYS3"
+                      ],
+                      "buyerContactTopics": [
+                        "SHIPPING",
+                        "WHERES_MY_STUFF",
+                        "RETURN_POLICY"
+                      ],
+                      "buyerContactType": "POST_ORDER"
+                    }
+                  }
+                ],
+                "createdDateTime": "2026-03-15T10:30:00Z",
+                "lastUpdatedDateTime": "2026-04-25T09:15:00Z"
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "automationId": {
+                        "value": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                      },
+                      "body": {
+                        "value": {
+                          "automationDisplayName": "Updated Holiday Auto Response",
+                          "automationStatus": "ACTIVE",
+                          "marketplaceAutomations": [
+                            {
+                              "marketplaceId": "ATVPDKIKX0DER",
+                              "automationDetails": {
+                                "autoResponseText": "Thank you for your message. Our team is currently on holiday break and will respond by January 2nd."
+                              },
+                              "triggerConditions": {
+                                "asinList": [
+                                  "B07F6271HL",
+                                  "B07X3XLYS3"
+                                ],
+                                "buyerContactTopics": [
+                                  "SHIPPING",
+                                  "WHERES_MY_STUFF",
+                                  "RETURN_POLICY"
+                                ],
+                                "buyerContactType": "POST_ORDER"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "automationId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                    "automationType": "AUTO_RESPONSE",
+                    "automationSubType": "AUTO_RESPONSE",
+                    "automationStatus": "ACTIVE",
+                    "automationDisplayName": "Updated Holiday Auto Response",
+                    "currentAutomationVersion": 3,
+                    "latestAutomationVersion": 3,
+                    "marketplaceAutomations": [
+                      {
+                        "marketplaceId": "ATVPDKIKX0DER",
+                        "automationDetails": {
+                          "autoResponseText": "Thank you for your message. Our team is currently on holiday break and will respond by January 2nd."
+                        },
+                        "triggerConditions": {
+                          "asinList": [
+                            "B07F6271HL",
+                            "B07X3XLYS3"
+                          ],
+                          "buyerContactTopics": [
+                            "SHIPPING",
+                            "WHERES_MY_STUFF",
+                            "RETURN_POLICY"
+                          ],
+                          "buyerContactType": "POST_ORDER"
+                        }
+                      }
+                    ],
+                    "createdDateTime": "2026-03-15T10:30:00Z",
+                    "lastUpdatedDateTime": "2026-04-25T09:15:00Z"
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "automationId": {
+                        "value": "invalid-id"
+                      },
+                      "body": {
+                        "value": {
+                          "automationDisplayName": "INVALID-TEST-CONFIG",
+                          "automationStatus": "ACTIVE",
+                          "marketplaceAutomations": [
+                            {
+                              "marketplaceId": "ATVPDKIKX0DER",
+                              "automationDetails": {
+                                "autoResponseText": "Thank you for your message. Our team is currently on holiday break and will respond by January 2nd."
+                              },
+                              "triggerConditions": {
+                                "asinList": [
+                                  "B07F6271HL",
+                                  "B07X3XLYS3"
+                                ],
+                                "buyerContactTopics": [
+                                  "SHIPPING",
+                                  "WHERES_MY_STUFF",
+                                  "RETURN_POLICY"
+                                ],
+                                "buyerContactType": "POST_ORDER"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "The request has missing or invalid parameters.",
+                        "details": "See the error details for more information."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              },
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with an existing automation configuration. Possible reasons include a duplicate `automationDisplayName` or trigger conditions that overlap with another active configuration in the same marketplace.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "413": {
+            "description": "The request size exceeded the maximum accepted size.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "415": {
+            "description": "The request payload is in an unsupported format.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "422": {
+            "description": "The auto-response text contains content that is not permitted.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AutomationConfiguration": {
+      "type": "object",
+      "description": "Represents a seller's automation configuration for automated buyer-seller messaging. An automation configuration defines rules for automatically responding to buyer inquiries, such as common questions about shipping, returns, or product details. Each configuration has a type (for example, `AUTO_RESPONSE`), a status (`ACTIVE` or `DEACTIVATED`), and one or more store-specific entries that contain the actual response content and trigger conditions.",
+      "required": [
+        "automationId",
+        "automationType",
+        "automationStatus",
+        "automationDisplayName"
+      ],
+      "properties": {
+        "automationId": {
+          "type": "string",
+          "description": "The unique identifier of the automation configuration.",
+          "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        },
+        "automationType": {
+          "$ref": "#/definitions/AutomationType"
+        },
+        "automationSubType": {
+          "$ref": "#/definitions/AutomationSubType"
+        },
+        "automationStatus": {
+          "$ref": "#/definitions/AutomationStatus"
+        },
+        "automationDisplayName": {
+          "type": "string",
+          "description": "The seller-provided display name for the automation configuration.",
+          "example": "Holiday Auto Response",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[\\p{L}\\p{N}\\s_-]+$"
+        },
+        "currentAutomationVersion": {
+          "type": "integer",
+          "description": "The version number of the automation configuration that is currently serving buyer messages. The version number increases by one with each update.",
+          "example": 3
+        },
+        "latestAutomationVersion": {
+          "type": "integer",
+          "description": "The most recent version number of the automation configuration. Because updates take effect immediately, this value always equals `currentAutomationVersion`.",
+          "example": 3
+        },
+        "marketplaceAutomations": {
+          "type": "array",
+          "description": "A list of store-specific automation entries. Each entry contains the response content and trigger conditions for a specific Amazon store. Populated only for the `listAutomationConfigurations` operation when the `includeMarketplaceAutomations` query parameter is set to `true`.",
+          "items": {
+            "$ref": "#/definitions/MarketplaceAutomation"
+          }
+        },
+        "createdDateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time when the automation configuration was created, in ISO 8601 format.",
+          "example": "2026-03-15T10:30:00Z"
+        },
+        "lastUpdatedDateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time when the automation configuration was last updated, in ISO 8601 format.",
+          "example": "2026-04-20T14:45:00Z"
+        }
+      }
+    },
+    "MarketplaceAutomation": {
+      "type": "object",
+      "description": "The store-specific entry within an automation configuration. A seller can have multiple automation configurations, and each configuration can contain entries for one or more Amazon stores. Each store entry defines the automation response content (for example, the auto-response text) and the trigger conditions (for example, specific buyer contact topics or ASINs) for that specific store.",
+      "required": [
+        "marketplaceId",
+        "automationDetails",
+        "triggerConditions"
+      ],
+      "properties": {
+        "marketplaceId": {
+          "type": "string",
+          "description": "The [Amazon store identifier](https://developer-docs.amazon/sp-api/docs/marketplace-ids).",
+          "example": "ATVPDKIKX0DER"
+        },
+        "automationDetails": {
+          "$ref": "#/definitions/AutomationDetails"
+        },
+        "triggerConditions": {
+          "$ref": "#/definitions/TriggerConditions"
+        }
+      }
+    },
+    "AutomationDetails": {
+      "type": "object",
+      "description": "The details of the automated action.",
+      "properties": {
+        "autoResponseText": {
+          "type": "string",
+          "description": "The auto-response message text sent to the buyer. Required for `AUTO_RESPONSE` automation configurations.",
+          "example": "Thank you for reaching out. We typically respond within 24 hours. In the meantime, please check our storefront for common questions about shipping and returns.",
+          "maxLength": 4000
+        },
+        "autoResponseAttachmentUrl": {
+          "type": "string",
+          "description": "A URL to an attachment included with the auto-response message.",
+          "example": "https://m.media-amazon.com/images/I/61abc123def.pdf"
+        }
+      },
+      "required": [
+        "autoResponseText"
+      ]
+    },
+    "TriggerConditions": {
+      "type": "object",
+      "description": "The conditions that determine when an automation configuration activates for a given store. All conditions must be met simultaneously using `AND` logic. Within list-based conditions (such as `buyerContactTopics` or `asinList`), any single match satisfies that condition using `OR` logic. For example, if `buyerContactTopics` contains `SHIPPING` and `WHERES_MY_STUFF`, the automation triggers when the buyer's inquiry matches either topic. Trigger conditions cannot overlap with another active automation configuration in the same store; if any combination of ASIN, buyer contact topic, and buyer contact type is already covered by another active configuration, the request is rejected with a `409` error.",
+      "properties": {
+        "asinList": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{10}$"
+          },
+          "description": "The ASINs this automation configuration applies to. The configuration only triggers for buyer inquiries about these ASINs. ASINs are validated for format only (10 alphanumeric characters); they are not checked against the catalog. Non-existent ASINs won't match a buyer inquiry.",
+          "example": [
+            "B07F6271HL",
+            "B07X3XLYS3",
+            "B09V3KXJPB"
+          ],
+          "maxItems": 100,
+          "minItems": 1
+        },
+        "buyerContactTopics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "PRODUCT_DETAILS",
+              "WARRANTY",
+              "PRICING",
+              "SHIPPING",
+              "TROUBLESHOOTING",
+              "WHERES_MY_STUFF",
+              "RETURN_POLICY"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "PRODUCT_DETAILS",
+                "description": "Buyer inquiry about product details or specifications."
+              },
+              {
+                "value": "WARRANTY",
+                "description": "Buyer inquiry about product warranty."
+              },
+              {
+                "value": "PRICING",
+                "description": "Buyer inquiry about product pricing."
+              },
+              {
+                "value": "SHIPPING",
+                "description": "Buyer inquiry about shipping or delivery."
+              },
+              {
+                "value": "TROUBLESHOOTING",
+                "description": "Buyer inquiry about product troubleshooting."
+              },
+              {
+                "value": "WHERES_MY_STUFF",
+                "description": "Buyer inquiry about order tracking or delivery status."
+              },
+              {
+                "value": "RETURN_POLICY",
+                "description": "Buyer inquiry about return policy or process."
+              }
+            ]
+          },
+          "description": "The buyer contact topics that trigger this automation configuration.",
+          "example": [
+            "SHIPPING",
+            "WHERES_MY_STUFF"
+          ],
+          "minItems": 1
+        },
+        "buyerContactType": {
+          "type": "string",
+          "description": "The buyer contact type that triggers this automation configuration. There is no default value.",
+          "enum": [
+            "PRE_ORDER",
+            "POST_ORDER",
+            "ANY"
+          ],
+          "example": "POST_ORDER",
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "PRE_ORDER",
+              "description": "Buyer contact before placing an order."
+            },
+            {
+              "value": "POST_ORDER",
+              "description": "Buyer contact after placing an order."
+            },
+            {
+              "value": "ANY",
+              "description": "Buyer contact regardless of order status."
+            }
+          ]
+        }
+      },
+      "required": [
+        "asinList",
+        "buyerContactTopics",
+        "buyerContactType"
+      ]
+    },
+    "AutomationType": {
+      "type": "string",
+      "description": "The primary category of the automation configuration. Determines the kind of automated action performed when trigger conditions are met.",
+      "enum": [
+        "AUTO_RESPONSE"
+      ],
+      "example": "AUTO_RESPONSE",
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "AUTO_RESPONSE",
+          "description": "An automated response sent to buyers when they contact the seller."
+        }
+      ]
+    },
+    "AutomationSubType": {
+      "type": "string",
+      "description": "The sub-type of automation configuration. Used in combination with `automationType` to support future automation categories (for example, different types of auto-responses or refund automations). Currently, the only supported value is `AUTO_RESPONSE`.",
+      "enum": [
+        "AUTO_RESPONSE"
+      ],
+      "example": "AUTO_RESPONSE",
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "AUTO_RESPONSE",
+          "description": "An automated response sent to buyers when they contact the seller."
+        }
+      ]
+    },
+    "AutomationStatus": {
+      "type": "string",
+      "description": "The current status of the automation configuration. A configuration is `ACTIVE` as soon as it is created. The auto-response text is validated when you create a configuration or update it with `automationStatus` set to `ACTIVE`. A request that contains text that is not permitted is rejected with a `422` error. Set the status to `DEACTIVATED` to stop the configuration from activating without deleting it, and reset it to `ACTIVE` to resume it.",
+      "enum": [
+        "ACTIVE",
+        "DEACTIVATED"
+      ],
+      "example": "ACTIVE",
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "ACTIVE",
+          "description": "The automation configuration is active and processing buyer messages."
+        },
+        {
+          "value": "DEACTIVATED",
+          "description": "The automation configuration has been deactivated by the seller."
+        }
+      ]
+    },
+    "Pagination": {
+      "type": "object",
+      "description": "Contains a token for retrieving the next page of results. Only present when additional pages are available.",
+      "properties": {
+        "nextToken": {
+          "type": "string",
+          "description": "A token to fetch the next page of results. Absent when no further pages exist.",
+          "example": "eyJsYXN0RXZhbHVhdGVkS2V5IjoiY2ZnLWIyYzNkNGU1In0="
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "object",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "description": "A list of error responses returned when a request is unsuccessful.",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "description": "Error response returned when the request is unsuccessful.",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred.",
+          "example": "InvalidInput"
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition.",
+          "example": "The request has missing or invalid parameters."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue.",
+          "example": "See the associated error code for more details."
+        }
+      }
+    },
+    "CreateAutomationConfigRequest": {
+      "type": "object",
+      "description": "The request body for creating a new automation configuration. A seller can have up to 10 automation configurations, including deactivated configurations.",
+      "required": [
+        "automationDisplayName",
+        "automationType",
+        "marketplaceAutomations"
+      ],
+      "properties": {
+        "automationDisplayName": {
+          "type": "string",
+          "description": "A display name for the automation configuration. The name must be unique (case-insensitive) among the seller's automation configurations.",
+          "example": "Holiday Auto Response",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[\\p{L}\\p{N}\\s_-]+$"
+        },
+        "automationType": {
+          "$ref": "#/definitions/AutomationType"
+        },
+        "automationSubType": {
+          "$ref": "#/definitions/AutomationSubType"
+        },
+        "marketplaceAutomations": {
+          "type": "array",
+          "description": "A list of store-specific automation entries. Each entry specifies the store, the response content, and the trigger conditions for that store.",
+          "items": {
+            "$ref": "#/definitions/MarketplaceAutomation"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "UpdateAutomationConfigRequest": {
+      "type": "object",
+      "description": "The request body for updating an existing automation configuration.",
+      "properties": {
+        "automationDisplayName": {
+          "type": "string",
+          "description": "An updated display name for the automation configuration. To keep the current name, provide the existing value.",
+          "example": "Updated Holiday Auto Response",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[\\p{L}\\p{N}\\s_-]+$"
+        },
+        "automationStatus": {
+          "$ref": "#/definitions/AutomationStatus"
+        },
+        "marketplaceAutomations": {
+          "type": "array",
+          "description": "The complete list of store-specific automation entries for the configuration. This list replaces all existing entries; any store you omit is removed from the configuration.",
+          "items": {
+            "$ref": "#/definitions/MarketplaceAutomation"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "automationDisplayName",
+        "automationStatus",
+        "marketplaceAutomations"
+      ]
+    },
+    "ListAutomationConfigsResponse": {
+      "type": "object",
+      "description": "The response for the `listAutomationConfigurations` operation.",
+      "required": [
+        "automationConfigurations"
+      ],
+      "properties": {
+        "automationConfigurations": {
+          "type": "array",
+          "description": "A list of automation configurations.",
+          "items": {
+            "$ref": "#/definitions/AutomationConfiguration"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/Pagination"
+        }
+      }
+    }
+  }
+}

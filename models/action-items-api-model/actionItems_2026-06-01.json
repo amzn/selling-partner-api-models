@@ -1,0 +1,2019 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "The Selling Partner API for Action Items",
+    "description": "The Selling Partner API for Action Items enables you to discover and inspect action items surfaced by Amazon, including recommendations, issues, and tasks.",
+    "version": "2026-06-01",
+    "contact": {
+      "name": "Selling Partner API Developer Support",
+      "url": "https://sellercentral.amazon.com/gp/mws/contactus.html"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "sellingpartnerapi-na.amazon.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/actionItems/2026-06-01/items": {
+      "get": {
+        "operationId": "listActionItems",
+        "tags": [
+          "items"
+        ],
+        "summary": "List action items.",
+        "description": "Retrieve a paginated, filterable list of action items for the selling partner. When you specify multiple filters, only action items that match all of them are returned. When you specify multiple values for one filter, action items that match any of those values are returned.",
+        "parameters": [
+          {
+            "name": "statuses",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "PENDING_SELLING_PARTNER",
+                "AUTOMATABLE",
+                "DISMISSABLE",
+                "SNOOZABLE",
+                "DISMISSED",
+                "SNOOZED",
+                "OVERDUE",
+                "ACTIONED",
+                "RESOLVED"
+              ]
+            },
+            "collectionFormat": "csv",
+            "description": "Filter by status (OR match).",
+            "x-example": "PENDING_SELLING_PARTNER",
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "PENDING_SELLING_PARTNER",
+                "description": "The action item is active and awaiting action from the selling partner."
+              },
+              {
+                "value": "AUTOMATABLE",
+                "description": "There are automations available to resolve this action item."
+              },
+              {
+                "value": "DISMISSABLE",
+                "description": "The action item can be dismissed by the selling partner."
+              },
+              {
+                "value": "SNOOZABLE",
+                "description": "The action item can be snoozed (deferred) by the selling partner."
+              },
+              {
+                "value": "DISMISSED",
+                "description": "The action item has been dismissed by the selling partner."
+              },
+              {
+                "value": "SNOOZED",
+                "description": "The action item has been snoozed (deferred) by the selling partner."
+              },
+              {
+                "value": "OVERDUE",
+                "description": "The action item's deadline has passed and it is no longer actionable."
+              },
+              {
+                "value": "ACTIONED",
+                "description": "The selling partner has acted on this item. If they started an action plan, track its progress through the Action Plans API."
+              },
+              {
+                "value": "RESOLVED",
+                "description": "The action item has been resolved."
+              }
+            ]
+          },
+          {
+            "name": "classifications",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ISSUE",
+                "RECOMMENDATION",
+                "TASK"
+              ]
+            },
+            "collectionFormat": "csv",
+            "description": "Filter by classification (OR match).",
+            "x-example": "RECOMMENDATION",
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "ISSUE",
+                "description": "A problem to fix."
+              },
+              {
+                "value": "RECOMMENDATION",
+                "description": "An opportunity to pursue."
+              },
+              {
+                "value": "TASK",
+                "description": "An item requiring selling partner action."
+              }
+            ]
+          },
+          {
+            "name": "typeDefinitionIds",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "description": "Filter by action item type definition IDs. Multiple values allowed.",
+            "x-example": "AFN_CROSS_STORE_EXPANSION"
+          },
+          {
+            "name": "marketplaceIds",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "description": "Filter by marketplace IDs.",
+            "x-example": "A1PA6795UKMFR9"
+          },
+          {
+            "name": "updatedAfter",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "description": "Retrieve items last updated at or after this time. When used with `updatedBefore`, this value must be earlier than `updatedBefore`.",
+            "x-example": "2025-07-01T00:00:00Z"
+          },
+          {
+            "name": "updatedBefore",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "description": "Retrieve items last updated at or before this time. When used with `updatedAfter`, this value must be later than `updatedAfter`.",
+            "x-example": "2025-12-31T23:59:59Z"
+          },
+          {
+            "name": "includedData",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "impacts",
+                "resolutions",
+                "references",
+                "refinements"
+              ]
+            },
+            "collectionFormat": "csv",
+            "description": "A list of optional datasets to include in the response. When omitted, only core action item fields are returned.",
+            "x-example": "impacts",
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "impacts",
+                "description": "Include the business impacts associated with the action item."
+              },
+              {
+                "value": "resolutions",
+                "description": "Include the available resolution paths for the action item."
+              },
+              {
+                "value": "references",
+                "description": "Include the entity references (catalogs, action plans) associated with the action item."
+              },
+              {
+                "value": "refinements",
+                "description": "Search refinements (facets) for progressive filtering based on the full filtered result set."
+              }
+            ]
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "lastUpdatedDate",
+              "recommended"
+            ],
+            "default": "recommended",
+            "description": "How to sort results. Defaults to recommended.",
+            "x-example": "recommended",
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "lastUpdatedDate",
+                "description": "Sort by the date the action item was last updated."
+              },
+              {
+                "value": "recommended",
+                "description": "Sort in the order Amazon recommends the selling partner action the items."
+              }
+            ]
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "default": "DESC",
+            "description": "The sort order. Defaults to `DESC`.",
+            "x-example": "DESC",
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "ASC",
+                "description": "Ascending order (oldest or earliest first)."
+              },
+              {
+                "value": "DESC",
+                "description": "Descending order (newest or latest first)."
+              }
+            ]
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "default": 10,
+            "description": "Number of results per page.",
+            "x-example": 10
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "A token to retrieve a specific page of results. Pass the nextToken or previousToken value from a previous response.",
+            "x-example": "eyJsYXN0SXRlbUlkIjoiZjEyMzQ1NjcifQ=="
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The BCP 47 locale for localized content. Defaults to `en-US`.",
+            "x-example": "en-US"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              },
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListActionItemsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "actionItems": [
+                  {
+                    "actionItemId": "mejD2Swh3BmB2P8xdLSdqY88kszafsu2JibYR1d9x62RnwjB5",
+                    "type": {
+                      "classifications": [
+                        "RECOMMENDATION",
+                        "TASK"
+                      ],
+                      "definition": {
+                        "typeDefinitionId": "AFN_CROSS_STORE_EXPANSION",
+                        "displayName": {
+                          "text": "Cross-store expansion (FBA)",
+                          "locale": "en-US"
+                        }
+                      }
+                    },
+                    "description": {
+                      "text": "Grow your business by listing your German catalog in the French marketplace using Fulfillment by Amazon. Amazon prepares your catalog, configures pricing and shipping, copies your offers, and enrolls your listings in Global Remote Fulfillment.",
+                      "locale": "en-US"
+                    },
+                    "status": [
+                      "PENDING_SELLING_PARTNER",
+                      "AUTOMATABLE",
+                      "DISMISSABLE"
+                    ],
+                    "impacts": [
+                      {
+                        "classifications": [
+                          "COST"
+                        ],
+                        "definition": {
+                          "impactDefinitionId": "REFERRAL_FEE",
+                          "displayName": {
+                            "text": "Referral fee",
+                            "locale": "en-US"
+                          }
+                        },
+                        "description": {
+                          "text": "Standard referral fees apply to sales in France, typically 8% to 15% depending on the category.",
+                          "locale": "en-US"
+                        },
+                        "estimates": [
+                          {
+                            "type": "PERCENT",
+                            "minimum": 8,
+                            "maximum": 15,
+                            "definition": {
+                              "estimateDefinitionId": "CATEGORY_REFERRAL_RATE",
+                              "displayName": {
+                                "text": "Category referral rate",
+                                "locale": "en-US"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "classifications": [
+                          "BENEFIT"
+                        ],
+                        "definition": {
+                          "impactDefinitionId": "POTENTIAL_SALES_LIFT",
+                          "displayName": {
+                            "text": "Potential sales lift",
+                            "locale": "en-US"
+                          }
+                        },
+                        "description": {
+                          "text": "Estimated incremental revenue from publishing your catalog in France over a 90-day window.",
+                          "locale": "en-US"
+                        },
+                        "estimates": [
+                          {
+                            "type": "MONEY",
+                            "minimum": 12000,
+                            "maximum": 18000,
+                            "currencyCode": "EUR",
+                            "definition": {
+                              "estimateDefinitionId": "NINETY_DAY_SALES_LIFT",
+                              "displayName": {
+                                "text": "90-day sales lift",
+                                "locale": "en-US"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "resolutions": [
+                      {
+                        "type": "EXPAND_CROSS_STORE",
+                        "definition": {
+                          "resolutionDefinitionId": "AFN_CROSS_STORE_EXPANSION",
+                          "displayName": {
+                            "text": "Run the guided cross-store expansion plan",
+                            "locale": "en-US"
+                          }
+                        },
+                        "actionPlans": [
+                          {
+                            "actionPlanTemplateId": "CROSS_STORE_EXPANSION_FBA"
+                          }
+                        ]
+                      }
+                    ],
+                    "references": {
+                      "catalogs": [
+                        {
+                          "catalogId": "DE",
+                          "marketplaceIds": [
+                            "A1PA6795UKMFR9"
+                          ]
+                        },
+                        {
+                          "catalogId": "FR",
+                          "marketplaceIds": [
+                            "A13V1IB3VIYZZH"
+                          ]
+                        }
+                      ]
+                    },
+                    "lastUpdatedDate": "2025-07-01T08:00:00Z",
+                    "dueDate": "2025-12-31T23:59:59Z"
+                  },
+                  {
+                    "actionItemId": "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+                    "type": {
+                      "classifications": [
+                        "ISSUE"
+                      ],
+                      "definition": {
+                        "typeDefinitionId": "LISTING_SUPPRESSED",
+                        "displayName": {
+                          "text": "Listing suppressed",
+                          "locale": "en-US"
+                        }
+                      }
+                    },
+                    "description": {
+                      "text": "Your listing for SKU-DE-ABC123 has been suppressed due to a missing product attribute.",
+                      "locale": "en-US"
+                    },
+                    "status": [
+                      "PENDING_SELLING_PARTNER"
+                    ],
+                    "lastUpdatedDate": "2025-08-15T10:30:00Z"
+                  }
+                ],
+                "pagination": {
+                  "nextToken": "eyJsYXN0SXRlbUlkIjoiZjEyMzQ1NjcifQ=="
+                },
+                "refinements": {
+                  "status": [
+                    {
+                      "displayName": "Pending Selling Partner",
+                      "value": "PENDING_SELLING_PARTNER",
+                      "count": 5
+                    }
+                  ],
+                  "classifications": [
+                    {
+                      "displayName": "Recommendation",
+                      "value": "RECOMMENDATION",
+                      "count": 3
+                    },
+                    {
+                      "displayName": "Issue",
+                      "value": "ISSUE",
+                      "count": 2
+                    }
+                  ]
+                }
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "includedData": {
+                        "value": [
+                          "impacts",
+                          "resolutions",
+                          "references"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "actionItems": [
+                      {
+                        "actionItemId": "mejD2Swh3BmB2P8xdLSdqY88kszafsu2JibYR1d9x62RnwjB5",
+                        "type": {
+                          "classifications": [
+                            "RECOMMENDATION",
+                            "TASK"
+                          ],
+                          "definition": {
+                            "typeDefinitionId": "AFN_CROSS_STORE_EXPANSION",
+                            "displayName": {
+                              "text": "Cross-store expansion (FBA)",
+                              "locale": "en-US"
+                            }
+                          }
+                        },
+                        "description": {
+                          "text": "Grow your business by listing your German catalog in the French marketplace using Fulfillment by Amazon.",
+                          "locale": "en-US"
+                        },
+                        "status": [
+                          "PENDING_SELLING_PARTNER",
+                          "AUTOMATABLE",
+                          "DISMISSABLE"
+                        ],
+                        "impacts": [
+                          {
+                            "classifications": [
+                              "COST"
+                            ],
+                            "definition": {
+                              "impactDefinitionId": "REFERRAL_FEE",
+                              "displayName": {
+                                "text": "Referral fee",
+                                "locale": "en-US"
+                              }
+                            },
+                            "description": {
+                              "text": "Standard referral fees apply to sales in France, typically 8% to 15% depending on the category.",
+                              "locale": "en-US"
+                            },
+                            "estimates": [
+                              {
+                                "type": "PERCENT",
+                                "minimum": 8,
+                                "maximum": 15,
+                                "definition": {
+                                  "estimateDefinitionId": "CATEGORY_REFERRAL_RATE",
+                                  "displayName": {
+                                    "text": "Category referral rate",
+                                    "locale": "en-US"
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "classifications": [
+                              "BENEFIT"
+                            ],
+                            "definition": {
+                              "impactDefinitionId": "POTENTIAL_SALES_LIFT",
+                              "displayName": {
+                                "text": "Potential sales lift",
+                                "locale": "en-US"
+                              }
+                            },
+                            "description": {
+                              "text": "Estimated incremental revenue from publishing your catalog in France over a 90-day window.",
+                              "locale": "en-US"
+                            },
+                            "estimates": [
+                              {
+                                "type": "MONEY",
+                                "minimum": 12000,
+                                "maximum": 18000,
+                                "currencyCode": "EUR",
+                                "definition": {
+                                  "estimateDefinitionId": "NINETY_DAY_SALES_LIFT",
+                                  "displayName": {
+                                    "text": "90-day sales lift",
+                                    "locale": "en-US"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "resolutions": [
+                          {
+                            "type": "EXPAND_CROSS_STORE",
+                            "definition": {
+                              "resolutionDefinitionId": "AFN_CROSS_STORE_EXPANSION",
+                              "displayName": {
+                                "text": "Run the guided cross-store expansion plan",
+                                "locale": "en-US"
+                              }
+                            },
+                            "actionPlans": [
+                              {
+                                "actionPlanTemplateId": "CROSS_STORE_EXPANSION_FBA"
+                              }
+                            ]
+                          }
+                        ],
+                        "references": {
+                          "catalogs": [
+                            {
+                              "catalogId": "DE",
+                              "marketplaceIds": [
+                                "A1PA6795UKMFR9"
+                              ]
+                            },
+                            {
+                              "catalogId": "FR",
+                              "marketplaceIds": [
+                                "A13V1IB3VIYZZH"
+                              ]
+                            }
+                          ]
+                        },
+                        "lastUpdatedDate": "2025-07-01T08:00:00Z",
+                        "dueDate": "2025-12-31T23:59:59Z"
+                      },
+                      {
+                        "actionItemId": "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+                        "type": {
+                          "classifications": [
+                            "ISSUE"
+                          ],
+                          "definition": {
+                            "typeDefinitionId": "LISTING_SUPPRESSED",
+                            "displayName": {
+                              "text": "Listing suppressed",
+                              "locale": "en-US"
+                            }
+                          }
+                        },
+                        "description": {
+                          "text": "Your listing for SKU-DE-ABC123 has been suppressed due to a missing product attribute.",
+                          "locale": "en-US"
+                        },
+                        "status": [
+                          "PENDING_SELLING_PARTNER"
+                        ],
+                        "lastUpdatedDate": "2025-08-15T10:30:00Z"
+                      }
+                    ],
+                    "pagination": {}
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              },
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "statuses": {
+                        "value": [
+                          "INVALID_STATUS"
+                        ]
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "INVALID_INPUT",
+                        "message": "Value INVALID_STATUS is not valid for the statuses parameter.",
+                        "details": "Value INVALID_STATUS is not valid for the statuses parameter."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              },
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
+    },
+    "/actionItems/2026-06-01/items/{actionItemId}": {
+      "get": {
+        "operationId": "getActionItem",
+        "tags": [
+          "items"
+        ],
+        "summary": "Get an action item.",
+        "description": "Retrieve a single action item by ID with full detail.",
+        "parameters": [
+          {
+            "name": "actionItemId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The unique identifier of the action item.",
+            "x-example": "mejD2Swh3BmB2P8xdLSdqY88kszafsu2JibYR1d9x62RnwjB5"
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The BCP 47 locale for localized content. Defaults to `en-US`.",
+            "x-example": "en-US"
+          },
+          {
+            "name": "includedData",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "impacts",
+                "resolutions",
+                "references"
+              ]
+            },
+            "collectionFormat": "csv",
+            "description": "A list of optional datasets to include in the response. When omitted, only core action item fields are returned.",
+            "x-example": "impacts",
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "impacts",
+                "description": "Include the business impacts associated with the action item."
+              },
+              {
+                "value": "resolutions",
+                "description": "Include the available resolution paths for the action item."
+              },
+              {
+                "value": "references",
+                "description": "Include the entity references (catalogs, action plans) associated with the action item."
+              }
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              },
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetActionItemResponse"
+            },
+            "examples": {
+              "application/json": {
+                "actionItem": {
+                  "actionItemId": "mejD2Swh3BmB2P8xdLSdqY88kszafsu2JibYR1d9x62RnwjB5",
+                  "type": {
+                    "classifications": [
+                      "RECOMMENDATION",
+                      "TASK"
+                    ],
+                    "definition": {
+                      "typeDefinitionId": "AFN_CROSS_STORE_EXPANSION",
+                      "displayName": {
+                        "text": "Cross-store expansion (FBA)",
+                        "locale": "en-US"
+                      }
+                    }
+                  },
+                  "description": {
+                    "text": "Grow your business by listing your German catalog in the French marketplace using Fulfillment by Amazon. Amazon prepares your catalog, configures pricing and shipping, copies your offers, and enrolls your listings in Global Remote Fulfillment.",
+                    "locale": "en-US"
+                  },
+                  "status": [
+                    "PENDING_SELLING_PARTNER",
+                    "AUTOMATABLE",
+                    "DISMISSABLE"
+                  ],
+                  "impacts": [
+                    {
+                      "classifications": [
+                        "COST"
+                      ],
+                      "definition": {
+                        "impactDefinitionId": "REFERRAL_FEE",
+                        "displayName": {
+                          "text": "Referral fee",
+                          "locale": "en-US"
+                        }
+                      },
+                      "description": {
+                        "text": "Standard referral fees apply to sales in France, typically 8% to 15% depending on the category.",
+                        "locale": "en-US"
+                      },
+                      "estimates": [
+                        {
+                          "type": "PERCENT",
+                          "minimum": 8,
+                          "maximum": 15,
+                          "definition": {
+                            "estimateDefinitionId": "CATEGORY_REFERRAL_RATE",
+                            "displayName": {
+                              "text": "Category referral rate",
+                              "locale": "en-US"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "classifications": [
+                        "BENEFIT"
+                      ],
+                      "definition": {
+                        "impactDefinitionId": "POTENTIAL_SALES_LIFT",
+                        "displayName": {
+                          "text": "Potential sales lift",
+                          "locale": "en-US"
+                        }
+                      },
+                      "description": {
+                        "text": "Estimated incremental revenue from publishing your catalog in France over a 90-day window.",
+                        "locale": "en-US"
+                      },
+                      "estimates": [
+                        {
+                          "type": "MONEY",
+                          "minimum": 12000,
+                          "maximum": 18000,
+                          "currencyCode": "EUR",
+                          "definition": {
+                            "estimateDefinitionId": "NINETY_DAY_SALES_LIFT",
+                            "displayName": {
+                              "text": "90-day sales lift",
+                              "locale": "en-US"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "resolutions": [
+                    {
+                      "type": "EXPAND_CROSS_STORE",
+                      "definition": {
+                        "resolutionDefinitionId": "AFN_CROSS_STORE_EXPANSION",
+                        "displayName": {
+                          "text": "Run the guided cross-store expansion plan",
+                          "locale": "en-US"
+                        }
+                      },
+                      "description": {
+                        "text": "Amazon prepares your catalog, configures pricing and shipping, and enrolls your listings automatically.",
+                        "locale": "en-US"
+                      },
+                      "actionPlans": [
+                        {
+                          "actionPlanTemplateId": "CROSS_STORE_EXPANSION_FBA"
+                        }
+                      ]
+                    }
+                  ],
+                  "references": {
+                    "catalogs": [
+                      {
+                        "catalogId": "DE",
+                        "marketplaceIds": [
+                          "A1PA6795UKMFR9"
+                        ]
+                      },
+                      {
+                        "catalogId": "FR",
+                        "marketplaceIds": [
+                          "A13V1IB3VIYZZH"
+                        ]
+                      }
+                    ],
+                    "actionPlans": [
+                      {
+                        "actionPlanTemplateId": "CROSS_STORE_EXPANSION_FBA",
+                        "description": {
+                          "text": "Run the guided cross-store expansion plan",
+                          "locale": "en-US"
+                        }
+                      }
+                    ]
+                  },
+                  "lastUpdatedDate": "2025-07-01T08:00:00Z",
+                  "dueDate": "2025-12-31T23:59:59Z"
+                }
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "actionItemId": {
+                        "value": "mejD2Swh3BmB2P8xdLSdqY88kszafsu2JibYR1d9x62RnwjB5"
+                      }
+                    }
+                  },
+                  "response": {
+                    "actionItem": {
+                      "actionItemId": "mejD2Swh3BmB2P8xdLSdqY88kszafsu2JibYR1d9x62RnwjB5",
+                      "type": {
+                        "classifications": [
+                          "RECOMMENDATION",
+                          "TASK"
+                        ],
+                        "definition": {
+                          "typeDefinitionId": "AFN_CROSS_STORE_EXPANSION",
+                          "displayName": {
+                            "text": "Cross-store expansion (FBA)",
+                            "locale": "en-US"
+                          }
+                        }
+                      },
+                      "description": {
+                        "text": "Grow your business by listing your German catalog in the French marketplace using Fulfillment by Amazon.",
+                        "locale": "en-US"
+                      },
+                      "status": [
+                        "PENDING_SELLING_PARTNER",
+                        "AUTOMATABLE",
+                        "DISMISSABLE"
+                      ],
+                      "lastUpdatedDate": "2025-07-01T08:00:00Z",
+                      "dueDate": "2025-12-31T23:59:59Z"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              },
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "actionItemId": {
+                        "value": "INVALID"
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "InvalidInput",
+                        "message": "The action item identifier is not valid.",
+                        "details": "The action item identifier is not valid."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              },
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
+    },
+    "/actionItems/2026-06-01/items/{actionItemId}/dismissals": {
+      "post": {
+        "operationId": "dismissActionItem",
+        "tags": [
+          "items"
+        ],
+        "summary": "Dismiss an action item.",
+        "description": "Dismiss the specified action item. An optional reason can be provided.",
+        "parameters": [
+          {
+            "name": "actionItemId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The unique identifier of the action item.",
+            "x-example": "mejD2Swh3BmB2P8xdLSdqY88kszafsu2JibYR1d9x62RnwjB5"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "The request body for the dismissActionItem operation.",
+            "schema": {
+              "$ref": "#/definitions/DismissActionItemRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              },
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/DismissActionItemResponse"
+            },
+            "examples": {
+              "application/json": {
+                "actionItemId": "mejD2Swh3BmB2P8xdLSdqY88kszafsu2JibYR1d9x62RnwjB5",
+                "status": [
+                  "DISMISSED"
+                ]
+              }
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "actionItemId": {
+                        "value": "mejD2Swh3BmB2P8xdLSdqY88kszafsu2JibYR1d9x62RnwjB5"
+                      },
+                      "body": {
+                        "value": {
+                          "reason": {
+                            "reasonTypes": [
+                              "NOT_INTERESTED"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "actionItemId": "mejD2Swh3BmB2P8xdLSdqY88kszafsu2JibYR1d9x62RnwjB5",
+                    "status": [
+                      "DISMISSED"
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Request has missing or invalid parameters and cannot be parsed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              },
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "actionItemId": {
+                        "value": "INVALID"
+                      },
+                      "body": {
+                        "value": {}
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "INVALID_INPUT",
+                        "message": "The action item identifier is not valid.",
+                        "details": "The action item identifier is not valid."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "Indicates that access to the resource is forbidden. Possible reasons include Access Denied, Unauthorized, Expired Token, or Invalid Signature.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "404": {
+            "description": "The resource specified does not exist.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              },
+              "x-amzn-RateLimit-Limit": {
+                "type": "string",
+                "description": "Your rate limit (requests per second) for this operation."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "409": {
+            "description": "The action item is not in a dismissable state.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            },
+            "x-amzn-api-sandbox": {
+              "static": [
+                {
+                  "request": {
+                    "parameters": {
+                      "actionItemId": {
+                        "value": "resolved-item-id"
+                      },
+                      "body": {
+                        "value": {}
+                      }
+                    }
+                  },
+                  "response": {
+                    "errors": [
+                      {
+                        "code": "NOT_ACTIONABLE",
+                        "message": "The action item is not in a dismissable state."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "429": {
+            "description": "The frequency of requests was greater than allowed.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "500": {
+            "description": "An unexpected condition occurred that prevented the server from fulfilling the request.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          },
+          "503": {
+            "description": "Temporary overloading or maintenance of the server.",
+            "headers": {
+              "x-amzn-RequestId": {
+                "type": "string",
+                "description": "Unique request reference identifier."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorList"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GetActionItemResponse": {
+      "description": "The response schema for the `getActionItem` operation.",
+      "type": "object",
+      "required": [
+        "actionItem"
+      ],
+      "properties": {
+        "actionItem": {
+          "$ref": "#/definitions/ActionItem"
+        }
+      }
+    },
+    "ActionItem": {
+      "description": "A specific actionable item surfaced to a selling partner. Can be a recommendation (an opportunity to pursue), an issue (a problem to fix), or a task (a mid-execution prompt requiring seller action).",
+      "type": "object",
+      "required": [
+        "actionItemId",
+        "type",
+        "description",
+        "status",
+        "lastUpdatedDate"
+      ],
+      "properties": {
+        "actionItemId": {
+          "description": "Uniquely and permanently identifies the action item throughout its lifecycle.",
+          "type": "string"
+        },
+        "type": {
+          "description": "The structured classification of this action item and a reference to the definition it instantiates.",
+          "$ref": "#/definitions/ActionItemType"
+        },
+        "description": {
+          "description": "A localized explanation of why Amazon is surfacing this action item.",
+          "$ref": "#/definitions/LocalizedText"
+        },
+        "status": {
+          "description": "The current state of the action item. A list that combines its lifecycle state with the capabilities currently available on it. For example, `AUTOMATABLE`, `DISMISSABLE`.",
+          "$ref": "#/definitions/ActionItemStatuses"
+        },
+        "impacts": {
+          "description": "The business impacts associated with this action item. Each impact is classified as a cost, benefit, or enforcement and may carry quantified estimates. Only returned when `includedData` contains `impacts`.",
+          "$ref": "#/definitions/ActionItemImpacts"
+        },
+        "resolutions": {
+          "description": "The available ways the selling partner can act on this action item. Returned in priority order (first entry is the recommended resolution). Only returned when `includedData` contains `resolutions`.",
+          "$ref": "#/definitions/Resolutions"
+        },
+        "references": {
+          "description": "The entities this action item applies to. Only returned when `includedData` contains `references`.",
+          "$ref": "#/definitions/References"
+        },
+        "lastUpdatedDate": {
+          "description": "When the action item was last updated. In [ISO 8601](https://developer-docs.amazon/sp-api/docs/iso-8601) date-time format.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "dueDate": {
+          "description": "The date by which action must be taken. Items past this date transition to `OVERDUE` status. Absent means no due date.",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ActionItemType": {
+      "description": "The structured classification of an action item and a reference to the definition it instantiates.",
+      "type": "object",
+      "required": [
+        "classifications",
+        "definition"
+      ],
+      "properties": {
+        "classifications": {
+          "description": "One or more classifications for this action item.",
+          "$ref": "#/definitions/ActionItemTypeClassifications"
+        },
+        "definition": {
+          "description": "A reference to the versioned action item definition this item is an instance of.",
+          "$ref": "#/definitions/ActionItemTypeDefinition"
+        }
+      }
+    },
+    "ActionItemTypeDefinition": {
+      "description": "A reference to the versioned action item definition, with a localized display name.",
+      "type": "object",
+      "required": [
+        "typeDefinitionId"
+      ],
+      "properties": {
+        "typeDefinitionId": {
+          "description": "The semantic identifier of the action item definition. For example, `AFN_CROSS_STORE_EXPANSION`.",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "Localized display name of the definition.",
+          "$ref": "#/definitions/LocalizedText"
+        }
+      }
+    },
+    "LocalizedText": {
+      "description": "A localized text value paired with the locale it is rendered in.",
+      "type": "object",
+      "required": [
+        "text",
+        "locale"
+      ],
+      "properties": {
+        "text": {
+          "description": "The localized text.",
+          "type": "string",
+          "example": "Cross-store expansion (FBA)"
+        },
+        "locale": {
+          "description": "A BCP 47 language tag.",
+          "type": "string",
+          "example": "en-US"
+        }
+      },
+      "example": {
+        "text": "Cross-store expansion (FBA)",
+        "locale": "en-US"
+      }
+    },
+    "ActionItemStatuses": {
+      "description": "The state of an action item, expressed as a list combining lifecycle state with currently available capabilities.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/ActionItemStatus"
+      }
+    },
+    "ActionItemStatus": {
+      "description": "A state or capability of an action item. `PENDING_SELLING_PARTNER`, `DISMISSED`, `SNOOZED`, `OVERDUE`, `ACTIONED`, and `RESOLVED` are lifecycle states; `AUTOMATABLE`, `DISMISSABLE`, and `SNOOZABLE` express available capabilities.",
+      "type": "string",
+      "enum": [
+        "PENDING_SELLING_PARTNER",
+        "AUTOMATABLE",
+        "DISMISSABLE",
+        "SNOOZABLE",
+        "DISMISSED",
+        "SNOOZED",
+        "OVERDUE",
+        "ACTIONED",
+        "RESOLVED"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "PENDING_SELLING_PARTNER",
+          "description": "The action item is active and awaiting action from the selling partner."
+        },
+        {
+          "value": "AUTOMATABLE",
+          "description": "There are automations available to resolve this action item."
+        },
+        {
+          "value": "DISMISSABLE",
+          "description": "The action item can be dismissed by the selling partner."
+        },
+        {
+          "value": "SNOOZABLE",
+          "description": "The action item can be snoozed (deferred) by the selling partner."
+        },
+        {
+          "value": "DISMISSED",
+          "description": "The action item has been dismissed by the selling partner."
+        },
+        {
+          "value": "SNOOZED",
+          "description": "The action item has been snoozed (deferred) by the selling partner."
+        },
+        {
+          "value": "OVERDUE",
+          "description": "The action item's deadline has passed and it is no longer actionable."
+        },
+        {
+          "value": "ACTIONED",
+          "description": "The selling partner has acted on this item. If they started an action plan, track its progress through the Action Plans API."
+        },
+        {
+          "value": "RESOLVED",
+          "description": "The action item has been resolved."
+        }
+      ]
+    },
+    "ActionItemTypeClassifications": {
+      "description": "A list of action item classifications.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/ActionItemTypeClassification"
+      }
+    },
+    "ActionItemTypeClassification": {
+      "description": "The classification of an action item.",
+      "type": "string",
+      "enum": [
+        "ISSUE",
+        "RECOMMENDATION",
+        "TASK"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "ISSUE",
+          "description": "A problem to fix."
+        },
+        {
+          "value": "RECOMMENDATION",
+          "description": "An opportunity to pursue."
+        },
+        {
+          "value": "TASK",
+          "description": "An item requiring selling partner action."
+        }
+      ]
+    },
+    "ActionItemImpacts": {
+      "description": "The business impacts associated with an action item.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Impact"
+      }
+    },
+    "Impact": {
+      "description": "A typed impact associated with an action item, classified as a cost, benefit, or enforcement, and optionally quantified with one or more estimates.",
+      "type": "object",
+      "required": [
+        "classifications",
+        "definition"
+      ],
+      "properties": {
+        "classifications": {
+          "description": "One or more impact classifications (`COST`, `BENEFIT`, `ENFORCEMENT`).",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/ImpactClassification"
+          }
+        },
+        "definition": {
+          "description": "Reference to the impact type definition, with a localized display name.",
+          "$ref": "#/definitions/ImpactDefinitionRef"
+        },
+        "description": {
+          "description": "Optional localized description specific to this impact line.",
+          "$ref": "#/definitions/LocalizedText"
+        },
+        "estimates": {
+          "description": "Quantified estimates for this impact.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Estimate"
+          }
+        }
+      }
+    },
+    "ImpactClassification": {
+      "description": "The classification of an impact.",
+      "type": "string",
+      "enum": [
+        "COST",
+        "BENEFIT",
+        "ENFORCEMENT"
+      ],
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "COST",
+          "description": "A negative financial impact to the selling partner."
+        },
+        {
+          "value": "BENEFIT",
+          "description": "A positive financial impact or growth opportunity."
+        },
+        {
+          "value": "ENFORCEMENT",
+          "description": "An enforcement action taken or pending by Amazon."
+        }
+      ]
+    },
+    "ImpactDefinitionRef": {
+      "description": "A reference to an impact type definition with a localized display name.",
+      "type": "object",
+      "required": [
+        "impactDefinitionId"
+      ],
+      "properties": {
+        "impactDefinitionId": {
+          "description": "Machine-readable identifier of the impact type. For example, `REFERRAL_FEE`, `POTENTIAL_SALES_LIFT`.",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "Localized display name.",
+          "$ref": "#/definitions/LocalizedText"
+        }
+      }
+    },
+    "Estimate": {
+      "description": "A quantified estimate for an impact. If value is present it is a single-point estimate; if minimum and maximum are present it is a range.",
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "description": "The type of estimate.",
+          "type": "string",
+          "enum": [
+            "MONEY",
+            "PERCENT",
+            "COUNT"
+          ],
+          "x-docgen-enum-table-extension": [
+            {
+              "value": "MONEY",
+              "description": "A monetary amount. Requires `currencyCode`."
+            },
+            {
+              "value": "PERCENT",
+              "description": "A percentage value."
+            },
+            {
+              "value": "COUNT",
+              "description": "A dimensionless count or quantity."
+            }
+          ]
+        },
+        "value": {
+          "description": "A single-point estimate value. Present when the estimate is not a range.",
+          "type": "number",
+          "example": 50000
+        },
+        "minimum": {
+          "description": "The lower bound of a range estimate.",
+          "type": "number",
+          "example": 8
+        },
+        "maximum": {
+          "description": "The upper bound of a range estimate.",
+          "type": "number",
+          "example": 15
+        },
+        "currencyCode": {
+          "description": "ISO 4217 currency code. Present when `type` is `MONEY`.",
+          "type": "string",
+          "example": "EUR"
+        },
+        "definition": {
+          "description": "Reference to the estimate's type definition, with a localized display name.",
+          "$ref": "#/definitions/EstimateDefinitionRef"
+        }
+      }
+    },
+    "EstimateDefinitionRef": {
+      "description": "A reference to an estimate type definition with a localized display name.",
+      "type": "object",
+      "required": [
+        "estimateDefinitionId"
+      ],
+      "properties": {
+        "estimateDefinitionId": {
+          "description": "Machine-readable identifier of the estimate type. For example, `CATEGORY_REFERRAL_RATE`, `NINETY_DAY_SALES_LIFT`.",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "Localized display name.",
+          "$ref": "#/definitions/LocalizedText"
+        }
+      }
+    },
+    "Resolutions": {
+      "description": "The available ways the selling partner can act on an action item. Returned in priority order; the first entry is the recommended resolution.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Resolution"
+      }
+    },
+    "Resolution": {
+      "description": "An end state that resolves the action item. The resolution itself is identified by `definition.resolutionDefinitionId`. The type names the top-level mechanism for reaching that end state (for example, `EXPAND_CROSS_STORE`), and each mechanism offers one or more pathways to accomplish it: the seller can perform it themselves with the `url` and/or have Amazon automate it with `actionPlans`; a resolution always offers at least one of these pathways. The optional description carries localized instructions for the resolution as a whole; for text specific to one action plan, refer to `ActionPlanReference.description`.",
+      "type": "object",
+      "required": [
+        "type",
+        "definition"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/ResolutionType"
+        },
+        "definition": {
+          "$ref": "#/definitions/ResolutionDefinitionRef"
+        },
+        "description": {
+          "$ref": "#/definitions/LocalizedText"
+        },
+        "url": {
+          "description": "Pathway for the selling partner to accomplish this resolution themselves: a URL to an existing experience. Optional; present when a manual pathway is available.",
+          "type": "string",
+          "format": "uri",
+          "example": "https://sellercentral.amazon.com/global-selling/expansion"
+        },
+        "actionPlans": {
+          "description": "Automated pathways for accomplishing this resolution. Each entry references an action plan template that Amazon can run to reach this resolution's end state.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ActionPlanReference"
+          }
+        }
+      }
+    },
+    "ResolutionType": {
+      "description": "The top-level mechanism for reaching this resolution's end state, expressed as a verb (for example, `EXPAND_CROSS_STORE`). This is an open string: additional resolution types may be introduced over time without a new API version, so clients should tolerate unrecognized values rather than fail deserialization. Known values are documented below. Each mechanism offers one or more pathways to accomplish it: the seller can perform it themselves with the `url`, or have Amazon carry it out with an automated action plan (`actionPlans`).",
+      "type": "string",
+      "example": "EXPAND_CROSS_STORE",
+      "x-docgen-enum-table-extension": [
+        {
+          "value": "EXPAND_CROSS_STORE",
+          "description": "Expand the seller's catalog into another store."
+        }
+      ]
+    },
+    "ResolutionDefinitionRef": {
+      "description": "Details of a resolution, drawn from a catalog of resolution definitions that can be shared across action item types.",
+      "type": "object",
+      "required": [
+        "resolutionDefinitionId"
+      ],
+      "properties": {
+        "resolutionDefinitionId": {
+          "description": "Machine-readable identifier of the resolution definition (the change this resolution produces).",
+          "type": "string",
+          "example": "AFN_CROSS_STORE_EXPANSION"
+        },
+        "displayName": {
+          "description": "Localized display name of the resolution.",
+          "$ref": "#/definitions/LocalizedText"
+        }
+      }
+    },
+    "References": {
+      "description": "Entities referenced by an action item.",
+      "type": "object",
+      "properties": {
+        "catalogs": {
+          "description": "Catalog references associated with the action item.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CatalogReference"
+          }
+        },
+        "actionPlans": {
+          "description": "The most recent action plan associated with this action item, if any. To find every plan for an item, call `listActionPlans` with `actionItemIds`.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ActionPlanReference"
+          }
+        }
+      }
+    },
+    "CatalogReference": {
+      "description": "A reference to a catalog, scoped to one or more Amazon stores.",
+      "type": "object",
+      "required": [
+        "catalogId"
+      ],
+      "properties": {
+        "catalogId": {
+          "description": "The catalog identifier.",
+          "type": "string"
+        },
+        "marketplaceIds": {
+          "description": "The Amazon store identifiers to which this catalog reference applies.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ActionPlanReference": {
+      "description": "A reference to an action plan offered by a resolution. `actionPlanTemplateId` identifies the plan template; `actionPlanId` identifies the created plan instance once one exists; `url` optionally deep-links to the action plan experience for this template; `description` optionally carries localized text for this plan, distinguishing it from other action plans offered on the same resolution.",
+      "type": "object",
+      "required": [
+        "actionPlanTemplateId"
+      ],
+      "properties": {
+        "actionPlanTemplateId": {
+          "description": "The identifier of the plan template.",
+          "type": "string",
+          "example": "CROSS_STORE_EXPANSION_FBA"
+        },
+        "actionPlanId": {
+          "description": "The identifier of the created plan instance, when one exists. Optional; the backend may not populate it yet.",
+          "type": "string",
+          "example": "ap-9a8b7c6d-5e4f-3a2b-1c0d-ef9876543210"
+        },
+        "url": {
+          "description": "Optional deep link to the action plan experience for this template.",
+          "type": "string",
+          "format": "uri",
+          "example": "https://sellercentral.amazon.com/action-plans/CROSS_STORE_EXPANSION_FBA"
+        },
+        "description": {
+          "$ref": "#/definitions/LocalizedText"
+        }
+      }
+    },
+    "ErrorList": {
+      "type": "object",
+      "description": "A list of error responses returned when a request is unsuccessful.",
+      "required": [
+        "errors"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "description": "A list of error responses.",
+          "items": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "description": "Error response returned when the request is unsuccessful.",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An error code that identifies the type of error that occurred."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message that describes the error condition."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details that can help the caller understand or fix the issue."
+        }
+      }
+    },
+    "ListActionItemsResponse": {
+      "description": "The response schema for the `listActionItems` operation.",
+      "type": "object",
+      "required": [
+        "actionItems"
+      ],
+      "properties": {
+        "actionItems": {
+          "description": "The action items matching the query, as full `ActionItem` objects.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ActionItem"
+          }
+        },
+        "pagination": {
+          "description": "Pagination details for the response.",
+          "$ref": "#/definitions/Pagination"
+        },
+        "refinements": {
+          "description": "Facet counts for progressive filtering across the full filtered result set. Only returned when `includedData` contains `refinements`.",
+          "$ref": "#/definitions/SearchRefinements"
+        }
+      }
+    },
+    "Pagination": {
+      "description": "Pagination details for list responses.",
+      "type": "object",
+      "properties": {
+        "nextToken": {
+          "description": "A token to retrieve the next page of results. Absent when there are no more results.",
+          "type": "string"
+        },
+        "previousToken": {
+          "description": "A token to retrieve the previous page of results. Absent on the first page.",
+          "type": "string",
+          "example": "eyJwcmV2SXRlbUlkIjoiYTEyMzQ1NjcifQ=="
+        }
+      }
+    },
+    "SearchRefinements": {
+      "description": "Search refinements (facets) for progressive filtering. Maps a refinement key (for example, status, classifications) to its available values with counts in the full filtered result set.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/SearchRefinementValues"
+      }
+    },
+    "SearchRefinementValues": {
+      "description": "The list of refinement values for a given refinement key.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SearchRefinementValue"
+      }
+    },
+    "SearchRefinementValue": {
+      "description": "A refinement value with its count in the full filtered result set.",
+      "type": "object",
+      "required": [
+        "displayName",
+        "count",
+        "value"
+      ],
+      "properties": {
+        "displayName": {
+          "description": "Human-readable label for the refinement value.",
+          "type": "string"
+        },
+        "count": {
+          "description": "Number of results matching this refinement value.",
+          "type": "integer"
+        },
+        "value": {
+          "description": "The refinement value to pass back as a filter.",
+          "type": "string"
+        }
+      }
+    },
+    "DismissActionItemRequest": {
+      "description": "Request body for dismissing an action item.",
+      "type": "object",
+      "properties": {
+        "reason": {
+          "description": "The reason for dismissing the action item.",
+          "$ref": "#/definitions/DismissalReason"
+        }
+      },
+      "example": {
+        "reason": {
+          "reasonTypes": [
+            "NOT_INTERESTED"
+          ]
+        }
+      }
+    },
+    "DismissalReason": {
+      "description": "The reason a selling partner is dismissing an action item.",
+      "type": "object",
+      "required": [
+        "reasonTypes"
+      ],
+      "properties": {
+        "reasonTypes": {
+          "description": "One or more reasons for dismissing the action item.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "NOT_APPLICABLE",
+              "NOT_INTERESTED"
+            ],
+            "x-docgen-enum-table-extension": [
+              {
+                "value": "NOT_APPLICABLE",
+                "description": "The action item is not applicable to the selling partner."
+              },
+              {
+                "value": "NOT_INTERESTED",
+                "description": "The selling partner is not interested in pursuing the action item."
+              }
+            ]
+          }
+        }
+      }
+    },
+    "DismissActionItemResponse": {
+      "description": "The response schema for the `dismissActionItem` operation.",
+      "type": "object",
+      "required": [
+        "actionItemId",
+        "status"
+      ],
+      "properties": {
+        "actionItemId": {
+          "description": "The identifier of the dismissed action item.",
+          "type": "string"
+        },
+        "status": {
+          "description": "The action item's status after dismissal; contains `DISMISSED`.",
+          "$ref": "#/definitions/ActionItemStatuses"
+        }
+      }
+    }
+  }
+}
