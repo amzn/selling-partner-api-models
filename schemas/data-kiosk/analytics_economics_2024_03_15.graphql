@@ -13,6 +13,13 @@ directive @resultRetention(
     duration: String!
   ) on FIELD_DEFINITION
 
+"""
+This directive indicates that the query supports the Selling Partner API dynamic
+sandbox. Dynamic sandbox requests are accepted only for queries whose schema
+definition includes this directive.
+"""
+directive @supportsDynamicSandbox on FIELD_DEFINITION
+
 "The advertisements spend data summary for the seller's account aggregated by transaction event type: charge."
 type AdSummary {
   "Advertisement type name, for example: \"Sponsored Products charge\"."
@@ -462,16 +469,37 @@ enum PreviewFeeType {
   refer to [Closing fees](https://sellercentral.amazon.com/help/hub/reference/external/GKD9U5REK5DKB38Y).
   """
   CLOSING_FEES
+  "Coupon Fees. For details about these fees, refer to [Coupon fees](https://sellercentral.amazon.com/help/hub/reference/external/GM2HYLSWFBZ267BB)."
+  COUPON_UPFRONT_FEE
+  COUPON_VARIABLE_FEE
+  "Deal Fees. For details about these fees, refer to [Deal fees](https://sellercentral.amazon.com/help/hub/reference/external/G202111590)."
+  DEAL_UPFRONT_FEE
+  DEAL_VARIABLE_FEE
   DIGITAL_SERVICES_FEE_FBA
   "Digital Services Fees. For details about these fees, refer to [Digital services fees](https://sellercentral.amazon.com/help/hub/reference/external/GMVQXVHHG8Q8KN7L)."
   DIGITAL_SERVICES_FEE_SOA
+  """
+  Fulfillment by Amazon (FBA) Disposal Order Fee. For details about this fee,
+  refer to [FBA disposal order fees](https://sellercentral.amazon.com/help/hub/reference/external/G5FKTA8LXU4TZPD5).
+  """
+  FBA_DISPOSAL_FEE
   "Fulfillment by Amazon (FBA) Fulfillment Fees, including base rate and surcharges."
   FBA_FULFILLMENT_FEES
   """
-  FBA Inbound Placement Service Fee. For details about this fee, refer to [FBA
-  inbound placement service fee](https://sellercentral.amazon.com/help/hub/reference/external/GC3Q44PBK8BXQW3Z).
+  Fulfillment by Amazon (FBA) Inbound Placement Service Fee. For details about
+  this fee, refer to [FBA inbound placement service fee](https://sellercentral.amazon.com/help/hub/reference/external/GC3Q44PBK8BXQW3Z).
   """
   FBA_INBOUND_PLACEMENT_SERVICE_FEE
+  """
+  Fulfillment by Amazon (FBA) Removal Order Fee. For details about this fee,
+  refer to [FBA removal order fees](https://sellercentral.amazon.com/help/hub/reference/external/G9W7FVTLY343ZBKN).
+  """
+  FBA_REMOVAL_FEE
+  """
+  Fulfillment by Amazon (FBA) Fulfillment Fee Fuel and Logistics-Related
+  Surcharge. For details about this fee, refer to [Fuel and logistics-related surcharge](https://sellercentral.amazon.com/help/hub/reference/external/GPDC3KPYAGDTVDJP).
+  """
+  FUEL_AND_LOGISTICS_RELATED_SURCHARGE
   """
   High Return Rate Fee, also know as Returns Processing Fee for Non-apparel and
   Non-shoes. For details about this fee, refer to [High return rate fee](https://sellercentral.amazon.com/help/hub/reference/external/G64LS955WNFT6EDP).
