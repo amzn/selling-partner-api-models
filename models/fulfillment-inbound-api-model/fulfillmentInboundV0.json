@@ -757,7 +757,7 @@
           {
             "name": "ShipmentStatusList",
             "in": "query",
-            "description": "A list of ShipmentStatus values. Used to select shipments with a current status that matches the status values that you specify.",
+            "description": "A list of ShipmentStatus values. Used to select shipments with a current status that matches the status values that you specify. Note: although this parameter is not marked as required, requests using QueryType=DATE_RANGE without ShipmentStatusList (or ShipmentIdList) present have been observed to return a 400 error with code InvalidInput and message 'At least one of ShipmentStatusList and ShipmentIdList must be provided' (see issue #2001). Consider including ShipmentStatusList (for example, every ShipmentStatus enum value) alongside LastUpdatedAfter/LastUpdatedBefore when using QueryType=DATE_RANGE.",
             "required": false,
             "type": "array",
             "items": {
@@ -853,7 +853,7 @@
           {
             "name": "QueryType",
             "in": "query",
-            "description": "Indicates whether shipments are returned using shipment information (by providing the ShipmentStatusList or ShipmentIdList parameters), using a date range (by providing the LastUpdatedAfter and LastUpdatedBefore parameters), or by using NextToken to continue returning items specified in a previous request.",
+            "description": "Indicates whether shipments are returned using shipment information (by providing the ShipmentStatusList or ShipmentIdList parameters), using a date range (by providing the LastUpdatedAfter and LastUpdatedBefore parameters), or by using NextToken to continue returning items specified in a previous request. Note: despite ShipmentStatusList and ShipmentIdList being marked optional, a DATE_RANGE request without one of them present has been observed to return a 400 InvalidInput error naming ShipmentStatusList (see issue #2001); consider supplying ShipmentStatusList even for a DATE_RANGE query until this is clarified.",
             "required": true,
             "type": "string",
             "enum": [
@@ -868,7 +868,7 @@
               },
               {
                 "value": "DATE_RANGE",
-                "description": "Returns shipments based on the date range information provided by the LastUpdatedAfter and LastUpdatedBefore parameters."
+                "description": "Returns shipments based on the date range information provided by the LastUpdatedAfter and LastUpdatedBefore parameters. In practice, ShipmentStatusList has also been required for this QueryType in some cases; see the note on the QueryType parameter description above."
               },
               {
                 "value": "NEXT_TOKEN",
