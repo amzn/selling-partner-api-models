@@ -83,6 +83,43 @@ public class ApiClient {
     public ApiClient() {
         httpClient = new OkHttpClient();
 
+        //PATCHING
+        if (Runtime.version().feature() < 21) {
+            try {
+                // 'interceptors' field
+                java.lang.reflect.Field interceptorsField = httpClient.getClass().getDeclaredField("interceptors");
+                interceptorsField.setAccessible(true);
+                java.lang.reflect.Field modifiersField = java.lang.reflect.Field.class.getDeclaredField("modifiers");
+                modifiersField.setAccessible(true);
+                modifiersField.setInt(interceptorsField, interceptorsField.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
+                interceptorsField.set(httpClient, new ArrayList<Interceptor>());
+            } catch(Throwable ex) {
+                throw new RuntimeException(ex);
+            }
+        } else {
+            try {
+                java.lang.reflect.Field interceptorsField = httpClient.getClass().getDeclaredField("interceptors");
+                interceptorsField.setAccessible(true);
+                java.lang.reflect.Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
+                getDeclaredFields0.setAccessible(true);
+                java.lang.reflect.Field[] fields = (java.lang.reflect.Field[]) getDeclaredFields0.invoke(java.lang.reflect.Field.class, false);
+                java.lang.reflect.Field modifiersField = null;
+                for (java.lang.reflect.Field each : fields) {
+                    if ("modifiers".equals(each.getName())) {
+                        modifiersField = each;
+                        break;
+                    }
+                }
+                assert modifiersField != null;
+                modifiersField.setAccessible(true);
+                modifiersField.setInt(interceptorsField, interceptorsField.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
+                interceptorsField.set(httpClient, new ArrayList<Interceptor>());
+            } catch(Throwable ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        //END PATCHING
+
         {{#useGzipFeature}}
         // Enable gzip request compression
         httpClient.interceptors().add(new GzipRequestInterceptor());
@@ -341,7 +378,7 @@ public class ApiClient {
         if (debugging != this.debugging) {
             if (debugging) {
                 loggingInterceptor = new HttpLoggingInterceptor();
-                loggingInterceptor.setLevel(Level.BODY);
+                loggingInterceptor.setLevel(Level.BASIC);
                 httpClient.interceptors().add(loggingInterceptor);
             } else {
                 httpClient.interceptors().remove(loggingInterceptor);
@@ -421,12 +458,15 @@ public class ApiClient {
      public ApiClient setRateLimiter(RateLimitConfiguration rateLimitConfiguration) {
           if (rateLimitConfiguration != null) {
               rateLimiter = RateLimiter.create(rateLimitConfiguration.getRateLimitPermit());
-
-              //Add rateLimiter to httpclient interceptor for execute
-              RateLimitInterceptor rateLimiterInterceptor = new RateLimitInterceptor(rateLimiter, rateLimitConfiguration);
-              httpClient.interceptors().add(rateLimiterInterceptor);
+              httpClient.interceptors().add(new RateLimitInterceptor(rateLimiter, rateLimitConfiguration.getTimeOut()));
           }
-            return this;
+          return this;
+     }
+
+     public ApiClient setRateLimiter(RateLimiter sharedRateLimiter, long timeoutMs) {
+          rateLimiter = sharedRateLimiter;
+          httpClient.interceptors().add(new RateLimitInterceptor(rateLimiter, timeoutMs));
+          return this;
      }
      
      
@@ -472,7 +512,7 @@ public class ApiClient {
         // preconditions
         if (name == null || name.isEmpty() || value == null || value instanceof Collection) return params;
 
-        params.add(new Pair(name, parameterToString(value)));
+        params.add(new Pair(name, escapeString(parameterToString(value))));
         return params;
     }
 
@@ -984,7 +1024,7 @@ public class ApiClient {
                         url.append("&");
                     }
                     String value = parameterToString(param.getValue());
-                    url.append(escapeString(param.getName())).append("=").append(escapeString(value));
+                    url.append(escapeString(param.getName())).append("=").append(value);
                 }
             }
         }
@@ -1106,24 +1146,20 @@ public class ApiClient {
 
 class RateLimitInterceptor implements Interceptor {
     RateLimiter rateLimiter;
-    RateLimitConfiguration rateLimitConfiguration;
+    long timeoutMs;
 
-    public RateLimitInterceptor(RateLimiter rateLimiter, RateLimitConfiguration rateLimitConfiguration) {
+    public RateLimitInterceptor(RateLimiter rateLimiter, long timeoutMs) {
         this.rateLimiter = rateLimiter;
-        this.rateLimitConfiguration = rateLimitConfiguration;
+        this.timeoutMs = timeoutMs;
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        if (rateLimitConfiguration.getTimeOut() == Long.MAX_VALUE) {
+        if (timeoutMs == Long.MAX_VALUE) {
             rateLimiter.acquire();
         } else {
-            try {
-                if (!rateLimiter.tryAcquire(rateLimitConfiguration.getTimeOut(), TimeUnit.MILLISECONDS)) {
-                    throw new ApiException("Throttled as per the ratelimiter on client");
-                }
-            } catch (ApiException e) {
-                e.printStackTrace();
+            if (!rateLimiter.tryAcquire(timeoutMs, TimeUnit.MILLISECONDS)) {
+                throw new IOException("Throttled as per the ratelimiter on client");
             }
         }
         return chain.proceed(chain.request());

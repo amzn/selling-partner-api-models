@@ -48,6 +48,7 @@ import com.amazon.SellingPartnerAPIAA.LWAAccessTokenCacheImpl;
 import com.amazon.SellingPartnerAPIAA.LWAAuthorizationCredentials;
 import com.amazon.SellingPartnerAPIAA.LWAAuthorizationSigner;
 import com.amazon.SellingPartnerAPIAA.RateLimitConfiguration;
+import com.google.common.util.concurrent.RateLimiter;
 import com.amazon.SellingPartnerAPIAA.LWAException;
 
 {{#operations}}
@@ -283,6 +284,8 @@ public class {{classname}} {
         private LWAAccessTokenCache lwaAccessTokenCache;
         private Boolean disableAccessTokenCache = false;
         private RateLimitConfiguration rateLimitConfiguration;
+        private RateLimiter sharedRateLimiter;
+        private long sharedRateLimiterTimeoutMs = Long.MAX_VALUE;
 
 
         public Builder lwaAuthorizationCredentials(LWAAuthorizationCredentials lwaAuthorizationCredentials) {
@@ -294,12 +297,12 @@ public class {{classname}} {
             this.endpoint = endpoint;
             return this;
         }
-        
+
         public Builder lwaAccessTokenCache(LWAAccessTokenCache lwaAccessTokenCache) {
             this.lwaAccessTokenCache = lwaAccessTokenCache;
             return this;
         }
-		
+
 	   public Builder disableAccessTokenCache() {
             this.disableAccessTokenCache = true;
             return this;
@@ -309,9 +312,15 @@ public class {{classname}} {
             this.rateLimitConfiguration = rateLimitConfiguration;
             return this;
         }
-        
+
         public Builder disableRateLimitOnRequests() {
             this.rateLimitConfiguration = null;
+            return this;
+        }
+
+        public Builder sharedRateLimiter(RateLimiter rateLimiter, long timeoutMs) {
+            this.sharedRateLimiter = rateLimiter;
+            this.sharedRateLimiterTimeoutMs = timeoutMs;
             return this;
         }
 
@@ -323,22 +332,29 @@ public class {{classname}} {
             if (StringUtil.isEmpty(endpoint)) {
                 throw new RuntimeException("Endpoint not set");
             }
-            
-            LWAAuthorizationSigner lwaAuthorizationSigner = null;            
+
+            LWAAuthorizationSigner lwaAuthorizationSigner = null;
             if (disableAccessTokenCache) {
                 lwaAuthorizationSigner = new LWAAuthorizationSigner(lwaAuthorizationCredentials);
             }
             else {
                 if (lwaAccessTokenCache == null) {
-                    lwaAccessTokenCache = new LWAAccessTokenCacheImpl();                  
+                    lwaAccessTokenCache = new LWAAccessTokenCacheImpl();
                  }
                  lwaAuthorizationSigner = new LWAAuthorizationSigner(lwaAuthorizationCredentials,lwaAccessTokenCache);
             }
 
-            return new {{classname}}(new ApiClient()
+            ApiClient apiClient = new ApiClient()
                 .setLWAAuthorizationSigner(lwaAuthorizationSigner)
-                .setBasePath(endpoint)
-                .setRateLimiter(rateLimitConfiguration));
+                .setBasePath(endpoint);
+
+            if (sharedRateLimiter != null) {
+                apiClient.setRateLimiter(sharedRateLimiter, sharedRateLimiterTimeoutMs);
+            } else {
+                apiClient.setRateLimiter(rateLimitConfiguration);
+            }
+
+            return new {{classname}}(apiClient);
         }
     }
 }
